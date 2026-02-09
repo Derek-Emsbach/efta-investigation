@@ -1,0 +1,22 @@
+{
+  "name": "@efta/scripts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "import:all": "tsx src/import-all.ts",
+    "import:entities": "tsx src/import-entities.ts",
+    "import:documents": "tsx src/import-documents.ts",
+    "import:events": "tsx src/import-events.ts",
+    "import:connections": "tsx src/import-connections.ts",
+    "seed": "tsx src/seed-dataset.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2",
+    "dotenv": "^16"
+  },
+  "devDependencies": {
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}

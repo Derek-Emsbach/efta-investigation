@@ -1,0 +1,298 @@
+// TypeScript types matching packages/db/schema.sql exactly
+// All UUID columns → string, TEXT[] → string[], JSONB → Record<string, unknown>
+// TSVECTOR columns omitted (server-only, never sent to client)
+
+// ============================================================
+// ENUM / UNION TYPES (from CHECK constraints)
+// ============================================================
+
+export type EntityType = 'person' | 'organization' | 'property' | 'vehicle' | 'trust' | 'agency'
+
+export type PersonCategory = 'abuser' | 'attorney' | 'judge' | 'prosecutor' | 'victim' | 'staff' | 'witness' | 'recruiter'
+export type OrgCategory = 'shell_company' | 'law_firm' | 'financial' | 'government' | 'nonprofit' | 'media'
+export type EntityCategory = PersonCategory | OrgCategory
+
+export type EntityStatus = 'convicted' | 'not_investigated' | 'settled' | 'identified' | 'deceased' | 'active' | 'unknown'
+
+export type Tier = 1 | 2 | 3 | 4 | 5 | 6
+
+export type DocumentType =
+  | 'email' | 'fbi_302' | 'financial' | 'photo' | 'memo'
+  | 'prosecution_memo' | 'court_filing' | 'victim_journal'
+  | 'senate_letter' | 'legal_report' | 'call_notes' | 'blank'
+
+export type Classification = 'high' | 'medium' | 'low'
+export type Severity = 'extreme_critical' | 'critical' | 'high' | 'routine'
+export type ProcessingStatus = 'queued' | 'processing' | 'extracted' | 'needs_review' | 'reviewed' | 'published' | 'failed'
+
+export type EventType = 'legal' | 'evidence' | 'communication' | 'institutional' | 'personal' | 'financial' | 'legislative' | 'travel' | 'sighting'
+export type DatePrecision = 'day' | 'month' | 'year' | 'approximate'
+
+export type RelationshipType =
+  | 'employed_by' | 'trafficked_by' | 'represented_by' | 'investigated_by'
+  | 'paid_by' | 'connected_to' | 'family_of' | 'victim_of' | 'attorney_for'
+  | 'hired_by' | 'referred_by' | 'subsidiary_of' | 'owned_by'
+
+export type EvidenceStrength = 'documented' | 'alleged' | 'circumstantial'
+export type EvidenceType = 'financial' | 'testimony' | 'physical' | 'digital' | 'forensic' | 'documentary' | 'photographic'
+export type EvidenceCategory = 'primary' | 'corroborating' | 'contradictory' | 'timeline'
+export type EvidenceItemStrength = 'strong' | 'moderate' | 'weak'
+
+export type RedactionCategory = 'A' | 'B' | 'C' | 'D'
+export type RedactionAssessment = 'likely_violation' | 'suspect' | 'unclear' | 'needs_research' | 'review_failure'
+
+export type LocationType = 'property' | 'airport' | 'office' | 'court' | 'restaurant' | 'hotel' | 'school' | 'other'
+export type SightingType =
+  | 'flight_departure' | 'flight_arrival' | 'present_at' | 'email_sent_from'
+  | 'court_appearance' | 'photo_at' | 'financial_transaction' | 'phone_call'
+  | 'text_message' | 'witness_testimony' | 'document_reference' | 'residence'
+export type SightingConfidence = 'confirmed' | 'likely' | 'possible' | 'inferred'
+export type TimePrecision = 'exact' | 'approximate' | 'day' | 'am_pm'
+
+export type DatasetStatus = 'not_started' | 'in_progress' | 'completed'
+export type DatasetPriority = 'critical' | 'high' | 'medium' | 'low'
+export type InvestigationStatus = 'active' | 'completed' | 'pending'
+
+export type DocumentRole = 'subject' | 'mentioned' | 'author' | 'recipient' | 'witness' | 'photographer' | 'attorney'
+export type EventRole = 'subject' | 'participant' | 'decision_maker' | 'victim' | 'witness'
+export type InvestigationRole = 'subject' | 'prosecutor' | 'victim' | 'witness' | 'attorney'
+
+export type QueueStatus = 'queued' | 'processing' | 'completed' | 'failed' | 'needs_review'
+
+// ============================================================
+// TABLE INTERFACES
+// ============================================================
+
+export interface Dataset {
+  id: string
+  number: number
+  name: string | null
+  description: string | null
+  size_bytes: number | null
+  total_files: number | null
+  total_pages: number | null
+  reviewed_count: number
+  bates_range_start: string | null
+  bates_range_end: string | null
+  release_date: string | null
+  status: DatasetStatus
+  priority: DatasetPriority
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Investigation {
+  id: string
+  name: string
+  status: InvestigationStatus
+  summary: string | null
+  open_questions: string[]
+  created_at: string
+  updated_at: string
+}
+
+export interface Entity {
+  id: string
+  name: string
+  entity_type: EntityType
+  tier: Tier | null
+  tier_justification: string | null
+  category: EntityCategory | null
+  bio: string | null
+  status: EntityStatus | null
+  aliases: string[]
+  profile_image_url: string | null
+  is_public: boolean
+  datasets_appeared: number[]
+  metadata: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface Document {
+  id: string
+  bates_number: string | null
+  dataset_id: string | null
+  title: string | null
+  document_type: DocumentType | null
+  original_date: string | null
+  date_range: { start: string; end: string } | null
+  page_count: number | null
+  file_size_bytes: number | null
+  file_url: string | null
+  thumbnail_url: string | null
+  extracted_text: string | null
+  summary: string | null
+  classification: Classification | null
+  severity: Severity | null
+  processing_status: ProcessingStatus
+  review_notes: string | null
+  reviewed_by: string | null
+  reviewed_at: string | null
+  batch_number: number | null
+  forensic_metadata: Record<string, unknown>
+  flags: string[]
+  created_at: string
+  updated_at: string
+}
+
+export interface Event {
+  id: string
+  date: string | null
+  date_end: string | null
+  date_precision: DatePrecision
+  time_start: string | null
+  time_end: string | null
+  title: string
+  description: string | null
+  significance: string | null
+  event_type: EventType | null
+  location_id: string | null
+  investigation_id: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+}
+
+export interface EntityDocument {
+  id: string
+  entity_id: string
+  document_id: string
+  role_in_document: DocumentRole | null
+  excerpt: string | null
+  page_number: number | null
+}
+
+export interface EntityEvent {
+  id: string
+  entity_id: string
+  event_id: string
+  role: EventRole | null
+}
+
+export interface EventDocument {
+  id: string
+  event_id: string
+  document_id: string
+}
+
+export interface EntityConnection {
+  id: string
+  entity_a: string
+  entity_b: string
+  relationship_type: RelationshipType
+  evidence_strength: EvidenceStrength | null
+  description: string | null
+  source_document_ids: string[]
+  start_date: string | null
+  end_date: string | null
+  metadata: Record<string, unknown>
+}
+
+export interface EntityInvestigation {
+  id: string
+  entity_id: string
+  investigation_id: string
+  role: InvestigationRole | null
+}
+
+export interface Location {
+  id: string
+  name: string
+  location_type: LocationType | null
+  address: string | null
+  city: string | null
+  state: string | null
+  country: string | null
+  latitude: number | null
+  longitude: number | null
+  owner_entity_id: string | null
+  description: string | null
+  aliases: string[]
+  metadata: Record<string, unknown>
+  created_at: string
+}
+
+export interface EntitySighting {
+  id: string
+  entity_id: string
+  location_id: string | null
+  date: string
+  time_start: string | null
+  time_end: string | null
+  time_precision: TimePrecision
+  sighting_type: SightingType
+  confidence: SightingConfidence
+  description: string | null
+  with_entities: string[]
+  document_id: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+}
+
+export interface EvidenceItem {
+  id: string
+  entity_id: string
+  document_id: string | null
+  evidence_type: EvidenceType | null
+  description: string
+  category: EvidenceCategory | null
+  strength: EvidenceItemStrength | null
+  images: string[]
+  date: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+}
+
+export interface Redaction {
+  id: string
+  document_id: string
+  page_number: number | null
+  category: RedactionCategory | null
+  description: string | null
+  is_suspect: boolean
+  red_flags: string[]
+  assessment: RedactionAssessment | null
+  notes: string | null
+  created_at: string
+}
+
+export interface ProcessingQueueItem {
+  id: string
+  document_id: string
+  status: QueueStatus
+  priority: number
+  current_step: string | null
+  error_message: string | null
+  started_at: string | null
+  completed_at: string | null
+  results: Record<string, unknown>
+  created_at: string
+}
+
+// ============================================================
+// COMPOSITE / "WITH RELATIONS" TYPES
+// ============================================================
+
+export interface EntityWithCounts extends Entity {
+  doc_count: number
+  event_count: number
+  connection_count: number
+  evidence_count: number
+}
+
+export interface EntityWithRelations extends Entity {
+  documents: (EntityDocument & { document: Document })[]
+  events: (EntityEvent & { event: Event })[]
+  connections: (EntityConnection & { connected_entity: Entity })[]
+  evidence: EvidenceItem[]
+  investigations: (EntityInvestigation & { investigation: Investigation })[]
+}
+
+export interface DocumentWithRelations extends Document {
+  dataset: Dataset | null
+  entities: (EntityDocument & { entity: Entity })[]
+  redactions: Redaction[]
+  evidence: EvidenceItem[]
+  events: (EventDocument & { event: Event })[]
+}
