@@ -12,6 +12,8 @@ const investigationItems = [
   { label: "Timeline", href: "/timeline", icon: "clock" as const },
   { label: "Search", href: "/search", icon: "search" as const },
   { label: "Network", href: "/network", icon: "network" as const },
+  { label: "Datasets", href: "/datasets", icon: "database" as const },
+  { label: "Hierarchy", href: "/hierarchy", icon: "sitemap" as const },
   { label: "Detective", href: "/assistant", icon: "sparkles" as const },
 ];
 

@@ -103,6 +103,13 @@ export default function NetworkPage() {
   const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
+  // Path-finding state
+  const [showPathFinder, setShowPathFinder] = useState(false)
+  const [pathFrom, setPathFrom] = useState<string | null>(null)
+  const [pathTo, setPathTo] = useState<string | null>(null)
+  const [pathFromSearch, setPathFromSearch] = useState('')
+  const [pathToSearch, setPathToSearch] = useState('')
+
   // Initialize relationship filter options from data
   useEffect(() => {
     if (data && activeRelationships.size === 0) {
@@ -197,6 +204,25 @@ export default function NetworkPage() {
       .slice(0, 8)
   }, [searchQuery, data])
 
+  // Compute shortest path
+  const pathResult = useMemo(() => {
+    if (!pathFrom || !pathTo || !data) return null
+    return findShortestPath(data.edges, pathFrom, pathTo)
+  }, [pathFrom, pathTo, data])
+
+  // Path search matches
+  const pathFromMatches = useMemo(() => {
+    if (!pathFromSearch.trim() || !data) return []
+    const q = pathFromSearch.toLowerCase()
+    return data.nodes.filter((n) => n.name.toLowerCase().includes(q)).slice(0, 6)
+  }, [pathFromSearch, data])
+
+  const pathToMatches = useMemo(() => {
+    if (!pathToSearch.trim() || !data) return []
+    const q = pathToSearch.toLowerCase()
+    return data.nodes.filter((n) => n.name.toLowerCase().includes(q)).slice(0, 6)
+  }, [pathToSearch, data])
+
   // Handle search selection
   const handleSearchSelect = useCallback((nodeId: string) => {
     setHighlightedNodeId(nodeId)
@@ -205,6 +231,13 @@ export default function NetworkPage() {
 
   const clearHighlight = useCallback(() => {
     setHighlightedNodeId(null)
+  }, [])
+
+  const clearPath = useCallback(() => {
+    setPathFrom(null)
+    setPathTo(null)
+    setPathFromSearch('')
+    setPathToSearch('')
   }, [])
 
   // Toggle helpers
@@ -311,9 +344,12 @@ export default function NetworkPage() {
       .selectAll('line')
       .data(edges)
       .join('line')
-      .attr('stroke', '#374151')
-      .attr('stroke-width', 1.5)
-      .attr('stroke-opacity', (d) => STRENGTH_OPACITY[d.evidence_strength ?? ''] ?? 0.4)
+      .attr('stroke', (d) => pathResult?.edgeIds.has(d.id) ? '#10B981' : '#374151')
+      .attr('stroke-width', (d) => pathResult?.edgeIds.has(d.id) ? 3 : 1.5)
+      .attr('stroke-opacity', (d) => {
+        if (pathResult) return pathResult.edgeIds.has(d.id) ? 1 : 0.1
+        return STRENGTH_OPACITY[d.evidence_strength ?? ''] ?? 0.4
+      })
 
     // Draw edge labels
     const linkLabel = g.append('g')
@@ -333,10 +369,30 @@ export default function NetworkPage() {
       .selectAll<SVGCircleElement, GraphNode>('circle')
       .data(nodes)
       .join('circle')
-      .attr('r', (d) => getNodeRadius(degreeMap.get(d.id) ?? 0))
-      .attr('fill', (d) => TIER_COLORS[d.tier ?? 0] ?? DEFAULT_COLOR)
-      .attr('stroke', (d) => d.id === highlightedNodeId ? '#FFFFFF' : '#0A0E17')
-      .attr('stroke-width', (d) => d.id === highlightedNodeId ? 3 : 2)
+      .attr('r', (d) => {
+        if (pathResult?.nodeIds.has(d.id)) return getNodeRadius(degreeMap.get(d.id) ?? 0) + 2
+        return getNodeRadius(degreeMap.get(d.id) ?? 0)
+      })
+      .attr('fill', (d) => {
+        if (pathResult && !pathResult.nodeIds.has(d.id)) return DEFAULT_COLOR
+        return TIER_COLORS[d.tier ?? 0] ?? DEFAULT_COLOR
+      })
+      .attr('stroke', (d) => {
+        if (d.id === pathFrom || d.id === pathTo) return '#10B981'
+        if (pathResult?.nodeIds.has(d.id)) return '#10B981'
+        if (d.id === highlightedNodeId) return '#FFFFFF'
+        return '#0A0E17'
+      })
+      .attr('stroke-width', (d) => {
+        if (d.id === pathFrom || d.id === pathTo) return 3
+        if (pathResult?.nodeIds.has(d.id)) return 2.5
+        if (d.id === highlightedNodeId) return 3
+        return 2
+      })
+      .attr('opacity', (d) => {
+        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.15
+        return 1
+      })
       .style('cursor', 'pointer')
 
     // Highlight ring for searched node
@@ -362,10 +418,26 @@ export default function NetworkPage() {
       .data(nodes)
       .join('text')
       .text((d) => truncateName(d.name))
-      .attr('font-size', (d) => d.id === highlightedNodeId ? '12px' : '10px')
-      .attr('font-weight', (d) => d.id === highlightedNodeId ? '600' : 'normal')
+      .attr('font-size', (d) => {
+        if (pathResult?.nodeIds.has(d.id)) return '12px'
+        if (d.id === highlightedNodeId) return '12px'
+        return '10px'
+      })
+      .attr('font-weight', (d) => {
+        if (pathResult?.nodeIds.has(d.id)) return '600'
+        if (d.id === highlightedNodeId) return '600'
+        return 'normal'
+      })
       .attr('font-family', 'var(--font-body)')
-      .attr('fill', (d) => d.id === highlightedNodeId ? '#FFFFFF' : '#F9FAFB')
+      .attr('fill', (d) => {
+        if (pathResult?.nodeIds.has(d.id)) return '#FFFFFF'
+        if (d.id === highlightedNodeId) return '#FFFFFF'
+        return '#F9FAFB'
+      })
+      .attr('opacity', (d) => {
+        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
+        return 1
+      })
       .attr('text-anchor', 'middle')
       .attr('dy', (d) => getNodeRadius(degreeMap.get(d.id) ?? 0) + 14)
       .style('pointer-events', 'none')
@@ -488,7 +560,7 @@ export default function NetworkPage() {
     return () => {
       simulation.stop()
     }
-  }, [filteredData, dimensions, router, highlightedNodeId])
+  }, [filteredData, dimensions, router, highlightedNodeId, pathResult, pathFrom, pathTo])
 
   return (
     <MainContent>
@@ -570,6 +642,26 @@ export default function NetworkPage() {
               </svg>
             </button>
           )}
+
+          {/* Path finder toggle */}
+          <button
+            onClick={() => {
+              setShowPathFinder(!showPathFinder)
+              if (showPathFinder) clearPath()
+            }}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors ${
+              showPathFinder
+                ? 'bg-success/10 text-success border border-success/30'
+                : 'bg-elevated border border-border-default text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" d="M13 6l6 6-6 6" />
+              <path strokeLinecap="round" d="M5 6l6 6-6 6" />
+            </svg>
+            Find Path
+            {pathResult && <span className="w-1.5 h-1.5 rounded-full bg-success" />}
+          </button>
 
           {/* Filter toggle */}
           <button
@@ -778,6 +870,167 @@ export default function NetworkPage() {
         </div>
       )}
 
+      {/* Path finder panel */}
+      {showPathFinder && (
+        <div className="bg-surface border border-border-default rounded-lg p-4 mb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <svg className="w-4 h-4 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" d="M13 6l6 6-6 6" />
+              <path strokeLinecap="round" d="M5 6l6 6-6 6" />
+            </svg>
+            <p className="text-sm font-medium text-text-primary">Find Shortest Path Between Entities</p>
+            {pathResult && (
+              <button
+                onClick={clearPath}
+                className="ml-auto text-xs text-text-muted hover:text-text-secondary transition-colors"
+              >
+                Clear path
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-start gap-4">
+            {/* From entity */}
+            <div className="flex-1 relative">
+              <label className="text-xs text-text-muted mb-1 block">From</label>
+              {pathFrom && data ? (
+                <div className="flex items-center gap-2 bg-elevated border border-success/30 rounded px-3 py-1.5">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: TIER_COLORS[data.nodes.find((n) => n.id === pathFrom)?.tier ?? 0] ?? DEFAULT_COLOR }}
+                  />
+                  <span className="text-sm text-text-primary truncate">
+                    {data.nodes.find((n) => n.id === pathFrom)?.name}
+                  </span>
+                  <button
+                    onClick={() => { setPathFrom(null); setPathFromSearch('') }}
+                    className="ml-auto shrink-0 text-text-muted hover:text-text-secondary"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    value={pathFromSearch}
+                    onChange={(e) => setPathFromSearch(e.target.value)}
+                    placeholder="Search entity..."
+                    className="w-full bg-elevated border border-border-default rounded px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-success focus:outline-none"
+                  />
+                  {pathFromSearch.trim() && pathFromMatches.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-elevated border border-border-default rounded-lg shadow-lg z-50 overflow-hidden">
+                      {pathFromMatches.map((m) => (
+                        <button
+                          key={m.id}
+                          onClick={() => { setPathFrom(m.id); setPathFromSearch('') }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: TIER_COLORS[m.tier ?? 0] ?? DEFAULT_COLOR }}
+                          />
+                          <span className="truncate">{m.name}</span>
+                          <span className="text-xs text-text-muted ml-auto capitalize shrink-0">{m.entity_type}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Arrow */}
+            <div className="flex items-center pt-5">
+              <svg className="w-6 h-6 text-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+              </svg>
+            </div>
+
+            {/* To entity */}
+            <div className="flex-1 relative">
+              <label className="text-xs text-text-muted mb-1 block">To</label>
+              {pathTo && data ? (
+                <div className="flex items-center gap-2 bg-elevated border border-success/30 rounded px-3 py-1.5">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: TIER_COLORS[data.nodes.find((n) => n.id === pathTo)?.tier ?? 0] ?? DEFAULT_COLOR }}
+                  />
+                  <span className="text-sm text-text-primary truncate">
+                    {data.nodes.find((n) => n.id === pathTo)?.name}
+                  </span>
+                  <button
+                    onClick={() => { setPathTo(null); setPathToSearch('') }}
+                    className="ml-auto shrink-0 text-text-muted hover:text-text-secondary"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    value={pathToSearch}
+                    onChange={(e) => setPathToSearch(e.target.value)}
+                    placeholder="Search entity..."
+                    className="w-full bg-elevated border border-border-default rounded px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-success focus:outline-none"
+                  />
+                  {pathToSearch.trim() && pathToMatches.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-elevated border border-border-default rounded-lg shadow-lg z-50 overflow-hidden">
+                      {pathToMatches.map((m) => (
+                        <button
+                          key={m.id}
+                          onClick={() => { setPathTo(m.id); setPathToSearch('') }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: TIER_COLORS[m.tier ?? 0] ?? DEFAULT_COLOR }}
+                          />
+                          <span className="truncate">{m.name}</span>
+                          <span className="text-xs text-text-muted ml-auto capitalize shrink-0">{m.entity_type}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Path result info */}
+          {pathFrom && pathTo && (
+            <div className="mt-3 pt-3 border-t border-border-default">
+              {pathResult ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-success font-medium">
+                    Path found: {pathResult.path.length - 1} hop{pathResult.path.length - 1 !== 1 ? 's' : ''}
+                  </span>
+                  <div className="flex items-center gap-1 text-xs text-text-muted overflow-x-auto">
+                    {pathResult.path.map((nodeId, i) => (
+                      <span key={nodeId} className="flex items-center gap-1 shrink-0">
+                        {i > 0 && <span className="text-success">&rarr;</span>}
+                        <span className="text-text-secondary">
+                          {data?.nodes.find((n) => n.id === nodeId)?.name ?? 'Unknown'}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-warning">
+                  No path found between these entities with current filters.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Tier legend (compact, always visible — clickable to toggle) */}
       <div className="flex flex-wrap gap-4 mb-4">
         {([1, 2, 3, 4, 5, 6] as const).map((tier) => (
@@ -911,4 +1164,61 @@ function truncateName(name: string): string {
 
 function formatRelationship(type: string): string {
   return type.replace(/_/g, ' ')
+}
+
+// -------------------------------------------------------------------
+// Pathfinding (BFS shortest path)
+// -------------------------------------------------------------------
+
+interface PathResult {
+  nodeIds: Set<string>
+  edgeIds: Set<string>
+  path: string[] // ordered node IDs from source to target
+}
+
+function findShortestPath(
+  edges: GraphEdge[],
+  fromId: string,
+  toId: string,
+): PathResult | null {
+  if (fromId === toId) return { nodeIds: new Set([fromId]), edgeIds: new Set(), path: [fromId] }
+
+  // Build adjacency list from raw edge data (entity_a / entity_b, not d3-mutated source/target)
+  const adj = new Map<string, { nodeId: string; edgeId: string }[]>()
+  for (const edge of edges) {
+    const a = edge.entity_a
+    const b = edge.entity_b
+    if (!adj.has(a)) adj.set(a, [])
+    if (!adj.has(b)) adj.set(b, [])
+    adj.get(a)!.push({ nodeId: b, edgeId: edge.id })
+    adj.get(b)!.push({ nodeId: a, edgeId: edge.id })
+  }
+
+  // BFS
+  const visited = new Set<string>([fromId])
+  const queue: { nodeId: string; path: string[]; edgeIds: string[] }[] = [
+    { nodeId: fromId, path: [fromId], edgeIds: [] },
+  ]
+
+  while (queue.length > 0) {
+    const current = queue.shift()!
+    for (const neighbor of adj.get(current.nodeId) ?? []) {
+      if (visited.has(neighbor.nodeId)) continue
+      const newPath = [...current.path, neighbor.nodeId]
+      const newEdges = [...current.edgeIds, neighbor.edgeId]
+
+      if (neighbor.nodeId === toId) {
+        return {
+          nodeIds: new Set(newPath),
+          edgeIds: new Set(newEdges),
+          path: newPath,
+        }
+      }
+
+      visited.add(neighbor.nodeId)
+      queue.push({ nodeId: neighbor.nodeId, path: newPath, edgeIds: newEdges })
+    }
+  }
+
+  return null // no path exists
 }
