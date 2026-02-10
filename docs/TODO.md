@@ -25,16 +25,15 @@
 > **Note:** Using Next.js 16 (not 14) with React 19 and Tailwind v4 (CSS-based config, not tailwind.config.ts).
 
 ### 1.2 Database Setup
-- [ ] Create Supabase project
-- [ ] Run `packages/db/schema.sql` in Supabase SQL editor
-- [ ] Verify all tables created with correct columns
-- [ ] Enable Row Level Security on all tables
-- [ ] Create RLS policies (admin full access, anon read for public entities/events)
-- [ ] Create database indexes (search vectors, bates_number, entity name, etc.)
-- [ ] Set up full-text search triggers on entities and documents
-- [ ] Test queries in Supabase dashboard
-
-> **Blocked:** User needs to create Supabase project first. Schema includes RLS, indexes, and FTS triggers already.
+- [x] Create Supabase project
+- [x] Run `packages/db/schema.sql` in Supabase SQL editor
+- [x] Verify all tables created with correct columns
+- [x] Enable Row Level Security on all tables
+- [x] Create RLS policies (admin full access, anon read for public entities/events)
+- [x] Create database indexes (search vectors, bates_number, entity name, etc.)
+- [x] Set up full-text search triggers on entities and documents
+- [x] Test queries in Supabase dashboard
+- [x] Added UNIQUE constraints on `entities.name` and `investigations.name`
 
 ### 1.3 Supabase Client Integration
 - [x] Install `@supabase/supabase-js` and `@supabase/ssr`
@@ -43,10 +42,8 @@
 - [x] Create `lib/supabase/middleware.ts` (auth middleware — session refresh + route protection)
 - [x] Create `lib/supabase/admin.ts` (service role client — bypasses RLS for scripts)
 - [x] Create `middleware.ts` (Next.js middleware wiring)
-- [ ] Set up environment variables in `.env.local`
-- [ ] Test connection: query entities table from a server component
-
-> **Note:** 4 client variants created. `.env.local` needs Supabase project credentials.
+- [x] Set up environment variables in `.env.local`
+- [x] Test connection: query entities table from a server component
 
 ### 1.4 Cloudflare R2 Setup
 - [ ] Create R2 bucket: `efta-documents`
@@ -58,12 +55,12 @@
 > **Blocked:** User needs to create R2 bucket and API token. Client code is written.
 
 ### 1.5 Auth
-- [ ] Set up Supabase Auth (email/password) — requires Supabase project
-- [ ] Create admin user in Supabase dashboard
+- [x] Set up Supabase Auth (email/password)
+- [x] Create admin user in Supabase dashboard
 - [x] Build `/login` page (dark editorial design, email+password, `signInWithPassword()`)
 - [x] Create auth middleware to protect all routes except `/login`
 - [x] Build logout button component (`signOut()` + redirect)
-- [ ] Test login/logout flow
+- [x] Test login/logout flow
 
 ### 1.6 Base Layout & Design System
 - [x] Install fonts: Playfair Display (display), IBM Plex Sans (body), IBM Plex Mono (metadata)
@@ -121,10 +118,8 @@
 - [x] Create `scripts/src/import-connections.ts` — 15 curated connections with source citations
 - [x] Create `scripts/src/import-all.ts` — master script runs all 5 in dependency order
 - [x] Create `scripts/src/utils/markdown-parser.ts` — shared parsing utilities
-- [ ] Run all import scripts (`pnpm --filter @efta/scripts import:all`)
-- [ ] Verify data appears correctly in web UI
-
-> **Blocked:** Scripts written and type-checked, but need Supabase project to run against.
+- [x] Run all import scripts (`pnpm --filter @efta/scripts import:all`)
+- [x] Verify data appears correctly in web UI (51 entities, 55 docs, 30 events, 15 connections)
 
 ### 1.9 Deploy
 - [x] Configure Vercel build settings (transpilePackages, build commands)
@@ -141,29 +136,31 @@
 
 **Goal:** Deep entity profiles with evidence cases, interactive timeline, document viewer, search.
 
+> **Status:** Core features complete. Entity profile tabs, document viewer, timeline, search, network graph, and enhanced dashboard all shipped. Remaining items are enhancements (advanced filters, day view, parallel timelines, etc.).
+
 ### 2.1 Entity Profiles
-- [ ] Full entity profile page (`/entities/[id]`)
-  - [ ] Hero section: name, tier badge, category, status, profile image
-  - [ ] Bio/narrative section (compiled from investigation findings)
-  - [ ] **Evidence Tab** (non-victims):
-    - [ ] Evidence inventory table (type, description, strength, source doc link)
-    - [ ] Each evidence item links to the source document
+- [x] Full entity profile page (`/entities/[id]`)
+  - [x] Hero section: name, tier badge, category, status, profile image
+  - [x] Bio/narrative section (compiled from investigation findings)
+  - [x] **Evidence Tab** (non-victims):
+    - [x] Evidence inventory table (type, description, strength, source doc link)
+    - [x] Each evidence item links to the source document
     - [ ] Images/photos displayed inline with captions
     - [ ] Financial evidence with amounts and dates
   - [ ] **Story Tab** (victims, only if `is_public = true`):
     - [ ] Narrative format, not clinical
     - [ ] Privacy notice if entity is protected
-  - [ ] **Timeline Tab:**
-    - [ ] Per-entity timeline of their involvement
-    - [ ] Events linked to source documents
-  - [ ] **Documents Tab:**
-    - [ ] All documents mentioning this entity
-    - [ ] Role in each document (subject, mentioned, author, etc.)
-    - [ ] Excerpt/quote from each document
-  - [ ] **Connections Tab:**
+  - [x] **Timeline Tab:**
+    - [x] Per-entity timeline of their involvement
+    - [x] Events linked to source documents
+  - [x] **Documents Tab:**
+    - [x] All documents mentioning this entity
+    - [x] Role in each document (subject, mentioned, author, etc.)
+    - [x] Excerpt/quote from each document
+  - [x] **Connections Tab:**
     - [ ] Mini network graph centered on this entity
-    - [ ] List of connections with relationship type and evidence strength
-    - [ ] Click any connection → navigate to that entity's profile
+    - [x] List of connections with relationship type and evidence strength
+    - [x] Click any connection → navigate to that entity's profile
   - [ ] **Locations Tab:**
     - [ ] Interactive map with pins at all known locations for this entity
     - [ ] Sighting timeline: date, location, type, source document
@@ -171,56 +168,59 @@
     - [ ] Movement patterns summary
 
 ### 2.2 Document Viewer
-- [ ] Inline PDF viewer using `@react-pdf-viewer/core` or `pdf.js`
-- [ ] Split-pane layout: PDF on left, metadata on right
-- [ ] Metadata panel:
-  - [ ] Bates number, dataset, type, date, pages, severity
-  - [ ] Forensic metadata (PDF version, pipeline, EOF markers)
-  - [ ] Processing status
-- [ ] Entities panel: all entities found in this document (clickable)
-- [ ] Redactions panel: any redaction analysis for this document
+- [x] Dual-mode viewer: extracted text view + native PDF embed
+  - [x] Text view with in-document search, font size controls, character count
+  - [x] PDF view via `<object>` + `<iframe>` fallback (activates when file_url exists)
+  - [x] Forensic metadata toggle panel
+  - [x] API proxy route (`/api/documents/[id]/file`) for auth-gated R2 streaming
+- [x] Metadata panel:
+  - [x] Bates number, dataset, type, date, pages, severity
+  - [x] Forensic metadata (PDF version, pipeline, EOF markers)
+  - [x] Processing status
+- [x] Entities panel: all entities found in this document (clickable)
+- [x] Redactions panel: any redaction analysis for this document (color-coded A-D categories)
+- [x] Evidence items panel with strength indicators
 - [ ] Cross-references panel: related documents
 - [ ] Upload actual DS12 PDFs to R2 and link in database
 
 ### 2.3 Global Timeline
-- [ ] Interactive horizontal timeline component
-- [ ] Zoomable: year → month → day granularity
-- [ ] Events displayed as markers with expandable detail cards
-- [ ] Color-coded by event type (legal=blue, evidence=amber, communication=gray, institutional=red, travel=purple, financial=green)
-- [ ] **Day View** (click any date for full daily intelligence briefing):
-  - [ ] Movements section: where every tracked entity was that day (from entity_sightings)
-  - [ ] Events section: all events on that date
-  - [ ] Documents section: all documents dated that day
-  - [ ] Communications section: emails, texts, calls from that date
-  - [ ] Financial section: transactions on that date
-  - [ ] Co-locations highlighted: "Entity A and Entity B both at Location X"
-- [ ] **Filters:**
+- [x] Vertical timeline page (`/timeline`) with event filtering and search
+- [x] Events grouped by month with sticky headers
+- [x] Color-coded by event type (legal=blue, evidence=amber, etc.)
+- [x] Linked entities shown as tier-colored chips
+- [x] **Filters:**
+  - [x] By event type
+  - [x] Search by title/description
   - [ ] By entity (show only events involving selected person)
-  - [ ] By event type
   - [ ] By dataset
   - [ ] By severity
   - [ ] Date range picker
+- [ ] Interactive horizontal timeline component (zoomable: year → month → day)
+- [ ] **Day View** (click any date for full daily intelligence briefing)
 - [ ] **Parallel view:** stack 2-3 entities to compare timelines side-by-side
 - [ ] Click any event → see source documents
-- [ ] Click any entity name → navigate to profile
 
 ### 2.4 Search
-- [ ] Full-text search page (`/search`)
-- [ ] Search across: documents (extracted text), entities (name, bio), events (title, description)
-- [ ] Supabase `ts_rank` scoring for relevance
-- [ ] Faceted results: tabs for Documents, Entities, Events
+- [x] Full-text search page (`/search`)
+- [x] Search across: documents (extracted text), entities (name, bio), events (title, description)
+- [x] Dual strategy: FTS for stemmed matches + ilike for substring/Bates number matching
+- [x] Faceted results: grouped by Entities, Documents, Events with count badges
+- [x] Click any result → navigate to detail page
+- [ ] Supabase `ts_rank` scoring for relevance ordering
 - [ ] Filters: dataset, entity type, date range, severity
 - [ ] Highlight search terms in results
-- [ ] Click any result → navigate to detail page
 
 ### 2.5 API Routes
 - [x] `GET /api/entities` — list with filters, pagination, FTS search *(built in Phase 1)*
 - [x] `GET /api/entities/[id]` — full entity with relations (docs, events, connections, evidence) *(built in Phase 1)*
 - [x] `GET /api/documents` — list with filters, pagination, FTS search *(built in Phase 1)*
 - [x] `GET /api/documents/[id]` — full document with relations (entities, redactions, evidence, events) *(built in Phase 1)*
-- [ ] `GET /api/events` — list with filters, pagination
-- [ ] `GET /api/search` — unified search across all types
-- [x] `GET /api/stats` — dashboard statistics *(built in Phase 1)*
+- [x] `GET /api/timeline` — events list with type filter, search, entity joins *(built in Phase 2)*
+- [x] `GET /api/search` — unified FTS + ilike search across entities, documents, events *(built in Phase 2)*
+- [x] `GET /api/network` — graph data (connected entities + edges) *(built in Phase 2)*
+- [x] `GET /api/documents/[id]/file` — auth-gated R2 file proxy *(built in Phase 2)*
+- [x] `GET /api/stats` — dashboard statistics *(built in Phase 1, enhanced in Phase 2)*
+- [x] `POST /api/assistant` — AI research assistant with SSE streaming + tool use *(built in Phase 3)*
 
 ---
 
@@ -229,19 +229,20 @@
 **Goal:** Visual relationship mapping, dataset tracking.
 
 ### 3.1 Network Graph
-- [ ] D3.js force-directed graph (`/network`)
-- [ ] Nodes = entities
-  - [ ] Sized by evidence count (more evidence = larger node)
-  - [ ] Colored by tier (Tier 1=red, Tier 2=amber, etc.)
-  - [ ] Labeled with name
-- [ ] Edges = entity_connections
-  - [ ] Weighted by evidence_strength
-  - [ ] Colored by relationship_type
-  - [ ] Labeled on hover
-- [ ] **Interactions:**
-  - [ ] Click node → popup with entity summary + link to profile
-  - [ ] Drag nodes to rearrange
-  - [ ] Zoom and pan
+- [x] D3.js force-directed graph (`/network`)
+- [x] Nodes = entities
+  - [x] Sized by connection degree
+  - [x] Colored by tier (Tier 1=red, Tier 2=amber, etc.)
+  - [x] Labeled with name
+- [x] Edges = entity_connections
+  - [x] Opacity by evidence_strength (documented > alleged > circumstantial)
+  - [x] Labeled on hover (relationship type)
+- [x] **Interactions:**
+  - [x] Click node → navigate to entity profile
+  - [x] Drag nodes to rearrange
+  - [x] Zoom and pan
+  - [x] Hover to highlight connected edges + fade unconnected nodes
+  - [x] Tooltip with tier badge + category
   - [ ] Filter by tier, relationship type, time period
   - [ ] Search to highlight specific entity
   - [ ] "Find path between" — highlight shortest connection path between two entities
@@ -262,20 +263,27 @@
 - [ ] Click card → filtered document list for that dataset
 - [ ] Summary stats: total files, reviewed, critical findings per dataset
 
-### 3.4 AI Research Assistant (Admin Dashboard)
-- [ ] Chat interface in admin sidebar or dedicated `/admin/assistant` page
-- [ ] Claude API integration (`claude-sonnet-4-20250514`)
-- [ ] System prompt with investigation context, entity tiers, redaction framework
-- [ ] Tool use: read-only Supabase queries
-  - [ ] Search entities by name, tier, category
-  - [ ] Search documents by bates number, content, date range
-  - [ ] Query connections for an entity
-  - [ ] Query timeline events with filters
-  - [ ] Run cross-reference queries (co-occurrence without connection)
-  - [ ] Run anomaly queries (under-documented entities, redaction inconsistencies)
+### 3.4 AI Research Assistant
+- [x] Chat interface at `/assistant` with full-height layout
+- [x] Claude API integration (`claude-sonnet-4-5-20250929`) via `@anthropic-ai/sdk`
+- [x] System prompt with investigation context, entity tiers, redaction framework, critical rules
+- [x] SSE streaming with real-time text display and tool call visualization
+- [x] Tool use: 7 read-only Supabase query tools
+  - [x] `search_entities` — name/tier/category/type/status filters, FTS + ilike
+  - [x] `search_documents` — bates/title/type/severity/keyword/date range, FTS + ilike
+  - [x] `search_events` — keyword/event_type/date range with linked entity names
+  - [x] `get_entity_profile` — full profile with connections, evidence, docs, events
+  - [x] `get_document_detail` — full detail with linked entities, redactions, evidence
+  - [x] `query_connections` — both directions, relationship/strength filters
+  - [x] `cross_reference` — missing connections detector (co-occurrence analysis)
+- [x] Victim privacy enforced (non-public victim bios redacted)
+- [x] Welcome panel with 6 suggested queries
+- [x] Collapsible tool call blocks showing params + results
+- [x] Conversation history within session
+- [x] Sidebar navigation with sparkles icon (7th nav item)
 - [ ] Actionable suggestions: "Create connection?" → one-click approve writes to DB
-- [ ] Conversation history within session
-- [ ] Suggested queries based on current page context (e.g., viewing Entity X → "What am I missing about Entity X?")
+- [ ] Suggested queries based on current page context
+- [ ] Conversation persistence (save/load chat history)
 
 ---
 
