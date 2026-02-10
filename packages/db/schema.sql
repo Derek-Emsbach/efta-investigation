@@ -385,5 +385,57 @@ CREATE POLICY "Admin full access" ON entity_investigations FOR ALL USING (auth.r
 CREATE POLICY "Admin full access" ON locations FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin full access" ON entity_sightings FOR ALL USING (auth.role() = 'authenticated');
 
+-- ============================================================
+-- PLATFORM SUGGESTIONS (AI Assistant)
+-- ============================================================
+
+CREATE TABLE platform_suggestions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  category TEXT NOT NULL CHECK (category IN ('feature', 'tracking', 'tool', 'investigation', 'data_model', 'ux')),
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  rationale TEXT,
+  priority TEXT CHECK (priority IN ('high', 'medium', 'low')),
+  status TEXT NOT NULL DEFAULT 'proposed' CHECK (status IN ('proposed', 'accepted', 'dismissed', 'completed')),
+  source_context JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  resolved_at TIMESTAMPTZ
+);
+
+ALTER TABLE platform_suggestions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admin full access" ON platform_suggestions FOR ALL USING (auth.role() = 'authenticated');
+
+-- ============================================================
+-- CONVERSATION PERSISTENCE (Detective Partner)
+-- ============================================================
+
+CREATE TABLE conversations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL,
+  title TEXT,
+  pinned BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE conversation_messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+  role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+  content TEXT NOT NULL DEFAULT '',
+  tool_calls JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_conversations_user ON conversations(user_id);
+CREATE INDEX idx_conversations_updated ON conversations(updated_at DESC);
+CREATE INDEX idx_conv_messages_conversation ON conversation_messages(conversation_id);
+CREATE INDEX idx_conv_messages_created ON conversation_messages(conversation_id, created_at);
+
+ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE conversation_messages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admin full access" ON conversations FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access" ON conversation_messages FOR ALL USING (auth.role() = 'authenticated');
+
 -- Service role bypass (for worker)
 -- The service_role key bypasses RLS automatically in Supabase
