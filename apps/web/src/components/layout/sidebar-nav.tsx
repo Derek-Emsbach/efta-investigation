@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 interface NavItem {
   label: string;
   href: string;
-  icon: "home" | "users" | "file-text" | "clock" | "search";
+  icon: "home" | "users" | "file-text" | "clock" | "search" | "network";
 }
 
 interface SidebarNavProps {
@@ -57,6 +57,17 @@ function NavIcon({ icon, className }: { icon: NavItem["icon"]; className?: strin
         <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      );
+    case "network":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="5" r="3" />
+          <circle cx="5" cy="19" r="3" />
+          <circle cx="19" cy="19" r="3" />
+          <line x1="12" y1="8" x2="5" y2="16" />
+          <line x1="12" y1="8" x2="19" y2="16" />
+          <line x1="5" y1="19" x2="19" y2="19" />
         </svg>
       );
   }
