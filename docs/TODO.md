@@ -221,6 +221,11 @@
 - [x] `GET /api/documents/[id]/file` — auth-gated R2 file proxy *(built in Phase 2)*
 - [x] `GET /api/stats` — dashboard statistics *(built in Phase 1, enhanced in Phase 2)*
 - [x] `POST /api/assistant` — AI research assistant with SSE streaming + tool use *(built in Phase 3)*
+- [x] `POST /api/assistant/apply` — apply AI suggestions (connections, tiers, evidence, platform) *(built in Phase 3)*
+- [x] `GET/POST /api/assistant/conversations` — list + create conversations *(built in Phase 3)*
+- [x] `GET/PATCH/DELETE /api/assistant/conversations/[id]` — load + rename/pin + delete *(built in Phase 3)*
+- [x] `POST /api/assistant/conversations/[id]/messages` — save message to conversation *(built in Phase 3)*
+- [x] `PATCH /api/assistant/conversations/[id]/messages/[messageId]` — update message (suggestion status) *(built in Phase 3)*
 
 ---
 
@@ -285,9 +290,25 @@
 - [x] Collapsible tool call blocks showing params + results
 - [x] Conversation history within session
 - [x] Sidebar navigation with sparkles icon (7th nav item)
-- [ ] Actionable suggestions: "Create connection?" → one-click approve writes to DB
+- [x] **Detective Partner role** — proactive investigator persona with theory-building, brainstorming, and investigation priorities
+- [x] **Actionable suggestions** — 5 new tools for proposing database changes + platform improvements
+  - [x] `get_platform_context` — returns current platform state, features, gaps, and live stats
+  - [x] `suggest_connection` — proposes entity connections with validation + duplicate detection
+  - [x] `suggest_tier_change` — proposes entity tier reclassification with justification
+  - [x] `suggest_evidence_item` — proposes evidence records linked to entities + documents
+  - [x] `suggest_platform_improvement` — proposes platform features/tracking/tools saved to backlog
+  - [x] Interactive SuggestionCard components (4 card variants: connection, tier change, evidence, platform)
+  - [x] Approve/dismiss with one click → writes to database via POST `/api/assistant/apply`
+  - [x] `platform_suggestions` table for backlog tracking
+- [x] **Conversation persistence** — full chat history saved to database
+  - [x] `conversations` + `conversation_messages` tables with incremental saves
+  - [x] Auto-create conversation on first message, auto-title from message content
+  - [x] Collapsible conversation panel (280px, left side) with time-grouped list
+  - [x] Pin/unpin, rename (inline edit), delete (with confirmation)
+  - [x] URL sync via `?c=<uuid>` query param for deep-linking
+  - [x] Suggestion states (approved/dismissed) persist across page reloads
+  - [x] 4 API route files: conversations CRUD, messages save, message update
 - [ ] Suggested queries based on current page context
-- [ ] Conversation persistence (save/load chat history)
 
 ---
 
