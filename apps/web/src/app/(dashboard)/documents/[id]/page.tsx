@@ -2,8 +2,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import MainContent from '@/components/layout/main-content'
 import { SeverityMarker } from '@/components/ui/severity-marker'
+import { EvidenceStrength } from '@/components/ui/evidence-strength'
 import { TierBadge } from '@/components/ui/tier-badge'
 import { createClient } from '@/lib/supabase/server'
+import { REDACTION_CATEGORIES } from '@efta/shared'
 import type {
   Document,
   Dataset,
@@ -11,7 +13,10 @@ import type {
   EntityDocument,
   EventDocument,
   Event,
+  EvidenceItem,
+  EvidenceItemStrength,
   Redaction,
+  RedactionCategory,
   Severity,
   Tier,
   DocumentRole,
@@ -89,8 +94,8 @@ export default async function DocumentDetailPage({
   const { id } = await params
   const supabase = await createClient()
 
-  // Fetch document with relations in parallel
-  const [documentResult, entitiesResult, eventsResult, redactionsResult] = await Promise.all([
+  // Fetch document with all relations in parallel
+  const [documentResult, entitiesResult, eventsResult, redactionsResult, evidenceResult] = await Promise.all([
     supabase
       .from('documents')
       .select('*, dataset:datasets(*)')
@@ -109,6 +114,10 @@ export default async function DocumentDetailPage({
       .select('*')
       .eq('document_id', id)
       .order('page_number', { ascending: true }),
+    supabase
+      .from('evidence_items')
+      .select('*')
+      .eq('document_id', id),
   ])
 
   if (documentResult.error || !documentResult.data) {
@@ -119,6 +128,7 @@ export default async function DocumentDetailPage({
   const linkedEntities = (entitiesResult.data ?? []) as EntityDocumentWithEntity[]
   const linkedEvents = (eventsResult.data ?? []) as EventDocumentWithEvent[]
   const redactions = (redactionsResult.data ?? []) as Redaction[]
+  const evidenceItems = (evidenceResult.data ?? []) as EvidenceItem[]
 
   return (
     <MainContent>
@@ -134,12 +144,27 @@ export default async function DocumentDetailPage({
       </Link>
 
       {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-center gap-4 mb-4">
         <h1 className="font-mono text-2xl font-bold text-text-primary">
           {document.bates_number ?? 'Untitled Document'}
         </h1>
         {document.severity && <SeverityMarker severity={document.severity as Severity} />}
       </div>
+
+      {/* Document flags */}
+      {document.flags && document.flags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-8">
+          {document.flags.map((flag) => (
+            <span
+              key={flag}
+              className="text-xs font-medium px-2 py-0.5 rounded bg-critical/10 text-critical uppercase tracking-wider"
+            >
+              {flag.replace(/_/g, ' ')}
+            </span>
+          ))}
+        </div>
+      )}
+      {(!document.flags || document.flags.length === 0) && <div className="mb-4" />}
 
       {/* Metadata grid */}
       <div className="bg-surface border border-border-default rounded-lg p-6 mb-8">
@@ -216,20 +241,27 @@ export default async function DocumentDetailPage({
       {linkedEntities.length > 0 && (
         <section className="mb-8">
           <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
-            Entities in this Document
+            Entities in this Document ({linkedEntities.length})
           </h3>
           <div className="bg-surface border border-border-default rounded-lg divide-y divide-border-default">
             {linkedEntities.map((ed) => (
               <Link
                 key={ed.id}
                 href={`/entities/${ed.entity.id}`}
-                className="flex items-center gap-3 px-5 py-3.5 hover:bg-elevated/50 transition-colors"
+                className="block px-5 py-3.5 hover:bg-elevated/50 transition-colors"
               >
-                <span className="font-display font-medium text-text-primary text-sm">
-                  {ed.entity.name}
-                </span>
-                {ed.entity.tier && <TierBadge tier={ed.entity.tier as Tier} />}
-                <RoleBadge role={ed.role_in_document} />
+                <div className="flex items-center gap-3">
+                  <span className="font-display font-medium text-text-primary text-sm">
+                    {ed.entity.name}
+                  </span>
+                  {ed.entity.tier && <TierBadge tier={ed.entity.tier as Tier} />}
+                  <RoleBadge role={ed.role_in_document} />
+                </div>
+                {ed.excerpt && (
+                  <p className="text-xs text-text-muted mt-1 italic line-clamp-2">
+                    &ldquo;{ed.excerpt}&rdquo;
+                  </p>
+                )}
               </Link>
             ))}
           </div>
@@ -265,6 +297,48 @@ export default async function DocumentDetailPage({
         </section>
       )}
 
+      {/* Evidence Items */}
+      {evidenceItems.length > 0 && (
+        <section className="mb-8">
+          <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
+            Evidence Items ({evidenceItems.length})
+          </h3>
+          <div className="bg-surface border border-border-default rounded-lg divide-y divide-border-default">
+            {evidenceItems.map((item) => (
+              <div key={item.id} className="px-5 py-3.5">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-text-primary leading-relaxed">
+                      {item.description}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3 mt-2">
+                      {item.evidence_type && (
+                        <span className="text-xs font-medium uppercase tracking-wider text-text-muted bg-elevated px-2 py-0.5 rounded">
+                          {item.evidence_type.replace(/_/g, ' ')}
+                        </span>
+                      )}
+                      {item.category && (
+                        <span className="text-xs font-medium text-info bg-info/10 px-2 py-0.5 rounded capitalize">
+                          {item.category}
+                        </span>
+                      )}
+                      {item.date && (
+                        <span className="text-xs text-text-muted">{formatDate(item.date)}</span>
+                      )}
+                    </div>
+                  </div>
+                  {item.strength && (
+                    <div className="shrink-0">
+                      <EvidenceStrength strength={item.strength as EvidenceItemStrength} showLabel />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Redactions */}
       {redactions.length > 0 && (
         <section className="mb-8">
@@ -272,35 +346,59 @@ export default async function DocumentDetailPage({
             Redactions ({redactions.length})
           </h3>
           <div className="bg-surface border border-border-default rounded-lg divide-y divide-border-default">
-            {redactions.map((redaction) => (
-              <div key={redaction.id} className="px-5 py-3.5">
-                <div className="flex items-center gap-3">
-                  {redaction.category && (
-                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-elevated text-text-secondary">
-                      CAT {redaction.category}
-                    </span>
+            {redactions.map((redaction) => {
+              const catConfig = redaction.category
+                ? REDACTION_CATEGORIES[redaction.category as RedactionCategory]
+                : null
+
+              return (
+                <div key={redaction.id} className="px-5 py-3.5">
+                  <div className="flex items-center gap-3">
+                    {redaction.category && catConfig && (
+                      <span
+                        className="text-xs font-bold px-2 py-0.5 rounded"
+                        style={{
+                          color: catConfig.color,
+                          backgroundColor: `${catConfig.color}15`,
+                        }}
+                      >
+                        CAT {redaction.category} &middot; {catConfig.label}
+                      </span>
+                    )}
+                    {redaction.page_number !== null && (
+                      <span className="text-xs text-text-muted font-mono">
+                        Page {redaction.page_number}
+                      </span>
+                    )}
+                    {redaction.is_suspect && (
+                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-critical/10 text-critical">
+                        SUSPECT
+                      </span>
+                    )}
+                    {redaction.assessment && (
+                      <span className="text-xs text-text-muted ml-auto capitalize">
+                        {redaction.assessment.replace(/_/g, ' ')}
+                      </span>
+                    )}
+                  </div>
+                  {redaction.description && (
+                    <p className="text-sm text-text-secondary mt-1.5">{redaction.description}</p>
                   )}
-                  {redaction.page_number !== null && (
-                    <span className="text-xs text-text-muted font-mono">
-                      Page {redaction.page_number}
-                    </span>
-                  )}
-                  {redaction.is_suspect && (
-                    <span className="text-xs font-medium px-2 py-0.5 rounded bg-critical/10 text-critical">
-                      SUSPECT
-                    </span>
-                  )}
-                  {redaction.assessment && (
-                    <span className="text-xs text-text-muted ml-auto capitalize">
-                      {redaction.assessment.replace(/_/g, ' ')}
-                    </span>
+                  {redaction.red_flags && redaction.red_flags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      {redaction.red_flags.map((flag) => (
+                        <span
+                          key={flag}
+                          className="text-xs px-1.5 py-0.5 rounded bg-critical/10 text-critical"
+                        >
+                          {flag.replace(/_/g, ' ')}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
-                {redaction.description && (
-                  <p className="text-sm text-text-secondary mt-1.5">{redaction.description}</p>
-                )}
-              </div>
-            ))}
+              )
+            })}
           </div>
         </section>
       )}
