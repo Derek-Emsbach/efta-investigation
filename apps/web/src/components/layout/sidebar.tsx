@@ -10,11 +10,10 @@ const investigationItems = [
   { label: "Entities", href: "/entities", icon: "users" as const },
   { label: "Documents", href: "/documents", icon: "file-text" as const },
   { label: "Timeline", href: "/timeline", icon: "clock" as const },
+  { label: "Search", href: "/search", icon: "search" as const },
 ];
 
-const adminItems: typeof investigationItems = [
-  // { label: "Search", href: "/search", icon: "search" as const },  // Phase 2
-];
+const adminItems: typeof investigationItems = [];
 
 export default function Sidebar({ userEmail }: SidebarProps) {
   return (
