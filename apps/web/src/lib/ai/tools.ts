@@ -175,7 +175,129 @@ export const ASSISTANT_TOOLS: Anthropic.Tool[] = [
       required: [],
     },
   },
+  {
+    name: 'get_platform_context',
+    description:
+      'Get current platform state: features, database tables, known gaps, and live data statistics. Use this to understand what the platform can do and what it is missing before suggesting improvements.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: 'suggest_connection',
+    description:
+      'Propose a new connection between two entities. The user will see an approval card and can approve or dismiss. Always research first using query_connections and cross_reference before suggesting.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        entity_a_name: { type: 'string', description: 'Name of the first entity' },
+        entity_b_name: { type: 'string', description: 'Name of the second entity' },
+        relationship_type: {
+          type: 'string',
+          description:
+            'Type: employed_by, trafficked_by, represented_by, investigated_by, paid_by, connected_to, family_of, victim_of, attorney_for, hired_by, referred_by, subsidiary_of, owned_by',
+        },
+        evidence_strength: {
+          type: 'string',
+          description: 'Strength: documented, alleged, circumstantial',
+        },
+        description: { type: 'string', description: 'Brief description of this connection' },
+      },
+      required: ['entity_a_name', 'entity_b_name', 'relationship_type', 'evidence_strength', 'description'],
+    },
+  },
+  {
+    name: 'suggest_tier_change',
+    description:
+      'Propose changing an entity tier. Tiers reflect evidence strength (1=convicted through 6=staff). The user will see an approval card. Always research the entity profile first.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        entity_name: { type: 'string', description: 'Name of the entity' },
+        new_tier: { type: 'number', description: 'Proposed new tier (1-6)' },
+        justification: { type: 'string', description: 'Why this tier change is warranted, citing evidence' },
+      },
+      required: ['entity_name', 'new_tier', 'justification'],
+    },
+  },
+  {
+    name: 'suggest_evidence_item',
+    description:
+      'Propose adding a new evidence item to an entity. The user will see an approval card. Always cite the source document.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        entity_name: { type: 'string', description: 'Name of the entity this evidence is about' },
+        bates_number: { type: 'string', description: 'Bates number of the source document (optional)' },
+        evidence_type: {
+          type: 'string',
+          description: 'Type: financial, testimony, physical, digital, forensic, documentary, photographic',
+        },
+        description: { type: 'string', description: 'Description of the evidence' },
+        category: {
+          type: 'string',
+          description: 'Category: primary, corroborating, contradictory, timeline',
+        },
+        strength: {
+          type: 'string',
+          description: 'Strength: strong, moderate, weak',
+        },
+        date: { type: 'string', description: 'Date of the evidence (YYYY-MM-DD, optional)' },
+      },
+      required: ['entity_name', 'evidence_type', 'description', 'category', 'strength'],
+    },
+  },
+  {
+    name: 'suggest_platform_improvement',
+    description:
+      'Propose a platform improvement — a new feature, data to track, tool, investigation direction, data model change, or UX enhancement. Use this when your research reveals gaps in the platform capabilities. The user will see a suggestion card they can save to the backlog or dismiss.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        category: {
+          type: 'string',
+          description: 'Category: feature, tracking, tool, investigation, data_model, ux',
+        },
+        title: { type: 'string', description: 'Short title for this improvement (under 80 chars)' },
+        description: { type: 'string', description: 'What the improvement is and how it would work' },
+        rationale: { type: 'string', description: 'Why this is needed — what research finding prompted this suggestion' },
+        priority: {
+          type: 'string',
+          description: 'Priority: high, medium, low',
+        },
+      },
+      required: ['category', 'title', 'description', 'rationale', 'priority'],
+    },
+  },
 ]
+
+// -------------------------------------------------------------------
+// Runtime Enum Validation Sets
+// -------------------------------------------------------------------
+
+export const RELATIONSHIP_TYPES = new Set([
+  'employed_by', 'trafficked_by', 'represented_by', 'investigated_by',
+  'paid_by', 'connected_to', 'family_of', 'victim_of', 'attorney_for',
+  'hired_by', 'referred_by', 'subsidiary_of', 'owned_by',
+])
+
+export const EVIDENCE_STRENGTHS = new Set(['documented', 'alleged', 'circumstantial'])
+
+export const EVIDENCE_TYPES = new Set([
+  'financial', 'testimony', 'physical', 'digital', 'forensic', 'documentary', 'photographic',
+])
+
+export const EVIDENCE_CATEGORIES = new Set(['primary', 'corroborating', 'contradictory', 'timeline'])
+
+export const EVIDENCE_ITEM_STRENGTHS = new Set(['strong', 'moderate', 'weak'])
+
+export const SUGGESTION_CATEGORIES = new Set([
+  'feature', 'tracking', 'tool', 'investigation', 'data_model', 'ux',
+])
+
+export const SUGGESTION_PRIORITIES = new Set(['high', 'medium', 'low'])
 
 // -------------------------------------------------------------------
 // Tool Execution
@@ -213,6 +335,16 @@ export async function executeTool(
         return await queryConnections(toolInput, supabase)
       case 'cross_reference':
         return await crossReference(toolInput, supabase)
+      case 'get_platform_context':
+        return await getPlatformContext(supabase)
+      case 'suggest_connection':
+        return await suggestConnection(toolInput, supabase)
+      case 'suggest_tier_change':
+        return await suggestTierChange(toolInput, supabase)
+      case 'suggest_evidence_item':
+        return await suggestEvidenceItem(toolInput, supabase)
+      case 'suggest_platform_improvement':
+        return suggestPlatformImprovement(toolInput)
       default:
         return JSON.stringify({ error: `Unknown tool: ${toolName}` })
     }
@@ -828,5 +960,305 @@ async function crossReference(
     entities_found: entities.length,
     top_entities: topEntities,
     focus_entity: entity_name ?? null,
+  })
+}
+
+// -------------------------------------------------------------------
+// Platform Context Tool
+// -------------------------------------------------------------------
+
+async function getPlatformContext(supabase: SupabaseClient): Promise<string> {
+  // Live data statistics
+  const [entities, documents, events, connections, evidence] = await Promise.all([
+    supabase.from('entities').select('id', { count: 'exact', head: true }),
+    supabase.from('documents').select('id', { count: 'exact', head: true }),
+    supabase.from('events').select('id', { count: 'exact', head: true }),
+    supabase.from('entity_connections').select('id', { count: 'exact', head: true }),
+    supabase.from('evidence_items').select('id', { count: 'exact', head: true }),
+  ])
+
+  return safeJson({
+    platform_features: [
+      { page: '/', name: 'Dashboard', description: 'Stats, severity distribution, recent activity, key entities, critical docs' },
+      { page: '/entities', name: 'Entity Browser', description: 'Filterable table of all entities with search, click to profile' },
+      { page: '/entities/[id]', name: 'Entity Profile', description: 'Tabs: Evidence, Timeline, Documents, Connections. Bio, tier badge, stats' },
+      { page: '/documents', name: 'Document Browser', description: 'Filterable table of all documents with search' },
+      { page: '/documents/[id]', name: 'Document Viewer', description: 'Text + PDF modes, forensic metadata, entity panel, redaction panel' },
+      { page: '/timeline', name: 'Timeline', description: 'Vertical timeline grouped by month, filter by type, search' },
+      { page: '/search', name: 'Search', description: 'Full-text + ilike search across entities, documents, events' },
+      { page: '/network', name: 'Network Graph', description: 'D3 force-directed graph with tier/relationship/strength filters, entity search' },
+      { page: '/assistant', name: 'AI Assistant', description: 'This chat interface with database query tools + suggestion capabilities' },
+    ],
+    database_tables: [
+      'entities', 'documents', 'events', 'datasets', 'investigations',
+      'entity_documents', 'entity_events', 'event_documents',
+      'entity_connections', 'evidence_items', 'redactions',
+      'locations', 'entity_sightings', 'processing_queue',
+      'entity_investigations', 'platform_suggestions',
+    ],
+    data_statistics: {
+      entities: entities.count ?? 0,
+      documents: documents.count ?? 0,
+      events: events.count ?? 0,
+      connections: connections.count ?? 0,
+      evidence_items: evidence.count ?? 0,
+    },
+    known_gaps: [
+      'No location tracking or sighting analysis (tables exist but no UI)',
+      'No financial flow visualization',
+      'No document processing pipeline (manual import only)',
+      'No export/reporting capabilities',
+      'No automated analysis reports',
+      'No parallel timeline comparison (side-by-side entity timelines)',
+      'No org chart / hierarchy view (shell companies, ownership)',
+      'No dataset progress tracking page',
+      'Limited search (no highlighting, no relevance scoring)',
+      'No day-view on timeline (click date for daily briefing)',
+      'No cross-references panel on document viewer',
+      'Entity profiles missing: locations tab, mini network graph on connections tab',
+      'No conversation persistence for this assistant (chat resets on page reload)',
+    ],
+    suggestion_tools: [
+      'suggest_connection — propose a new entity connection',
+      'suggest_tier_change — propose a tier reclassification',
+      'suggest_evidence_item — propose a new evidence record',
+      'suggest_platform_improvement — propose a platform feature/tool/tracking improvement',
+    ],
+  })
+}
+
+// -------------------------------------------------------------------
+// Suggestion Tools
+// -------------------------------------------------------------------
+
+async function suggestConnection(
+  input: Record<string, unknown>,
+  supabase: SupabaseClient,
+): Promise<string> {
+  const { entity_a_name, entity_b_name, relationship_type, evidence_strength, description } =
+    input as {
+      entity_a_name: string
+      entity_b_name: string
+      relationship_type: string
+      evidence_strength: string
+      description: string
+    }
+
+  // Validate enums
+  if (!RELATIONSHIP_TYPES.has(relationship_type)) {
+    return JSON.stringify({ error: `Invalid relationship_type: ${relationship_type}. Valid: ${[...RELATIONSHIP_TYPES].join(', ')}` })
+  }
+  if (!EVIDENCE_STRENGTHS.has(evidence_strength)) {
+    return JSON.stringify({ error: `Invalid evidence_strength: ${evidence_strength}. Valid: ${[...EVIDENCE_STRENGTHS].join(', ')}` })
+  }
+
+  // Resolve entity A
+  const { data: entityA } = await supabase
+    .from('entities')
+    .select('id, name, tier, category')
+    .ilike('name', entity_a_name)
+    .limit(1)
+    .single()
+  if (!entityA) return JSON.stringify({ error: `Entity not found: ${entity_a_name}` })
+
+  // Resolve entity B
+  const { data: entityB } = await supabase
+    .from('entities')
+    .select('id, name, tier, category')
+    .ilike('name', entity_b_name)
+    .limit(1)
+    .single()
+  if (!entityB) return JSON.stringify({ error: `Entity not found: ${entity_b_name}` })
+
+  // Check for duplicate (both directions)
+  const { data: existing } = await supabase
+    .from('entity_connections')
+    .select('id')
+    .or(
+      `and(entity_a.eq.${entityA.id},entity_b.eq.${entityB.id}),and(entity_a.eq.${entityB.id},entity_b.eq.${entityA.id})`,
+    )
+    .limit(1)
+  if (existing && existing.length > 0) {
+    return JSON.stringify({ error: `Connection already exists between ${entityA.name} and ${entityB.name}` })
+  }
+
+  return JSON.stringify({
+    __suggestion: {
+      type: 'connection',
+      summary: `Connect ${entityA.name} → ${entityB.name} (${relationship_type}, ${evidence_strength})`,
+      data: {
+        entity_a_id: entityA.id,
+        entity_b_id: entityB.id,
+        relationship_type,
+        evidence_strength,
+        description,
+      },
+      context: {
+        entity_a_name: entityA.name,
+        entity_a_tier: entityA.tier,
+        entity_a_category: entityA.category,
+        entity_b_name: entityB.name,
+        entity_b_tier: entityB.tier,
+        entity_b_category: entityB.category,
+      },
+    },
+  })
+}
+
+async function suggestTierChange(
+  input: Record<string, unknown>,
+  supabase: SupabaseClient,
+): Promise<string> {
+  const { entity_name, new_tier, justification } = input as {
+    entity_name: string
+    new_tier: number
+    justification: string
+  }
+
+  // Validate tier
+  if (!Number.isInteger(new_tier) || new_tier < 1 || new_tier > 6) {
+    return JSON.stringify({ error: `Invalid tier: ${new_tier}. Must be 1-6.` })
+  }
+
+  // Resolve entity
+  const { data: entity } = await supabase
+    .from('entities')
+    .select('id, name, tier, category, tier_justification')
+    .ilike('name', entity_name)
+    .limit(1)
+    .single()
+  if (!entity) return JSON.stringify({ error: `Entity not found: ${entity_name}` })
+
+  if (entity.tier === new_tier) {
+    return JSON.stringify({ error: `${entity.name} is already Tier ${new_tier}` })
+  }
+
+  return JSON.stringify({
+    __suggestion: {
+      type: 'tier_change',
+      summary: `Change ${entity.name} from Tier ${entity.tier} → Tier ${new_tier}`,
+      data: {
+        entity_id: entity.id,
+        new_tier,
+        justification,
+      },
+      context: {
+        entity_name: entity.name,
+        current_tier: entity.tier,
+        current_justification: entity.tier_justification,
+        category: entity.category,
+      },
+    },
+  })
+}
+
+async function suggestEvidenceItem(
+  input: Record<string, unknown>,
+  supabase: SupabaseClient,
+): Promise<string> {
+  const { entity_name, bates_number, evidence_type, description, category, strength, date } =
+    input as {
+      entity_name: string
+      bates_number?: string
+      evidence_type: string
+      description: string
+      category: string
+      strength: string
+      date?: string
+    }
+
+  // Validate enums
+  if (!EVIDENCE_TYPES.has(evidence_type)) {
+    return JSON.stringify({ error: `Invalid evidence_type: ${evidence_type}. Valid: ${[...EVIDENCE_TYPES].join(', ')}` })
+  }
+  if (!EVIDENCE_CATEGORIES.has(category)) {
+    return JSON.stringify({ error: `Invalid category: ${category}. Valid: ${[...EVIDENCE_CATEGORIES].join(', ')}` })
+  }
+  if (!EVIDENCE_ITEM_STRENGTHS.has(strength)) {
+    return JSON.stringify({ error: `Invalid strength: ${strength}. Valid: ${[...EVIDENCE_ITEM_STRENGTHS].join(', ')}` })
+  }
+
+  // Resolve entity
+  const { data: entity } = await supabase
+    .from('entities')
+    .select('id, name, tier, category')
+    .ilike('name', entity_name)
+    .limit(1)
+    .single()
+  if (!entity) return JSON.stringify({ error: `Entity not found: ${entity_name}` })
+
+  // Resolve document if bates provided
+  let documentId: string | null = null
+  let documentTitle: string | null = null
+  if (bates_number) {
+    const { data: doc } = await supabase
+      .from('documents')
+      .select('id, title, bates_number')
+      .eq('bates_number', bates_number)
+      .single()
+    if (!doc) return JSON.stringify({ error: `Document not found: ${bates_number}` })
+    documentId = doc.id
+    documentTitle = doc.title
+  }
+
+  return JSON.stringify({
+    __suggestion: {
+      type: 'evidence',
+      summary: `Add ${evidence_type} evidence for ${entity.name}${bates_number ? ` (from ${bates_number})` : ''}`,
+      data: {
+        entity_id: entity.id,
+        document_id: documentId,
+        evidence_type,
+        description,
+        category,
+        strength,
+        date: date ?? null,
+      },
+      context: {
+        entity_name: entity.name,
+        entity_tier: entity.tier,
+        entity_category: entity.category,
+        document_bates: bates_number ?? null,
+        document_title: documentTitle,
+      },
+    },
+  })
+}
+
+function suggestPlatformImprovement(
+  input: Record<string, unknown>,
+): string {
+  const { category, title, description, rationale, priority } = input as {
+    category: string
+    title: string
+    description: string
+    rationale: string
+    priority: string
+  }
+
+  // Validate enums
+  if (!SUGGESTION_CATEGORIES.has(category)) {
+    return JSON.stringify({ error: `Invalid category: ${category}. Valid: ${[...SUGGESTION_CATEGORIES].join(', ')}` })
+  }
+  if (!SUGGESTION_PRIORITIES.has(priority)) {
+    return JSON.stringify({ error: `Invalid priority: ${priority}. Valid: ${[...SUGGESTION_PRIORITIES].join(', ')}` })
+  }
+
+  return JSON.stringify({
+    __suggestion: {
+      type: 'platform',
+      summary: `[${category}] ${title}`,
+      data: {
+        category,
+        title,
+        description,
+        rationale,
+        priority,
+      },
+      context: {
+        category,
+        priority,
+      },
+    },
   })
 }
