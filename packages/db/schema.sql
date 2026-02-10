@@ -32,7 +32,7 @@ CREATE TABLE datasets (
 -- Investigations (case threads like "Leon Black Prosecution Failure")
 CREATE TABLE investigations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
+  name TEXT NOT NULL UNIQUE,
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'pending')),
   summary TEXT,
   open_questions TEXT[],
@@ -43,7 +43,7 @@ CREATE TABLE investigations (
 -- Entities (persons, organizations, properties, trusts, vehicles)
 CREATE TABLE entities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
+  name TEXT NOT NULL UNIQUE,
   entity_type TEXT NOT NULL CHECK (entity_type IN ('person', 'organization', 'property', 'vehicle', 'trust', 'agency')),
   tier INTEGER CHECK (tier BETWEEN 1 AND 6),
   tier_justification TEXT,

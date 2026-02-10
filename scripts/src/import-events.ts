@@ -4,7 +4,7 @@
  */
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
-import { supabase } from './utils/supabase-admin.js'
+import { supabase, rootDir } from './utils/supabase-admin.js'
 import { extractBatesNumbers } from './utils/markdown-parser.js'
 
 interface EventInsert {
@@ -21,7 +21,7 @@ async function importEvents(
   entityNameToId?: Map<string, string>,
   batesToId?: Map<string, string>,
 ): Promise<void> {
-  const filePath = resolve(process.cwd(), 'docs/investigation/TIMELINE.md')
+  const filePath = resolve(rootDir, 'docs/investigation/TIMELINE.md')
   const content = readFileSync(filePath, 'utf-8')
   const events: EventInsert[] = []
 

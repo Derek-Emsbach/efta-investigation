@@ -9,11 +9,11 @@ const investigationItems = [
   { label: "Dashboard", href: "/", icon: "home" as const },
   { label: "Entities", href: "/entities", icon: "users" as const },
   { label: "Documents", href: "/documents", icon: "file-text" as const },
-  { label: "Timeline", href: "/timeline", icon: "clock" as const },
+  // { label: "Timeline", href: "/timeline", icon: "clock" as const },  // Phase 2
 ];
 
-const adminItems = [
-  { label: "Search", href: "/search", icon: "search" as const },
+const adminItems: typeof investigationItems = [
+  // { label: "Search", href: "/search", icon: "search" as const },  // Phase 2
 ];
 
 export default function Sidebar({ userEmail }: SidebarProps) {
@@ -39,13 +39,15 @@ export default function Sidebar({ userEmail }: SidebarProps) {
           <SidebarNav items={investigationItems} />
         </div>
 
-        {/* Admin section */}
-        <div>
-          <p className="mb-2 px-5 text-xs font-medium uppercase tracking-wider text-text-muted">
-            Admin
-          </p>
-          <SidebarNav items={adminItems} />
-        </div>
+        {/* Admin section — Phase 2 */}
+        {adminItems.length > 0 && (
+          <div>
+            <p className="mb-2 px-5 text-xs font-medium uppercase tracking-wider text-text-muted">
+              Admin
+            </p>
+            <SidebarNav items={adminItems} />
+          </div>
+        )}
       </div>
 
       {/* User section */}

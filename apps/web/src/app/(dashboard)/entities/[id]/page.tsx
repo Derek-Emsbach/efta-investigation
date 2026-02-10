@@ -3,8 +3,18 @@ import { notFound } from 'next/navigation'
 import MainContent from '@/components/layout/main-content'
 import { TierBadge } from '@/components/ui/tier-badge'
 import { StatCard } from '@/components/ui/stat-card'
+import EntityProfileTabs from '@/components/entity/profile-tabs'
 import { createClient } from '@/lib/supabase/server'
-import type { Entity, Tier } from '@efta/shared'
+import type {
+  Entity,
+  EntityDocument,
+  EntityEvent,
+  EntityConnection,
+  EvidenceItem,
+  Document,
+  Event,
+  Tier,
+} from '@efta/shared'
 
 function getInitials(name: string): string {
   return name
@@ -36,12 +46,6 @@ function StatusBadge({ status }: { status: string | null }) {
   )
 }
 
-const TAB_ITEMS = [
-  { key: 'evidence', label: 'Evidence', description: 'documented evidence items linked to this entity' },
-  { key: 'timeline', label: 'Timeline', description: 'timeline events involving this entity' },
-  { key: 'documents', label: 'Documents', description: 'source documents referencing this entity' },
-  { key: 'connections', label: 'Connections', description: 'relationship connections to other entities' },
-] as const
 
 export default async function EntityProfilePage({
   params,
@@ -51,17 +55,15 @@ export default async function EntityProfilePage({
   const { id } = await params
   const supabase = await createClient()
 
-  // Fetch entity and all counts in parallel
-  const [entityResult, docCountResult, eventCountResult, connectionCountResult, evidenceCountResult] =
+  // Fetch entity and all related data in parallel
+  const [entityResult, documentsResult, eventsResult, connectionsAsAResult, connectionsAsBResult, evidenceResult] =
     await Promise.all([
       supabase.from('entities').select('*').eq('id', id).single(),
-      supabase.from('entity_documents').select('*', { count: 'exact', head: true }).eq('entity_id', id),
-      supabase.from('entity_events').select('*', { count: 'exact', head: true }).eq('entity_id', id),
-      supabase
-        .from('entity_connections')
-        .select('*', { count: 'exact', head: true })
-        .or(`entity_a.eq.${id},entity_b.eq.${id}`),
-      supabase.from('evidence_items').select('*', { count: 'exact', head: true }).eq('entity_id', id),
+      supabase.from('entity_documents').select('*, document:documents(*)').eq('entity_id', id),
+      supabase.from('entity_events').select('*, event:events(*)').eq('entity_id', id),
+      supabase.from('entity_connections').select('*, connected_entity:entities!entity_b(*)').eq('entity_a', id),
+      supabase.from('entity_connections').select('*, connected_entity:entities!entity_a(*)').eq('entity_b', id),
+      supabase.from('evidence_items').select('*').eq('entity_id', id),
     ])
 
   if (entityResult.error || !entityResult.data) {
@@ -69,10 +71,26 @@ export default async function EntityProfilePage({
   }
 
   const entity = entityResult.data as Entity
-  const docCount = docCountResult.count ?? 0
-  const eventCount = eventCountResult.count ?? 0
-  const connectionCount = connectionCountResult.count ?? 0
-  const evidenceCount = evidenceCountResult.count ?? 0
+
+  // Merge and prepare related data
+  const documents = (documentsResult.data ?? []) as (EntityDocument & { document: Document })[]
+  const evidenceItems = (evidenceResult.data ?? []) as EvidenceItem[]
+
+  const events = ((eventsResult.data ?? []) as (EntityEvent & { event: Event })[]).sort((a, b) => {
+    const dateA = a.event?.date ?? ''
+    const dateB = b.event?.date ?? ''
+    return dateA.localeCompare(dateB)
+  })
+
+  const connections = [
+    ...((connectionsAsAResult.data ?? []) as (EntityConnection & { connected_entity: Entity })[]),
+    ...((connectionsAsBResult.data ?? []) as (EntityConnection & { connected_entity: Entity })[]),
+  ]
+
+  const docCount = documents.length
+  const eventCount = events.length
+  const connectionCount = connections.length
+  const evidenceCount = evidenceItems.length
 
   return (
     <MainContent>
@@ -145,33 +163,15 @@ export default async function EntityProfilePage({
             </section>
           )}
 
-          {/* Tab placeholder section */}
+          {/* Tabbed detail section */}
           <section>
-            <div className="bg-surface border border-border-default rounded-lg overflow-hidden">
-              {/* Tab headers */}
-              <div className="flex border-b border-border-default">
-                {TAB_ITEMS.map((tab, index) => (
-                  <button
-                    key={tab.key}
-                    className={`px-4 py-3 text-sm font-medium transition-colors ${
-                      index === 0
-                        ? 'text-text-primary border-b-2 border-info'
-                        : 'text-text-muted hover:text-text-secondary'
-                    }`}
-                    disabled
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Tab content placeholder */}
-              <div className="p-6">
-                <p className="text-sm text-text-muted">
-                  Coming in Phase 2 &mdash; This tab will show {TAB_ITEMS[0].description}.
-                </p>
-              </div>
-            </div>
+            <EntityProfileTabs
+              documents={documents}
+              events={events}
+              connections={connections}
+              evidence={evidenceItems}
+              entityId={id}
+            />
           </section>
         </div>
 

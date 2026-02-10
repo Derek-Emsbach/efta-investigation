@@ -5,7 +5,7 @@
  */
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
-import { supabase } from './utils/supabase-admin.js'
+import { supabase, rootDir } from './utils/supabase-admin.js'
 import { extractBatesNumbers, normalizeBatesNumber } from './utils/markdown-parser.js'
 
 interface DocumentContext {
@@ -48,7 +48,7 @@ async function importDocuments(): Promise<Map<string, string>> {
   // Collect all Bates numbers
   for (const file of files) {
     try {
-      const content = readFileSync(resolve(process.cwd(), file), 'utf-8')
+      const content = readFileSync(resolve(rootDir,file), 'utf-8')
       const found = extractBatesNumbers(content)
       found.forEach(b => allBatesNumbers.add(b))
     } catch {
@@ -61,7 +61,7 @@ async function importDocuments(): Promise<Map<string, string>> {
   // Build context from TIMELINE.md
   console.log('Building document context from TIMELINE.md...')
   const timelineContent = readFileSync(
-    resolve(process.cwd(), 'docs/investigation/TIMELINE.md'),
+    resolve(rootDir,'docs/investigation/TIMELINE.md'),
     'utf-8',
   )
 
@@ -120,16 +120,16 @@ async function importDocuments(): Promise<Map<string, string>> {
       document_type: context?.type || null,
       original_date: context?.date || null,
       summary: context?.description || null,
-      significance: context?.significance || null,
       processing_status: 'reviewed',
       classification: context?.significance?.toLowerCase().includes('first') ||
         context?.significance?.toLowerCase().includes('formal') ||
         context?.significance?.toLowerCase().includes('devastating')
         ? 'high'
         : 'medium',
-      metadata: {
+      forensic_metadata: {
         import_source: 'investigation_markdown',
         enriched_from_timeline: !!context,
+        significance: context?.significance || null,
       },
     }
 

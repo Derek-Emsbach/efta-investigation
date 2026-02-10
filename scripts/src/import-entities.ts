@@ -5,7 +5,7 @@
  */
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
-import { supabase } from './utils/supabase-admin.js'
+import { supabase, rootDir } from './utils/supabase-admin.js'
 import { parseMarkdownTable, parseSourceDocs, normalizeStatus } from './utils/markdown-parser.js'
 
 interface EntityInsert {
@@ -21,7 +21,7 @@ interface EntityInsert {
 }
 
 async function importEntities(): Promise<Map<string, string>> {
-  const filePath = resolve(process.cwd(), 'docs/investigation/ENTITIES.md')
+  const filePath = resolve(rootDir, 'docs/investigation/ENTITIES.md')
   const content = readFileSync(filePath, 'utf-8')
   const nameToId = new Map<string, string>()
   const entities: EntityInsert[] = []

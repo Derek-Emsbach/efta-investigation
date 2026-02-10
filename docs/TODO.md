@@ -9,21 +9,20 @@
 **Goal:** Working database with DS12 data loaded, basic web interface, auth, deployed to Vercel.
 
 ### 1.1 Scaffold & Setup
-- [ ] Initialize Turborepo monorepo with pnpm
-  ```
-  npx create-turbo@latest . --package-manager pnpm
-  ```
-- [ ] Create Next.js app at `apps/web`
-  ```
-  pnpm create next-app apps/web --typescript --tailwind --app --src-dir
-  ```
-- [ ] Create `packages/db/` with `schema.sql` and `package.json`
-- [ ] Create `packages/shared/` with TypeScript types matching schema
-- [ ] Create `services/worker/` placeholder with `requirements.txt`
-- [ ] Create `scripts/` directory with placeholder import scripts
-- [ ] Set up `.gitignore` (node_modules, .env*, .next, dist, __pycache__)
-- [ ] Create `.env.local.example` with all required variable names
-- [ ] Initial commit and push to GitHub
+- [x] Initialize Turborepo monorepo with pnpm
+- [x] Create Next.js app at `apps/web` (Next.js 16 + React 19 + Tailwind v4)
+- [x] Create `packages/db/` with `schema.sql` and `package.json`
+- [x] Create `packages/shared/` with TypeScript types matching schema
+  - Types: `database.ts` (all 15 table interfaces + union literal types for CHECK constraints)
+  - Constants: `tiers.ts` (TIER_CONFIG), `severity.ts` (SEVERITY_CONFIG + REDACTION_CATEGORIES)
+- [x] Create `services/worker/` placeholder with `requirements.txt`
+- [x] Create `scripts/` directory with import scripts package
+- [x] Set up `.gitignore` (node_modules, .env*, .next, dist, __pycache__)
+- [x] Create `.env.local.example` with all required variable names
+- [x] Initial commit
+- [ ] Push to GitHub
+
+> **Note:** Using Next.js 16 (not 14) with React 19 and Tailwind v4 (CSS-based config, not tailwind.config.ts).
 
 ### 1.2 Database Setup
 - [ ] Create Supabase project
@@ -35,76 +34,102 @@
 - [ ] Set up full-text search triggers on entities and documents
 - [ ] Test queries in Supabase dashboard
 
+> **Blocked:** User needs to create Supabase project first. Schema includes RLS, indexes, and FTS triggers already.
+
 ### 1.3 Supabase Client Integration
-- [ ] Install `@supabase/supabase-js` and `@supabase/ssr`
-- [ ] Create `lib/supabase/client.ts` (browser client)
-- [ ] Create `lib/supabase/server.ts` (server component client)
-- [ ] Create `lib/supabase/middleware.ts` (auth middleware)
+- [x] Install `@supabase/supabase-js` and `@supabase/ssr`
+- [x] Create `lib/supabase/client.ts` (browser client — `createBrowserClient`)
+- [x] Create `lib/supabase/server.ts` (server component client — `createServerClient` with cookies)
+- [x] Create `lib/supabase/middleware.ts` (auth middleware — session refresh + route protection)
+- [x] Create `lib/supabase/admin.ts` (service role client — bypasses RLS for scripts)
+- [x] Create `middleware.ts` (Next.js middleware wiring)
 - [ ] Set up environment variables in `.env.local`
 - [ ] Test connection: query entities table from a server component
+
+> **Note:** 4 client variants created. `.env.local` needs Supabase project credentials.
 
 ### 1.4 Cloudflare R2 Setup
 - [ ] Create R2 bucket: `efta-documents`
 - [ ] Generate API token with read/write
-- [ ] Create `lib/r2/client.ts` with upload/download helpers
+- [x] Create `lib/r2/client.ts` with upload/download/delete helpers (S3-compatible via `@aws-sdk/client-s3`)
 - [ ] Set up CORS policy for Vercel domain
 - [ ] Test: upload and retrieve a test file
 
+> **Blocked:** User needs to create R2 bucket and API token. Client code is written.
+
 ### 1.5 Auth
-- [ ] Set up Supabase Auth (email/password)
+- [ ] Set up Supabase Auth (email/password) — requires Supabase project
 - [ ] Create admin user in Supabase dashboard
-- [ ] Build `/login` page with Supabase Auth UI
-- [ ] Create auth middleware to protect `/admin/*` routes
+- [x] Build `/login` page (dark editorial design, email+password, `signInWithPassword()`)
+- [x] Create auth middleware to protect all routes except `/login`
+- [x] Build logout button component (`signOut()` + redirect)
 - [ ] Test login/logout flow
 
 ### 1.6 Base Layout & Design System
-- [ ] Install fonts: Playfair Display (display), IBM Plex Sans (body)
-- [ ] Set up Tailwind config with custom colors, fonts, spacing
-- [ ] Create base layout: dark sidebar nav + main content area
-- [ ] Build UI components: (reference `docs/reference/DESIGN_SYSTEM.md`)
-  - [ ] TierBadge (color-coded entity tier chip)
-  - [ ] SeverityMarker (EXTREME/CRITICAL/HIGH/ROUTINE)
-  - [ ] EvidenceStrength (filled dots indicator)
-  - [ ] DocumentCard (bates number, date, type, severity)
-  - [ ] EntityCard (name, tier, category, status)
-  - [ ] DataTable (sortable, filterable table component)
-  - [ ] SearchInput
-  - [ ] PageHeader
-  - [ ] StatCard (for dashboard metrics)
+- [x] Install fonts: Playfair Display (display), IBM Plex Sans (body), IBM Plex Mono (metadata)
+- [x] Set up Tailwind v4 theme in `globals.css` (`@theme inline {}`) with custom colors, fonts, animations
+- [x] Create base layout: 240px fixed dark sidebar + main content area
+- [x] Build UI components:
+  - [x] TierBadge (color-coded entity tier chip — "TIER 1 · CONVICTED")
+  - [x] SeverityMarker (colored dot + label, pulse on extreme_critical)
+  - [x] EvidenceStrength (3-dot fill indicator: ●●●, ●●○, ●○○)
+  - [x] DocumentCard (severity border, bates# mono, title, metadata)
+  - [x] EntityCard (avatar initials, name Playfair, tier badge, stats)
+  - [x] DataTable (dark header, alternating rows, sortable, paginated — Client Component)
+  - [x] SearchInput (debounced with search icon)
+  - [x] PageHeader (Playfair title + subtitle + action slot)
+  - [x] StatCard (metric card for dashboard)
+  - [x] FilterBar (horizontal dropdown filter row)
+  - [x] Skeleton (shimmer loading placeholder)
+
+> **Note:** Tailwind v4 uses CSS-based config, not `tailwind.config.ts`. Theme defined in `globals.css` with `@theme inline {}`.
 
 ### 1.7 Core Pages (Basic Versions)
-- [ ] `/` — Dashboard
-  - [ ] Investigation stats (total entities, documents, events, datasets)
-  - [ ] Dataset progress bars
-  - [ ] Recent findings feed (latest documents/events added)
-  - [ ] Open questions list
-- [ ] `/entities` — Entity Browser
-  - [ ] DataTable with columns: Name, Tier, Category, Status, Documents Count
-  - [ ] Filter by: tier, category, dataset
-  - [ ] Search by name
-  - [ ] Click row → navigate to `/entities/[id]`
-- [ ] `/documents` — Document Browser
-  - [ ] DataTable with columns: Bates #, Dataset, Type, Date, Severity, Pages
-  - [ ] Filter by: dataset, type, severity, processing status
-  - [ ] Search by bates number or content
-  - [ ] Click row → navigate to `/documents/[id]`
-- [ ] `/entities/[id]` — Entity Profile (skeleton)
-  - [ ] Name, tier badge, category, status, bio
-  - [ ] Placeholder tabs: Evidence, Timeline, Documents, Connections
-- [ ] `/documents/[id]` — Document Detail (skeleton)
-  - [ ] Metadata display
-  - [ ] Placeholder for PDF viewer
-  - [ ] Linked entities list
+- [x] `/` — Dashboard (Server Component)
+  - [x] Investigation stats (total entities, documents, events, datasets)
+  - [x] Tier distribution with colored badges
+  - [x] Dataset progress (DS12: 137/152 reviewed)
+  - [x] Open questions list
+- [x] `/entities` — Entity Browser (Client Component)
+  - [x] DataTable with columns: Name, Tier, Category, Status, Doc Count, Event Count
+  - [x] Filter by: tier, category, entity_type
+  - [x] Search by name (FTS via API)
+  - [x] Click row → navigate to `/entities/[id]`
+- [x] `/documents` — Document Browser (Client Component)
+  - [x] DataTable with columns: Bates #, Dataset, Type, Date, Severity, Pages
+  - [x] Filter by: dataset, type, severity, status
+  - [x] Search by bates number or content (FTS via API)
+  - [x] Click row → navigate to `/documents/[id]`
+- [x] `/entities/[id]` — Entity Profile (Server Component)
+  - [x] Hero: name (Playfair), tier badge, category, status, avatar initials
+  - [x] Stats row: doc count, evidence count, event count, connection count
+  - [x] Tab bar placeholders: Evidence, Timeline, Documents, Connections
+  - [x] Quick facts sidebar: datasets, aliases, investigations
+- [x] `/documents/[id]` — Document Detail (Server Component)
+  - [x] Bates number (large, mono), severity marker
+  - [x] Metadata grid: dataset, type, date, pages, classification, status
+  - [x] Summary text
+  - [x] PDF viewer placeholder ("Coming in Phase 2")
+  - [x] Linked entities list (clickable)
+  - [x] Source events list
 
 ### 1.8 Data Import
-- [ ] Create `scripts/import-ds12-entities.ts` — reads entity data, inserts to Supabase
-- [ ] Create `scripts/import-ds12-documents.ts` — reads document data, inserts to Supabase
-- [ ] Create `scripts/import-ds12-events.ts` — reads timeline data, inserts to Supabase
-- [ ] Create `scripts/import-ds12-connections.ts` — reads connections, inserts junction tables
-- [ ] Run all import scripts
+- [x] Create `scripts/src/seed-dataset.ts` — seeds DS12 dataset + Leon Black investigation
+- [x] Create `scripts/src/import-entities.ts` — parses `ENTITIES.md` (3 tier sections, ~51 entities)
+- [x] Create `scripts/src/import-documents.ts` — extracts Bates numbers from all MDs, enriches from TIMELINE.md (~80 docs)
+- [x] Create `scripts/src/import-events.ts` — parses `TIMELINE.md` + creates event_documents/entity_events junctions (~32 events)
+- [x] Create `scripts/src/import-connections.ts` — 15 curated connections with source citations
+- [x] Create `scripts/src/import-all.ts` — master script runs all 5 in dependency order
+- [x] Create `scripts/src/utils/markdown-parser.ts` — shared parsing utilities
+- [ ] Run all import scripts (`pnpm --filter @efta/scripts import:all`)
 - [ ] Verify data appears correctly in web UI
 
+> **Blocked:** Scripts written and type-checked, but need Supabase project to run against.
+
 ### 1.9 Deploy
+- [x] Configure Vercel build settings (transpilePackages, build commands)
+- [x] Verify `pnpm build` succeeds locally (all 12 routes compile)
+- [ ] Push to GitHub
 - [ ] Connect repo to Vercel
 - [ ] Set environment variables in Vercel dashboard
 - [ ] Deploy and verify live site
@@ -189,13 +214,13 @@
 - [ ] Click any result → navigate to detail page
 
 ### 2.5 API Routes
-- [ ] `GET /api/entities` — list with filters, pagination, search
-- [ ] `GET /api/entities/[id]` — full entity with relations
-- [ ] `GET /api/documents` — list with filters, pagination, search
-- [ ] `GET /api/documents/[id]` — full document with relations
+- [x] `GET /api/entities` — list with filters, pagination, FTS search *(built in Phase 1)*
+- [x] `GET /api/entities/[id]` — full entity with relations (docs, events, connections, evidence) *(built in Phase 1)*
+- [x] `GET /api/documents` — list with filters, pagination, FTS search *(built in Phase 1)*
+- [x] `GET /api/documents/[id]` — full document with relations (entities, redactions, evidence, events) *(built in Phase 1)*
 - [ ] `GET /api/events` — list with filters, pagination
 - [ ] `GET /api/search` — unified search across all types
-- [ ] `GET /api/stats` — dashboard statistics
+- [x] `GET /api/stats` — dashboard statistics *(built in Phase 1)*
 
 ---
 
