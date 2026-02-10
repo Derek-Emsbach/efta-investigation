@@ -243,8 +243,12 @@
   - [x] Zoom and pan
   - [x] Hover to highlight connected edges + fade unconnected nodes
   - [x] Tooltip with tier badge + category
-  - [ ] Filter by tier, relationship type, time period
-  - [ ] Search to highlight specific entity
+  - [x] Filter by tier (clickable legend + checkbox panel)
+  - [x] Filter by relationship type (checkbox panel)
+  - [x] Filter by evidence strength (documented/alleged/circumstantial)
+  - [x] Search to highlight specific entity (autocomplete dropdown + zoom-to-node)
+  - [x] Quick filters: "High-risk only", "Documented only", "Reset all"
+  - [x] Stats show filtered/total counts
   - [ ] "Find path between" — highlight shortest connection path between two entities
 - [ ] **Clusters:** automatic grouping by relationship density
 

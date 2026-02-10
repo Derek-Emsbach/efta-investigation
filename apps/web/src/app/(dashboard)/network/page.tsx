@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import * as d3 from 'd3'
 import MainContent from '@/components/layout/main-content'
@@ -64,6 +64,22 @@ const STRENGTH_OPACITY: Record<string, number> = {
   circumstantial: 0.3,
 }
 
+const RELATIONSHIP_LABELS: Record<string, string> = {
+  employed_by: 'Employed by',
+  trafficked_by: 'Trafficked by',
+  represented_by: 'Represented by',
+  investigated_by: 'Investigated by',
+  paid_by: 'Paid by',
+  connected_to: 'Connected to',
+  family_of: 'Family of',
+  victim_of: 'Victim of',
+  attorney_for: 'Attorney for',
+  hired_by: 'Hired by',
+  referred_by: 'Referred by',
+  subsidiary_of: 'Subsidiary of',
+  owned_by: 'Owned by',
+}
+
 // -------------------------------------------------------------------
 // Page
 // -------------------------------------------------------------------
@@ -76,6 +92,24 @@ export default function NetworkPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null)
   const [dimensions, setDimensions] = useState({ width: 900, height: 600 })
+
+  // Filter state
+  const [activeTiers, setActiveTiers] = useState<Set<number>>(new Set([1, 2, 3, 4, 5, 6]))
+  const [activeRelationships, setActiveRelationships] = useState<Set<string>>(new Set())
+  const [activeStrengths, setActiveStrengths] = useState<Set<string>>(
+    new Set(['documented', 'alleged', 'circumstantial']),
+  )
+  const [searchQuery, setSearchQuery] = useState('')
+  const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null)
+  const [showFilters, setShowFilters] = useState(false)
+
+  // Initialize relationship filter options from data
+  useEffect(() => {
+    if (data && activeRelationships.size === 0) {
+      const types = new Set(data.edges.map((e) => e.relationship_type))
+      setActiveRelationships(types)
+    }
+  }, [data, activeRelationships.size])
 
   // Fetch graph data
   useEffect(() => {
@@ -109,9 +143,125 @@ export default function NetworkPage() {
     return () => observer.disconnect()
   }, [])
 
+  // Derive relationship types from data for filter UI
+  const relationshipTypes = useMemo(() => {
+    if (!data) return []
+    const types = new Set(data.edges.map((e) => e.relationship_type))
+    return Array.from(types).sort()
+  }, [data])
+
+  // Derive tier counts from data for filter UI
+  const tierCounts = useMemo(() => {
+    if (!data) return new Map<number, number>()
+    const counts = new Map<number, number>()
+    for (const node of data.nodes) {
+      const tier = node.tier ?? 0
+      counts.set(tier, (counts.get(tier) ?? 0) + 1)
+    }
+    return counts
+  }, [data])
+
+  // Client-side filtered data
+  const filteredData = useMemo(() => {
+    if (!data) return null
+
+    // Filter nodes by tier
+    const filteredNodes = data.nodes.filter((n) => activeTiers.has(n.tier ?? 0))
+    const nodeIds = new Set(filteredNodes.map((n) => n.id))
+
+    // Filter edges: both endpoints must be visible, relationship type active, strength active
+    const filteredEdges = data.edges.filter((e) => {
+      if (!nodeIds.has(e.entity_a) || !nodeIds.has(e.entity_b)) return false
+      if (!activeRelationships.has(e.relationship_type)) return false
+      if (!activeStrengths.has(e.evidence_strength ?? 'circumstantial')) return false
+      return true
+    })
+
+    // Re-filter nodes: only keep those with at least one visible edge
+    const connectedIds = new Set<string>()
+    for (const e of filteredEdges) {
+      connectedIds.add(e.entity_a)
+      connectedIds.add(e.entity_b)
+    }
+    const visibleNodes = filteredNodes.filter((n) => connectedIds.has(n.id))
+
+    return { nodes: visibleNodes, edges: filteredEdges }
+  }, [data, activeTiers, activeRelationships, activeStrengths])
+
+  // Search matches
+  const searchMatches = useMemo(() => {
+    if (!searchQuery.trim() || !data) return []
+    const q = searchQuery.toLowerCase()
+    return data.nodes
+      .filter((n) => n.name.toLowerCase().includes(q))
+      .slice(0, 8)
+  }, [searchQuery, data])
+
+  // Handle search selection
+  const handleSearchSelect = useCallback((nodeId: string) => {
+    setHighlightedNodeId(nodeId)
+    setSearchQuery('')
+  }, [])
+
+  const clearHighlight = useCallback(() => {
+    setHighlightedNodeId(null)
+  }, [])
+
+  // Toggle helpers
+  const toggleTier = useCallback((tier: number) => {
+    setActiveTiers((prev) => {
+      const next = new Set(prev)
+      if (next.has(tier)) {
+        next.delete(tier)
+      } else {
+        next.add(tier)
+      }
+      return next
+    })
+  }, [])
+
+  const toggleRelationship = useCallback((type: string) => {
+    setActiveRelationships((prev) => {
+      const next = new Set(prev)
+      if (next.has(type)) {
+        next.delete(type)
+      } else {
+        next.add(type)
+      }
+      return next
+    })
+  }, [])
+
+  const toggleStrength = useCallback((strength: string) => {
+    setActiveStrengths((prev) => {
+      const next = new Set(prev)
+      if (next.has(strength)) {
+        next.delete(strength)
+      } else {
+        next.add(strength)
+      }
+      return next
+    })
+  }, [])
+
+  const selectAllTiers = useCallback(() => {
+    setActiveTiers(new Set([1, 2, 3, 4, 5, 6]))
+  }, [])
+
+  const selectAllRelationships = useCallback(() => {
+    if (data) {
+      setActiveRelationships(new Set(data.edges.map((e) => e.relationship_type)))
+    }
+  }, [data])
+
   // D3 force simulation
   useEffect(() => {
-    if (!data || !svgRef.current || data.nodes.length === 0) return
+    if (!filteredData || !svgRef.current || filteredData.nodes.length === 0) {
+      if (svgRef.current) {
+        d3.select(svgRef.current).selectAll('*').remove()
+      }
+      return
+    }
 
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
@@ -120,13 +270,13 @@ export default function NetworkPage() {
 
     // Compute node degree for sizing
     const degreeMap = new Map<string, number>()
-    for (const edge of data.edges) {
+    for (const edge of filteredData.edges) {
       degreeMap.set(edge.entity_a, (degreeMap.get(edge.entity_a) ?? 0) + 1)
       degreeMap.set(edge.entity_b, (degreeMap.get(edge.entity_b) ?? 0) + 1)
     }
 
-    const nodes: GraphNode[] = data.nodes.map((n) => ({ ...n }))
-    const edges: GraphEdge[] = data.edges.map((e) => ({
+    const nodes: GraphNode[] = filteredData.nodes.map((n) => ({ ...n }))
+    const edges: GraphEdge[] = filteredData.edges.map((e) => ({
       ...e,
       source: e.entity_a,
       target: e.entity_b,
@@ -176,7 +326,7 @@ export default function NetworkPage() {
       .attr('text-anchor', 'middle')
       .attr('dy', -4)
       .style('pointer-events', 'none')
-      .style('opacity', 0) // hidden by default, shown on hover
+      .style('opacity', 0)
 
     // Draw nodes
     const node = g.append('g')
@@ -185,9 +335,26 @@ export default function NetworkPage() {
       .join('circle')
       .attr('r', (d) => getNodeRadius(degreeMap.get(d.id) ?? 0))
       .attr('fill', (d) => TIER_COLORS[d.tier ?? 0] ?? DEFAULT_COLOR)
-      .attr('stroke', '#0A0E17')
-      .attr('stroke-width', 2)
+      .attr('stroke', (d) => d.id === highlightedNodeId ? '#FFFFFF' : '#0A0E17')
+      .attr('stroke-width', (d) => d.id === highlightedNodeId ? 3 : 2)
       .style('cursor', 'pointer')
+
+    // Highlight ring for searched node
+    if (highlightedNodeId) {
+      const highlightNode = nodes.find((n) => n.id === highlightedNodeId)
+      if (highlightNode) {
+        g.append('g')
+          .append('circle')
+          .datum(highlightNode)
+          .attr('r', getNodeRadius(degreeMap.get(highlightNode.id) ?? 0) + 6)
+          .attr('fill', 'none')
+          .attr('stroke', '#3B82F6')
+          .attr('stroke-width', 2.5)
+          .attr('stroke-dasharray', '4,3')
+          .attr('class', 'highlight-ring')
+          .style('pointer-events', 'none')
+      }
+    }
 
     // Draw labels
     const label = g.append('g')
@@ -195,9 +362,10 @@ export default function NetworkPage() {
       .data(nodes)
       .join('text')
       .text((d) => truncateName(d.name))
-      .attr('font-size', '10px')
+      .attr('font-size', (d) => d.id === highlightedNodeId ? '12px' : '10px')
+      .attr('font-weight', (d) => d.id === highlightedNodeId ? '600' : 'normal')
       .attr('font-family', 'var(--font-body)')
-      .attr('fill', '#F9FAFB')
+      .attr('fill', (d) => d.id === highlightedNodeId ? '#FFFFFF' : '#F9FAFB')
       .attr('text-anchor', 'middle')
       .attr('dy', (d) => getNodeRadius(degreeMap.get(d.id) ?? 0) + 14)
       .style('pointer-events', 'none')
@@ -225,7 +393,6 @@ export default function NetworkPage() {
     node
       .on('mouseover', (event, d) => {
         setHoveredNode(d)
-        // Highlight connected edges
         const connectedNodeIds = new Set<string>()
         connectedNodeIds.add(d.id)
 
@@ -251,17 +418,14 @@ export default function NetworkPage() {
             return src === d.id || tgt === d.id ? 2.5 : 1.5
           })
 
-        // Show edge labels for connected edges
         linkLabel.style('opacity', (e) => {
           const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
           const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
           return src === d.id || tgt === d.id ? 1 : 0
         })
 
-        node
-          .attr('opacity', (n) => connectedNodeIds.has(n.id) ? 1 : 0.2)
-        label
-          .attr('opacity', (n) => connectedNodeIds.has(n.id) ? 1 : 0.15)
+        node.attr('opacity', (n) => connectedNodeIds.has(n.id) ? 1 : 0.2)
+        label.attr('opacity', (n) => connectedNodeIds.has(n.id) ? 1 : 0.15)
       })
       .on('mouseout', () => {
         setHoveredNode(null)
@@ -296,16 +460,39 @@ export default function NetworkPage() {
       label
         .attr('x', (d) => d.x ?? 0)
         .attr('y', (d) => d.y ?? 0)
+
+      // Update highlight ring position
+      svg.select('.highlight-ring')
+        .attr('cx', (d) => (d as GraphNode).x ?? 0)
+        .attr('cy', (d) => (d as GraphNode).y ?? 0)
     })
+
+    // If highlighted node exists, zoom to it after simulation settles
+    if (highlightedNodeId) {
+      simulation.on('end', () => {
+        const hn = nodes.find((n) => n.id === highlightedNodeId)
+        if (hn && hn.x != null && hn.y != null) {
+          const scale = 1.8
+          const tx = width / 2 - hn.x * scale
+          const ty = height / 2 - hn.y * scale
+          svg.transition()
+            .duration(750)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity.translate(tx, ty).scale(scale),
+            )
+        }
+      })
+    }
 
     return () => {
       simulation.stop()
     }
-  }, [data, dimensions, router])
+  }, [filteredData, dimensions, router, highlightedNodeId])
 
   return (
     <MainContent>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="font-display text-2xl lg:text-3xl font-bold text-text-primary">
             Network Graph
@@ -314,12 +501,293 @@ export default function NetworkPage() {
             Entity connections &mdash; hover to highlight, click to navigate, drag to rearrange
           </p>
         </div>
+
+        {/* Search + filter toggle */}
+        <div className="flex items-center gap-2">
+          {/* Search */}
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                if (!e.target.value.trim()) setHighlightedNodeId(null)
+              }}
+              placeholder="Find entity..."
+              className="w-48 bg-elevated border border-border-default rounded-lg px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-info focus:outline-none"
+            />
+            <svg
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted pointer-events-none"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+
+            {/* Search dropdown */}
+            {searchQuery.trim() && searchMatches.length > 0 && (
+              <div className="absolute top-full mt-1 right-0 w-64 bg-elevated border border-border-default rounded-lg shadow-lg z-50 overflow-hidden">
+                {searchMatches.map((match) => (
+                  <button
+                    key={match.id}
+                    onClick={() => handleSearchSelect(match.id)}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
+                  >
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      style={{ backgroundColor: TIER_COLORS[match.tier ?? 0] ?? DEFAULT_COLOR }}
+                    />
+                    <span className="truncate">{match.name}</span>
+                    {match.tier && (
+                      <span className="text-xs text-text-muted ml-auto shrink-0">T{match.tier}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {searchQuery.trim() && searchMatches.length === 0 && (
+              <div className="absolute top-full mt-1 right-0 w-64 bg-elevated border border-border-default rounded-lg shadow-lg z-50 px-3 py-2">
+                <p className="text-xs text-text-muted">No entities found</p>
+              </div>
+            )}
+          </div>
+
+          {/* Highlighted node indicator */}
+          {highlightedNodeId && data && (
+            <button
+              onClick={clearHighlight}
+              className="flex items-center gap-1.5 bg-info/10 border border-info/30 rounded-lg px-2.5 py-1.5 text-xs text-info hover:bg-info/20 transition-colors"
+            >
+              <span className="font-medium">
+                {data.nodes.find((n) => n.id === highlightedNodeId)?.name ?? 'Entity'}
+              </span>
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+
+          {/* Filter toggle */}
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors ${
+              showFilters
+                ? 'bg-info/10 text-info border border-info/30'
+                : 'bg-elevated border border-border-default text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+            </svg>
+            Filters
+            {(activeTiers.size < 6 || activeStrengths.size < 3 || (data && activeRelationships.size < new Set(data.edges.map((e) => e.relationship_type)).size)) && (
+              <span className="w-1.5 h-1.5 rounded-full bg-info" />
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Legend */}
+      {/* Filter panel */}
+      {showFilters && (
+        <div className="bg-surface border border-border-default rounded-lg p-4 mb-4 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Tier filters */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                  Entity Tiers
+                </p>
+                <button
+                  onClick={selectAllTiers}
+                  className="text-[10px] text-info hover:text-info/80 transition-colors"
+                >
+                  Select all
+                </button>
+              </div>
+              <div className="space-y-1.5">
+                {([1, 2, 3, 4, 5, 6] as const).map((tier) => (
+                  <label
+                    key={tier}
+                    className="flex items-center gap-2 cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={activeTiers.has(tier)}
+                      onChange={() => toggleTier(tier)}
+                      className="sr-only"
+                    />
+                    <span
+                      className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${
+                        activeTiers.has(tier)
+                          ? 'border-transparent'
+                          : 'border-border-default'
+                      }`}
+                      style={{
+                        backgroundColor: activeTiers.has(tier) ? TIER_COLORS[tier] : 'transparent',
+                      }}
+                    >
+                      {activeTiers.has(tier) && (
+                        <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors">
+                      T{tier}: {TIER_LABELS[tier]}
+                    </span>
+                    <span className="text-[10px] text-text-muted ml-auto">
+                      {tierCounts.get(tier) ?? 0}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Relationship type filters */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                  Relationship Types
+                </p>
+                <button
+                  onClick={selectAllRelationships}
+                  className="text-[10px] text-info hover:text-info/80 transition-colors"
+                >
+                  Select all
+                </button>
+              </div>
+              <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                {relationshipTypes.map((type) => (
+                  <label
+                    key={type}
+                    className="flex items-center gap-2 cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={activeRelationships.has(type)}
+                      onChange={() => toggleRelationship(type)}
+                      className="sr-only"
+                    />
+                    <span
+                      className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${
+                        activeRelationships.has(type)
+                          ? 'bg-info border-info'
+                          : 'border-border-default'
+                      }`}
+                    >
+                      {activeRelationships.has(type) && (
+                        <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors capitalize">
+                      {RELATIONSHIP_LABELS[type] ?? formatRelationship(type)}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Evidence strength filters */}
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-2">
+                Evidence Strength
+              </p>
+              <div className="space-y-1.5">
+                {(['documented', 'alleged', 'circumstantial'] as const).map((strength) => (
+                  <label
+                    key={strength}
+                    className="flex items-center gap-2 cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={activeStrengths.has(strength)}
+                      onChange={() => toggleStrength(strength)}
+                      className="sr-only"
+                    />
+                    <span
+                      className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${
+                        activeStrengths.has(strength)
+                          ? 'bg-info border-info'
+                          : 'border-border-default'
+                      }`}
+                    >
+                      {activeStrengths.has(strength) && (
+                        <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors capitalize">
+                      {strength}
+                    </span>
+                    <span
+                      className="ml-auto w-8 h-0.5 rounded"
+                      style={{
+                        backgroundColor: '#374151',
+                        opacity: STRENGTH_OPACITY[strength],
+                      }}
+                    />
+                  </label>
+                ))}
+              </div>
+
+              {/* Quick filter actions */}
+              <div className="mt-4 pt-3 border-t border-border-default">
+                <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-2">
+                  Quick Filters
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => {
+                      setActiveTiers(new Set([1, 2, 3]))
+                      setActiveStrengths(new Set(['documented', 'alleged', 'circumstantial']))
+                    }}
+                    className="text-[11px] px-2 py-1 rounded bg-elevated border border-border-default text-text-muted hover:text-text-secondary hover:border-border-default/80 transition-colors"
+                  >
+                    High-risk only
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveStrengths(new Set(['documented']))
+                      setActiveTiers(new Set([1, 2, 3, 4, 5, 6]))
+                    }}
+                    className="text-[11px] px-2 py-1 rounded bg-elevated border border-border-default text-text-muted hover:text-text-secondary hover:border-border-default/80 transition-colors"
+                  >
+                    Documented only
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTiers(new Set([1, 2, 3, 4, 5, 6]))
+                      setActiveStrengths(new Set(['documented', 'alleged', 'circumstantial']))
+                      if (data) setActiveRelationships(new Set(data.edges.map((e) => e.relationship_type)))
+                    }}
+                    className="text-[11px] px-2 py-1 rounded bg-elevated border border-border-default text-text-muted hover:text-text-secondary hover:border-border-default/80 transition-colors"
+                  >
+                    Reset all
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tier legend (compact, always visible — clickable to toggle) */}
       <div className="flex flex-wrap gap-4 mb-4">
         {([1, 2, 3, 4, 5, 6] as const).map((tier) => (
-          <div key={tier} className="flex items-center gap-1.5">
+          <button
+            key={tier}
+            onClick={() => toggleTier(tier)}
+            className={`flex items-center gap-1.5 transition-opacity ${
+              activeTiers.has(tier) ? 'opacity-100' : 'opacity-30'
+            }`}
+          >
             <span
               className="w-3 h-3 rounded-full"
               style={{ backgroundColor: TIER_COLORS[tier] }}
@@ -327,7 +795,7 @@ export default function NetworkPage() {
             <span className="text-xs text-text-muted">
               T{tier}: {TIER_LABELS[tier]}
             </span>
-          </div>
+          </button>
         ))}
       </div>
 
@@ -339,14 +807,30 @@ export default function NetworkPage() {
       )}
 
       {/* Empty */}
-      {!isLoading && data && data.nodes.length === 0 && (
+      {!isLoading && filteredData && filteredData.nodes.length === 0 && (
         <div className="bg-surface border border-border-default rounded-lg p-16 text-center">
-          <p className="text-sm text-text-muted">No connections found to visualize.</p>
+          <p className="text-sm text-text-muted">
+            {data && data.nodes.length > 0
+              ? 'No connections match the current filters. Try adjusting your criteria.'
+              : 'No connections found to visualize.'}
+          </p>
+          {data && data.nodes.length > 0 && (
+            <button
+              onClick={() => {
+                setActiveTiers(new Set([1, 2, 3, 4, 5, 6]))
+                setActiveStrengths(new Set(['documented', 'alleged', 'circumstantial']))
+                if (data) setActiveRelationships(new Set(data.edges.map((e) => e.relationship_type)))
+              }}
+              className="mt-3 text-xs text-info hover:text-info/80 transition-colors"
+            >
+              Reset filters
+            </button>
+          )}
         </div>
       )}
 
       {/* Graph */}
-      {!isLoading && data && data.nodes.length > 0 && (
+      {!isLoading && filteredData && filteredData.nodes.length > 0 && (
         <div
           ref={containerRef}
           className="bg-surface border border-border-default rounded-lg overflow-hidden relative"
@@ -390,13 +874,21 @@ export default function NetworkPage() {
       )}
 
       {/* Stats */}
-      {!isLoading && data && data.nodes.length > 0 && (
+      {!isLoading && filteredData && filteredData.nodes.length > 0 && (
         <div className="flex gap-6 mt-4">
           <p className="text-xs text-text-muted">
-            <span className="text-text-secondary font-medium">{data.nodes.length}</span> entities
+            <span className="text-text-secondary font-medium">{filteredData.nodes.length}</span>
+            {data && filteredData.nodes.length < data.nodes.length
+              ? ` / ${data.nodes.length}`
+              : ''}{' '}
+            entities
           </p>
           <p className="text-xs text-text-muted">
-            <span className="text-text-secondary font-medium">{data.edges.length}</span> connections
+            <span className="text-text-secondary font-medium">{filteredData.edges.length}</span>
+            {data && filteredData.edges.length < data.edges.length
+              ? ` / ${data.edges.length}`
+              : ''}{' '}
+            connections
           </p>
         </div>
       )}
