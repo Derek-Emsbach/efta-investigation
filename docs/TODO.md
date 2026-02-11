@@ -315,47 +315,64 @@
 **Goal:** Automated document ingestion and analysis with human review.
 
 ### 4.1 Python Worker
-- [ ] FastAPI server in `services/worker/`
-- [ ] Supabase client for Python
-- [ ] R2 client for Python (boto3 with S3-compatible endpoint)
-- [ ] Pipeline stages:
-  - [ ] `ingest.py` — unpack zip, create document records, upload originals to R2
-  - [ ] `forensics.py` — PDF metadata extraction (version, pipeline, EOF, permissions)
-  - [ ] `extract.py` — text extraction (PyMuPDF) + image rendering (200 DPI) + OCR fallback
+- [x] Python polling worker in `services/worker/` (simple script, not FastAPI)
+- [x] Supabase client for Python (`db.py` — service role key, bypasses RLS)
+- [x] R2 client for Python (`storage.py` — boto3 with S3-compatible endpoint)
+- [x] Pipeline stages (1-3):
+  - [x] `ingest.py` — download from R2, page count, file size, thumbnail generation (150 DPI)
+  - [x] `forensics.py` — PDF version, metadata, EOF markers, pipeline detection, fonts, XMP/JS/forms
+  - [x] `extract.py` — text extraction (PyMuPDF), document type classification, date detection
+- [ ] Pipeline stages (4-7, deferred):
   - [ ] `entities.py` — name detection, match against existing entity DB, flag new names
   - [ ] `redactions.py` — detect redacted regions, estimate coverage, classify A-D
   - [ ] `crossref.py` — match dates, names, case numbers against existing documents
   - [ ] `classify.py` — document type classification, evidence value scoring, priority flagging
-- [ ] Each stage updates document `processing_status` in Supabase
-- [ ] Queue management: process one document at a time, report progress
-- [ ] Error handling: failed documents marked with error message, retryable
+- [x] Each stage updates document `processing_status` in Supabase
+- [x] Queue management: process one document at a time, report progress
+- [x] Error handling: failed documents marked with error message, retryable
 
 ### 4.2 Admin Upload UI
-- [ ] `/admin/processing` page
-- [ ] Upload zone: drag-and-drop zip file or folder
+- [x] `/upload` page with drag-and-drop PDF upload
+- [x] Presigned URL upload (browser → R2 direct, no file size limit)
+- [x] Dataset selector dropdown
+- [x] Per-file progress bars (XHR for progress events)
+- [x] Parallel uploads (up to 5 concurrent)
+- [x] Bates number auto-detection from filename
+- [ ] Upload zone: zip file support
 - [ ] Google Drive URL input (for large datasets)
-- [ ] Real-time processing queue dashboard
-  - [ ] Total documents in queue
-  - [ ] Currently processing (which document, which step)
-  - [ ] Completed count
-  - [ ] Failed count (with error details)
-- [ ] Per-document status cards with progress indicators
+
+### 4.2b Processing Dashboard
+- [x] `/processing` page with auto-refreshing queue (5s polling)
+- [x] Summary stats: queued, processing, completed, failed, needs_review
+- [x] Queue table with status badges, current step, priority, timestamps
+- [x] Filter by status
+- [x] Click row → navigate to document detail
+- [ ] Retry failed documents
+- [ ] Bulk actions (retry all failed, clear completed)
 
 ### 4.3 Admin Review UI
-- [ ] `/admin/review` page
-- [ ] Queue of documents with `status = 'needs_review'`
-- [ ] Split-pane review interface:
-  - [ ] Left: PDF viewer
-  - [ ] Right: extracted data (entities found, classifications, redactions, cross-refs)
-- [ ] Review actions:
-  - [ ] Confirm/edit entity matches
-  - [ ] Adjust tier assignments
-  - [ ] Add/edit evidence items
-  - [ ] Add connections
-  - [ ] Flag redactions
-  - [ ] Add review notes
-  - [ ] Mark as reviewed → publishes to frontend
+- [x] `/review` page with split-pane interface
+- [x] Left panel: document queue (needs_review status)
+- [x] Right panel: PDF viewer + extracted data form
+- [x] Editable fields: title, document_type, date, severity, classification
+- [x] Extracted text preview (read-only)
+- [x] Forensic metadata collapsible view
+- [x] Review notes textarea
+- [x] Actions: Approve, Flag, Reject
+- [ ] Confirm/edit entity matches
+- [ ] Adjust tier assignments
+- [ ] Add/edit evidence items
 - [ ] Keyboard shortcuts for fast review
+- [ ] **Detective Review Copilot** — AI assistant embedded alongside document viewer during review
+  - [ ] Collapsible chat panel alongside the PDF viewer (right side or bottom drawer)
+  - [ ] Detective auto-analyzes the current document on load (entities, dates, key quotes, metadata)
+  - [ ] Contextual prompt suggestions based on document content and cross-references to other docs
+  - [ ] Detective highlights entities it recognizes and flags potential new ones
+  - [ ] Surfaces revealing quotes, financial figures, and evidence-grade information
+  - [ ] Shows possible connections/ties to existing entities and investigations
+  - [ ] Recommends review action (approve/flag/reject) with reasoning
+  - [ ] Conversation persists per document (revisit later to continue analysis)
+  - [ ] Quick-action buttons: "Who is mentioned?", "What's significant?", "Any ties to [entity]?", "Compare with similar docs"
 
 ### 4.4 Tiered Processing
 - [ ] **Tier A (automatic, all documents):**

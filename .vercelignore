@@ -1,0 +1,29 @@
+# Python worker (not deployed to Vercel)
+services/
+
+# Dependencies (Vercel installs its own)
+node_modules/
+
+# Build caches
+.turbo/
+.next/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Docs / scripts (not needed at runtime)
+docs/
+scripts/
