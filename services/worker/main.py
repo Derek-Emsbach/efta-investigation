@@ -2,7 +2,14 @@
 EFTA Document Processing Worker
 
 Polls the Supabase processing_queue for queued documents, then runs
-three processing stages: ingest, forensics, and text extraction.
+up to seven processing stages:
+
+  Tier A (always): 1. Ingest  2. Forensics  3. Text Extraction
+  Tier B (gated):  4. Entity Extraction  5. Redaction Detection
+                   6. Cross-Reference  7. Classification
+
+Tier B stages only run on non-trivial documents (>3 pages, non-photo/blank,
+known entity detected). Simple documents skip straight to needs_review.
 
 Usage:
     cd services/worker
@@ -17,19 +24,47 @@ import traceback
 
 from config import POLL_INTERVAL
 from db import (
+    complete_queue_item,
+    complete_queue_item_with_status,
+    fail_queue_item,
     fetch_next_queued,
     lock_queue_item,
     update_queue_step,
-    complete_queue_item,
-    fail_queue_item,
 )
 from stages.ingest import run_ingest
 from stages.forensics import run_forensics
 from stages.extract import run_extract
+from stages.entities import run_entities
+from stages.redactions import run_redactions
+from stages.crossref import run_crossref
+from stages.classify import run_classify
+
+
+def should_run_advanced(document: dict, extract_results: dict) -> bool:
+    """
+    Tier B gate — decide whether to run stages 4-7.
+    Returns True if the document is non-trivial and worth deeper analysis.
+    """
+    # Multi-page documents
+    page_count = document.get("page_count") or extract_results.get("page_count", 0)
+    if page_count > 3:
+        return True
+
+    # Non-photo/blank document types
+    doc_type = extract_results.get("document_type") or document.get("document_type")
+    if doc_type and doc_type not in ("photo", "blank"):
+        return True
+
+    # Has meaningful extracted text
+    total_chars = extract_results.get("total_chars", 0)
+    if total_chars > 500:
+        return True
+
+    return False
 
 
 def process_document(queue_item: dict) -> None:
-    """Run all three processing stages on a single document."""
+    """Run processing stages on a single document."""
     queue_id = queue_item["id"]
     document = queue_item["documents"]
     document_id = document["id"]
@@ -47,24 +82,67 @@ def process_document(queue_item: dict) -> None:
         # Fallback: last two segments
         r2_key = "/".join(parts[-2:]) if len(parts) >= 2 else parts[-1]
 
-    print(f"  Stage 1/3: Ingest — {r2_key}")
+    # ── Tier A: Always run (stages 1-3) ──────────────────────────
+
+    print(f"  Stage 1: Ingest — {r2_key}")
     update_queue_step(queue_id, "ingest")
     ingest_results = run_ingest(document_id, r2_key)
     update_queue_step(queue_id, "ingest", {"ingest": ingest_results})
 
-    print(f"  Stage 2/3: Forensics")
+    print(f"  Stage 2: Forensics")
     update_queue_step(queue_id, "forensics")
     forensics_results = run_forensics(document_id, r2_key)
     update_queue_step(queue_id, "forensics", {"forensics": forensics_results})
 
-    print(f"  Stage 3/3: Text Extraction")
+    print(f"  Stage 3: Text Extraction")
     update_queue_step(queue_id, "extract")
     extract_results = run_extract(document_id, r2_key)
     update_queue_step(queue_id, "extract", {"extract": extract_results})
 
-    # Mark as completed
-    complete_queue_item(queue_id, document_id)
-    print(f"  Done — document {document_id} ready for review")
+    # ── Tier B gate ──────────────────────────────────────────────
+
+    if not should_run_advanced(document, extract_results):
+        complete_queue_item(queue_id, document_id)
+        print(f"  Done (basic) — skipped advanced stages, ready for review")
+        return
+
+    # ── Tier B: Advanced stages (4-7) ────────────────────────────
+
+    print(f"  Stage 4: Entity Extraction")
+    update_queue_step(queue_id, "entities")
+    entity_results = run_entities(document_id, r2_key)
+    update_queue_step(queue_id, "entities", {"entities": entity_results})
+    print(f"    Found {entity_results.get('entities_found', 0)} entities")
+
+    print(f"  Stage 5: Redaction Detection")
+    update_queue_step(queue_id, "redactions")
+    redaction_results = run_redactions(document_id, r2_key)
+    update_queue_step(queue_id, "redactions", {"redactions": redaction_results})
+    print(f"    Level: {redaction_results.get('overall_level', 'none')}")
+
+    print(f"  Stage 6: Cross-Reference")
+    update_queue_step(queue_id, "crossref")
+    crossref_results = run_crossref(document_id, r2_key)
+    update_queue_step(queue_id, "crossref", {"crossref": crossref_results})
+    print(f"    Related: {crossref_results.get('related_docs', 0)} docs, {crossref_results.get('timeline_matches', 0)} events")
+
+    print(f"  Stage 7: Classification")
+    update_queue_step(queue_id, "classify")
+    classify_results = run_classify(
+        document_id, r2_key, queue_id,
+        entity_results, redaction_results, crossref_results,
+    )
+    update_queue_step(queue_id, "classify", {"classify": classify_results})
+
+    # ── Complete ─────────────────────────────────────────────────
+
+    needs_review = classify_results.get("needs_review", True)
+    final_status = "needs_review" if needs_review else "extracted"
+    complete_queue_item_with_status(queue_id, document_id, final_status)
+
+    score = classify_results.get("score", 0)
+    severity = classify_results.get("severity", "routine")
+    print(f"  Done — score={score}, severity={severity}, status={final_status}")
 
 
 def main():
@@ -72,6 +150,7 @@ def main():
     print("=" * 60)
     print("EFTA Document Processing Worker")
     print(f"Poll interval: {POLL_INTERVAL}s")
+    print("Stages: 1-3 (all docs) + 4-7 (Tier B gated)")
     print("=" * 60)
     print()
 

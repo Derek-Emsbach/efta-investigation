@@ -85,3 +85,143 @@ def update_document(document_id: str, fields: dict[str, Any]) -> None:
     """Update fields on a document record."""
     client = get_client()
     client.table("documents").update(fields).eq("id", document_id).execute()
+
+
+def update_queue_priority(queue_id: str, priority: int) -> None:
+    """Update the priority of a queue item."""
+    client = get_client()
+    client.table("processing_queue").update(
+        {"priority": priority}
+    ).eq("id", queue_id).execute()
+
+
+def complete_queue_item_with_status(
+    queue_id: str, document_id: str, processing_status: str
+) -> None:
+    """Mark queue item completed and set a specific document processing_status."""
+    client = get_client()
+    client.table("processing_queue").update(
+        {"status": "completed", "completed_at": "now()"}
+    ).eq("id", queue_id).execute()
+    client.table("documents").update(
+        {"processing_status": processing_status}
+    ).eq("id", document_id).execute()
+
+
+# ── Stage 4-7 helpers ────────────────────────────────────────────
+
+
+def fetch_all_entities() -> list[dict[str, Any]]:
+    """Load all entities for name matching (id, name, aliases, tier, entity_type, category)."""
+    client = get_client()
+    result = (
+        client.table("entities")
+        .select("id, name, aliases, tier, entity_type, category")
+        .execute()
+    )
+    return result.data or []
+
+
+def fetch_document_for_processing(document_id: str) -> dict[str, Any] | None:
+    """Fetch a single document with all fields."""
+    client = get_client()
+    result = (
+        client.table("documents")
+        .select("*")
+        .eq("id", document_id)
+        .single()
+        .execute()
+    )
+    return result.data
+
+
+def create_entity_document(
+    entity_id: str,
+    document_id: str,
+    role: str,
+    excerpt: str | None = None,
+    page_number: int | None = None,
+) -> None:
+    """Insert an entity-document link (upsert to handle re-runs)."""
+    client = get_client()
+    row: dict[str, Any] = {
+        "entity_id": entity_id,
+        "document_id": document_id,
+        "role_in_document": role,
+    }
+    if excerpt is not None:
+        row["excerpt"] = excerpt
+    if page_number is not None:
+        row["page_number"] = page_number
+    client.table("entity_documents").upsert(
+        row, on_conflict="entity_id,document_id,role_in_document"
+    ).execute()
+
+
+def create_redaction(
+    document_id: str,
+    page_number: int,
+    category: str | None,
+    description: str,
+    is_suspect: bool = False,
+    red_flags: list[str] | None = None,
+    assessment: str | None = None,
+) -> None:
+    """Insert a redaction record for a document page."""
+    client = get_client()
+    row: dict[str, Any] = {
+        "document_id": document_id,
+        "page_number": page_number,
+        "description": description,
+        "is_suspect": is_suspect,
+    }
+    if category is not None:
+        row["category"] = category
+    if red_flags:
+        row["red_flags"] = red_flags
+    if assessment is not None:
+        row["assessment"] = assessment
+    client.table("redactions").insert(row).execute()
+
+
+def fetch_entity_documents_for_doc(document_id: str) -> list[dict[str, Any]]:
+    """Get all entity links for a document."""
+    client = get_client()
+    result = (
+        client.table("entity_documents")
+        .select("entity_id, role_in_document")
+        .eq("document_id", document_id)
+        .execute()
+    )
+    return result.data or []
+
+
+def fetch_documents_by_entities(entity_ids: list[str]) -> list[dict[str, Any]]:
+    """Find documents that mention any of the given entities."""
+    if not entity_ids:
+        return []
+    client = get_client()
+    result = (
+        client.table("entity_documents")
+        .select("document_id, entity_id")
+        .in_("entity_id", entity_ids)
+        .limit(200)
+        .execute()
+    )
+    return result.data or []
+
+
+def fetch_events_by_date_range(
+    start_date: str, end_date: str
+) -> list[dict[str, Any]]:
+    """Find timeline events within a date range."""
+    client = get_client()
+    result = (
+        client.table("events")
+        .select("id, date, title, event_type, significance")
+        .gte("date", start_date)
+        .lte("date", end_date)
+        .limit(50)
+        .execute()
+    )
+    return result.data or []
