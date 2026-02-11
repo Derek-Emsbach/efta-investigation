@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 interface NavItem {
   label: string;
   href: string;
-  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap";
+  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle";
 }
 
 interface SidebarNavProps {
@@ -95,6 +95,26 @@ function NavIcon({ icon, className }: { icon: NavItem["icon"]; className?: strin
           <path d="M19 14v4" />
           <path d="M5 14h14" />
           <path d="M12 10v4" />
+        </svg>
+      );
+    case "upload":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+      );
+    case "loader":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.34 6.34L3.51 3.51" />
+        </svg>
+      );
+    case "check-circle":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       );
   }

@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getSignedDownloadUrl } from '@/lib/r2/client'
 
 /**
  * Proxy route for document files stored in Cloudflare R2.
  * - Checks auth via Supabase session
  * - Fetches the file_url from the documents table
- * - Streams the file from R2 (or any external URL) to the client
- * - Sets appropriate Content-Type and caching headers
+ * - Generates a signed R2 download URL (R2 requires auth)
+ * - Streams the file to the client
  */
 export async function GET(
   _request: Request,
@@ -34,8 +35,13 @@ export async function GET(
       )
     }
 
-    // Fetch the file from R2 / external URL
-    const fileResponse = await fetch(doc.file_url)
+    // Extract R2 key from the stored file_url
+    const publicUrl = process.env.R2_PUBLIC_URL ?? ''
+    const r2Key = doc.file_url.replace(`${publicUrl}/`, '')
+
+    // Generate a signed download URL (R2 endpoint requires authentication)
+    const signedUrl = await getSignedDownloadUrl(r2Key, 3600)
+    const fileResponse = await fetch(signedUrl)
 
     if (!fileResponse.ok) {
       return NextResponse.json(

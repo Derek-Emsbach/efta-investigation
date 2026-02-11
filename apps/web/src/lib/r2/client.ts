@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
+  HeadObjectCommand,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
@@ -46,4 +47,25 @@ export async function getSignedDownloadUrl(
 
 export async function deleteFile(key: string): Promise<void> {
   await R2.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }))
+}
+
+export async function getPresignedUploadUrl(
+  key: string,
+  contentType: string,
+  expiresIn = 900,
+): Promise<string> {
+  return getSignedUrl(
+    R2,
+    new PutObjectCommand({ Bucket: BUCKET, Key: key, ContentType: contentType }),
+    { expiresIn },
+  )
+}
+
+export async function headObject(key: string): Promise<boolean> {
+  try {
+    await R2.send(new HeadObjectCommand({ Bucket: BUCKET, Key: key }))
+    return true
+  } catch {
+    return false
+  }
 }

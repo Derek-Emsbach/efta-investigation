@@ -20,7 +20,7 @@
 - [x] Set up `.gitignore` (node_modules, .env*, .next, dist, __pycache__)
 - [x] Create `.env.local.example` with all required variable names
 - [x] Initial commit
-- [ ] Push to GitHub
+- [x] Push to GitHub
 
 > **Note:** Using Next.js 16 (not 14) with React 19 and Tailwind v4 (CSS-based config, not tailwind.config.ts).
 
@@ -46,13 +46,11 @@
 - [x] Test connection: query entities table from a server component
 
 ### 1.4 Cloudflare R2 Setup
-- [ ] Create R2 bucket: `efta-documents`
-- [ ] Generate API token with read/write
+- [x] Create R2 bucket: `efta-documents`
+- [x] Generate API token with read/write
 - [x] Create `lib/r2/client.ts` with upload/download/delete helpers (S3-compatible via `@aws-sdk/client-s3`)
-- [ ] Set up CORS policy for Vercel domain
+- [x] Set up CORS policy for Vercel domain
 - [ ] Test: upload and retrieve a test file
-
-> **Blocked:** User needs to create R2 bucket and API token. Client code is written.
 
 ### 1.5 Auth
 - [x] Set up Supabase Auth (email/password)
@@ -124,7 +122,7 @@
 ### 1.9 Deploy
 - [x] Configure Vercel build settings (transpilePackages, build commands)
 - [x] Verify `pnpm build` succeeds locally (all 12 routes compile)
-- [ ] Push to GitHub
+- [x] Push to GitHub
 - [ ] Connect repo to Vercel
 - [ ] Set environment variables in Vercel dashboard
 - [ ] Deploy and verify live site
@@ -254,23 +252,23 @@
   - [x] Search to highlight specific entity (autocomplete dropdown + zoom-to-node)
   - [x] Quick filters: "High-risk only", "Documented only", "Reset all"
   - [x] Stats show filtered/total counts
-  - [ ] "Find path between" — highlight shortest connection path between two entities
+  - [x] "Find path between" — highlight shortest connection path between two entities (BFS)
 - [ ] **Clusters:** automatic grouping by relationship density
 
 ### 3.2 Org Chart / Hierarchy
-- [ ] Tree layout for institutional/business relationships (`/hierarchy`)
-- [ ] Shell companies and trusts as nodes
-- [ ] Ownership/employment relationships as edges
+- [x] Tree layout for institutional/business relationships (`/hierarchy`)
+- [x] Shell companies and trusts as nodes
+- [x] Ownership/employment relationships as edges
 - [ ] Money flows indicated by edge labels
 - [ ] Properties as location nodes
 - [ ] Agencies (FBI, SDNY, DANY, CRU) as institutional nodes
 - [ ] Toggle between: business hierarchy, institutional hierarchy, property network
 
 ### 3.3 Dataset Progress
-- [ ] Dataset overview page (`/datasets`)
-- [ ] Card per dataset: name, size, file count, progress bar, priority badge
+- [x] Dataset overview page (`/datasets`)
+- [x] Card per dataset: name, size, file count, progress bar, priority badge
 - [ ] Click card → filtered document list for that dataset
-- [ ] Summary stats: total files, reviewed, critical findings per dataset
+- [x] Summary stats: total files, reviewed, critical findings per dataset
 
 ### 3.4 AI Research Assistant
 - [x] Chat interface at `/assistant` with full-height layout
@@ -456,3 +454,21 @@
 - [ ] House Oversight materials import
 - [ ] FOIA release comparison tools
 - [ ] Congressional oversight monitoring
+
+### Photo Album & Image Pipeline
+- [ ] Image extraction pipeline stage (Stage 1.5) — PyMuPDF `page.get_images()`, upload to R2 `images/{doc_id}/`
+- [ ] `document_images` table — document_id, page_number, r2_key, thumbnail_r2_key, tags[], caption, metadata JSONB
+- [ ] Photo Album page (`/photos`) — global gallery grid, filters (entity, date, location, tags), lightbox viewer
+- [ ] Entity photo tab — Photos tab on entity detail page from linked documents
+- [ ] Image tagging: entities, locations, dates, evidence type, redaction level
+
+### Rich Entity Profiles
+- [ ] AI-generated mentions summary (how entity appears across all documents)
+- [ ] News component (external news articles about entity)
+- [ ] Wikipedia/reputable-source bio section (separate from investigation bio)
+- [ ] Profile picture sourcing (Wikipedia, public domain, extracted from documents)
+
+### Access Control & Roles
+- [ ] Detective (`/assistant`) restricted to admin role before deployment
+- [ ] Role-based access: admin vs viewer (Supabase custom claims or role column)
+- [ ] Non-admin users: read-only dashboard, no upload/review/detective

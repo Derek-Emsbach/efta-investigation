@@ -1,0 +1,503 @@
+'use client'
+
+import { useCallback, useEffect, useRef, useState } from 'react'
+import MainContent from '@/components/layout/main-content'
+import { PageHeader } from '@/components/ui/page-header'
+import Link from 'next/link'
+
+interface DatasetOption {
+  id: string
+  number: number
+  name: string | null
+}
+
+type FileStatus = 'pending' | 'presigning' | 'uploading' | 'confirming' | 'done' | 'error'
+
+interface UploadFile {
+  file: File
+  id: string | null
+  batesNumber: string | null
+  status: FileStatus
+  progress: number
+  error: string | null
+}
+
+const MAX_CONCURRENT = 5
+
+export default function UploadPage() {
+  const [datasets, setDatasets] = useState<DatasetOption[]>([])
+  const [selectedDataset, setSelectedDataset] = useState<string>('')
+  const [batesPrefix, setBatesPrefix] = useState('')
+  const [files, setFiles] = useState<UploadFile[]>([])
+  const [isDragOver, setIsDragOver] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Fetch datasets for selector
+  useEffect(() => {
+    fetch('/api/stats')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.datasets) {
+          setDatasets(
+            data.datasets.map((d: { id: string; number: number; name: string | null }) => ({
+              id: d.id,
+              number: d.number,
+              name: d.name,
+            })),
+          )
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  const addFiles = useCallback((newFiles: File[]) => {
+    const pdfFiles = newFiles.filter((f) => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'))
+    if (pdfFiles.length === 0) return
+
+    setFiles((prev) => [
+      ...prev,
+      ...pdfFiles.map((file) => ({
+        file,
+        id: null,
+        batesNumber: null,
+        status: 'pending' as FileStatus,
+        progress: 0,
+        error: null,
+      })),
+    ])
+  }, [])
+
+  // Drag and drop handlers
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+    const droppedFiles = Array.from(e.dataTransfer.files)
+    addFiles(droppedFiles)
+  }, [addFiles])
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      addFiles(Array.from(e.target.files))
+      e.target.value = ''
+    }
+  }, [addFiles])
+
+  const removeFile = useCallback((index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index))
+  }, [])
+
+  const clearCompleted = useCallback(() => {
+    setFiles((prev) => prev.filter((f) => f.status !== 'done'))
+  }, [])
+
+  // Upload a single file via XHR (for progress events)
+  const uploadToR2 = (presignedUrl: string, file: File, index: number): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          const pct = Math.round((e.loaded / e.total) * 100)
+          setFiles((prev) =>
+            prev.map((f, i) => (i === index ? { ...f, progress: pct } : f)),
+          )
+        }
+      })
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve()
+        } else {
+          reject(new Error(`Upload failed with status ${xhr.status}`))
+        }
+      })
+
+      xhr.addEventListener('error', () => reject(new Error('Network error during upload')))
+      xhr.addEventListener('abort', () => reject(new Error('Upload aborted')))
+
+      xhr.open('PUT', presignedUrl)
+      xhr.setRequestHeader('Content-Type', 'application/pdf')
+      xhr.send(file)
+    })
+  }
+
+  const startUpload = async () => {
+    const pending = files.filter((f) => f.status === 'pending')
+    if (pending.length === 0) return
+
+    setIsUploading(true)
+
+    try {
+      // Step 1: Get presigned URLs for all pending files
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.status === 'pending' ? { ...f, status: 'presigning' as FileStatus } : f,
+        ),
+      )
+
+      const presignRes = await fetch('/api/upload/presign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          files: pending.map((f) => ({
+            filename: f.file.name,
+            size_bytes: f.file.size,
+            dataset_id: selectedDataset || undefined,
+            bates_number: batesPrefix || undefined,
+          })),
+        }),
+      })
+
+      if (!presignRes.ok) {
+        const err = await presignRes.json()
+        throw new Error(err.error || 'Failed to get presigned URLs')
+      }
+
+      const { files: presignedFiles } = await presignRes.json()
+
+      // Map presigned results back to our file list
+      const pendingIndices = files
+        .map((f, i) => (f.status === 'pending' || f.status === 'presigning' ? i : -1))
+        .filter((i) => i !== -1)
+
+      // Update files with IDs and mark as uploading
+      setFiles((prev) =>
+        prev.map((f, i) => {
+          const pIdx = pendingIndices.indexOf(i)
+          if (pIdx === -1 || !presignedFiles[pIdx]) return f
+          const pf = presignedFiles[pIdx]
+          if (pf.skipped || pf.error) {
+            return { ...f, status: 'error' as FileStatus, error: pf.error || 'Skipped' }
+          }
+          return {
+            ...f,
+            id: pf.id,
+            batesNumber: pf.bates_number,
+            status: 'uploading' as FileStatus,
+            progress: 0,
+          }
+        }),
+      )
+
+      // Step 2: Upload files to R2 in parallel (max concurrent)
+      const uploadQueue = pendingIndices
+        .map((fileIdx, pIdx) => ({ fileIdx, presigned: presignedFiles[pIdx] }))
+        .filter((item) => item.presigned && !item.presigned.skipped && !item.presigned.error)
+
+      const documentIds: string[] = []
+
+      // Process in chunks of MAX_CONCURRENT
+      for (let i = 0; i < uploadQueue.length; i += MAX_CONCURRENT) {
+        const chunk = uploadQueue.slice(i, i + MAX_CONCURRENT)
+        const results = await Promise.allSettled(
+          chunk.map(async ({ fileIdx, presigned }) => {
+            try {
+              await uploadToR2(presigned.presigned_url, files[fileIdx].file, fileIdx)
+              documentIds.push(presigned.id)
+              setFiles((prev) =>
+                prev.map((f, idx) =>
+                  idx === fileIdx ? { ...f, status: 'confirming' as FileStatus, progress: 100 } : f,
+                ),
+              )
+            } catch (err) {
+              setFiles((prev) =>
+                prev.map((f, idx) =>
+                  idx === fileIdx
+                    ? { ...f, status: 'error' as FileStatus, error: err instanceof Error ? err.message : 'Upload failed' }
+                    : f,
+                ),
+              )
+            }
+          }),
+        )
+
+        // Check for any rejections
+        results.forEach((r) => {
+          if (r.status === 'rejected') {
+            console.error('Upload chunk error:', r.reason)
+          }
+        })
+      }
+
+      // Step 3: Confirm uploads
+      if (documentIds.length > 0) {
+        const confirmRes = await fetch('/api/upload/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ document_ids: documentIds }),
+        })
+
+        if (confirmRes.ok) {
+          const { confirmed } = await confirmRes.json()
+          // Mark confirmed files as done
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.id && documentIds.includes(f.id) && f.status === 'confirming'
+                ? { ...f, status: 'done' as FileStatus }
+                : f,
+            ),
+          )
+          console.log(`${confirmed} files confirmed in R2`)
+        }
+      }
+    } catch (err) {
+      // Mark all presigning/uploading files as error
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.status === 'presigning' || f.status === 'uploading'
+            ? { ...f, status: 'error' as FileStatus, error: err instanceof Error ? err.message : 'Upload failed' }
+            : f,
+        ),
+      )
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const pendingCount = files.filter((f) => f.status === 'pending').length
+  const doneCount = files.filter((f) => f.status === 'done').length
+  const errorCount = files.filter((f) => f.status === 'error').length
+  const activeCount = files.filter((f) =>
+    ['presigning', 'uploading', 'confirming'].includes(f.status),
+  ).length
+
+  return (
+    <MainContent>
+      <PageHeader
+        title="Upload Documents"
+        subtitle="Upload EFTA PDF documents for processing"
+      />
+
+      {/* Configuration row */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        <div className="flex-1 min-w-[200px]">
+          <label className="block text-xs text-text-muted mb-1">Dataset (optional)</label>
+          <select
+            value={selectedDataset}
+            onChange={(e) => setSelectedDataset(e.target.value)}
+            className="w-full bg-elevated border border-border-default rounded-lg px-3 py-2 text-sm text-text-primary focus:border-info focus:outline-none"
+          >
+            <option value="">No dataset</option>
+            {datasets.map((ds) => (
+              <option key={ds.id} value={ds.id}>
+                DS{ds.number}{ds.name ? ` — ${ds.name}` : ''}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex-1 min-w-[200px]">
+          <label className="block text-xs text-text-muted mb-1">Bates number prefix (optional)</label>
+          <input
+            type="text"
+            value={batesPrefix}
+            onChange={(e) => setBatesPrefix(e.target.value)}
+            placeholder="e.g. EFTA0273"
+            className="w-full bg-elevated border border-border-default rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-info focus:outline-none font-mono"
+          />
+          <p className="text-xs text-text-muted mt-1">Auto-detected from filename if not set</p>
+        </div>
+      </div>
+
+      {/* Drop zone */}
+      <div
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
+        className={`relative border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all ${
+          isDragOver
+            ? 'border-info bg-info/5'
+            : 'border-border-default hover:border-border-hover hover:bg-elevated/30'
+        }`}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,application/pdf"
+          multiple
+          onChange={handleFileSelect}
+          className="hidden"
+        />
+        <svg
+          className={`w-12 h-12 mx-auto mb-4 ${isDragOver ? 'text-info' : 'text-text-muted'}`}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        <p className="text-text-primary font-medium mb-1">
+          {isDragOver ? 'Drop PDF files here' : 'Drag & drop PDF files here'}
+        </p>
+        <p className="text-sm text-text-muted">
+          or click to browse. No file size limit.
+        </p>
+      </div>
+
+      {/* File list */}
+      {files.length > 0 && (
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-4 text-sm">
+              <span className="text-text-primary font-medium">{files.length} file{files.length !== 1 ? 's' : ''}</span>
+              {pendingCount > 0 && <span className="text-text-muted">{pendingCount} pending</span>}
+              {activeCount > 0 && <span className="text-info">{activeCount} uploading</span>}
+              {doneCount > 0 && <span className="text-success">{doneCount} done</span>}
+              {errorCount > 0 && <span className="text-critical">{errorCount} failed</span>}
+            </div>
+            <div className="flex items-center gap-2">
+              {doneCount > 0 && (
+                <button
+                  onClick={clearCompleted}
+                  className="text-xs text-text-muted hover:text-text-secondary transition-colors"
+                >
+                  Clear completed
+                </button>
+              )}
+              {pendingCount > 0 && (
+                <button
+                  onClick={startUpload}
+                  disabled={isUploading}
+                  className="bg-info hover:bg-info/90 disabled:opacity-50 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors"
+                >
+                  {isUploading ? 'Uploading...' : `Upload ${pendingCount} file${pendingCount !== 1 ? 's' : ''}`}
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="border border-border-default rounded-lg overflow-hidden divide-y divide-border-default">
+            {files.map((f, i) => (
+              <div key={`${f.file.name}-${i}`} className="flex items-center gap-3 px-4 py-3 bg-surface">
+                {/* Status icon */}
+                <div className="shrink-0">
+                  {f.status === 'done' && (
+                    <svg className="w-5 h-5 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )}
+                  {f.status === 'error' && (
+                    <svg className="w-5 h-5 text-critical" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )}
+                  {f.status === 'pending' && (
+                    <svg className="w-5 h-5 text-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                  )}
+                  {['presigning', 'uploading', 'confirming'].includes(f.status) && (
+                    <svg className="w-5 h-5 text-info animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.34 6.34L3.51 3.51" />
+                    </svg>
+                  )}
+                </div>
+
+                {/* File info */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-text-primary truncate">{f.file.name}</p>
+                  <div className="flex items-center gap-3 text-xs text-text-muted">
+                    <span>{formatBytes(f.file.size)}</span>
+                    {f.batesNumber && <span className="font-mono">{f.batesNumber}</span>}
+                    {f.error && <span className="text-critical">{f.error}</span>}
+                    {f.status === 'uploading' && <span className="text-info">{f.progress}%</span>}
+                    {f.status === 'presigning' && <span className="text-info">Preparing...</span>}
+                    {f.status === 'confirming' && <span className="text-info">Confirming...</span>}
+                  </div>
+
+                  {/* Progress bar */}
+                  {(f.status === 'uploading' || f.status === 'confirming') && (
+                    <div className="mt-1.5 h-1 bg-elevated rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-info rounded-full transition-all duration-300"
+                        style={{ width: `${f.progress}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Remove button */}
+                {(f.status === 'pending' || f.status === 'error') && (
+                  <button
+                    onClick={() => removeFile(i)}
+                    className="shrink-0 text-text-muted hover:text-text-secondary transition-colors"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Post-upload actions */}
+          {doneCount > 0 && !isUploading && (
+            <div className="mt-4 p-4 bg-success/5 border border-success/20 rounded-lg">
+              <p className="text-sm text-success font-medium mb-2">
+                {doneCount} document{doneCount !== 1 ? 's' : ''} uploaded successfully
+              </p>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/processing"
+                  className="text-sm text-info hover:text-info/80 underline transition-colors"
+                >
+                  View processing queue
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Info panel */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-surface border border-border-default rounded-lg p-4">
+          <h3 className="text-sm font-medium text-text-primary mb-1">Upload</h3>
+          <p className="text-xs text-text-muted">
+            Files upload directly to Cloudflare R2 storage. No server-side file size limits.
+            Up to 50 files per batch, 5 concurrent uploads.
+          </p>
+        </div>
+        <div className="bg-surface border border-border-default rounded-lg p-4">
+          <h3 className="text-sm font-medium text-text-primary mb-1">Processing</h3>
+          <p className="text-xs text-text-muted">
+            After upload, files enter the processing queue. The Python worker extracts metadata,
+            runs forensic analysis, and extracts text automatically.
+          </p>
+        </div>
+        <div className="bg-surface border border-border-default rounded-lg p-4">
+          <h3 className="text-sm font-medium text-text-primary mb-1">Review</h3>
+          <p className="text-xs text-text-muted">
+            Processed documents appear in the review queue where you can verify extracted data,
+            assign classifications, and approve for publication.
+          </p>
+        </div>
+      </div>
+    </MainContent>
+  )
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+}
