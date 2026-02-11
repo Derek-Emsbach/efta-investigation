@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 
 type ViewMode = 'text' | 'pdf'
+type PdfLoadState = 'loading' | 'loaded' | 'error'
 
 interface DocumentViewerProps {
   extractedText: string | null
@@ -27,7 +28,33 @@ export default function DocumentViewer({
   const [textSearch, setTextSearch] = useState('')
   const [showForensics, setShowForensics] = useState(false)
   const [fontSize, setFontSize] = useState(14)
+  const [pdfState, setPdfState] = useState<PdfLoadState>('loading')
+  const [pdfError, setPdfError] = useState<string | null>(null)
   const textRef = useRef<HTMLDivElement>(null)
+
+  // Pre-check PDF availability so we can show a graceful error
+  useEffect(() => {
+    if (!fileUrl) return
+    setPdfState('loading')
+    setPdfError(null)
+
+    fetch(fileUrl, { method: 'HEAD' }).then((res) => {
+      if (res.ok) {
+        setPdfState('loaded')
+      } else {
+        setPdfState('error')
+        // Try to read the JSON error body with a GET
+        fetch(fileUrl).then(r => r.json()).then((body) => {
+          setPdfError(body.detail ?? body.error ?? 'File unavailable')
+        }).catch(() => {
+          setPdfError(`Storage returned status ${res.status}`)
+        })
+      }
+    }).catch(() => {
+      setPdfState('error')
+      setPdfError('Could not connect to file storage')
+    })
+  }, [fileUrl])
 
   // Scroll to first search match
   useEffect(() => {
@@ -238,20 +265,62 @@ export default function DocumentViewer({
 
       {mode === 'pdf' && hasPdf && (
         <div className="relative bg-[#1a1a2e]">
-          <object
-            data={fileUrl}
-            type="application/pdf"
-            className="w-full"
-            style={{ height: '600px' }}
-          >
-            {/* Fallback for browsers that don't support object for PDFs */}
-            <iframe
-              src={fileUrl}
-              className="w-full border-0"
+          {pdfState === 'loading' && (
+            <div className="flex items-center justify-center" style={{ height: '300px' }}>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-6 h-6 border-2 border-info/30 border-t-info rounded-full animate-spin" />
+                <span className="text-xs text-text-muted">Loading document...</span>
+              </div>
+            </div>
+          )}
+          {pdfState === 'error' && (
+            <div className="flex items-center justify-center" style={{ height: '300px' }}>
+              <div className="flex flex-col items-center gap-3 max-w-md text-center px-6">
+                <svg
+                  className="w-12 h-12 text-text-muted/40"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+                  />
+                </svg>
+                <p className="text-sm text-text-secondary font-medium">
+                  PDF not available
+                </p>
+                <p className="text-xs text-text-muted">
+                  {pdfError ?? 'The original PDF file could not be loaded from storage.'}
+                </p>
+                {hasText && (
+                  <button
+                    onClick={() => setMode('text')}
+                    className="text-xs text-info hover:text-info/80 transition-colors mt-1"
+                  >
+                    View extracted text instead
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+          {pdfState === 'loaded' && (
+            <object
+              data={fileUrl}
+              type="application/pdf"
+              className="w-full"
               style={{ height: '600px' }}
-              title={`PDF: ${batesNumber ?? 'Document'}`}
-            />
-          </object>
+            >
+              <iframe
+                src={fileUrl}
+                className="w-full border-0"
+                style={{ height: '600px' }}
+                title={`PDF: ${batesNumber ?? 'Document'}`}
+              />
+            </object>
+          )}
         </div>
       )}
 
