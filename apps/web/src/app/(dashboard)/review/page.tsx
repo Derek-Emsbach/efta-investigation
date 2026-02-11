@@ -118,9 +118,9 @@ export default function ReviewPage() {
         subtitle={`${documents.length} document${documents.length !== 1 ? 's' : ''} awaiting review`}
       />
 
-      <div className="flex gap-4" style={{ height: 'calc(100vh - 200px)' }}>
+      <div className="flex flex-col md:flex-row gap-4 md:h-[calc(100vh-200px)]">
         {/* Left panel: Document queue */}
-        <div className="w-72 shrink-0 border border-border-default rounded-lg overflow-hidden flex flex-col bg-surface">
+        <div className="w-full md:w-72 md:shrink-0 max-h-60 md:max-h-none border border-border-default rounded-lg overflow-hidden flex flex-col bg-surface">
           <div className="p-3 border-b border-border-default bg-elevated">
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider">
               Queue ({documents.length})
@@ -230,10 +230,10 @@ export default function ReviewPage() {
             </div>
 
             {/* Bottom: Extracted data + actions */}
-            <div className="h-[380px] shrink-0 border border-border-default rounded-lg overflow-y-auto bg-surface">
+            <div className="h-auto md:h-[380px] md:shrink-0 border border-border-default rounded-lg overflow-y-auto bg-surface">
               <div className="p-4">
                 {/* Editable fields */}
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                   <div>
                     <label className="block text-xs text-text-muted mb-1">Title</label>
                     <input
@@ -340,7 +340,7 @@ export default function ReviewPage() {
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex items-center gap-3 pt-3 border-t border-border-default">
+                <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-border-default">
                   <button
                     onClick={() => handleAction('approve')}
                     disabled={saving}

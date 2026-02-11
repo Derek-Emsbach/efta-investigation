@@ -25,7 +25,7 @@ const adminItems = [
 
 export default function Sidebar({ userEmail }: SidebarProps) {
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-screen w-60 flex-col border-r border-border-default bg-surface">
+    <aside className="flex h-screen w-60 flex-col border-r border-border-default bg-surface">
       {/* Branding */}
       <div className="border-b border-border-default px-5 py-5">
         <p className="text-xs font-medium uppercase tracking-[0.3em] text-text-muted">
@@ -64,6 +64,9 @@ export default function Sidebar({ userEmail }: SidebarProps) {
           {userEmail}
         </p>
         <LogoutButton />
+        <p className="mt-3 text-[10px] text-text-muted">
+          Developed by Cyclops Digital LLC
+        </p>
       </div>
     </aside>
   );

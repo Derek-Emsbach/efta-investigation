@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Sidebar from "@/components/layout/sidebar";
+import MobileSidebarToggle from "@/components/layout/mobile-sidebar-toggle";
 
 export default async function DashboardLayout({
   children,
@@ -19,8 +20,10 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar userEmail={user.email ?? "Unknown"} />
-      <main className="ml-60 min-h-screen">{children}</main>
+      <MobileSidebarToggle>
+        <Sidebar userEmail={user.email ?? "Unknown"} />
+      </MobileSidebarToggle>
+      <main className="md:ml-60 min-h-screen">{children}</main>
     </div>
   );
 }

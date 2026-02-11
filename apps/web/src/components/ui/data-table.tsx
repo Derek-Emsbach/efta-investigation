@@ -85,8 +85,8 @@ export function DataTable<T extends Record<string, unknown>>({
 
   if (isLoading) {
     return (
-      <div className="w-full border border-border-default rounded-lg overflow-hidden">
-        <table className="w-full">
+      <div className="w-full border border-border-default rounded-lg overflow-x-auto">
+        <table className="w-full min-w-[640px]">
           <thead>
             <tr className="bg-elevated">
               {columns.map((col) => (
@@ -117,8 +117,8 @@ export function DataTable<T extends Record<string, unknown>>({
 
   if (data.length === 0) {
     return (
-      <div className="w-full border border-border-default rounded-lg overflow-hidden">
-        <table className="w-full">
+      <div className="w-full border border-border-default rounded-lg overflow-x-auto">
+        <table className="w-full min-w-[640px]">
           <thead>
             <tr className="bg-elevated">
               {columns.map((col) => (

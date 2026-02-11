@@ -315,7 +315,7 @@ export default function UploadPage() {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all ${
+        className={`relative border-2 border-dashed rounded-lg p-6 sm:p-12 text-center cursor-pointer transition-all ${
           isDragOver
             ? 'border-info bg-info/5'
             : 'border-border-default hover:border-border-hover hover:bg-elevated/30'

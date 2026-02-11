@@ -706,7 +706,15 @@ function AssistantPageInner() {
   const isEmpty = messages.length === 0 && !isStreaming && !loadingMessages
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-[calc(100vh-4rem)] md:h-screen">
+      {/* Mobile backdrop for conversation panel */}
+      {showPanel && (
+        <div
+          className="fixed inset-0 z-30 bg-background/60 md:hidden"
+          onClick={() => setShowPanel(false)}
+        />
+      )}
+
       {/* Conversation panel */}
       {showPanel && (
         <ConversationPanel
@@ -725,7 +733,7 @@ function AssistantPageInner() {
       {/* Chat area */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Header */}
-        <header className="flex shrink-0 items-center justify-between border-b border-border-default bg-surface px-6 py-4">
+        <header className="flex shrink-0 items-center justify-between border-b border-border-default bg-surface px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center gap-3">
             {!showPanel && (
               <button
@@ -927,7 +935,7 @@ function ConversationPanel({
   }
 
   return (
-    <div className="flex w-[280px] shrink-0 flex-col border-r border-border-default bg-surface">
+    <div className="fixed inset-y-0 left-0 z-40 w-[280px] flex flex-col border-r border-border-default bg-surface md:relative md:inset-auto md:z-auto md:shrink-0">
       {/* Panel header */}
       <div className="flex items-center justify-between border-b border-border-default px-4 py-3">
         <span className="text-xs font-medium text-text-muted uppercase tracking-wider">

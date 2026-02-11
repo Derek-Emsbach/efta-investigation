@@ -114,7 +114,7 @@ export default function ProcessingPage() {
       )}
 
       {/* Filter bar */}
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <span className="text-xs text-text-muted">Filter:</span>
         {['all', 'queued', 'processing', 'completed', 'failed', 'needs_review'].map((s) => (
           <button
@@ -169,7 +169,8 @@ export default function ProcessingPage() {
 
       {/* Queue table */}
       {!loading && items.length > 0 && (
-        <div className="border border-border-default rounded-lg overflow-hidden">
+        <div className="border border-border-default rounded-lg overflow-x-auto">
+          <div className="min-w-[700px]">
           {/* Header */}
           <div className="grid grid-cols-[1fr_120px_120px_100px_140px_140px] gap-4 px-4 py-2.5 bg-elevated text-xs font-medium text-text-muted uppercase tracking-wider">
             <div>Document</div>
@@ -249,6 +250,7 @@ export default function ProcessingPage() {
                 </div>
               )
             })}
+          </div>
           </div>
         </div>
       )}

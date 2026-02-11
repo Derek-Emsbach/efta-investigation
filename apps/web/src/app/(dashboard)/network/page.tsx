@@ -564,9 +564,9 @@ export default function NetworkPage() {
 
   return (
     <MainContent>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
         <div>
-          <h1 className="font-display text-2xl lg:text-3xl font-bold text-text-primary">
+          <h1 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary">
             Network Graph
           </h1>
           <p className="text-sm text-text-muted mt-1">
@@ -575,7 +575,7 @@ export default function NetworkPage() {
         </div>
 
         {/* Search + filter toggle */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Search */}
           <div className="relative">
             <input
@@ -586,7 +586,7 @@ export default function NetworkPage() {
                 if (!e.target.value.trim()) setHighlightedNodeId(null)
               }}
               placeholder="Find entity..."
-              className="w-48 bg-elevated border border-border-default rounded-lg px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-info focus:outline-none"
+              className="w-full sm:w-48 bg-elevated border border-border-default rounded-lg px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-info focus:outline-none"
             />
             <svg
               className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted pointer-events-none"
@@ -889,7 +889,7 @@ export default function NetworkPage() {
             )}
           </div>
 
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-4">
             {/* From entity */}
             <div className="flex-1 relative">
               <label className="text-xs text-text-muted mb-1 block">From</label>
@@ -943,7 +943,7 @@ export default function NetworkPage() {
             </div>
 
             {/* Arrow */}
-            <div className="flex items-center pt-5">
+            <div className="hidden sm:flex items-center pt-5">
               <svg className="w-6 h-6 text-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
               </svg>
