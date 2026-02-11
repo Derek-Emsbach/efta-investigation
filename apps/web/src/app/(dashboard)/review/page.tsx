@@ -4,6 +4,10 @@ import { useCallback, useEffect, useState } from 'react'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import Link from 'next/link'
+import PdfViewer, { type Annotation } from '@/components/review/pdf-viewer'
+import ReviewTabs from '@/components/review/review-tabs'
+import ArcherPanel from '@/components/review/archer-panel'
+import type { ArcherDocument } from '@/lib/ai/archer-prompt'
 
 interface ReviewDocument {
   id: string
@@ -32,12 +36,35 @@ const DOC_TYPES = [
 const SEVERITY_OPTIONS = ['extreme_critical', 'critical', 'high', 'routine']
 const CLASSIFICATION_OPTIONS = ['high', 'medium', 'low']
 
+function toArcherDocument(doc: ReviewDocument): ArcherDocument {
+  return {
+    id: doc.id,
+    bates_number: doc.bates_number,
+    title: doc.title,
+    document_type: doc.document_type,
+    original_date: doc.original_date,
+    severity: doc.severity,
+    classification: doc.classification,
+    extracted_text: doc.extracted_text,
+    forensic_metadata: doc.forensic_metadata,
+    page_count: doc.page_count,
+  }
+}
+
 export default function ReviewPage() {
   const [documents, setDocuments] = useState<ReviewDocument[]>([])
   const [selected, setSelected] = useState<ReviewDocument | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [showForensics, setShowForensics] = useState(false)
+
+  // Tab state
+  const [activeTab, setActiveTab] = useState<'form' | 'archer'>('form')
+  const [archerMessageCount, setArcherMessageCount] = useState(0)
+
+  // PDF annotation state (driven by Archer)
+  const [annotations, setAnnotations] = useState<Annotation[]>([])
+  const [currentPage, setCurrentPage] = useState<number | undefined>(undefined)
 
   // Editable fields
   const [editTitle, setEditTitle] = useState('')
@@ -74,6 +101,10 @@ export default function ReviewPage() {
     setEditClassification(doc.classification ?? '')
     setEditNotes(doc.review_notes ?? '')
     setShowForensics(false)
+    // Clear annotations when changing document, but preserve tab choice
+    setAnnotations([])
+    setCurrentPage(undefined)
+    setArcherMessageCount(0)
   }, [])
 
   const handleAction = async (action: 'approve' | 'flag' | 'reject', flag?: string) => {
@@ -104,12 +135,22 @@ export default function ReviewPage() {
       // Remove from queue and clear selection
       setDocuments((prev) => prev.filter((d) => d.id !== selected.id))
       setSelected(null)
+      setAnnotations([])
+      setCurrentPage(undefined)
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Action failed')
     } finally {
       setSaving(false)
     }
   }
+
+  const handleAnnotationsChange = useCallback((newAnnotations: Annotation[]) => {
+    setAnnotations(newAnnotations)
+  }, [])
+
+  const handleNavigate = useCallback((page: number) => {
+    setCurrentPage(page)
+  }, [])
 
   return (
     <MainContent>
@@ -196,9 +237,9 @@ export default function ReviewPage() {
           </div>
         ) : (
           <div className="flex-1 flex flex-col gap-4 min-w-0">
-            {/* Top: PDF Viewer */}
-            <div className="flex-1 border border-border-default rounded-lg overflow-hidden bg-surface min-h-0">
-              <div className="flex items-center justify-between px-3 py-2 bg-elevated border-b border-border-default">
+            {/* Top: PDF Viewer (react-pdf with highlighting) */}
+            <div className="flex-1 border border-border-default rounded-lg overflow-hidden bg-surface min-h-0 flex flex-col">
+              <div className="flex items-center justify-between px-3 py-2 bg-elevated border-b border-border-default shrink-0">
                 <p className="text-xs font-medium text-text-muted">
                   Document Viewer — {selected.bates_number ?? selected.title}
                 </p>
@@ -209,164 +250,170 @@ export default function ReviewPage() {
                   Open detail
                 </Link>
               </div>
-              <object
-                data={`/api/documents/${selected.id}/file`}
-                type="application/pdf"
-                className="w-full h-full"
-              >
-                <div className="flex items-center justify-center h-full text-text-muted text-sm">
-                  <p>PDF preview not available.{' '}
-                    <a
-                      href={`/api/documents/${selected.id}/file`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-info underline"
-                    >
-                      Open in new tab
-                    </a>
-                  </p>
-                </div>
-              </object>
+              <div className="flex-1 min-h-0">
+                <PdfViewer
+                  fileUrl={`/api/documents/${selected.id}/file`}
+                  annotations={annotations}
+                  currentPage={currentPage}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             </div>
 
-            {/* Bottom: Extracted data + actions */}
-            <div className="h-auto md:h-[380px] md:shrink-0 border border-border-default rounded-lg overflow-y-auto bg-surface">
-              <div className="p-4">
-                {/* Editable fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                  <div>
-                    <label className="block text-xs text-text-muted mb-1">Title</label>
-                    <input
-                      type="text"
-                      value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-text-muted mb-1">Document Type</label>
-                    <select
-                      value={editType}
-                      onChange={(e) => setEditType(e.target.value)}
-                      className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
-                    >
-                      <option value="">Unknown</option>
-                      {DOC_TYPES.map((t) => (
-                        <option key={t} value={t}>
-                          {t.replace(/_/g, ' ')}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-text-muted mb-1">Original Date</label>
-                    <input
-                      type="date"
-                      value={editDate}
-                      onChange={(e) => setEditDate(e.target.value)}
-                      className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-xs text-text-muted mb-1">Severity</label>
-                      <select
-                        value={editSeverity}
-                        onChange={(e) => setEditSeverity(e.target.value)}
-                        className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
-                      >
-                        <option value="">—</option>
-                        {SEVERITY_OPTIONS.map((s) => (
-                          <option key={s} value={s}>
-                            {s.replace(/_/g, ' ')}
-                          </option>
-                        ))}
-                      </select>
+            {/* Bottom: Tabbed panel — Review Form + Archer */}
+            <div className="h-auto md:h-[380px] md:shrink-0 border border-border-default rounded-lg overflow-hidden bg-surface flex flex-col">
+              <ReviewTabs
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                archerMessageCount={archerMessageCount}
+              />
+
+              <div className="flex-1 overflow-hidden">
+                {activeTab === 'form' ? (
+                  <div className="p-4 overflow-y-auto h-full">
+                    {/* Editable fields */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                      <div>
+                        <label className="block text-xs text-text-muted mb-1">Title</label>
+                        <input
+                          type="text"
+                          value={editTitle}
+                          onChange={(e) => setEditTitle(e.target.value)}
+                          className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-text-muted mb-1">Document Type</label>
+                        <select
+                          value={editType}
+                          onChange={(e) => setEditType(e.target.value)}
+                          className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
+                        >
+                          <option value="">Unknown</option>
+                          {DOC_TYPES.map((t) => (
+                            <option key={t} value={t}>
+                              {t.replace(/_/g, ' ')}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-text-muted mb-1">Original Date</label>
+                        <input
+                          type="date"
+                          value={editDate}
+                          onChange={(e) => setEditDate(e.target.value)}
+                          className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs text-text-muted mb-1">Severity</label>
+                          <select
+                            value={editSeverity}
+                            onChange={(e) => setEditSeverity(e.target.value)}
+                            className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
+                          >
+                            <option value="">—</option>
+                            {SEVERITY_OPTIONS.map((s) => (
+                              <option key={s} value={s}>
+                                {s.replace(/_/g, ' ')}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs text-text-muted mb-1">Classification</label>
+                          <select
+                            value={editClassification}
+                            onChange={(e) => setEditClassification(e.target.value)}
+                            className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
+                          >
+                            <option value="">—</option>
+                            {CLASSIFICATION_OPTIONS.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs text-text-muted mb-1">Classification</label>
-                      <select
-                        value={editClassification}
-                        onChange={(e) => setEditClassification(e.target.value)}
-                        className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
+
+                    {/* Extracted text preview */}
+                    <div className="mb-3">
+                      <label className="block text-xs text-text-muted mb-1">
+                        Extracted Text ({selected.extracted_text?.length ?? 0} chars)
+                      </label>
+                      <textarea
+                        readOnly
+                        value={selected.extracted_text ?? 'No text extracted'}
+                        className="w-full h-28 bg-elevated border border-border-default rounded px-2.5 py-2 text-xs text-text-secondary font-mono resize-none focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Forensic metadata toggle */}
+                    <div className="mb-3">
+                      <button
+                        onClick={() => setShowForensics(!showForensics)}
+                        className="text-xs text-info hover:text-info/80 transition-colors"
                       >
-                        <option value="">—</option>
-                        {CLASSIFICATION_OPTIONS.map((c) => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        ))}
-                      </select>
+                        {showForensics ? 'Hide' : 'Show'} forensic metadata
+                      </button>
+                      {showForensics && selected.forensic_metadata && (
+                        <pre className="mt-2 p-3 bg-elevated border border-border-default rounded text-[11px] text-text-secondary font-mono overflow-x-auto max-h-40">
+                          {JSON.stringify(selected.forensic_metadata, null, 2)}
+                        </pre>
+                      )}
+                    </div>
+
+                    {/* Review notes */}
+                    <div className="mb-4">
+                      <label className="block text-xs text-text-muted mb-1">Review Notes</label>
+                      <textarea
+                        value={editNotes}
+                        onChange={(e) => setEditNotes(e.target.value)}
+                        placeholder="Add notes about this document..."
+                        className="w-full h-16 bg-elevated border border-border-default rounded px-2.5 py-2 text-sm text-text-primary placeholder:text-text-muted resize-none focus:border-info focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-border-default">
+                      <button
+                        onClick={() => handleAction('approve')}
+                        disabled={saving}
+                        className="bg-success hover:bg-success/90 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                      >
+                        {saving ? 'Saving...' : 'Approve'}
+                      </button>
+                      <button
+                        onClick={() => handleAction('flag', 'needs_attention')}
+                        disabled={saving}
+                        className="bg-warning/10 hover:bg-warning/20 text-warning text-sm font-medium px-4 py-2 rounded-lg border border-warning/30 transition-colors"
+                      >
+                        Flag
+                      </button>
+                      <button
+                        onClick={() => handleAction('reject')}
+                        disabled={saving}
+                        className="bg-critical/10 hover:bg-critical/20 text-critical text-sm font-medium px-4 py-2 rounded-lg border border-critical/30 transition-colors"
+                      >
+                        Reject
+                      </button>
+                      <span className="text-xs text-text-muted ml-auto">
+                        {selected.page_count && `${selected.page_count} pages`}
+                        {selected.file_size_bytes && ` · ${formatBytes(selected.file_size_bytes)}`}
+                      </span>
                     </div>
                   </div>
-                </div>
-
-                {/* Extracted text preview */}
-                <div className="mb-3">
-                  <label className="block text-xs text-text-muted mb-1">
-                    Extracted Text ({selected.extracted_text?.length ?? 0} chars)
-                  </label>
-                  <textarea
-                    readOnly
-                    value={selected.extracted_text ?? 'No text extracted'}
-                    className="w-full h-28 bg-elevated border border-border-default rounded px-2.5 py-2 text-xs text-text-secondary font-mono resize-none focus:outline-none"
+                ) : (
+                  <ArcherPanel
+                    document={toArcherDocument(selected)}
+                    onAnnotationsChange={handleAnnotationsChange}
+                    onNavigate={handleNavigate}
                   />
-                </div>
-
-                {/* Forensic metadata toggle */}
-                <div className="mb-3">
-                  <button
-                    onClick={() => setShowForensics(!showForensics)}
-                    className="text-xs text-info hover:text-info/80 transition-colors"
-                  >
-                    {showForensics ? 'Hide' : 'Show'} forensic metadata
-                  </button>
-                  {showForensics && selected.forensic_metadata && (
-                    <pre className="mt-2 p-3 bg-elevated border border-border-default rounded text-[11px] text-text-secondary font-mono overflow-x-auto max-h-40">
-                      {JSON.stringify(selected.forensic_metadata, null, 2)}
-                    </pre>
-                  )}
-                </div>
-
-                {/* Review notes */}
-                <div className="mb-4">
-                  <label className="block text-xs text-text-muted mb-1">Review Notes</label>
-                  <textarea
-                    value={editNotes}
-                    onChange={(e) => setEditNotes(e.target.value)}
-                    placeholder="Add notes about this document..."
-                    className="w-full h-16 bg-elevated border border-border-default rounded px-2.5 py-2 text-sm text-text-primary placeholder:text-text-muted resize-none focus:border-info focus:outline-none"
-                  />
-                </div>
-
-                {/* Action buttons */}
-                <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-border-default">
-                  <button
-                    onClick={() => handleAction('approve')}
-                    disabled={saving}
-                    className="bg-success hover:bg-success/90 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-                  >
-                    {saving ? 'Saving...' : 'Approve'}
-                  </button>
-                  <button
-                    onClick={() => handleAction('flag', 'needs_attention')}
-                    disabled={saving}
-                    className="bg-warning/10 hover:bg-warning/20 text-warning text-sm font-medium px-4 py-2 rounded-lg border border-warning/30 transition-colors"
-                  >
-                    Flag
-                  </button>
-                  <button
-                    onClick={() => handleAction('reject')}
-                    disabled={saving}
-                    className="bg-critical/10 hover:bg-critical/20 text-critical text-sm font-medium px-4 py-2 rounded-lg border border-critical/30 transition-colors"
-                  >
-                    Reject
-                  </button>
-                  <span className="text-xs text-text-muted ml-auto">
-                    {selected.page_count && `${selected.page_count} pages`}
-                    {selected.file_size_bytes && ` · ${formatBytes(selected.file_size_bytes)}`}
-                  </span>
-                </div>
+                )}
               </div>
             </div>
           </div>

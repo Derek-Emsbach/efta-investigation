@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -12,10 +12,18 @@ export async function GET() {
   }
 
   // Fetch conversations with message counts
-  const { data: conversations, error } = await supabase
+  let query = supabase
     .from('conversations')
     .select('id, title, pinned, created_at, updated_at')
     .eq('user_id', user.id)
+
+  // Filter by document_id if provided (used by Archer review partner)
+  const documentId = request.nextUrl.searchParams.get('document_id')
+  if (documentId) {
+    query = query.eq('document_id', documentId)
+  }
+
+  const { data: conversations, error } = await query
     .order('pinned', { ascending: false })
     .order('updated_at', { ascending: false })
     .limit(50)
@@ -63,13 +71,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { title } = (await request.json()) as { title?: string }
+  const { title, document_id } = (await request.json()) as {
+    title?: string
+    document_id?: string
+  }
 
   const { data, error } = await supabase
     .from('conversations')
     .insert({
       user_id: user.id,
       title: title ?? null,
+      ...(document_id ? { document_id } : {}),
     })
     .select('id, title, created_at')
     .single()
