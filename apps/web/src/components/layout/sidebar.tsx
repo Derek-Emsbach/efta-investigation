@@ -1,5 +1,6 @@
 import SidebarNav from "@/components/layout/sidebar-nav";
 import LogoutButton from "@/components/auth/logout-button";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 interface SidebarProps {
   userEmail: string;
@@ -63,9 +64,12 @@ export default function Sidebar({ userEmail }: SidebarProps) {
         >
           {userEmail}
         </p>
-        <LogoutButton />
+        <div className="flex items-center justify-between">
+          <LogoutButton />
+          <ThemeToggle />
+        </div>
         <p className="mt-3 text-[10px] text-text-muted">
-          Developed by Cyclops Digital LLC
+          &copy; {new Date().getFullYear()} Cyclops Digital LLC
         </p>
       </div>
     </aside>

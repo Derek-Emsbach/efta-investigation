@@ -4,6 +4,7 @@ import {
   IBM_Plex_Sans,
   IBM_Plex_Mono,
 } from "next/font/google";
+import { ThemeProvider } from "@/lib/theme-provider";
 import "./globals.css";
 
 const playfairDisplay = Playfair_Display({
@@ -30,6 +31,12 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "EFTA Investigation Platform",
   description: "Systematic analysis of DOJ Epstein Files disclosures",
+  openGraph: {
+    title: "EFTA Investigation Platform",
+    description: "Systematic analysis of DOJ Epstein Files disclosures",
+    type: "website",
+    siteName: "EFTA Investigation Platform",
+  },
 };
 
 export default function RootLayout({
@@ -40,10 +47,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${playfairDisplay.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
     >
+      <head>
+        {/* Prevent flash of wrong theme — runs before first paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("efta-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="bg-background text-text-primary font-body antialiased">
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

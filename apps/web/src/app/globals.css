@@ -45,6 +45,25 @@
   --animate-shimmer: shimmer 2s linear infinite;
 }
 
+/* === Light Theme Overrides === */
+[data-theme="light"] {
+  --color-background: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-elevated: #F1F5F9;
+  --color-border-default: #D1D5DB;
+  --color-border-light: #E5E7EB;
+  --color-text-primary: #111827;
+  --color-text-secondary: #4B5563;
+  --color-text-muted: #9CA3AF;
+}
+
+[data-theme="light"] input:-webkit-autofill,
+[data-theme="light"] input:-webkit-autofill:hover,
+[data-theme="light"] input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-elevated) inset;
+  -webkit-text-fill-color: var(--color-text-primary);
+}
+
 /* === Keyframes === */
 @keyframes severity-pulse {
   0%, 100% {

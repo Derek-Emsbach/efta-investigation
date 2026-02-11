@@ -109,8 +109,18 @@ export default function LoginPage() {
             <p className="text-center text-xs text-text-muted">
               Authorized personnel only. All access is logged.
             </p>
+            <p className="mt-3 text-center text-[10px] leading-relaxed text-text-muted/70">
+              All persons referenced on this platform are presumed innocent
+              unless convicted in a court of law. Entity classifications
+              reflect evidence strength, not culpability.
+            </p>
           </div>
         </div>
+
+        {/* Copyright */}
+        <p className="mt-6 text-center text-[10px] text-text-muted/50">
+          &copy; {new Date().getFullYear()} Cyclops Digital LLC
+        </p>
       </div>
     </div>
   );

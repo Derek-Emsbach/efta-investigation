@@ -135,13 +135,16 @@ export default function SidebarNav({ items }: SidebarNavProps) {
           <Link
             key={item.href}
             href={item.href}
+            aria-current={isActive ? "page" : undefined}
             className={`flex items-center gap-3 rounded-r px-4 py-2 text-sm transition-colors ${
               isActive
                 ? "border-l-2 border-critical bg-elevated text-text-primary"
                 : "border-l-2 border-transparent text-text-secondary hover:bg-elevated/50 hover:text-text-primary"
             }`}
           >
-            <NavIcon icon={item.icon} />
+            <span aria-hidden="true">
+              <NavIcon icon={item.icon} />
+            </span>
             <span>{item.label}</span>
           </Link>
         );
