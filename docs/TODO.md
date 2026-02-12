@@ -224,6 +224,12 @@
 - [x] `GET/PATCH/DELETE /api/assistant/conversations/[id]` — load + rename/pin + delete *(built in Phase 3)*
 - [x] `POST /api/assistant/conversations/[id]/messages` — save message to conversation *(built in Phase 3)*
 - [x] `PATCH /api/assistant/conversations/[id]/messages/[messageId]` — update message (suggestion status) *(built in Phase 3)*
+- [x] `POST /api/upload/presign` — presigned URL generation + re-upload detection *(built in Phase 4)*
+- [x] `POST /api/upload/confirm` — confirm R2 uploads completed *(built in Phase 4)*
+- [x] `GET /api/processing` — processing queue with status filtering *(built in Phase 4)*
+- [x] `GET/POST /api/review` — review queue + approve/reject/flag actions *(built in Phase 4)*
+- [x] `POST /api/review/archer` — Archer AI analysis for document review *(built in Phase 4)*
+- [x] `POST /api/documents/[id]/reprocess` — re-queue document for processing *(built in Phase 4)*
 
 ---
 
@@ -314,6 +320,8 @@
 
 **Goal:** Automated document ingestion and analysis with human review.
 
+> **Status:** Core pipeline complete. 8-stage worker (ingest → forensics → extract → entities → redactions → crossref → classify → version diff), upload with re-upload detection, processing dashboard, review page with Archer AI copilot, document versioning and diff. Remaining: worker deployment, zip upload, bulk actions.
+
 ### 4.1 Python Worker
 - [x] Python polling worker in `services/worker/` (simple script, not FastAPI)
 - [x] Supabase client for Python (`db.py` — service role key, bypasses RLS)
@@ -322,11 +330,13 @@
   - [x] `ingest.py` — download from R2, page count, file size, thumbnail generation (150 DPI)
   - [x] `forensics.py` — PDF version, metadata, EOF markers, pipeline detection, fonts, XMP/JS/forms
   - [x] `extract.py` — text extraction (PyMuPDF), document type classification, date detection
-- [ ] Pipeline stages (4-7, deferred):
-  - [ ] `entities.py` — name detection, match against existing entity DB, flag new names
-  - [ ] `redactions.py` — detect redacted regions, estimate coverage, classify A-D
-  - [ ] `crossref.py` — match dates, names, case numbers against existing documents
-  - [ ] `classify.py` — document type classification, evidence value scoring, priority flagging
+- [x] Pipeline stages (4-7):
+  - [x] `entities.py` — two-pass entity matching (exact regex + fuzzy/edit-distance), OCR whitespace normalization, role detection, case number extraction
+  - [x] `redactions.py` — page-level redaction detection, coverage estimation, A-D category classification, suspect redaction flagging
+  - [x] `crossref.py` — match dates, entities, case numbers against existing documents/events; creates event_documents links
+  - [x] `classify.py` — evidence value scoring (0-100), severity assignment, auto-approve low-value docs, flag high-value for review
+- [x] Pipeline stage 8 (conditional):
+  - [x] `diff.py` — version diff for re-processed documents; compares redactions, entities, classification, severity against previous version snapshot; flags redaction decreases
 - [x] Each stage updates document `processing_status` in Supabase
 - [x] Queue management: process one document at a time, report progress
 - [x] Error handling: failed documents marked with error message, retryable
@@ -338,6 +348,8 @@
 - [x] Per-file progress bars (XHR for progress events)
 - [x] Parallel uploads (up to 5 concurrent)
 - [x] Bates number auto-detection from filename
+- [x] Re-upload detection: duplicate bates numbers trigger version snapshot + re-queue instead of rejection
+- [x] Re-upload UI: amber "Re-upload v{N}" badges, distinct success banner with re-upload count
 - [ ] Upload zone: zip file support
 - [ ] Google Drive URL input (for large datasets)
 
@@ -347,6 +359,7 @@
 - [x] Queue table with status badges, current step, priority, timestamps
 - [x] Filter by status
 - [x] Click row → navigate to document detail
+- [x] Re-process button on document detail page (queues without new PDF upload)
 - [ ] Retry failed documents
 - [ ] Bulk actions (retry all failed, clear completed)
 
@@ -363,42 +376,48 @@
 - [ ] Adjust tier assignments
 - [ ] Add/edit evidence items
 - [ ] Keyboard shortcuts for fast review
-- [ ] **Detective Review Copilot** — AI assistant embedded alongside document viewer during review
-  - [ ] Collapsible chat panel alongside the PDF viewer (right side or bottom drawer)
-  - [ ] Detective auto-analyzes the current document on load (entities, dates, key quotes, metadata)
-  - [ ] Contextual prompt suggestions based on document content and cross-references to other docs
-  - [ ] Detective highlights entities it recognizes and flags potential new ones
-  - [ ] Surfaces revealing quotes, financial figures, and evidence-grade information
-  - [ ] Shows possible connections/ties to existing entities and investigations
-  - [ ] Recommends review action (approve/flag/reject) with reasoning
+- [x] **Archer Review Copilot** — AI analysis panel embedded in review page
+  - [x] Collapsible Archer panel alongside the PDF viewer (right side)
+  - [x] Auto-analyzes the current document on load (entities, dates, key quotes, metadata)
+  - [x] Contextual prompts: "Who is mentioned?", "What's significant?", "Cross-references?"
+  - [x] Surfaces entities, key quotes, evidence-grade information, and connections
+  - [x] Recommends review action (approve/flag/reject) with reasoning
   - [ ] Conversation persists per document (revisit later to continue analysis)
-  - [ ] Quick-action buttons: "Who is mentioned?", "What's significant?", "Any ties to [entity]?", "Compare with similar docs"
+  - [ ] Quick-action buttons to apply Archer suggestions directly
 
 ### 4.4 Tiered Processing
-- [ ] **Tier A (automatic, all documents):**
-  - [ ] Metadata extraction
-  - [ ] Text extraction
-  - [ ] File size, page count, PDF version
-  - [ ] Upload to R2
-  - [ ] Basic document type classification
-- [ ] **Tier B (AI-assisted, flagged documents):**
-  - [ ] Entity name extraction
-  - [ ] Redaction detection and classification
-  - [ ] Cross-reference matching
-  - [ ] Evidence value scoring
+- [x] **Tier A (automatic, all documents — stages 1-3):**
+  - [x] R2 download, page count, file size, thumbnail (stage 1)
+  - [x] PDF forensic metadata extraction (stage 2)
+  - [x] Text extraction + document type + date detection (stage 3)
+- [x] **Tier B (gated, non-blank documents — stages 4-7):**
+  - [x] Entity name extraction (regex + fuzzy matching) (stage 4)
+  - [x] Redaction detection and A-D classification (stage 5)
+  - [x] Cross-reference matching (dates, entities, case numbers) (stage 6)
+  - [x] Evidence value scoring (0-100), severity, auto-approve (stage 7)
 - [ ] **Tier C (human review, high-value documents):**
   - [ ] Full forensic analysis
   - [ ] Manual entity verification
   - [ ] Evidence item creation
   - [ ] Connection mapping
   - [ ] Narrative writing (for entity profiles)
-- [ ] Priority scoring algorithm:
-  - [ ] File size > 10 pages = +2 priority
-  - [ ] Known entity names detected = +3 priority
-  - [ ] Redaction density > 30% = +2 priority
-  - [ ] Document type = prosecution memo or FBI 302 = +5 priority
+- [x] Priority scoring algorithm:
+  - [x] Page count, entity tier, redaction severity, document type all contribute
+  - [x] Score 0-100 → severity mapping (routine/high/critical/extreme_critical)
+  - [x] Documents scoring ≥75 auto-set to `needs_review`
 
-### 4.5 Deploy Worker
+### 4.5 Document Versioning & Re-Upload
+- [x] `document_versions` table for snapshot history
+- [x] Re-upload handling: duplicate bates numbers create version snapshot + re-queue
+- [x] Re-process API: `/api/documents/[id]/reprocess` (no new PDF needed)
+- [x] Version diff stage (stage 8): redaction changes, entity changes, classification/severity changes
+- [x] Version badge on document detail page (v2, v3, etc.)
+- [x] Collapsible version history panel
+- [x] Version diff alert card with significant findings
+- [x] Flags: `redaction_decrease`, `unredacted_names` for DOJ re-release detection
+- [ ] Migration SQL needs to be run in Supabase SQL Editor (`packages/db/migrations/003_document_versions.sql`)
+
+### 4.6 Deploy Worker
 - [ ] Create Dockerfile for Python worker
 - [ ] Deploy to Railway
 - [ ] Set environment variables (Supabase URL/key, R2 credentials)
