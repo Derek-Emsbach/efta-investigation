@@ -1,7 +1,11 @@
 import { NextRequest } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/lib/supabase/server'
-import { buildArcherSystemPrompt, type ArcherDocument } from '@/lib/ai/archer-prompt'
+import {
+  buildArcherStaticPrompt,
+  buildArcherDocumentContext,
+  type ArcherDocument,
+} from '@/lib/ai/archer-prompt'
 import { ASSISTANT_TOOLS, executeTool } from '@/lib/ai/tools'
 
 export const maxDuration = 60
@@ -15,6 +19,9 @@ interface ChatMessage {
 const ARCHER_TOOLS = ASSISTANT_TOOLS.filter(
   (t) => t.name !== 'get_platform_context' && t.name !== 'suggest_platform_improvement',
 )
+
+// Keep conversation history manageable — last 10 messages (~5 exchanges)
+const MAX_HISTORY_MESSAGES = 10
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -99,19 +106,36 @@ async function runArcherConversation(
     apiKey: process.env.ANTHROPIC_API_KEY!,
   })
 
-  const apiMessages: Anthropic.MessageParam[] = chatMessages.map((m) => ({
+  // Trim conversation history to prevent token bloat
+  const trimmedMessages = chatMessages.length > MAX_HISTORY_MESSAGES
+    ? chatMessages.slice(-MAX_HISTORY_MESSAGES)
+    : chatMessages
+
+  const apiMessages: Anthropic.MessageParam[] = trimmedMessages.map((m) => ({
     role: m.role,
     content: m.content,
   }))
 
-  const systemPrompt = buildArcherSystemPrompt(document)
+  // Split system prompt for caching: static part (cacheable) + document context
+  const systemBlocks: Anthropic.TextBlockParam[] = [
+    {
+      type: 'text' as const,
+      text: buildArcherStaticPrompt(),
+      cache_control: { type: 'ephemeral' },
+    },
+    {
+      type: 'text' as const,
+      text: buildArcherDocumentContext(document),
+    },
+  ]
+
   const MAX_TOOL_ITERATIONS = 8
 
   for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
     const stream = anthropic.messages.stream({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 4096,
-      system: systemPrompt,
+      system: systemBlocks,
       messages: apiMessages,
       tools: ARCHER_TOOLS,
     })

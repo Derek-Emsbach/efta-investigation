@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/TextLayer.css'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 
 type CustomTextRenderer = (props: { str: string; itemIndex: number }) => string
 
-// Configure PDF.js worker — use CDN for Turbopack compatibility
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`
+// Configure PDF.js worker — served from public/ for Turbopack compatibility
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
 export interface Annotation {
   type: 'entity' | 'highlight' | 'navigate'
@@ -18,11 +18,17 @@ export interface Annotation {
   color?: string
 }
 
+interface ImagePageInfo {
+  page: number
+  count: number
+}
+
 interface PdfViewerProps {
   fileUrl: string
   annotations: Annotation[]
   currentPage?: number
   onPageChange?: (page: number) => void
+  forensicMetadata?: Record<string, unknown> | null
 }
 
 const TIER_HIGHLIGHT_COLORS: Record<number, string> = {
@@ -51,16 +57,91 @@ function getHighlightColor(annotation: Annotation): string {
   return 'rgba(59, 130, 246, 0.25)' // default info blue
 }
 
+/** Extract image page info from forensic metadata */
+function parseImagePages(metadata: Record<string, unknown> | null | undefined): ImagePageInfo[] {
+  if (!metadata) return []
+
+  // Support multiple metadata formats from the worker
+  const imagePages: ImagePageInfo[] = []
+
+  // Format 1: { images: [{ page: 1, count: 3 }, ...] }
+  if (Array.isArray(metadata.images)) {
+    for (const img of metadata.images) {
+      if (typeof img === 'object' && img && typeof (img as Record<string, unknown>).page === 'number') {
+        const record = img as Record<string, unknown>
+        imagePages.push({
+          page: record.page as number,
+          count: typeof record.count === 'number' ? record.count : 1,
+        })
+      }
+    }
+  }
+
+  // Format 2: { image_pages: [1, 3, 7] }
+  if (Array.isArray(metadata.image_pages)) {
+    for (const p of metadata.image_pages) {
+      if (typeof p === 'number' && !imagePages.some((ip) => ip.page === p)) {
+        imagePages.push({ page: p, count: 1 })
+      }
+    }
+  }
+
+  // Format 3: { pages_with_images: { "1": 3, "3": 1 } }
+  if (metadata.pages_with_images && typeof metadata.pages_with_images === 'object') {
+    const pwi = metadata.pages_with_images as Record<string, unknown>
+    for (const [pageStr, count] of Object.entries(pwi)) {
+      const page = parseInt(pageStr, 10)
+      if (!isNaN(page) && !imagePages.some((ip) => ip.page === page)) {
+        imagePages.push({ page, count: typeof count === 'number' ? count : 1 })
+      }
+    }
+  }
+
+  return imagePages.sort((a, b) => a.page - b.page)
+}
+
 export default function PdfViewer({
   fileUrl,
   annotations,
   currentPage,
   onPageChange,
+  forensicMetadata,
 }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number>(0)
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [pageInput, setPageInput] = useState<string>('1')
+  const [showImageDropdown, setShowImageDropdown] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState(800)
+  const imageDropdownRef = useRef<HTMLDivElement>(null)
+
+  // Parse image pages from forensic metadata
+  const imagePages = useMemo(() => parseImagePages(forensicMetadata), [forensicMetadata])
+
+  // Track container width for responsive PDF rendering
+  useEffect(() => {
+    if (!containerRef.current) return
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width)
+      }
+    })
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  // Close image dropdown on click outside
+  useEffect(() => {
+    if (!showImageDropdown) return
+    function handleClick(e: MouseEvent) {
+      if (imageDropdownRef.current && !imageDropdownRef.current.contains(e.target as Node)) {
+        setShowImageDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [showImageDropdown])
 
   // Sync with external page navigation (from Archer)
   useEffect(() => {
@@ -150,10 +231,13 @@ export default function PdfViewer({
     )
   }
 
+  // Compute page width — leave some padding for scroll area
+  const pageWidth = Math.min(containerWidth - 32, 1200)
+
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col" ref={containerRef}>
       {/* Navigation bar */}
-      <div className="flex items-center justify-between border-b border-border-default bg-surface px-3 py-1.5">
+      <div className="flex items-center justify-between border-b border-border-default bg-surface px-3 py-1.5 shrink-0">
         <div className="flex items-center gap-2">
           <button
             onClick={() => goToPage(pageNumber - 1)}
@@ -197,6 +281,59 @@ export default function PdfViewer({
               {pageAnnotations.length} highlight{pageAnnotations.length !== 1 ? 's' : ''}
             </span>
           )}
+
+          {/* Image navigation dropdown */}
+          {imagePages.length > 0 && (
+            <div className="relative" ref={imageDropdownRef}>
+              <button
+                onClick={() => setShowImageDropdown(!showImageDropdown)}
+                className={`flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
+                  showImageDropdown
+                    ? 'bg-warning/20 text-warning'
+                    : 'bg-warning/10 text-warning hover:bg-warning/20'
+                }`}
+              >
+                <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                Images ({imagePages.length})
+              </button>
+
+              {showImageDropdown && (
+                <div className="absolute right-0 top-full mt-1 z-50 w-48 rounded-lg border border-border-default bg-surface shadow-lg overflow-hidden">
+                  <div className="px-3 py-1.5 border-b border-border-default">
+                    <p className="text-[10px] font-medium text-text-muted uppercase tracking-wider">
+                      Pages with images
+                    </p>
+                  </div>
+                  <div className="max-h-48 overflow-y-auto">
+                    {imagePages.map((ip) => (
+                      <button
+                        key={ip.page}
+                        onClick={() => {
+                          goToPage(ip.page)
+                          setShowImageDropdown(false)
+                        }}
+                        className={`w-full text-left px-3 py-1.5 text-xs transition-colors flex items-center justify-between ${
+                          ip.page === pageNumber
+                            ? 'bg-info/5 text-info'
+                            : 'text-text-secondary hover:bg-elevated'
+                        }`}
+                      >
+                        <span>Page {ip.page}</span>
+                        <span className="text-[10px] text-text-muted">
+                          {ip.count} image{ip.count !== 1 ? 's' : ''}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           <a
             href={fileUrl}
             target="_blank"
@@ -239,7 +376,7 @@ export default function PdfViewer({
             renderAnnotationLayer={true}
             customTextRenderer={customTextRenderer}
             className="shadow-lg"
-            width={Math.min(800, typeof window !== 'undefined' ? window.innerWidth - 400 : 800)}
+            width={pageWidth}
           />
         </Document>
       </div>

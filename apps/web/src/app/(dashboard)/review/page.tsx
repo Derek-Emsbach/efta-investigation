@@ -1,13 +1,21 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import MainContent from '@/components/layout/main-content'
-import { PageHeader } from '@/components/ui/page-header'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import PdfViewer, { type Annotation } from '@/components/review/pdf-viewer'
-import ReviewTabs from '@/components/review/review-tabs'
+import type { Annotation } from '@/components/review/pdf-viewer'
 import ArcherPanel from '@/components/review/archer-panel'
 import type { ArcherDocument } from '@/lib/ai/archer-prompt'
+
+// Dynamic import — react-pdf requires DOM APIs (DOMMatrix) unavailable during SSR
+const PdfViewer = dynamic(() => import('@/components/review/pdf-viewer'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center text-sm text-text-muted">
+      Loading PDF viewer...
+    </div>
+  ),
+})
 
 interface ReviewDocument {
   id: string
@@ -56,11 +64,12 @@ export default function ReviewPage() {
   const [selected, setSelected] = useState<ReviewDocument | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [showForensics, setShowForensics] = useState(false)
 
-  // Tab state
-  const [activeTab, setActiveTab] = useState<'form' | 'archer'>('form')
-  const [archerMessageCount, setArcherMessageCount] = useState(0)
+  // Queue collapse state
+  const [queueCollapsed, setQueueCollapsed] = useState(false)
+
+  // Review form collapse state
+  const [formExpanded, setFormExpanded] = useState(false)
 
   // PDF annotation state (driven by Archer)
   const [annotations, setAnnotations] = useState<Annotation[]>([])
@@ -81,7 +90,7 @@ export default function ReviewPage() {
       const data = await res.json()
       setDocuments(data.documents)
     } catch {
-      // Silently handle — user will see empty state
+      // Silently handle
     } finally {
       setLoading(false)
     }
@@ -91,7 +100,6 @@ export default function ReviewPage() {
     fetchQueue()
   }, [fetchQueue])
 
-  // Populate edit fields when selecting a document
   const selectDocument = useCallback((doc: ReviewDocument) => {
     setSelected(doc)
     setEditTitle(doc.title ?? '')
@@ -100,11 +108,9 @@ export default function ReviewPage() {
     setEditSeverity(doc.severity ?? '')
     setEditClassification(doc.classification ?? '')
     setEditNotes(doc.review_notes ?? '')
-    setShowForensics(false)
-    // Clear annotations when changing document, but preserve tab choice
     setAnnotations([])
     setCurrentPage(undefined)
-    setArcherMessageCount(0)
+    setFormExpanded(false)
   }, [])
 
   const handleAction = async (action: 'approve' | 'flag' | 'reject', flag?: string) => {
@@ -132,7 +138,6 @@ export default function ReviewPage() {
 
       if (!res.ok) throw new Error('Action failed')
 
-      // Remove from queue and clear selection
       setDocuments((prev) => prev.filter((d) => d.id !== selected.id))
       setSelected(null)
       setAnnotations([])
@@ -153,20 +158,37 @@ export default function ReviewPage() {
   }, [])
 
   return (
-    <MainContent>
-      <PageHeader
-        title="Review Queue"
-        subtitle={`${documents.length} document${documents.length !== 1 ? 's' : ''} awaiting review`}
-      />
-
-      <div className="flex flex-col md:flex-row gap-4 md:h-[calc(100vh-200px)]">
-        {/* Left panel: Document queue */}
-        <div className="w-full md:w-72 md:shrink-0 max-h-60 md:max-h-none border border-border-default rounded-lg overflow-hidden flex flex-col bg-surface">
-          <div className="p-3 border-b border-border-default bg-elevated">
+    <div className="flex h-screen">
+      {/* ─── Column 1: Queue ─────────────────────────── */}
+      <div
+        className={`hidden md:flex flex-col border-r border-border-default bg-surface transition-all duration-200 ${
+          queueCollapsed ? 'w-12' : 'w-[280px]'
+        }`}
+      >
+        {/* Queue header */}
+        <div className="flex items-center justify-between px-3 py-2.5 border-b border-border-default shrink-0">
+          {!queueCollapsed && (
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider">
               Queue ({documents.length})
             </p>
-          </div>
+          )}
+          <button
+            onClick={() => setQueueCollapsed(!queueCollapsed)}
+            className="rounded p-1 text-text-muted hover:bg-elevated hover:text-text-secondary transition-colors"
+            aria-label={queueCollapsed ? 'Expand queue' : 'Collapse queue'}
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              {queueCollapsed ? (
+                <polyline points="9 18 15 12 9 6" />
+              ) : (
+                <polyline points="15 18 9 12 15 6" />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Queue list */}
+        {!queueCollapsed && (
           <div className="flex-1 overflow-y-auto">
             {loading && (
               <div className="p-4 text-sm text-text-muted">Loading...</div>
@@ -220,206 +242,223 @@ export default function ReviewPage() {
               </button>
             ))}
           </div>
-        </div>
+        )}
 
-        {/* Right panel: Review detail */}
+        {/* Collapsed: vertical "QUEUE" label */}
+        {queueCollapsed && (
+          <div className="flex-1 flex items-center justify-center">
+            <span className="text-[10px] font-medium text-text-muted uppercase tracking-widest [writing-mode:vertical-rl] rotate-180">
+              Queue ({documents.length})
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* ─── Column 2: PDF Viewer + Review Form Bar ── */}
+      <div className="flex-1 flex flex-col min-w-0">
         {!selected ? (
-          <div className="flex-1 flex items-center justify-center border border-border-default rounded-lg bg-surface">
+          /* Empty state */
+          <div className="flex-1 flex items-center justify-center bg-surface">
             <div className="text-center">
-              <svg className="w-16 h-16 mx-auto mb-4 text-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+              <svg className="w-16 h-16 mx-auto mb-4 text-text-muted/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                 <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
                 <line x1="16" y1="13" x2="8" y2="13" />
                 <line x1="16" y1="17" x2="8" y2="17" />
               </svg>
-              <p className="text-text-muted text-sm">Select a document from the queue to review</p>
+              <p className="text-text-muted text-sm">Select a document from the queue</p>
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col gap-4 min-w-0">
-            {/* Top: PDF Viewer (react-pdf with highlighting) */}
-            <div className="flex-1 border border-border-default rounded-lg overflow-hidden bg-surface min-h-0 flex flex-col">
-              <div className="flex items-center justify-between px-3 py-2 bg-elevated border-b border-border-default shrink-0">
-                <p className="text-xs font-medium text-text-muted">
-                  Document Viewer — {selected.bates_number ?? selected.title}
+          <>
+            {/* Document header bar */}
+            <div className="flex items-center justify-between px-4 py-2 bg-elevated border-b border-border-default shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <p className="text-xs font-medium text-text-primary truncate">
+                  {selected.bates_number ?? selected.title ?? 'Untitled'}
                 </p>
-                <Link
-                  href={`/documents/${selected.id}`}
-                  className="text-xs text-info hover:text-info/80"
-                >
-                  Open detail
-                </Link>
+                {selected.document_type && (
+                  <span className="text-[10px] bg-elevated rounded px-1.5 py-0.5 text-text-muted capitalize shrink-0">
+                    {selected.document_type.replace(/_/g, ' ')}
+                  </span>
+                )}
               </div>
-              <div className="flex-1 min-h-0">
-                <PdfViewer
-                  fileUrl={`/api/documents/${selected.id}/file`}
-                  annotations={annotations}
-                  currentPage={currentPage}
-                  onPageChange={setCurrentPage}
-                />
-              </div>
+              <Link
+                href={`/documents/${selected.id}`}
+                className="text-xs text-info hover:text-info/80 shrink-0"
+              >
+                Open detail
+              </Link>
             </div>
 
-            {/* Bottom: Tabbed panel — Review Form + Archer */}
-            <div className="h-auto md:h-[380px] md:shrink-0 border border-border-default rounded-lg overflow-hidden bg-surface flex flex-col">
-              <ReviewTabs
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-                archerMessageCount={archerMessageCount}
+            {/* PDF Viewer — fills available height */}
+            <div className="flex-1 min-h-0">
+              <PdfViewer
+                fileUrl={`/api/documents/${selected.id}/file`}
+                annotations={annotations}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                forensicMetadata={selected.forensic_metadata}
               />
+            </div>
 
-              <div className="flex-1 overflow-hidden">
-                {activeTab === 'form' ? (
-                  <div className="p-4 overflow-y-auto h-full">
-                    {/* Editable fields */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            {/* Review form bar — collapsible */}
+            <div className="border-t border-border-default bg-surface shrink-0">
+              {/* Collapsed bar: action buttons + form toggle */}
+              <div className="flex items-center justify-between px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setFormExpanded(!formExpanded)}
+                    className="rounded p-1 text-text-muted hover:bg-elevated hover:text-text-secondary transition-colors"
+                    aria-label={formExpanded ? 'Collapse form' : 'Expand form'}
+                  >
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {formExpanded ? (
+                        <polyline points="18 15 12 9 6 15" />
+                      ) : (
+                        <polyline points="6 9 12 15 18 9" />
+                      )}
+                    </svg>
+                  </button>
+
+                  {/* Quick metadata display */}
+                  {editSeverity && (
+                    <span className={`text-[10px] rounded px-1.5 py-0.5 font-medium ${
+                      editSeverity === 'extreme_critical' ? 'bg-critical/10 text-critical' :
+                      editSeverity === 'critical' ? 'bg-critical/10 text-critical' :
+                      editSeverity === 'high' ? 'bg-warning/10 text-warning' :
+                      'bg-elevated text-text-muted'
+                    }`}>
+                      {editSeverity.replace(/_/g, ' ')}
+                    </span>
+                  )}
+                  <span className="text-[10px] text-text-muted">
+                    {selected.page_count && `${selected.page_count}p`}
+                    {selected.file_size_bytes && ` · ${formatBytes(selected.file_size_bytes)}`}
+                  </span>
+                </div>
+
+                {/* Action buttons — always visible */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleAction('approve')}
+                    disabled={saving}
+                    className="bg-success hover:bg-success/90 disabled:opacity-50 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    {saving ? '...' : 'Approve'}
+                  </button>
+                  <button
+                    onClick={() => handleAction('flag', 'needs_attention')}
+                    disabled={saving}
+                    className="bg-warning/10 hover:bg-warning/20 text-warning text-xs font-medium px-3 py-1.5 rounded-lg border border-warning/30 transition-colors"
+                  >
+                    Flag
+                  </button>
+                  <button
+                    onClick={() => handleAction('reject')}
+                    disabled={saving}
+                    className="bg-critical/10 hover:bg-critical/20 text-critical text-xs font-medium px-3 py-1.5 rounded-lg border border-critical/30 transition-colors"
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+
+              {/* Expanded form */}
+              {formExpanded && (
+                <div className="px-4 pb-4 pt-1 border-t border-border-default space-y-3">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block text-[10px] text-text-muted mb-1">Title</label>
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="w-full bg-elevated border border-border-default rounded px-2 py-1 text-xs text-text-primary focus:border-info focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-text-muted mb-1">Type</label>
+                      <select
+                        value={editType}
+                        onChange={(e) => setEditType(e.target.value)}
+                        className="w-full bg-elevated border border-border-default rounded px-2 py-1 text-xs text-text-primary focus:border-info focus:outline-none"
+                      >
+                        <option value="">Unknown</option>
+                        {DOC_TYPES.map((t) => (
+                          <option key={t} value={t}>
+                            {t.replace(/_/g, ' ')}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-text-muted mb-1">Date</label>
+                      <input
+                        type="date"
+                        value={editDate}
+                        onChange={(e) => setEditDate(e.target.value)}
+                        className="w-full bg-elevated border border-border-default rounded px-2 py-1 text-xs text-text-primary focus:border-info focus:outline-none"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="block text-xs text-text-muted mb-1">Title</label>
-                        <input
-                          type="text"
-                          value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
-                          className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-text-muted mb-1">Document Type</label>
+                        <label className="block text-[10px] text-text-muted mb-1">Severity</label>
                         <select
-                          value={editType}
-                          onChange={(e) => setEditType(e.target.value)}
-                          className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
+                          value={editSeverity}
+                          onChange={(e) => setEditSeverity(e.target.value)}
+                          className="w-full bg-elevated border border-border-default rounded px-2 py-1 text-xs text-text-primary focus:border-info focus:outline-none"
                         >
-                          <option value="">Unknown</option>
-                          {DOC_TYPES.map((t) => (
-                            <option key={t} value={t}>
-                              {t.replace(/_/g, ' ')}
+                          <option value="">—</option>
+                          {SEVERITY_OPTIONS.map((s) => (
+                            <option key={s} value={s}>
+                              {s.replace(/_/g, ' ')}
                             </option>
                           ))}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs text-text-muted mb-1">Original Date</label>
-                        <input
-                          type="date"
-                          value={editDate}
-                          onChange={(e) => setEditDate(e.target.value)}
-                          className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
-                        />
+                        <label className="block text-[10px] text-text-muted mb-1">Class.</label>
+                        <select
+                          value={editClassification}
+                          onChange={(e) => setEditClassification(e.target.value)}
+                          className="w-full bg-elevated border border-border-default rounded px-2 py-1 text-xs text-text-primary focus:border-info focus:outline-none"
+                        >
+                          <option value="">—</option>
+                          {CLASSIFICATION_OPTIONS.map((c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
+                        </select>
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div>
-                          <label className="block text-xs text-text-muted mb-1">Severity</label>
-                          <select
-                            value={editSeverity}
-                            onChange={(e) => setEditSeverity(e.target.value)}
-                            className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
-                          >
-                            <option value="">—</option>
-                            {SEVERITY_OPTIONS.map((s) => (
-                              <option key={s} value={s}>
-                                {s.replace(/_/g, ' ')}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-xs text-text-muted mb-1">Classification</label>
-                          <select
-                            value={editClassification}
-                            onChange={(e) => setEditClassification(e.target.value)}
-                            className="w-full bg-elevated border border-border-default rounded px-2.5 py-1.5 text-sm text-text-primary focus:border-info focus:outline-none"
-                          >
-                            <option value="">—</option>
-                            {CLASSIFICATION_OPTIONS.map((c) => (
-                              <option key={c} value={c}>
-                                {c}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Extracted text preview */}
-                    <div className="mb-3">
-                      <label className="block text-xs text-text-muted mb-1">
-                        Extracted Text ({selected.extracted_text?.length ?? 0} chars)
-                      </label>
-                      <textarea
-                        readOnly
-                        value={selected.extracted_text ?? 'No text extracted'}
-                        className="w-full h-28 bg-elevated border border-border-default rounded px-2.5 py-2 text-xs text-text-secondary font-mono resize-none focus:outline-none"
-                      />
-                    </div>
-
-                    {/* Forensic metadata toggle */}
-                    <div className="mb-3">
-                      <button
-                        onClick={() => setShowForensics(!showForensics)}
-                        className="text-xs text-info hover:text-info/80 transition-colors"
-                      >
-                        {showForensics ? 'Hide' : 'Show'} forensic metadata
-                      </button>
-                      {showForensics && selected.forensic_metadata && (
-                        <pre className="mt-2 p-3 bg-elevated border border-border-default rounded text-[11px] text-text-secondary font-mono overflow-x-auto max-h-40">
-                          {JSON.stringify(selected.forensic_metadata, null, 2)}
-                        </pre>
-                      )}
-                    </div>
-
-                    {/* Review notes */}
-                    <div className="mb-4">
-                      <label className="block text-xs text-text-muted mb-1">Review Notes</label>
-                      <textarea
-                        value={editNotes}
-                        onChange={(e) => setEditNotes(e.target.value)}
-                        placeholder="Add notes about this document..."
-                        className="w-full h-16 bg-elevated border border-border-default rounded px-2.5 py-2 text-sm text-text-primary placeholder:text-text-muted resize-none focus:border-info focus:outline-none"
-                      />
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-border-default">
-                      <button
-                        onClick={() => handleAction('approve')}
-                        disabled={saving}
-                        className="bg-success hover:bg-success/90 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-                      >
-                        {saving ? 'Saving...' : 'Approve'}
-                      </button>
-                      <button
-                        onClick={() => handleAction('flag', 'needs_attention')}
-                        disabled={saving}
-                        className="bg-warning/10 hover:bg-warning/20 text-warning text-sm font-medium px-4 py-2 rounded-lg border border-warning/30 transition-colors"
-                      >
-                        Flag
-                      </button>
-                      <button
-                        onClick={() => handleAction('reject')}
-                        disabled={saving}
-                        className="bg-critical/10 hover:bg-critical/20 text-critical text-sm font-medium px-4 py-2 rounded-lg border border-critical/30 transition-colors"
-                      >
-                        Reject
-                      </button>
-                      <span className="text-xs text-text-muted ml-auto">
-                        {selected.page_count && `${selected.page_count} pages`}
-                        {selected.file_size_bytes && ` · ${formatBytes(selected.file_size_bytes)}`}
-                      </span>
                     </div>
                   </div>
-                ) : (
-                  <ArcherPanel
-                    document={toArcherDocument(selected)}
-                    onAnnotationsChange={handleAnnotationsChange}
-                    onNavigate={handleNavigate}
-                  />
-                )}
-              </div>
+                  <div>
+                    <label className="block text-[10px] text-text-muted mb-1">Review Notes</label>
+                    <textarea
+                      value={editNotes}
+                      onChange={(e) => setEditNotes(e.target.value)}
+                      placeholder="Add notes..."
+                      className="w-full h-14 bg-elevated border border-border-default rounded px-2 py-1.5 text-xs text-text-primary placeholder:text-text-muted resize-none focus:border-info focus:outline-none"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          </>
         )}
       </div>
-    </MainContent>
+
+      {/* ─── Column 3: Archer ────────────────────────── */}
+      <div className="hidden md:flex w-[380px] shrink-0 border-l border-border-default bg-surface">
+        <ArcherPanel
+          document={selected ? toArcherDocument(selected) : null}
+          onAnnotationsChange={handleAnnotationsChange}
+          onNavigate={handleNavigate}
+        />
+      </div>
+    </div>
   )
 }
 

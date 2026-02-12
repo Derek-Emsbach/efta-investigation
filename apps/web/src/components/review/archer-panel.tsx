@@ -7,6 +7,8 @@ import {
   useCallback,
   type FormEvent,
 } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import type { Annotation } from '@/components/review/pdf-viewer'
 import type { ArcherDocument } from '@/lib/ai/archer-prompt'
 
@@ -40,13 +42,36 @@ interface ChatMessage {
 // ─── Constants ──────────────────────────────────────────
 
 const QUICK_ACTIONS = [
-  { label: 'Who is mentioned?', prompt: 'Identify every person, organization, and entity mentioned in this document. For each, tell me if they exist in our database and what tier they are. Highlight them in the PDF.' },
-  { label: "What's significant?", prompt: 'What is the most significant content in this document for our investigation? Highlight key passages, quotes, dates, and financial amounts.' },
-  { label: 'Redaction analysis', prompt: 'Analyze the redaction patterns in this document. Which redactions look like Category C (institutional protection) or Category D (perpetrator protection)? Who might be protected?' },
-  { label: 'Cross-references', prompt: 'Cross-reference the entities and events in this document against our database. What connections exist? What connections are missing that should exist?' },
-  { label: 'Propose theories', prompt: 'Based on what you see in this document, propose investigative theories. What patterns emerge? What new investigation threads does this suggest? What are we missing?' },
-  { label: 'Recommend action', prompt: 'Based on your analysis, should I approve, flag, or reject this document? What severity and classification would you assign? Explain your reasoning.' },
-  { label: 'Timeline context', prompt: 'Place this document in the broader investigation timeline. What events occurred around the document date? How does it connect to known events?' },
+  {
+    label: 'Who is mentioned?',
+    description: 'Identify every person, org, and entity',
+    prompt: 'Identify every person, organization, and entity mentioned in this document. For each, tell me if they exist in our database and what tier they are. Highlight them in the PDF.',
+  },
+  {
+    label: "What's significant?",
+    description: 'Key evidence, dates, and amounts',
+    prompt: 'What is the most significant content in this document for our investigation? Highlight key passages, quotes, dates, and financial amounts.',
+  },
+  {
+    label: 'Redaction analysis',
+    description: 'Flag suspicious Category C/D redactions',
+    prompt: 'Analyze the redaction patterns in this document. Which redactions look like Category C (institutional protection) or Category D (perpetrator protection)? Who might be protected?',
+  },
+  {
+    label: 'Cross-references',
+    description: 'Match against existing database records',
+    prompt: 'Cross-reference the entities and events in this document against our database. What connections exist? What connections are missing that should exist?',
+  },
+  {
+    label: 'Propose theories',
+    description: 'Investigative hypotheses from patterns',
+    prompt: 'Based on what you see in this document, propose investigative theories. What patterns emerge? What new investigation threads does this suggest?',
+  },
+  {
+    label: 'Recommend action',
+    description: 'Should I approve, flag, or reject?',
+    prompt: 'Based on your analysis, should I approve, flag, or reject this document? What severity and classification would you assign? Explain your reasoning.',
+  },
 ]
 
 const TIER_COLORS: Record<number, string> = {
@@ -69,6 +94,45 @@ const TOOL_LABELS: Record<string, string> = {
   suggest_connection: 'Proposing connection',
   suggest_tier_change: 'Proposing tier change',
   suggest_evidence_item: 'Proposing evidence item',
+}
+
+// ─── Markdown Components ────────────────────────────────
+
+const markdownComponents = {
+  h1: ({ children }: { children?: React.ReactNode }) => (
+    <h1 className="text-sm font-bold text-text-primary mt-3 mb-1.5">{children}</h1>
+  ),
+  h2: ({ children }: { children?: React.ReactNode }) => (
+    <h2 className="text-sm font-semibold text-text-primary mt-3 mb-1">{children}</h2>
+  ),
+  h3: ({ children }: { children?: React.ReactNode }) => (
+    <h3 className="text-xs font-semibold text-text-primary mt-2 mb-1">{children}</h3>
+  ),
+  p: ({ children }: { children?: React.ReactNode }) => (
+    <p className="text-xs text-text-secondary leading-relaxed mb-2">{children}</p>
+  ),
+  ul: ({ children }: { children?: React.ReactNode }) => (
+    <ul className="text-xs text-text-secondary ml-4 mb-2 list-disc space-y-0.5">{children}</ul>
+  ),
+  ol: ({ children }: { children?: React.ReactNode }) => (
+    <ol className="text-xs text-text-secondary ml-4 mb-2 list-decimal space-y-0.5">{children}</ol>
+  ),
+  li: ({ children }: { children?: React.ReactNode }) => (
+    <li className="leading-relaxed">{children}</li>
+  ),
+  strong: ({ children }: { children?: React.ReactNode }) => (
+    <strong className="text-text-primary font-semibold">{children}</strong>
+  ),
+  em: ({ children }: { children?: React.ReactNode }) => (
+    <em className="text-text-secondary italic">{children}</em>
+  ),
+  code: ({ children }: { children?: React.ReactNode }) => (
+    <code className="bg-elevated px-1 py-0.5 rounded text-[11px] font-mono text-text-secondary">{children}</code>
+  ),
+  blockquote: ({ children }: { children?: React.ReactNode }) => (
+    <blockquote className="border-l-2 border-info/40 pl-3 my-2 text-xs text-text-muted italic">{children}</blockquote>
+  ),
+  hr: () => <hr className="border-border-default my-3" />,
 }
 
 // ─── Annotation Parsing ──────────────────────────────────
@@ -132,7 +196,6 @@ export default function ArcherPanel({
     if (!streamingContent) return
     const { annotations } = extractAnnotations(streamingContent)
     if (annotations.length > 0) {
-      // Merge with existing annotations
       const existing = allAnnotationsRef.current
       const merged = [...existing]
       for (const a of annotations) {
@@ -144,7 +207,6 @@ export default function ArcherPanel({
       allAnnotationsRef.current = merged
       onAnnotationsChange(merged)
 
-      // Handle navigate annotations
       for (const a of annotations) {
         if (a.type === 'navigate' && a.page) {
           onNavigate(a.page)
@@ -158,7 +220,6 @@ export default function ArcherPanel({
     if (document?.id === documentIdRef.current) return
     documentIdRef.current = document?.id ?? null
 
-    // Clear state
     setMessages([])
     setInput('')
     setIsStreaming(false)
@@ -173,12 +234,10 @@ export default function ArcherPanel({
     abortRef.current = null
 
     if (!document) return
-
-    // Load existing conversation for this document
     loadDocumentConversation(document.id)
   }, [document?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ─── Auto-analysis on first view ───────────────────
+  // ─── Auto-analysis on first view — conversational pace ──
   useEffect(() => {
     if (
       !document ||
@@ -189,15 +248,13 @@ export default function ArcherPanel({
       return
     }
 
-    // Only auto-trigger if no existing conversation was loaded
     if (conversationId) return
 
-    // Small delay to let UI settle
     const timer = setTimeout(() => {
       if (autoAnalysisTriggered.current === document.id) return
       autoAnalysisTriggered.current = document.id
       sendMessage(
-        'Analyze this document. Identify all entities, highlight key evidence, flag suspicious redactions, and note any patterns or connections. Point at what you find in the PDF as you go.',
+        'Give me your first impression of this document — what type is it, what\'s the general subject, and what stands out? Then list the analysis sections I can explore with you.',
       )
     }, 500)
 
@@ -222,7 +279,6 @@ export default function ArcherPanel({
         conversationIdRef.current = conv.id
         autoAnalysisTriggered.current = docId
 
-        // Load messages
         const msgRes = await fetch(
           `/api/assistant/conversations/${conv.id}/messages`,
         )
@@ -238,7 +294,6 @@ export default function ArcherPanel({
           )
           setMessages(loaded)
 
-          // Extract annotations from all assistant messages
           const allAnnotations: Annotation[] = []
           for (const msg of loaded) {
             if (msg.role === 'assistant' && msg.content) {
@@ -411,7 +466,6 @@ export default function ArcherPanel({
       let convId = conversationIdRef.current
 
       try {
-        // Ensure conversation exists
         if (!convId) {
           const createRes = await fetch('/api/assistant/conversations', {
             method: 'POST',
@@ -429,7 +483,6 @@ export default function ArcherPanel({
           }
         }
 
-        // Save user message
         if (convId) {
           const userDbId = await saveMessage(convId, {
             role: 'user',
@@ -444,7 +497,6 @@ export default function ArcherPanel({
           }
         }
 
-        // Stream response from Archer API
         const response = await fetch('/api/review/archer', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -543,10 +595,8 @@ export default function ArcherPanel({
 
         // Finalize assistant message
         if (accumulatedText.trim() || accumulatedToolCalls.length > 0) {
-          // Extract annotations from final text
           const { cleanText, annotations } = extractAnnotations(accumulatedText)
 
-          // Update all annotations
           const merged = [...allAnnotationsRef.current]
           for (const a of annotations) {
             const isDuplicate = merged.some(
@@ -566,7 +616,6 @@ export default function ArcherPanel({
                 : undefined,
           }
 
-          // Save to DB — store original text with annotations for reload
           if (convId) {
             const assistantDbId = await saveMessage(convId, {
               role: 'assistant',
@@ -629,24 +678,38 @@ export default function ArcherPanel({
     autoAnalysisTriggered.current = null
   }
 
-  // ─── Empty state ──────────────────────────────────
+  // ─── Empty state — no document selected ────────────
 
   if (!document) {
     return (
-      <div className="flex h-full items-center justify-center text-sm text-text-muted">
-        Select a document to start reviewing with Archer.
+      <div className="flex h-full items-center justify-center px-6 text-center">
+        <div>
+          <svg
+            className="mx-auto h-10 w-10 text-text-muted/40 mb-3"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+          <p className="text-sm text-text-muted">Select a document to start reviewing with Archer.</p>
+        </div>
       </div>
     )
   }
 
-  // ─── Render ───────────────────────────────────────
+  // ─── Render ────────────────────────────────────────
 
   const isEmpty = messages.length === 0 && !isStreaming
 
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border-default px-3 py-2">
+      <div className="flex items-center justify-between border-b border-border-default px-4 py-2.5 shrink-0">
         <div className="flex items-center gap-2">
           <svg
             className="h-4 w-4 text-info"
@@ -662,27 +725,69 @@ export default function ArcherPanel({
             <path d="M18 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />
           </svg>
           <span className="text-xs font-semibold text-text-primary">Archer</span>
-          <span className="text-[10px] text-text-muted">
-            {document.bates_number ?? 'Document review'}
-          </span>
         </div>
-        {messages.length > 0 && (
-          <button
-            onClick={handleClear}
-            className="text-[10px] text-text-muted hover:text-text-secondary transition-colors"
-          >
-            Clear
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-text-muted truncate max-w-[120px]">
+            {document.bates_number ?? 'Document'}
+          </span>
+          {messages.length > 0 && (
+            <button
+              onClick={handleClear}
+              className="text-[10px] text-text-muted hover:text-text-secondary transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-3">
+      {/* Messages area */}
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
         {isEmpty ? (
-          <div className="flex flex-col items-center justify-center h-full gap-2 text-center">
-            <p className="text-xs text-text-muted">
-              Archer is analyzing this document...
-            </p>
+          /* Welcome state with quick action cards */
+          <div className="flex flex-col h-full">
+            <div className="flex-1 flex flex-col items-center justify-center gap-3 pb-4">
+              <div className="w-10 h-10 rounded-full bg-info/10 flex items-center justify-center">
+                <svg
+                  className="h-5 w-5 text-info"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
+                  <path d="M18 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-text-secondary mb-0.5">
+                  Archer is analyzing this document...
+                </p>
+                <p className="text-[10px] text-text-muted">
+                  Or choose an analysis below
+                </p>
+              </div>
+            </div>
+
+            {/* Quick action cards — 2-column grid */}
+            <div className="grid grid-cols-2 gap-2 pb-2">
+              {QUICK_ACTIONS.map((action) => (
+                <button
+                  key={action.label}
+                  onClick={() => sendMessage(action.prompt)}
+                  className="text-left rounded-lg border border-border-default bg-elevated/50 px-3 py-2.5 transition-colors hover:border-info/30 hover:bg-info/5 group"
+                >
+                  <p className="text-xs font-medium text-text-secondary group-hover:text-info transition-colors">
+                    {action.label}
+                  </p>
+                  <p className="text-[10px] text-text-muted mt-0.5 leading-snug">
+                    {action.description}
+                  </p>
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           <>
@@ -703,13 +808,15 @@ export default function ArcherPanel({
                 ))}
 
                 {streamingContent ? (
-                  <div className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">
-                    {extractAnnotations(streamingContent).cleanText}
-                    <span className="inline-block w-1 h-3 bg-info/70 animate-pulse ml-0.5 align-text-bottom" />
+                  <div className="archer-markdown">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                      {extractAnnotations(streamingContent).cleanText}
+                    </ReactMarkdown>
+                    <span className="inline-block w-1.5 h-4 bg-info/70 animate-pulse ml-0.5 align-text-bottom rounded-sm" />
                   </div>
                 ) : activeToolCalls.length === 0 ? (
-                  <div className="flex items-center gap-1.5 text-xs text-text-muted">
-                    <svg className="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <div className="flex items-center gap-2 text-xs text-text-muted">
+                    <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
@@ -721,7 +828,7 @@ export default function ArcherPanel({
 
             {/* Error */}
             {error && (
-              <div className="rounded border border-critical/30 bg-critical/5 px-2 py-1.5 text-xs text-critical">
+              <div className="rounded-lg border border-critical/30 bg-critical/5 px-3 py-2 text-xs text-critical">
                 {error}
               </div>
             )}
@@ -731,14 +838,14 @@ export default function ArcherPanel({
         )}
       </div>
 
-      {/* Quick actions */}
+      {/* Quick actions — horizontal scroll after messages */}
       {!isStreaming && messages.length > 0 && (
-        <div className="flex gap-1.5 overflow-x-auto border-t border-border-default px-3 py-2 scrollbar-none">
+        <div className="flex gap-2 overflow-x-auto border-t border-border-default px-4 py-2.5 scrollbar-none shrink-0">
           {QUICK_ACTIONS.map((action) => (
             <button
               key={action.label}
               onClick={() => sendMessage(action.prompt)}
-              className="shrink-0 rounded-full border border-border-default px-2.5 py-1 text-[10px] text-text-muted transition-colors hover:border-info/30 hover:bg-info/5 hover:text-info"
+              className="shrink-0 rounded-lg border border-border-default px-3 py-1.5 text-xs text-text-muted transition-colors hover:border-info/30 hover:bg-info/5 hover:text-info"
             >
               {action.label}
             </button>
@@ -747,7 +854,7 @@ export default function ArcherPanel({
       )}
 
       {/* Input */}
-      <div className="border-t border-border-default px-3 py-2">
+      <div className="border-t border-border-default px-4 py-3 shrink-0">
         <form onSubmit={handleSubmit} className="flex items-end gap-2">
           <div className="relative flex-1">
             <textarea
@@ -755,12 +862,12 @@ export default function ArcherPanel({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask Archer anything about this document..."
-              rows={1}
+              placeholder="Ask Archer about this document..."
+              rows={2}
               disabled={isStreaming}
-              className="w-full resize-none rounded border border-border-default bg-elevated px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-info focus:outline-none disabled:opacity-50"
+              className="w-full resize-none rounded-lg border border-border-default bg-elevated px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-info focus:outline-none disabled:opacity-50"
             />
-            <span className="absolute bottom-1 right-2 text-[9px] text-text-muted/40">
+            <span className="absolute bottom-1.5 right-2 text-[9px] text-text-muted/40">
               {isStreaming ? '' : '\u2318\u23CE'}
             </span>
           </div>
@@ -769,7 +876,7 @@ export default function ArcherPanel({
             <button
               type="button"
               onClick={handleStop}
-              className="shrink-0 rounded bg-critical/10 px-3 py-2 text-xs font-medium text-critical hover:bg-critical/20 transition-colors"
+              className="shrink-0 rounded-lg bg-critical/10 px-3 py-2 text-xs font-medium text-critical hover:bg-critical/20 transition-colors"
             >
               Stop
             </button>
@@ -777,7 +884,7 @@ export default function ArcherPanel({
             <button
               type="submit"
               disabled={!input.trim()}
-              className="shrink-0 rounded bg-info px-3 py-2 text-xs font-medium text-white hover:bg-info/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="shrink-0 rounded-lg bg-info px-3 py-2 text-xs font-medium text-white hover:bg-info/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Send
             </button>
@@ -802,7 +909,7 @@ function MessageBubble({
   if (message.role === 'user') {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-lg bg-info/10 px-3 py-2 text-xs text-text-primary">
+        <div className="max-w-[85%] rounded-lg bg-info/10 px-3 py-2 text-xs text-text-primary leading-relaxed">
           {message.content}
         </div>
       </div>
@@ -825,10 +932,12 @@ function MessageBubble({
         </div>
       ))}
 
-      {/* Text content */}
+      {/* Text content — rendered as markdown */}
       {message.content && (
-        <div className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">
-          {message.content}
+        <div className="archer-markdown">
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+            {message.content}
+          </ReactMarkdown>
         </div>
       )}
     </div>
@@ -842,18 +951,18 @@ function ToolCallBlock({ toolCall }: { toolCall: ToolCall }) {
   const isRunning = toolCall.status === 'running'
 
   return (
-    <div className="flex items-center gap-1.5 rounded border border-border-default bg-elevated/50 px-2 py-1">
+    <div className="flex items-center gap-2 rounded-lg border border-border-default bg-elevated/50 px-3 py-1.5">
       {isRunning ? (
-        <svg className="h-3 w-3 animate-spin text-info" viewBox="0 0 24 24" fill="none">
+        <svg className="h-3.5 w-3.5 animate-spin text-info" viewBox="0 0 24 24" fill="none">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
       ) : (
-        <svg className="h-3 w-3 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg className="h-3.5 w-3.5 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <polyline points="20 6 9 17 4 12" />
         </svg>
       )}
-      <span className="text-[10px] text-text-muted">{label}</span>
+      <span className="text-xs text-text-muted">{label}</span>
     </div>
   )
 }
@@ -886,7 +995,7 @@ function SuggestionCard({
 
   if (status === 'applied') {
     return (
-      <div className="rounded border border-success/30 bg-success/5 px-2 py-1.5 text-[10px] text-success">
+      <div className="rounded-lg border border-success/30 bg-success/5 px-3 py-2 text-xs text-success">
         Applied: {suggestion.summary}
       </div>
     )
@@ -894,7 +1003,7 @@ function SuggestionCard({
 
   if (status === 'dismissed') {
     return (
-      <div className="rounded border border-border-default bg-elevated/30 px-2 py-1.5 text-[10px] text-text-muted line-through">
+      <div className="rounded-lg border border-border-default bg-elevated/30 px-3 py-2 text-xs text-text-muted line-through">
         {suggestion.summary}
       </div>
     )
@@ -902,7 +1011,7 @@ function SuggestionCard({
 
   if (status === 'error') {
     return (
-      <div className="rounded border border-critical/30 bg-critical/5 px-2 py-1.5 text-[10px] text-critical">
+      <div className="rounded-lg border border-critical/30 bg-critical/5 px-3 py-2 text-xs text-critical">
         Failed: {toolCall.applyError ?? 'Unknown error'}
       </div>
     )
@@ -910,8 +1019,8 @@ function SuggestionCard({
 
   if (status === 'applying') {
     return (
-      <div className="rounded border border-info/30 bg-info/5 px-2 py-1.5 text-[10px] text-info flex items-center gap-1.5">
-        <svg className="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none">
+      <div className="rounded-lg border border-info/30 bg-info/5 px-3 py-2 text-xs text-info flex items-center gap-2">
+        <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
@@ -922,19 +1031,18 @@ function SuggestionCard({
 
   // Pending — show approve/dismiss buttons
   return (
-    <div className={`rounded border px-2 py-1.5 ${typeColors[suggestion.type] ?? 'border-border-default bg-elevated/30'}`}>
+    <div className={`rounded-lg border px-3 py-2 ${typeColors[suggestion.type] ?? 'border-border-default bg-elevated/30'}`}>
       <div className="flex items-center justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <span className="text-[9px] font-medium text-text-muted uppercase tracking-wider">
+          <span className="text-[10px] font-medium text-text-muted uppercase tracking-wider">
             {typeLabels[suggestion.type] ?? suggestion.type}
           </span>
-          <p className="text-[10px] text-text-secondary mt-0.5 truncate">
+          <p className="text-xs text-text-secondary mt-0.5 truncate">
             {suggestion.summary}
           </p>
-          {/* Show tier badge for tier changes */}
           {suggestion.type === 'tier_change' && typeof suggestion.data.new_tier === 'number' && (
             <span
-              className={`mt-1 inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${
+              className={`mt-1 inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${
                 TIER_COLORS[suggestion.data.new_tier] ??
                 'bg-gray-500/20 text-gray-400 border-gray-500/30'
               }`}
@@ -943,16 +1051,16 @@ function SuggestionCard({
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={onApprove}
-            className="rounded bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success hover:bg-success/20 transition-colors"
+            className="rounded-lg bg-success/10 px-2.5 py-1 text-xs font-medium text-success hover:bg-success/20 transition-colors"
           >
             Apply
           </button>
           <button
             onClick={onDismiss}
-            className="rounded bg-elevated px-2 py-0.5 text-[10px] font-medium text-text-muted hover:text-text-secondary transition-colors"
+            className="rounded-lg bg-elevated px-2.5 py-1 text-xs font-medium text-text-muted hover:text-text-secondary transition-colors"
           >
             Dismiss
           </button>

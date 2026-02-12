@@ -123,10 +123,10 @@
 - [x] Configure Vercel build settings (transpilePackages, build commands)
 - [x] Verify `pnpm build` succeeds locally (all 12 routes compile)
 - [x] Push to GitHub
-- [ ] Connect repo to Vercel
-- [ ] Set environment variables in Vercel dashboard
-- [ ] Deploy and verify live site
-- [ ] Test auth on production
+- [x] Connect repo to Vercel
+- [x] Set environment variables in Vercel dashboard
+- [x] Deploy and verify live site
+- [x] Test auth on production
 
 ---
 
@@ -411,13 +411,20 @@
 **Goal:** Production-ready, visually striking, performant.
 
 ### 5.1 Visual Design Pass
-- [ ] Full dark theme implementation
+- [x] Full dark theme implementation
+- [x] Light/dark mode toggle with localStorage persistence and FOUC prevention
 - [ ] Custom loading states and skeleton screens
 - [ ] Micro-animations: page transitions, data updates, hover effects
 - [ ] Empty states for pages with no data
-- [ ] Error states with helpful messages
-- [ ] Responsive layout (works on tablet, graceful on mobile)
-- [ ] Favicon and meta tags
+- [x] Error states with helpful messages (error.tsx global boundary + not-found.tsx 404 page)
+- [x] Responsive layout (works on tablet, graceful on mobile — hamburger sidebar)
+- [x] Favicon and meta tags (icon.svg, Open Graph metadata)
+- [x] Legal infrastructure: footer with disclaimer, /disclaimer, /terms, /privacy pages
+- [x] Skip-to-content link for keyboard accessibility
+- [x] Breadcrumb navigation on entity and document detail pages
+- [x] robots.txt (disallow all — private tool)
+- [x] aria-current on active nav links, aria-hidden on decorative icons
+- [x] Copyright notice (© Cyclops Digital LLC) in sidebar + footer
 
 ### 5.2 Performance
 - [ ] Database indexes audit (EXPLAIN ANALYZE on common queries)
