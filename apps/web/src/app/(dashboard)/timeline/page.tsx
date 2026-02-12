@@ -6,6 +6,8 @@ import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search-input'
 import { FilterBar, type FilterDef } from '@/components/ui/filter-bar'
+import { Pagination } from '@/components/ui/pagination'
+import { EmptyState } from '@/components/ui/empty-state'
 import { TierBadge } from '@/components/ui/tier-badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Event, Entity, EntityEvent, Tier } from '@efta/shared'
@@ -154,7 +156,6 @@ export default function TimelinePage() {
     setPage(1)
   }, [])
 
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
   const groups = groupByMonth(data)
 
   return (
@@ -187,9 +188,16 @@ export default function TimelinePage() {
 
       {/* Empty state */}
       {!isLoading && data.length === 0 && (
-        <div className="py-16 text-center">
-          <p className="text-sm text-text-muted">No events found matching your criteria.</p>
-        </div>
+        <EmptyState
+          icon={
+            <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          }
+          title="No events found"
+          description="No timeline events match your current filters. Try adjusting your search criteria."
+        />
       )}
 
       {/* Timeline */}
@@ -290,33 +298,14 @@ export default function TimelinePage() {
         </div>
       )}
 
-      {/* Pagination */}
-      {totalCount > PAGE_SIZE && (
-        <div className="flex items-center justify-between mt-8">
-          <p className="text-sm text-text-muted">
-            Showing {(page - 1) * PAGE_SIZE + 1}&ndash;{Math.min(page * PAGE_SIZE, totalCount)} of {totalCount} events
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1}
-              className="px-3 py-1.5 text-sm font-medium rounded border border-border-default bg-elevated text-text-primary hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-text-muted px-2">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-              className="px-3 py-1.5 text-sm font-medium rounded border border-border-default bg-elevated text-text-primary hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        totalPages={Math.ceil(totalCount / PAGE_SIZE)}
+        onPageChange={setPage}
+        totalCount={totalCount}
+        pageSize={PAGE_SIZE}
+        noun="events"
+      />
     </MainContent>
   )
 }

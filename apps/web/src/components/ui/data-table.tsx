@@ -16,6 +16,7 @@ interface DataTableProps<T> {
   data: T[]
   onRowClick?: (row: T) => void
   isLoading?: boolean
+  emptyState?: ReactNode
 }
 
 type SortDirection = 'asc' | 'desc'
@@ -46,6 +47,7 @@ export function DataTable<T extends Record<string, unknown>>({
   data,
   onRowClick,
   isLoading = false,
+  emptyState,
 }: DataTableProps<T>) {
   const [sort, setSort] = useState<SortState | null>(null)
 
@@ -132,9 +134,11 @@ export function DataTable<T extends Record<string, unknown>>({
             </tr>
           </thead>
         </table>
-        <div className="flex items-center justify-center py-12 text-text-muted text-sm">
-          No results found
-        </div>
+        {emptyState ?? (
+          <div className="flex items-center justify-center py-12 text-text-muted text-sm">
+            No results found
+          </div>
+        )}
       </div>
     )
   }

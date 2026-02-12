@@ -4,8 +4,9 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import * as d3 from 'd3'
 import MainContent from '@/components/layout/main-content'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { Tier } from '@efta/shared'
+import { TIER_LABELS, type Tier } from '@efta/shared'
 
 // -------------------------------------------------------------------
 // Types
@@ -47,14 +48,6 @@ const TIER_COLORS: Record<number, string> = {
   6: '#64748B',
 }
 
-const TIER_LABELS: Record<number, string> = {
-  1: 'Convicted / Charged',
-  2: 'NPA Immunity',
-  3: 'Suspicious',
-  4: 'Social / Professional',
-  5: 'Victim / Witness',
-  6: 'Staff / Legal',
-}
 
 const DEFAULT_COLOR = '#4B5563'
 
@@ -1061,23 +1054,26 @@ export default function NetworkPage() {
 
       {/* Empty */}
       {!isLoading && filteredData && filteredData.nodes.length === 0 && (
-        <div className="bg-surface border border-border-default rounded-lg p-16 text-center">
-          <p className="text-sm text-text-muted">
-            {data && data.nodes.length > 0
-              ? 'No connections match the current filters. Try adjusting your criteria.'
-              : 'No connections found to visualize.'}
-          </p>
-          {data && data.nodes.length > 0 && (
-            <button
-              onClick={() => {
-                setActiveTiers(new Set([1, 2, 3, 4, 5, 6]))
-                setActiveStrengths(new Set(['documented', 'alleged', 'circumstantial']))
-                if (data) setActiveRelationships(new Set(data.edges.map((e) => e.relationship_type)))
+        <div className="bg-surface border border-border-default rounded-lg">
+          {data && data.nodes.length > 0 ? (
+            <EmptyState
+              title="No connections match filters"
+              description="No connections match the current filters. Try adjusting your criteria."
+              action={{
+                label: 'Reset filters',
+                onClick: () => {
+                  setActiveTiers(new Set([1, 2, 3, 4, 5, 6]))
+                  setActiveStrengths(new Set(['documented', 'alleged', 'circumstantial']))
+                  if (data) setActiveRelationships(new Set(data.edges.map((e) => e.relationship_type)))
+                },
               }}
-              className="mt-3 text-xs text-info hover:text-info/80 transition-colors"
-            >
-              Reset filters
-            </button>
+            />
+          ) : (
+            <EmptyState
+              title="No connections found"
+              description="No connections found to visualize. Add entities and connections to build the network."
+              action={{ label: 'View entities', href: '/entities' }}
+            />
           )}
         </div>
       )}

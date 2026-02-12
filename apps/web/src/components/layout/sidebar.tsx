@@ -15,6 +15,8 @@ const investigationItems = [
   { label: "Network", href: "/network", icon: "network" as const },
   { label: "Datasets", href: "/datasets", icon: "database" as const },
   { label: "Hierarchy", href: "/hierarchy", icon: "sitemap" as const },
+  { label: "Forensics", href: "/forensics", icon: "microscope" as const },
+  { label: "Investigations", href: "/investigations", icon: "briefcase" as const },
 ];
 
 const adminItems = [

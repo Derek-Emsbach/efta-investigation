@@ -49,8 +49,9 @@
 - [x] Create R2 bucket: `efta-documents`
 - [x] Generate API token with read/write
 - [x] Create `lib/r2/client.ts` with upload/download/delete helpers (S3-compatible via `@aws-sdk/client-s3`)
-- [x] Set up CORS policy for Vercel domain
-- [ ] Test: upload and retrieve a test file
+- [x] Set up CORS policy for Vercel domain (localhost:3000 + efta-investigation.vercel.app)
+- [x] Defensive `.trim()` on all `process.env` reads (Vercel env vars had trailing newlines)
+- [x] Test: upload and retrieve a test file
 
 ### 1.5 Auth
 - [x] Set up Supabase Auth (email/password)
@@ -320,7 +321,7 @@
 
 **Goal:** Automated document ingestion and analysis with human review.
 
-> **Status:** Core pipeline complete. 8-stage worker (ingest → forensics → extract → entities → redactions → crossref → classify → version diff), upload with re-upload detection, processing dashboard, review page with Archer AI copilot (3-column layout, markdown rendering, prompt caching, image navigation), document versioning and diff. Remaining: worker deployment, zip upload, bulk actions.
+> **Status:** Core pipeline complete. 8-stage worker (ingest → forensics → extract → entities → redactions → crossref → classify → version diff), upload with re-upload detection + folder upload, processing dashboard, review page with Archer AI copilot (3-column layout, markdown rendering, prompt caching, image navigation), document versioning and diff, atomic multi-worker support. Remaining: worker deployment, zip upload, bulk actions.
 
 ### 4.1 Python Worker
 - [x] Python polling worker in `services/worker/` (simple script, not FastAPI)
@@ -339,6 +340,7 @@
   - [x] `diff.py` — version diff for re-processed documents; compares redactions, entities, classification, severity against previous version snapshot; flags redaction decreases
 - [x] Each stage updates document `processing_status` in Supabase
 - [x] Queue management: process one document at a time, report progress
+- [x] Atomic queue claiming via Postgres RPC (`FOR UPDATE SKIP LOCKED`) — safe for multiple parallel workers
 - [x] Error handling: failed documents marked with error message, retryable
 
 ### 4.2 Admin Upload UI
@@ -347,6 +349,7 @@
 - [x] Dataset selector dropdown
 - [x] Per-file progress bars (XHR for progress events)
 - [x] Parallel uploads (up to 5 concurrent)
+- [x] Folder upload: recursive directory scanning (FileSystemEntry API + `webkitdirectory`) with batched presigning (50 per batch)
 - [x] Bates number auto-detection from filename
 - [x] Re-upload detection: duplicate bates numbers trigger version snapshot + re-queue instead of rejection
 - [x] Re-upload UI: amber "Re-upload v{N}" badges, distinct success banner with re-upload count
@@ -419,7 +422,7 @@
 - [x] Collapsible version history panel
 - [x] Version diff alert card with significant findings
 - [x] Flags: `redaction_decrease`, `unredacted_names` for DOJ re-release detection
-- [ ] Migration SQL needs to be run in Supabase SQL Editor (`packages/db/migrations/003_document_versions.sql`)
+- [x] Migration SQL run in Supabase SQL Editor (`packages/db/migrations/003_document_versions.sql`) + `claim_next_queued()` RPC function
 
 ### 4.6 Deploy Worker
 - [ ] Create Dockerfile for Python worker

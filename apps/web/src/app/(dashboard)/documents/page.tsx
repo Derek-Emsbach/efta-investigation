@@ -7,6 +7,8 @@ import { PageHeader } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search-input'
 import { FilterBar, type FilterDef } from '@/components/ui/filter-bar'
 import { DataTable, type Column } from '@/components/ui/data-table'
+import { Pagination } from '@/components/ui/pagination'
+import { EmptyState } from '@/components/ui/empty-state'
 import { SeverityMarker } from '@/components/ui/severity-marker'
 import type { Document, Severity, ProcessingStatus } from '@efta/shared'
 
@@ -229,10 +231,6 @@ export default function DocumentsPage() {
     [router]
   )
 
-  const rangeStart = (page - 1) * PAGE_SIZE + 1
-  const rangeEnd = Math.min(page * PAGE_SIZE, totalCount)
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
-
   return (
     <MainContent>
       <PageHeader
@@ -252,35 +250,28 @@ export default function DocumentsPage() {
         data={data}
         onRowClick={handleRowClick}
         isLoading={isLoading}
+        emptyState={
+          <EmptyState
+            icon={
+              <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+            }
+            title="No documents found"
+            description="No documents match your current filters. Try broadening your search criteria."
+          />
+        }
       />
 
-      {/* Pagination */}
-      {totalCount > 0 && (
-        <div className="flex items-center justify-between mt-6">
-          <p className="text-sm text-text-muted">
-            Showing {rangeStart}&ndash;{rangeEnd} of {totalCount.toLocaleString()} documents
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1}
-              className="px-3 py-1.5 text-sm font-medium rounded border border-border-default bg-elevated text-text-primary hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-text-muted px-2">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-              className="px-3 py-1.5 text-sm font-medium rounded border border-border-default bg-elevated text-text-primary hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        totalPages={Math.ceil(totalCount / PAGE_SIZE)}
+        onPageChange={setPage}
+        totalCount={totalCount}
+        pageSize={PAGE_SIZE}
+        noun="documents"
+      />
     </MainContent>
   )
 }

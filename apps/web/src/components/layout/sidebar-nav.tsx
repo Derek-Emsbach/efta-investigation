@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 interface NavItem {
   label: string;
   href: string;
-  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle";
+  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle" | "microscope" | "briefcase";
 }
 
 interface SidebarNavProps {
@@ -115,6 +115,24 @@ function NavIcon({ icon, className }: { icon: NavItem["icon"]; className?: strin
       return (
         <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      );
+    case "microscope":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 18h8" />
+          <path d="M3 22h18" />
+          <path d="M14 22a7 7 0 100-14h-1" />
+          <path d="M9 14h2" />
+          <path d="M9 12a2 2 0 01-2-2V6h6v4a2 2 0 01-2 2z" />
+          <path d="M12 6V3a1 1 0 00-1-1H9a1 1 0 00-1 1v3" />
+        </svg>
+      );
+    case "briefcase":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+          <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
         </svg>
       );
   }

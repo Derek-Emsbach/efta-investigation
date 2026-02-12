@@ -28,6 +28,7 @@ interface PdfViewerProps {
   annotations: Annotation[]
   currentPage?: number
   onPageChange?: (page: number) => void
+  onNumPagesChange?: (n: number) => void
   forensicMetadata?: Record<string, unknown> | null
 }
 
@@ -105,6 +106,7 @@ export default function PdfViewer({
   annotations,
   currentPage,
   onPageChange,
+  onNumPagesChange,
   forensicMetadata,
 }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number>(0)
@@ -154,6 +156,7 @@ export default function PdfViewer({
   function onDocumentLoadSuccess({ numPages: n }: { numPages: number }) {
     setNumPages(n)
     setLoadError(null)
+    onNumPagesChange?.(n)
   }
 
   function onDocumentLoadError(error: Error) {

@@ -8,38 +8,38 @@ Every entity (person, organization, property) is assigned one of six evidence ti
 
 ## Tier Definitions
 
-### TIER 1: Convicted or Charged
+### TIER 1: Direct Evidence
 **Color:** Deep Red (#DC2626)
-**Criteria:** Formally charged by law enforcement or convicted in court of crimes related to the Epstein operation. Also includes individuals named as abusers in forensically authenticated victim journals (expanded in v2.0 based on DS12 forensic authentication findings).
+**Criteria:** Forensically authenticated direct evidence of involvement: convicted in court, formally charged, or named as abuser in forensically authenticated victim journals. The label reflects evidence strength, not prosecution status — an entity may be Tier 1 without ever being charged if direct evidence (e.g., authenticated journal entries) exists.
 **Examples:** Jeffrey Epstein (convicted, deceased), Ghislaine Maxwell (convicted), Leon Black (named in authenticated journals, uncharged)
 **Evidence standard:** Court records, formal charges, forensically verified victim testimony
 
-### TIER 2: Named Co-Conspirator (NPA Immunity)
+### TIER 2: Immunized
 **Color:** Amber (#F59E0B)
 **Criteria:** Identified in the 2007 Non-Prosecution Agreement as co-conspirators who received blanket immunity. FBI evidence documents their operational roles. Never charged due to immunity provision.
 **Examples:** Sarah Kellen, Nadia Marcinkova, Adriana Ross, Lesley Groff
 **Evidence standard:** NPA document, FBI investigative files
 
-### TIER 3: Suspicious / Concerning Conduct
+### TIER 3: Circumstantial
 **Color:** Orange (#F97316)
-**Criteria:** Documentary evidence of conduct raising serious questions: sexual allegations from victims, communications suggesting awareness of criminal activity, behavioral patterns consistent with participation. Not charged. Evidence does not prove criminal conduct but warrants scrutiny.
+**Criteria:** Documentary evidence of conduct raising serious questions: sexual allegations from victims, communications suggesting awareness of criminal activity, behavioral patterns consistent with participation. No direct evidence — circumstantial indicators that warrant scrutiny but do not prove criminal conduct.
 **Includes:** The 21 partially identified "Mr." names from victim journals
 **Evidence standard:** Victim allegations, suspicious communications, behavioral patterns
 
-### TIER 4: Social / Professional Contact
+### TIER 4: Associated
 **Color:** Gray (#6B7280)
 **Criteria:** Documented contact with Epstein (emails, meetings, flights, payments) but no evidence of awareness of or participation in criminal activity. Contact may reflect Epstein's social strategy rather than complicity.
 **Evidence standard:** Flight logs, emails, event attendance, financial transactions without criminal context
 
-### TIER 5: Victims / Witnesses
+### TIER 5: Victim / Witness
 **Color:** Teal (#14B8A6)
 **Criteria:** Identified victims of the operation or witnesses who provided testimony/statements. Includes victim-turned-recruiters who were themselves minors when recruited.
 **Privacy rule:** Names used ONLY where the individual has publicly self-identified or been officially named in public court proceedings. Entity records have `is_public` flag — if false, display as "Victim [number]" or "Witness [number]".
 **Evidence standard:** Court records, self-identification, FBI 302 statements
 
-### TIER 6: Staff / Operations / Legal / Law Enforcement
+### TIER 6: Peripheral
 **Color:** Slate (#64748B)
-**Criteria:** Individuals involved in the broader ecosystem: household staff, pilots, estate executors, investigating officers, prosecutors, defense attorneys. Operational relevance without evidence of criminal participation (unless separately tiered).
+**Criteria:** Individuals in the broader ecosystem: household staff, pilots, estate executors, investigating officers, prosecutors, defense attorneys. Operational relevance without evidence of criminal participation (unless separately tiered).
 **Evidence standard:** Employment records, investigation records, court filings
 
 ## Display Rules

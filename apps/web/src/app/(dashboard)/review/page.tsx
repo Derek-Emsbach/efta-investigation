@@ -5,6 +5,9 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import type { Annotation } from '@/components/review/pdf-viewer'
 import ArcherPanel from '@/components/review/archer-panel'
+import { EmptyState } from '@/components/ui/empty-state'
+import { ShortcutHelpOverlay } from '@/components/review/shortcut-help-overlay'
+import { useReviewShortcuts } from '@/hooks/use-review-shortcuts'
 import type { ArcherDocument } from '@/lib/ai/archer-prompt'
 
 // Dynamic import — react-pdf requires DOM APIs (DOMMatrix) unavailable during SSR
@@ -74,6 +77,10 @@ export default function ReviewPage() {
   // PDF annotation state (driven by Archer)
   const [annotations, setAnnotations] = useState<Annotation[]>([])
   const [currentPage, setCurrentPage] = useState<number | undefined>(undefined)
+  const [numPages, setNumPages] = useState(0)
+
+  // Shortcut help overlay
+  const [showHelp, setShowHelp] = useState(false)
 
   // Editable fields
   const [editTitle, setEditTitle] = useState('')
@@ -157,6 +164,24 @@ export default function ReviewPage() {
     setCurrentPage(page)
   }, [])
 
+  const handleShowHelp = useCallback(() => setShowHelp(true), [])
+
+  useReviewShortcuts({
+    documents,
+    selected,
+    selectDocument,
+    currentPage,
+    setCurrentPage,
+    numPages,
+    handleAction,
+    queueCollapsed,
+    setQueueCollapsed,
+    formExpanded,
+    setFormExpanded,
+    saving,
+    onShowHelp: handleShowHelp,
+  })
+
   return (
     <div className="flex h-screen">
       {/* ─── Column 1: Queue ─────────────────────────── */}
@@ -194,15 +219,13 @@ export default function ReviewPage() {
               <div className="p-4 text-sm text-text-muted">Loading...</div>
             )}
             {!loading && documents.length === 0 && (
-              <div className="p-4 text-center">
-                <p className="text-sm text-text-muted mb-2">No documents to review</p>
-                <Link
-                  href="/processing"
-                  className="text-xs text-info hover:text-info/80 underline"
-                >
-                  View processing queue
-                </Link>
-              </div>
+              <EmptyState
+                label="QUEUE EMPTY"
+                title="No documents to review"
+                description="Processed documents will appear here for review."
+                action={{ label: 'Processing queue', href: '/processing' }}
+                className="py-10"
+              />
             )}
             {documents.map((doc) => (
               <button
@@ -298,6 +321,7 @@ export default function ReviewPage() {
                 annotations={annotations}
                 currentPage={currentPage}
                 onPageChange={setCurrentPage}
+                onNumPagesChange={setNumPages}
                 forensicMetadata={selected.forensic_metadata}
               />
             </div>
@@ -458,6 +482,18 @@ export default function ReviewPage() {
           onNavigate={handleNavigate}
         />
       </div>
+
+      {/* Floating shortcut help button */}
+      <button
+        onClick={() => setShowHelp(true)}
+        className="fixed bottom-4 right-4 z-40 w-8 h-8 rounded-full bg-elevated border border-border-default text-text-muted hover:text-text-secondary hover:bg-surface transition-colors flex items-center justify-center shadow-lg"
+        aria-label="Keyboard shortcuts"
+        title="Keyboard shortcuts (?)"
+      >
+        <span className="font-mono text-xs font-bold">?</span>
+      </button>
+
+      <ShortcutHelpOverlay open={showHelp} onClose={() => setShowHelp(false)} />
     </div>
   )
 }

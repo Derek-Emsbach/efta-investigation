@@ -25,6 +25,7 @@ interface UploadFile {
 }
 
 const MAX_CONCURRENT = 5
+const PRESIGN_BATCH_SIZE = 50
 
 export default function UploadPage() {
   const [datasets, setDatasets] = useState<DatasetOption[]>([])
@@ -33,7 +34,9 @@ export default function UploadPage() {
   const [files, setFiles] = useState<UploadFile[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [isScanning, setIsScanning] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const folderInputRef = useRef<HTMLInputElement>(null)
 
   // Fetch datasets for selector
   useEffect(() => {
@@ -72,6 +75,32 @@ export default function UploadPage() {
     ])
   }, [])
 
+  // Recursively extract all files from a FileSystemEntry tree
+  const scanDirectoryEntry = useCallback(async (entry: FileSystemEntry): Promise<File[]> => {
+    if (entry.isFile) {
+      return new Promise((resolve) => {
+        (entry as FileSystemFileEntry).file((f) => resolve([f]), () => resolve([]))
+      })
+    }
+    if (entry.isDirectory) {
+      const dirReader = (entry as FileSystemDirectoryEntry).createReader()
+      const files: File[] = []
+      // readEntries returns batches of ~100, must call repeatedly until empty
+      const readBatch = (): Promise<FileSystemEntry[]> =>
+        new Promise((resolve) => dirReader.readEntries(resolve, () => resolve([])))
+      let batch = await readBatch()
+      while (batch.length > 0) {
+        for (const child of batch) {
+          const childFiles = await scanDirectoryEntry(child)
+          files.push(...childFiles)
+        }
+        batch = await readBatch()
+      }
+      return files
+    }
+    return []
+  }, [])
+
   // Drag and drop handlers
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -83,14 +112,39 @@ export default function UploadPage() {
     setIsDragOver(false)
   }, [])
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragOver(false)
-    const droppedFiles = Array.from(e.dataTransfer.files)
-    addFiles(droppedFiles)
-  }, [addFiles])
+
+    const items = Array.from(e.dataTransfer.items)
+    const entries = items
+      .map((item) => item.webkitGetAsEntry?.())
+      .filter((entry): entry is FileSystemEntry => entry != null)
+
+    // If any entries are directories, scan recursively
+    const hasDirectories = entries.some((e) => e.isDirectory)
+    if (hasDirectories) {
+      setIsScanning(true)
+      const allFiles: File[] = []
+      for (const entry of entries) {
+        const found = await scanDirectoryEntry(entry)
+        allFiles.push(...found)
+      }
+      setIsScanning(false)
+      addFiles(allFiles)
+    } else {
+      addFiles(Array.from(e.dataTransfer.files))
+    }
+  }, [addFiles, scanDirectoryEntry])
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      addFiles(Array.from(e.target.files))
+      e.target.value = ''
+    }
+  }, [addFiles])
+
+  const handleFolderSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       addFiles(Array.from(e.target.files))
       e.target.value = ''
@@ -137,80 +191,86 @@ export default function UploadPage() {
   }
 
   const startUpload = async () => {
-    const pending = files.filter((f) => f.status === 'pending')
-    if (pending.length === 0) return
+    const pendingIndices = files
+      .map((f, i) => (f.status === 'pending' ? i : -1))
+      .filter((i) => i !== -1)
+    if (pendingIndices.length === 0) return
 
     setIsUploading(true)
 
     try {
-      // Step 1: Get presigned URLs for all pending files
+      // Mark all pending as presigning
       setFiles((prev) =>
         prev.map((f) =>
           f.status === 'pending' ? { ...f, status: 'presigning' as FileStatus } : f,
         ),
       )
 
-      const presignRes = await fetch('/api/upload/presign', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          files: pending.map((f) => ({
-            filename: f.file.name,
-            size_bytes: f.file.size,
-            dataset_id: selectedDataset || undefined,
-            bates_number: batesPrefix || undefined,
-          })),
-        }),
-      })
+      // Step 1: Get presigned URLs in batches of PRESIGN_BATCH_SIZE
+      const allPresigned: Array<{ fileIdx: number; presigned: Record<string, unknown> }> = []
 
-      if (!presignRes.ok) {
-        const err = await presignRes.json()
-        throw new Error(err.error || 'Failed to get presigned URLs')
+      for (let batchStart = 0; batchStart < pendingIndices.length; batchStart += PRESIGN_BATCH_SIZE) {
+        const batchIndices = pendingIndices.slice(batchStart, batchStart + PRESIGN_BATCH_SIZE)
+
+        const presignRes = await fetch('/api/upload/presign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            files: batchIndices.map((idx) => ({
+              filename: files[idx].file.name,
+              size_bytes: files[idx].file.size,
+              dataset_id: selectedDataset || undefined,
+              bates_number: batesPrefix || undefined,
+            })),
+          }),
+        })
+
+        if (!presignRes.ok) {
+          const err = await presignRes.json()
+          throw new Error(err.error || 'Failed to get presigned URLs')
+        }
+
+        const { files: presignedFiles } = await presignRes.json()
+
+        // Update file states for this batch and collect upload targets
+        setFiles((prev) =>
+          prev.map((f, i) => {
+            const batchPos = batchIndices.indexOf(i)
+            if (batchPos === -1 || !presignedFiles[batchPos]) return f
+            const pf = presignedFiles[batchPos]
+            if (pf.skipped || pf.error) {
+              return { ...f, status: 'error' as FileStatus, error: pf.error || 'Skipped' }
+            }
+            return {
+              ...f,
+              id: pf.id,
+              batesNumber: pf.bates_number,
+              status: 'uploading' as FileStatus,
+              progress: 0,
+              isReupload: pf.reupload === true,
+              reuploadVersion: pf.new_version ?? null,
+            }
+          }),
+        )
+
+        batchIndices.forEach((fileIdx, batchPos) => {
+          const pf = presignedFiles[batchPos]
+          if (pf && !pf.skipped && !pf.error) {
+            allPresigned.push({ fileIdx, presigned: pf })
+          }
+        })
       }
 
-      const { files: presignedFiles } = await presignRes.json()
-
-      // Map presigned results back to our file list
-      const pendingIndices = files
-        .map((f, i) => (f.status === 'pending' || f.status === 'presigning' ? i : -1))
-        .filter((i) => i !== -1)
-
-      // Update files with IDs and mark as uploading
-      setFiles((prev) =>
-        prev.map((f, i) => {
-          const pIdx = pendingIndices.indexOf(i)
-          if (pIdx === -1 || !presignedFiles[pIdx]) return f
-          const pf = presignedFiles[pIdx]
-          if (pf.skipped || pf.error) {
-            return { ...f, status: 'error' as FileStatus, error: pf.error || 'Skipped' }
-          }
-          return {
-            ...f,
-            id: pf.id,
-            batesNumber: pf.bates_number,
-            status: 'uploading' as FileStatus,
-            progress: 0,
-            isReupload: pf.reupload === true,
-            reuploadVersion: pf.new_version ?? null,
-          }
-        }),
-      )
-
       // Step 2: Upload files to R2 in parallel (max concurrent)
-      const uploadQueue = pendingIndices
-        .map((fileIdx, pIdx) => ({ fileIdx, presigned: presignedFiles[pIdx] }))
-        .filter((item) => item.presigned && !item.presigned.skipped && !item.presigned.error)
-
       const documentIds: string[] = []
 
-      // Process in chunks of MAX_CONCURRENT
-      for (let i = 0; i < uploadQueue.length; i += MAX_CONCURRENT) {
-        const chunk = uploadQueue.slice(i, i + MAX_CONCURRENT)
-        const results = await Promise.allSettled(
+      for (let i = 0; i < allPresigned.length; i += MAX_CONCURRENT) {
+        const chunk = allPresigned.slice(i, i + MAX_CONCURRENT)
+        await Promise.allSettled(
           chunk.map(async ({ fileIdx, presigned }) => {
             try {
-              await uploadToR2(presigned.presigned_url, files[fileIdx].file, fileIdx)
-              documentIds.push(presigned.id)
+              await uploadToR2(presigned.presigned_url as string, files[fileIdx].file, fileIdx)
+              documentIds.push(presigned.id as string)
               setFiles((prev) =>
                 prev.map((f, idx) =>
                   idx === fileIdx ? { ...f, status: 'confirming' as FileStatus, progress: 100 } : f,
@@ -227,29 +287,22 @@ export default function UploadPage() {
             }
           }),
         )
-
-        // Check for any rejections
-        results.forEach((r) => {
-          if (r.status === 'rejected') {
-            console.error('Upload chunk error:', r.reason)
-          }
-        })
       }
 
-      // Step 3: Confirm uploads
-      if (documentIds.length > 0) {
+      // Step 3: Confirm uploads (also in batches)
+      for (let i = 0; i < documentIds.length; i += PRESIGN_BATCH_SIZE) {
+        const batch = documentIds.slice(i, i + PRESIGN_BATCH_SIZE)
         const confirmRes = await fetch('/api/upload/confirm', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ document_ids: documentIds }),
+          body: JSON.stringify({ document_ids: batch }),
         })
 
         if (confirmRes.ok) {
           const { confirmed } = await confirmRes.json()
-          // Mark confirmed files as done
           setFiles((prev) =>
             prev.map((f) =>
-              f.id && documentIds.includes(f.id) && f.status === 'confirming'
+              f.id && batch.includes(f.id) && f.status === 'confirming'
                 ? { ...f, status: 'done' as FileStatus }
                 : f,
             ),
@@ -258,7 +311,6 @@ export default function UploadPage() {
         }
       }
     } catch (err) {
-      // Mark all presigning/uploading files as error
       setFiles((prev) =>
         prev.map((f) =>
           f.status === 'presigning' || f.status === 'uploading'
@@ -322,8 +374,7 @@ export default function UploadPage() {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-lg p-6 sm:p-12 text-center cursor-pointer transition-all ${
+        className={`relative border-2 border-dashed rounded-lg p-6 sm:p-12 text-center transition-all ${
           isDragOver
             ? 'border-info bg-info/5'
             : 'border-border-default hover:border-border-hover hover:bg-elevated/30'
@@ -337,25 +388,63 @@ export default function UploadPage() {
           onChange={handleFileSelect}
           className="hidden"
         />
-        <svg
-          className={`w-12 h-12 mx-auto mb-4 ${isDragOver ? 'text-info' : 'text-text-muted'}`}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-          <polyline points="17 8 12 3 7 8" />
-          <line x1="12" y1="3" x2="12" y2="15" />
-        </svg>
-        <p className="text-text-primary font-medium mb-1">
-          {isDragOver ? 'Drop PDF files here' : 'Drag & drop PDF files here'}
-        </p>
-        <p className="text-sm text-text-muted">
-          or click to browse. No file size limit.
-        </p>
+        <input
+          ref={folderInputRef}
+          type="file"
+          accept=".pdf,application/pdf"
+          /* @ts-expect-error webkitdirectory is not in React's type defs */
+          webkitdirectory=""
+          multiple
+          onChange={handleFolderSelect}
+          className="hidden"
+        />
+        {isScanning ? (
+          <>
+            <svg className="w-12 h-12 mx-auto mb-4 text-info animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M6.34 6.34L3.51 3.51" />
+            </svg>
+            <p className="text-text-primary font-medium mb-1">Scanning folders for PDFs...</p>
+          </>
+        ) : (
+          <>
+            <svg
+              className={`w-12 h-12 mx-auto mb-4 ${isDragOver ? 'text-info' : 'text-text-muted'}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <p className="text-text-primary font-medium mb-1">
+              {isDragOver ? 'Drop PDF files or folders here' : 'Drag & drop PDF files or folders here'}
+            </p>
+            <div className="flex items-center justify-center gap-3 mt-3">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-sm text-info hover:text-info/80 underline transition-colors"
+              >
+                Select files
+              </button>
+              <span className="text-text-muted text-sm">or</span>
+              <button
+                type="button"
+                onClick={() => folderInputRef.current?.click()}
+                className="text-sm text-info hover:text-info/80 underline transition-colors"
+              >
+                Select folder
+              </button>
+            </div>
+            <p className="text-xs text-text-muted mt-2">
+              Folders are scanned recursively for PDFs. No file size limit.
+            </p>
+          </>
+        )}
       </div>
 
       {/* File list */}
@@ -517,8 +606,8 @@ export default function UploadPage() {
         <div className="bg-surface border border-border-default rounded-lg p-4">
           <h3 className="text-sm font-medium text-text-primary mb-1">Upload</h3>
           <p className="text-xs text-text-muted">
-            Files upload directly to Cloudflare R2 storage. No server-side file size limits.
-            Up to 50 files per batch, 5 concurrent uploads.
+            Drop files or entire folders — PDFs are found recursively.
+            Uploads directly to R2 with no file size limits. 5 concurrent uploads, batched automatically.
           </p>
         </div>
         <div className="bg-surface border border-border-default rounded-lg p-4">

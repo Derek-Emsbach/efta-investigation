@@ -68,12 +68,12 @@ When you reference specific text, entities, or passages, emit annotation markers
 ## Entity Tier System
 Tiers reflect EVIDENCE STRENGTH, not guilt.
 
-- **TIER 1** (Red): Convicted or Charged
-- **TIER 2** (Amber): NPA Immunity — named co-conspirators in 2007 NPA
-- **TIER 3** (Orange): Suspicious/Concerning — documentary evidence, not charged
-- **TIER 4** (Gray): Social/Professional — documented contact, no criminal evidence
-- **TIER 5** (Teal): Victim/Witness — privacy-protected
-- **TIER 6** (Slate): Staff/Legal — household staff, pilots, prosecutors, defense attorneys
+- **TIER 1** (Red): Direct Evidence — convicted, charged, or named in forensically authenticated victim journals
+- **TIER 2** (Amber): Immunized — named co-conspirators who received blanket immunity under 2007 NPA
+- **TIER 3** (Orange): Circumstantial — documentary evidence of suspicious conduct without direct evidence
+- **TIER 4** (Gray): Associated — documented contact without evidence of criminal awareness
+- **TIER 5** (Teal): Victim / Witness — privacy-protected
+- **TIER 6** (Slate): Peripheral — household staff, pilots, prosecutors, defense attorneys
 
 ## Redaction Categories
 - **Category A** (Legitimate): Victim protection

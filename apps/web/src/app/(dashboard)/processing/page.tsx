@@ -4,7 +4,11 @@ import { useCallback, useEffect, useState } from 'react'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { StatCard } from '@/components/ui/stat-card'
+import { Pagination } from '@/components/ui/pagination'
+import { EmptyState } from '@/components/ui/empty-state'
 import Link from 'next/link'
+
+const PAGE_SIZE = 50
 
 interface QueueDocument {
   id: string
@@ -52,24 +56,30 @@ export default function ProcessingPage() {
   const [items, setItems] = useState<QueueItem[]>([])
   const [stats, setStats] = useState<QueueStats | null>(null)
   const [statusFilter, setStatusFilter] = useState('all')
+  const [page, setPage] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchQueue = useCallback(async () => {
     try {
-      const params = statusFilter !== 'all' ? `?status=${statusFilter}` : ''
-      const res = await fetch(`/api/processing${params}`)
+      const params = new URLSearchParams()
+      if (statusFilter !== 'all') params.set('status', statusFilter)
+      params.set('page', String(page))
+      params.set('limit', String(PAGE_SIZE))
+      const res = await fetch(`/api/processing?${params.toString()}`)
       if (!res.ok) throw new Error('Failed to fetch')
       const data = await res.json()
       setItems(data.items)
       setStats(data.stats)
+      setTotalCount(data.totalCount ?? data.items.length)
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load queue')
     } finally {
       setLoading(false)
     }
-  }, [statusFilter])
+  }, [statusFilter, page])
 
   // Initial fetch + polling
   useEffect(() => {
@@ -77,6 +87,11 @@ export default function ProcessingPage() {
     const interval = setInterval(fetchQueue, POLL_INTERVAL)
     return () => clearInterval(interval)
   }, [fetchQueue])
+
+  const handleStatusFilter = useCallback((status: string) => {
+    setStatusFilter(status)
+    setPage(1)
+  }, [])
 
   const formatTime = (ts: string | null) => {
     if (!ts) return '—'
@@ -119,7 +134,7 @@ export default function ProcessingPage() {
         {['all', 'queued', 'processing', 'completed', 'failed', 'needs_review'].map((s) => (
           <button
             key={s}
-            onClick={() => setStatusFilter(s)}
+            onClick={() => handleStatusFilter(s)}
             className={`text-xs px-2.5 py-1 rounded-full transition-colors ${
               statusFilter === s
                 ? 'bg-info/10 text-info border border-info/30'
@@ -153,18 +168,17 @@ export default function ProcessingPage() {
 
       {/* Empty state */}
       {!loading && items.length === 0 && (
-        <div className="bg-surface border border-border-default rounded-lg p-12 text-center">
-          <svg className="w-12 h-12 mx-auto mb-4 text-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <p className="text-text-muted text-sm mb-3">No documents in the processing queue</p>
-          <Link
-            href="/upload"
-            className="text-sm text-info hover:text-info/80 underline transition-colors"
-          >
-            Upload documents to get started
-          </Link>
-        </div>
+        <EmptyState
+          icon={
+            <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          }
+          label="ALL CLEAR"
+          title="No documents in the queue"
+          description="The processing pipeline is empty. Upload documents to begin automated analysis."
+          action={{ label: 'Upload documents', href: '/upload' }}
+        />
       )}
 
       {/* Queue table */}
@@ -254,6 +268,15 @@ export default function ProcessingPage() {
           </div>
         </div>
       )}
+
+      <Pagination
+        page={page}
+        totalPages={Math.ceil(totalCount / PAGE_SIZE)}
+        onPageChange={setPage}
+        totalCount={totalCount}
+        pageSize={PAGE_SIZE}
+        noun="items"
+      />
     </MainContent>
   )
 }

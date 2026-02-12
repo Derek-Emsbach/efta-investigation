@@ -9,6 +9,7 @@ import {
   type FormEvent,
 } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { TIER_LABELS, type Tier } from '@efta/shared'
 
 // ─── Types ───────────────────────────────────────────────────
 
@@ -56,14 +57,6 @@ const TIER_COLORS: Record<number, string> = {
   6: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
 }
 
-const TIER_LABELS: Record<number, string> = {
-  1: 'Convicted/Charged',
-  2: 'NPA Immunity',
-  3: 'Suspicious',
-  4: 'Social/Prof',
-  5: 'Victim/Witness',
-  6: 'Staff/Legal',
-}
 
 function TierBadge({ tier }: { tier: number | null }) {
   if (!tier) return null
@@ -1698,7 +1691,7 @@ function TierChangeCard({
         <span className="text-text-muted">&rarr;</span>
         <TierBadge tier={suggestion.data.new_tier as number} />
         <span className="text-xs text-text-muted">
-          ({TIER_LABELS[suggestion.data.new_tier as number] ?? ''})
+          ({TIER_LABELS[suggestion.data.new_tier as Tier] ?? ''})
         </span>
       </div>
 

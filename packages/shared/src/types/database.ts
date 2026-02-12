@@ -198,6 +198,41 @@ export interface EntityInvestigation {
   role: InvestigationRole | null
 }
 
+export type InvestigationNoteType =
+  | 'narrative'
+  | 'ai_summary'
+  | 'hypothesis'
+  | 'gap_analysis'
+  | 'evidence_summary'
+  | 'user_note'
+
+export interface InvestigationDocument {
+  id: string
+  investigation_id: string
+  document_id: string
+  relevance_notes: string | null
+  added_at: string
+}
+
+export interface InvestigationEvent {
+  id: string
+  investigation_id: string
+  event_id: string
+  relevance_notes: string | null
+  added_at: string
+}
+
+export interface InvestigationNote {
+  id: string
+  investigation_id: string
+  content: string
+  note_type: InvestigationNoteType
+  created_by: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
 export interface Location {
   id: string
   name: string

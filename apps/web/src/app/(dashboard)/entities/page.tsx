@@ -7,6 +7,8 @@ import { PageHeader } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search-input'
 import { FilterBar, type FilterDef } from '@/components/ui/filter-bar'
 import { DataTable, type Column } from '@/components/ui/data-table'
+import { Pagination } from '@/components/ui/pagination'
+import { EmptyState } from '@/components/ui/empty-state'
 import { TierBadge } from '@/components/ui/tier-badge'
 import { TIER_CONFIG } from '@efta/shared'
 import type { Entity, Tier } from '@efta/shared'
@@ -194,10 +196,6 @@ export default function EntitiesPage() {
     [router]
   )
 
-  const rangeStart = (page - 1) * PAGE_SIZE + 1
-  const rangeEnd = Math.min(page * PAGE_SIZE, totalCount)
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
-
   return (
     <MainContent>
       <PageHeader
@@ -217,35 +215,30 @@ export default function EntitiesPage() {
         data={data}
         onRowClick={handleRowClick}
         isLoading={isLoading}
+        emptyState={
+          <EmptyState
+            icon={
+              <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                <path d="M16 3.13a4 4 0 010 7.75" />
+              </svg>
+            }
+            title="No entities found"
+            description="No entities match your current filters. Try adjusting your search criteria."
+          />
+        }
       />
 
-      {/* Pagination */}
-      {totalCount > 0 && (
-        <div className="flex items-center justify-between mt-6">
-          <p className="text-sm text-text-muted">
-            Showing {rangeStart}&ndash;{rangeEnd} of {totalCount.toLocaleString()} entities
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1}
-              className="px-3 py-1.5 text-sm font-medium rounded border border-border-default bg-elevated text-text-primary hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-text-muted px-2">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-              className="px-3 py-1.5 text-sm font-medium rounded border border-border-default bg-elevated text-text-primary hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        totalPages={Math.ceil(totalCount / PAGE_SIZE)}
+        onPageChange={setPage}
+        totalCount={totalCount}
+        pageSize={PAGE_SIZE}
+        noun="entities"
+      />
     </MainContent>
   )
 }

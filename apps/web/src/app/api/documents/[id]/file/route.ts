@@ -29,7 +29,8 @@ async function resolveR2Key(id: string) {
   }
 
   const publicUrl = (process.env.R2_PUBLIC_URL ?? '').trim()
-  const r2Key = doc.file_url.replace(`${publicUrl}/`, '')
+  const cleanFileUrl = doc.file_url.replace(/[\r\n]/g, '')
+  const r2Key = cleanFileUrl.replace(`${publicUrl}/`, '')
 
   return { r2Key, doc }
 }

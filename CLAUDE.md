@@ -113,6 +113,11 @@ efta-investigation/
 - Never commit .env files or API keys.
 - Push to main triggers Vercel auto-deploy.
 
+### Session Bookkeeping
+After completing any task (feature, fix, or refactor):
+1. **Update `docs/TODO.md`** — check off completed items, add new items discovered during work, update the phase status summary if significant progress was made.
+2. **Update memory** — if the work revealed stable patterns, gotchas, or architectural decisions worth remembering, update the auto memory files (mainly `MEMORY.md`). Only record things that are confirmed and likely to stay relevant across sessions.
+
 ## Reference Documents
 
 Before building any feature, read the relevant reference doc:
@@ -140,7 +145,7 @@ Before building any feature, read the relevant reference doc:
 - **EFTA**: Epstein Files Transparency Act — the law requiring DOJ to release these files
 - **Bates Number**: Unique document identifier (e.g., EFTA02731623)
 - **Dataset**: One of 12 numbered collections released by DOJ
-- **Entity Tier**: Evidence-strength classification (1=convicted/charged through 6=staff/legal)
+- **Entity Tier**: Evidence-strength classification (1=direct evidence through 6=peripheral)
 - **Redaction Category**: A=victim protection, B=legal privilege, C=institutional protection, D=perpetrator protection
 - **The Five Systems**: Recruitment Pipeline, Logistics Network, Financial Infrastructure, Protection Apparatus, Inner Circle
 - **NPA**: 2007 Non-Prosecution Agreement that gave blanket immunity to co-conspirators

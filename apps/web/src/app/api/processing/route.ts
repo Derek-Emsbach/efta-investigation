@@ -6,8 +6,35 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { searchParams } = new URL(request.url)
     const statusFilter = searchParams.get('status')
+    const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1)
+    const limit = Math.min(200, Math.max(1, parseInt(searchParams.get('limit') ?? '50', 10) || 50))
 
-    // Fetch queue items with joined document info
+    // Stats query — count all items by status (unaffected by filter/pagination)
+    const { data: allItems, error: statsError } = await supabase
+      .from('processing_queue')
+      .select('status')
+
+    if (statsError) {
+      throw new Error(`Failed to fetch stats: ${statsError.message}`)
+    }
+
+    const stats = {
+      queued: 0,
+      processing: 0,
+      completed: 0,
+      failed: 0,
+      needs_review: 0,
+      total: allItems?.length ?? 0,
+    }
+
+    for (const item of allItems ?? []) {
+      const s = item.status as keyof typeof stats
+      if (s in stats && s !== 'total') {
+        stats[s]++
+      }
+    }
+
+    // Data query — paginated with optional filter
     let query = supabase
       .from('processing_queue')
       .select(`
@@ -29,7 +56,7 @@ export async function GET(request: Request) {
           processing_status,
           dataset_id
         )
-      `)
+      `, { count: 'exact' })
       .order('priority', { ascending: true })
       .order('created_at', { ascending: true })
 
@@ -37,31 +64,21 @@ export async function GET(request: Request) {
       query = query.eq('status', statusFilter)
     }
 
-    const { data, error } = await query.limit(200)
+    const rangeStart = (page - 1) * limit
+    const rangeEnd = page * limit - 1
+    const { data, error, count } = await query.range(rangeStart, rangeEnd)
 
     if (error) {
       throw new Error(`Failed to fetch processing queue: ${error.message}`)
     }
 
-    // Compute summary stats
-    const items = data ?? []
-    const stats = {
-      queued: 0,
-      processing: 0,
-      completed: 0,
-      failed: 0,
-      needs_review: 0,
-      total: items.length,
-    }
-
-    for (const item of items) {
-      const s = item.status as keyof typeof stats
-      if (s in stats && s !== 'total') {
-        stats[s]++
-      }
-    }
-
-    return NextResponse.json({ items, stats })
+    return NextResponse.json({
+      items: data ?? [],
+      stats,
+      page,
+      limit,
+      totalCount: count ?? 0,
+    })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })

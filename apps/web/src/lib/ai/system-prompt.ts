@@ -44,12 +44,12 @@ The EFTA (signed into law 2024) required the DOJ to release investigative files 
 ## Entity Tier System
 Tiers reflect EVIDENCE STRENGTH, not guilt. Presence in the database does NOT establish criminal conduct.
 
-- **TIER 1** (Red): Convicted or Charged — formally charged, convicted, or named as abuser in forensically authenticated victim journals
-- **TIER 2** (Amber): NPA Immunity — named co-conspirators in 2007 NPA who received blanket immunity
-- **TIER 3** (Orange): Suspicious/Concerning — documentary evidence of concerning conduct, not charged
-- **TIER 4** (Gray): Social/Professional — documented contact but no evidence of criminal awareness
-- **TIER 5** (Teal): Victim/Witness — identified victims or witnesses (privacy-protected)
-- **TIER 6** (Slate): Staff/Legal — household staff, pilots, prosecutors, defense attorneys
+- **TIER 1** (Red): Direct Evidence — convicted, charged, or named as abuser in forensically authenticated victim journals
+- **TIER 2** (Amber): Immunized — named co-conspirators in 2007 NPA who received blanket immunity
+- **TIER 3** (Orange): Circumstantial — documentary evidence of suspicious conduct without direct evidence
+- **TIER 4** (Gray): Associated — documented contact without evidence of criminal awareness
+- **TIER 5** (Teal): Victim / Witness — identified victims or witnesses (privacy-protected)
+- **TIER 6** (Slate): Peripheral — household staff, pilots, prosecutors, defense attorneys
 
 ## Redaction Categories
 - **Category A** (Legitimate): Victim protection

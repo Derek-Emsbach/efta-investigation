@@ -170,6 +170,40 @@ CREATE TABLE entity_investigations (
   UNIQUE(entity_id, investigation_id)
 );
 
+-- Investigation ↔ Document
+CREATE TABLE investigation_documents (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  investigation_id UUID NOT NULL REFERENCES investigations(id) ON DELETE CASCADE,
+  document_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+  relevance_notes TEXT,
+  added_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(investigation_id, document_id)
+);
+
+-- Investigation ↔ Event
+CREATE TABLE investigation_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  investigation_id UUID NOT NULL REFERENCES investigations(id) ON DELETE CASCADE,
+  event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+  relevance_notes TEXT,
+  added_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(investigation_id, event_id)
+);
+
+-- Investigation notes (narrative, AI summaries, analysis)
+CREATE TABLE investigation_notes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  investigation_id UUID NOT NULL REFERENCES investigations(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  note_type TEXT NOT NULL CHECK (note_type IN (
+    'narrative', 'ai_summary', 'hypothesis', 'gap_analysis', 'evidence_summary', 'user_note'
+  )),
+  created_by TEXT, -- 'user' or 'archer'
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- ============================================================
 -- LOCATION INTELLIGENCE TABLES
 -- ============================================================
@@ -328,6 +362,12 @@ CREATE INDEX idx_evidence_document ON evidence_items(document_id);
 CREATE INDEX idx_redactions_document ON redactions(document_id);
 CREATE INDEX idx_redactions_category ON redactions(category);
 
+CREATE INDEX idx_inv_docs_investigation ON investigation_documents(investigation_id);
+CREATE INDEX idx_inv_docs_document ON investigation_documents(document_id);
+CREATE INDEX idx_inv_events_investigation ON investigation_events(investigation_id);
+CREATE INDEX idx_inv_events_event ON investigation_events(event_id);
+CREATE INDEX idx_inv_notes_investigation ON investigation_notes(investigation_id);
+
 CREATE INDEX idx_locations_type ON locations(location_type);
 CREATE INDEX idx_locations_city ON locations(city);
 
@@ -395,6 +435,9 @@ ALTER TABLE datasets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE investigations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE processing_queue ENABLE ROW LEVEL SECURITY;
 ALTER TABLE entity_investigations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE investigation_documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE investigation_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE investigation_notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE locations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE entity_sightings ENABLE ROW LEVEL SECURITY;
 
@@ -413,6 +456,9 @@ CREATE POLICY "Admin full access" ON datasets FOR ALL USING (auth.role() = 'auth
 CREATE POLICY "Admin full access" ON investigations FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin full access" ON processing_queue FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin full access" ON entity_investigations FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access" ON investigation_documents FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access" ON investigation_events FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Admin full access" ON investigation_notes FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin full access" ON locations FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin full access" ON entity_sightings FOR ALL USING (auth.role() = 'authenticated');
 

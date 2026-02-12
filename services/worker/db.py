@@ -15,8 +15,36 @@ def get_client() -> Client:
     return _client
 
 
-def fetch_next_queued() -> dict[str, Any] | None:
-    """Fetch the next queued item from the processing queue."""
+def claim_next_queued() -> dict[str, Any] | None:
+    """Atomically claim the next queued item (safe for multiple workers).
+
+    Uses a Postgres function with FOR UPDATE SKIP LOCKED so no two
+    workers can grab the same row.  Falls back to the two-step
+    fetch+lock if the RPC doesn't exist yet.
+    """
+    client = get_client()
+    try:
+        result = client.rpc("claim_next_queued").execute()
+        if not result.data or len(result.data) == 0:
+            return None
+        # RPC returns the queue row without the joined document — fetch it
+        queue_row = result.data[0]
+        doc_result = (
+            client.table("documents")
+            .select("*")
+            .eq("id", queue_row["document_id"])
+            .single()
+            .execute()
+        )
+        queue_row["documents"] = doc_result.data
+        return queue_row
+    except Exception:
+        # Fallback: RPC not created yet — use original two-step approach
+        return _fetch_and_lock_fallback()
+
+
+def _fetch_and_lock_fallback() -> dict[str, Any] | None:
+    """Non-atomic fallback: fetch then lock (race-prone with multiple workers)."""
     client = get_client()
     result = (
         client.table("processing_queue")
@@ -28,16 +56,12 @@ def fetch_next_queued() -> dict[str, Any] | None:
         .execute()
     )
     if result.data and len(result.data) > 0:
-        return result.data[0]
+        item = result.data[0]
+        client.table("processing_queue").update(
+            {"status": "processing", "started_at": "now()"}
+        ).eq("id", item["id"]).execute()
+        return item
     return None
-
-
-def lock_queue_item(queue_id: str) -> None:
-    """Lock a queue item by setting status to processing."""
-    client = get_client()
-    client.table("processing_queue").update(
-        {"status": "processing", "started_at": "now()"}
-    ).eq("id", queue_id).execute()
 
 
 def update_queue_step(queue_id: str, step: str, results: dict | None = None) -> None:

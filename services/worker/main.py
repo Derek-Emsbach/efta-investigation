@@ -24,11 +24,10 @@ import traceback
 
 from config import POLL_INTERVAL
 from db import (
+    claim_next_queued,
     complete_queue_item,
     complete_queue_item_with_status,
     fail_queue_item,
-    fetch_next_queued,
-    lock_queue_item,
     update_queue_step,
 )
 from stages.ingest import run_ingest
@@ -179,7 +178,7 @@ def main():
 
     while True:
         try:
-            item = fetch_next_queued()
+            item = claim_next_queued()
 
             if item is None:
                 sys.stdout.write(".")
@@ -190,9 +189,6 @@ def main():
             document = item.get("documents", {})
             doc_name = document.get("bates_number") or document.get("title") or item["document_id"]
             print(f"\nProcessing: {doc_name}")
-
-            # Lock the item
-            lock_queue_item(item["id"])
 
             try:
                 process_document(item)
