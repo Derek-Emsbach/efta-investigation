@@ -20,6 +20,8 @@ interface UploadFile {
   status: FileStatus
   progress: number
   error: string | null
+  isReupload: boolean
+  reuploadVersion: number | null
 }
 
 const MAX_CONCURRENT = 5
@@ -64,6 +66,8 @@ export default function UploadPage() {
         status: 'pending' as FileStatus,
         progress: 0,
         error: null,
+        isReupload: false,
+        reuploadVersion: null,
       })),
     ])
   }, [])
@@ -186,6 +190,8 @@ export default function UploadPage() {
             batesNumber: pf.bates_number,
             status: 'uploading' as FileStatus,
             progress: 0,
+            isReupload: pf.reupload === true,
+            reuploadVersion: pf.new_version ?? null,
           }
         }),
       )
@@ -271,6 +277,8 @@ export default function UploadPage() {
   const activeCount = files.filter((f) =>
     ['presigning', 'uploading', 'confirming'].includes(f.status),
   ).length
+  const reuploadCount = files.filter((f) => f.isReupload && f.status === 'done').length
+  const newUploadCount = doneCount - reuploadCount
 
   return (
     <MainContent>
@@ -387,9 +395,14 @@ export default function UploadPage() {
               <div key={`${f.file.name}-${i}`} className="flex items-center gap-3 px-4 py-3 bg-surface">
                 {/* Status icon */}
                 <div className="shrink-0">
-                  {f.status === 'done' && (
+                  {f.status === 'done' && !f.isReupload && (
                     <svg className="w-5 h-5 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )}
+                  {f.status === 'done' && f.isReupload && (
+                    <svg className="w-5 h-5 text-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                   )}
                   {f.status === 'error' && (
@@ -412,12 +425,20 @@ export default function UploadPage() {
 
                 {/* File info */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-text-primary truncate">{f.file.name}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm text-text-primary truncate">{f.file.name}</p>
+                    {f.isReupload && f.reuploadVersion && (
+                      <span className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/25">
+                        Re-upload v{f.reuploadVersion}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-3 text-xs text-text-muted">
                     <span>{formatBytes(f.file.size)}</span>
                     {f.batesNumber && <span className="font-mono">{f.batesNumber}</span>}
                     {f.error && <span className="text-critical">{f.error}</span>}
-                    {f.status === 'uploading' && <span className="text-info">{f.progress}%</span>}
+                    {f.isReupload && f.status === 'uploading' && <span className="text-warning">{f.progress}%</span>}
+                    {!f.isReupload && f.status === 'uploading' && <span className="text-info">{f.progress}%</span>}
                     {f.status === 'presigning' && <span className="text-info">Preparing...</span>}
                     {f.status === 'confirming' && <span className="text-info">Confirming...</span>}
                   </div>
@@ -450,10 +471,34 @@ export default function UploadPage() {
 
           {/* Post-upload actions */}
           {doneCount > 0 && !isUploading && (
-            <div className="mt-4 p-4 bg-success/5 border border-success/20 rounded-lg">
-              <p className="text-sm text-success font-medium mb-2">
-                {doneCount} document{doneCount !== 1 ? 's' : ''} uploaded successfully
+            <div className={`mt-4 p-4 rounded-lg ${
+              reuploadCount > 0
+                ? 'bg-warning/5 border border-warning/20'
+                : 'bg-success/5 border border-success/20'
+            }`}>
+              <p className="text-sm font-medium mb-2">
+                {reuploadCount > 0 ? (
+                  <span className="text-text-primary">
+                    {newUploadCount > 0 && (
+                      <span className="text-success">{newUploadCount} new</span>
+                    )}
+                    {newUploadCount > 0 && reuploadCount > 0 && ' and '}
+                    {reuploadCount > 0 && (
+                      <span className="text-warning">{reuploadCount} re-upload{reuploadCount !== 1 ? 's' : ''}</span>
+                    )}
+                    {' '}queued for processing
+                  </span>
+                ) : (
+                  <span className="text-success">
+                    {doneCount} document{doneCount !== 1 ? 's' : ''} uploaded successfully
+                  </span>
+                )}
               </p>
+              {reuploadCount > 0 && (
+                <p className="text-xs text-text-muted mb-2">
+                  Re-uploaded documents will be compared against previous versions. Check the processing queue for diff results.
+                </p>
+              )}
               <div className="flex items-center gap-3">
                 <Link
                   href="/processing"

@@ -6,11 +6,13 @@ import DocumentViewer from '@/components/documents/document-viewer'
 import { SeverityMarker } from '@/components/ui/severity-marker'
 import { EvidenceStrength } from '@/components/ui/evidence-strength'
 import { TierBadge } from '@/components/ui/tier-badge'
+import { VersionDiffAlert, VersionHistory, ReprocessButton } from '@/components/documents/version-panel'
 import { createClient } from '@/lib/supabase/server'
 import { REDACTION_CATEGORIES } from '@efta/shared'
 import type {
   Document,
   Dataset,
+  DocumentVersion,
   Entity,
   EntityDocument,
   EventDocument,
@@ -97,7 +99,7 @@ export default async function DocumentDetailPage({
   const supabase = await createClient()
 
   // Fetch document with all relations in parallel
-  const [documentResult, entitiesResult, eventsResult, redactionsResult, evidenceResult] = await Promise.all([
+  const [documentResult, entitiesResult, eventsResult, redactionsResult, evidenceResult, versionsResult] = await Promise.all([
     supabase
       .from('documents')
       .select('*, dataset:datasets(*)')
@@ -120,6 +122,11 @@ export default async function DocumentDetailPage({
       .from('evidence_items')
       .select('*')
       .eq('document_id', id),
+    supabase
+      .from('document_versions')
+      .select('*')
+      .eq('document_id', id)
+      .order('version_number', { ascending: false }),
   ])
 
   if (documentResult.error || !documentResult.data) {
@@ -131,6 +138,8 @@ export default async function DocumentDetailPage({
   const linkedEvents = (eventsResult.data ?? []) as EventDocumentWithEvent[]
   const redactions = (redactionsResult.data ?? []) as Redaction[]
   const evidenceItems = (evidenceResult.data ?? []) as EvidenceItem[]
+  const versions = (versionsResult.data ?? []) as DocumentVersion[]
+  const versionDiff = document.forensic_metadata?.version_diff as Record<string, unknown> | undefined
 
   return (
     <MainContent>
@@ -141,7 +150,15 @@ export default async function DocumentDetailPage({
         <h1 className="font-mono text-2xl font-bold text-text-primary">
           {document.bates_number ?? 'Untitled Document'}
         </h1>
+        {document.current_version > 1 && (
+          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning border border-warning/25">
+            v{document.current_version}
+          </span>
+        )}
         {document.severity && <SeverityMarker severity={document.severity as Severity} />}
+        <div className="ml-auto">
+          <ReprocessButton documentId={id} hasFileUrl={!!document.file_url} />
+        </div>
       </div>
 
       {/* Document flags */}
@@ -158,6 +175,11 @@ export default async function DocumentDetailPage({
         </div>
       )}
       {(!document.flags || document.flags.length === 0) && <div className="mb-4" />}
+
+      {/* Version diff alert */}
+      {versionDiff && (versionDiff as { significant_findings?: unknown[] }).significant_findings?.length ? (
+        <VersionDiffAlert diff={versionDiff as Parameters<typeof VersionDiffAlert>[0]['diff']} />
+      ) : null}
 
       {/* Metadata grid */}
       <div className="bg-surface border border-border-default rounded-lg p-6 mb-8">
@@ -188,6 +210,11 @@ export default async function DocumentDetailPage({
           </div>
         </dl>
       </div>
+
+      {/* Version History */}
+      {versions.length > 0 && (
+        <VersionHistory versions={versions} />
+      )}
 
       {/* Summary */}
       {document.summary && (

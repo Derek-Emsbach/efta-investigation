@@ -225,3 +225,57 @@ def fetch_events_by_date_range(
         .execute()
     )
     return result.data or []
+
+
+# ── Version diff helpers ─────────────────────────────────────────
+
+
+def fetch_document_version(version_id: str) -> dict[str, Any] | None:
+    """Fetch a specific version snapshot."""
+    client = get_client()
+    result = (
+        client.table("document_versions")
+        .select("*")
+        .eq("id", version_id)
+        .single()
+        .execute()
+    )
+    return result.data
+
+
+def fetch_redaction_summary(document_id: str) -> dict[str, Any]:
+    """Compute current redaction summary for a document."""
+    client = get_client()
+    result = (
+        client.table("redactions")
+        .select("page_number, category")
+        .eq("document_id", document_id)
+        .execute()
+    )
+    redactions = result.data or []
+    categories: dict[str, int] = {"A": 0, "B": 0, "C": 0, "D": 0}
+    pages: set[int] = set()
+    for r in redactions:
+        cat = r.get("category")
+        if cat and cat in categories:
+            categories[cat] += 1
+        page = r.get("page_number")
+        if page is not None:
+            pages.add(page)
+    return {
+        "total_pages_with_redactions": len(pages),
+        "categories": categories,
+        "total_redactions": len(redactions),
+    }
+
+
+def fetch_entity_ids_for_document(document_id: str) -> list[str]:
+    """Get all entity IDs linked to a document."""
+    client = get_client()
+    result = (
+        client.table("entity_documents")
+        .select("entity_id")
+        .eq("document_id", document_id)
+        .execute()
+    )
+    return list({r["entity_id"] for r in (result.data or [])})

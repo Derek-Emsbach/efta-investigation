@@ -38,6 +38,7 @@ from stages.entities import run_entities
 from stages.redactions import run_redactions
 from stages.crossref import run_crossref
 from stages.classify import run_classify
+from stages.diff import run_diff
 
 
 def should_run_advanced(document: dict, extract_results: dict) -> bool:
@@ -134,15 +135,37 @@ def process_document(queue_item: dict) -> None:
     )
     update_queue_step(queue_id, "classify", {"classify": classify_results})
 
+    # ── Version Diff (conditional) ──────────────────────────────
+
+    is_reprocess = queue_item.get("is_reprocess", False)
+    previous_version_id = queue_item.get("previous_version_id")
+
+    if is_reprocess and previous_version_id:
+        print(f"  Stage 8: Version Diff")
+        update_queue_step(queue_id, "diff")
+        diff_results = run_diff(document_id, previous_version_id)
+        update_queue_step(queue_id, "diff", {"diff": diff_results})
+        findings = diff_results.get("significant_findings", [])
+        if findings:
+            print(f"    SIGNIFICANT: {len(findings)} finding(s)")
+            for f in findings:
+                print(f"      - {f['description']}")
+        else:
+            print(f"    No significant changes")
+
     # ── Complete ─────────────────────────────────────────────────
 
     needs_review = classify_results.get("needs_review", True)
+    # Re-processed docs always go to needs_review so reviewer can see diff
+    if is_reprocess:
+        needs_review = True
     final_status = "needs_review" if needs_review else "extracted"
     complete_queue_item_with_status(queue_id, document_id, final_status)
 
     score = classify_results.get("score", 0)
     severity = classify_results.get("severity", "routine")
-    print(f"  Done — score={score}, severity={severity}, status={final_status}")
+    reprocess_tag = " [re-processed]" if is_reprocess else ""
+    print(f"  Done — score={score}, severity={severity}, status={final_status}{reprocess_tag}")
 
 
 def main():

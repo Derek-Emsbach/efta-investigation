@@ -133,6 +133,8 @@ export interface Document {
   batch_number: number | null
   forensic_metadata: Record<string, unknown>
   flags: string[]
+  current_version: number
+  version_notes: string | null
   created_at: string
   updated_at: string
 }
@@ -267,6 +269,35 @@ export interface ProcessingQueueItem {
   started_at: string | null
   completed_at: string | null
   results: Record<string, unknown>
+  is_reprocess: boolean
+  previous_version_id: string | null
+  created_at: string
+}
+
+export type VersionTrigger = 'initial_import' | 'reupload' | 'reprocess'
+
+export interface DocumentVersion {
+  id: string
+  document_id: string
+  version_number: number
+  trigger: VersionTrigger
+  file_url: string | null
+  file_size_bytes: number | null
+  page_count: number | null
+  extracted_text: string | null
+  document_type: string | null
+  original_date: string | null
+  classification: string | null
+  severity: string | null
+  processing_status: string | null
+  forensic_metadata: Record<string, unknown>
+  flags: string[]
+  review_notes: string | null
+  reviewed_by: string | null
+  reviewed_at: string | null
+  redaction_summary: Record<string, unknown>
+  entity_ids: string[]
+  processing_results: Record<string, unknown>
   created_at: string
 }
 

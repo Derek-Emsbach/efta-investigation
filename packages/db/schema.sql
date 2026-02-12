@@ -87,6 +87,8 @@ CREATE TABLE documents (
   batch_number INTEGER, -- which review batch this was processed in
   forensic_metadata JSONB DEFAULT '{}',
   flags TEXT[] DEFAULT '{}', -- red_flag, redaction_failure, signature_violence, name_leak, etc.
+  current_version INTEGER DEFAULT 1,
+  version_notes TEXT,
   search_vector TSVECTOR,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -256,7 +258,36 @@ CREATE TABLE processing_queue (
   started_at TIMESTAMPTZ,
   completed_at TIMESTAMPTZ,
   results JSONB DEFAULT '{}',
+  is_reprocess BOOLEAN DEFAULT false,
+  previous_version_id UUID, -- references document_versions(id)
   created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Document versions (snapshots before re-processing / re-upload)
+CREATE TABLE document_versions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  document_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+  version_number INTEGER NOT NULL,
+  trigger TEXT NOT NULL CHECK (trigger IN ('initial_import', 'reupload', 'reprocess')),
+  file_url TEXT,
+  file_size_bytes BIGINT,
+  page_count INTEGER,
+  extracted_text TEXT,
+  document_type TEXT,
+  original_date DATE,
+  classification TEXT,
+  severity TEXT,
+  processing_status TEXT,
+  forensic_metadata JSONB DEFAULT '{}',
+  flags TEXT[] DEFAULT '{}',
+  review_notes TEXT,
+  reviewed_by TEXT,
+  reviewed_at TIMESTAMPTZ,
+  redaction_summary JSONB DEFAULT '{}',
+  entity_ids TEXT[] DEFAULT '{}',
+  processing_results JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(document_id, version_number)
 );
 
 -- ============================================================
