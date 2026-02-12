@@ -84,7 +84,7 @@ async function runConversation(
   send: (event: string, data: unknown) => void,
 ): Promise<void> {
   const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY!,
+    apiKey: process.env.ANTHROPIC_API_KEY!.trim(),
   })
 
   // Build API messages from chat history

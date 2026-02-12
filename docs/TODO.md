@@ -320,7 +320,7 @@
 
 **Goal:** Automated document ingestion and analysis with human review.
 
-> **Status:** Core pipeline complete. 8-stage worker (ingest → forensics → extract → entities → redactions → crossref → classify → version diff), upload with re-upload detection, processing dashboard, review page with Archer AI copilot, document versioning and diff. Remaining: worker deployment, zip upload, bulk actions.
+> **Status:** Core pipeline complete. 8-stage worker (ingest → forensics → extract → entities → redactions → crossref → classify → version diff), upload with re-upload detection, processing dashboard, review page with Archer AI copilot (3-column layout, markdown rendering, prompt caching, image navigation), document versioning and diff. Remaining: worker deployment, zip upload, bulk actions.
 
 ### 4.1 Python Worker
 - [x] Python polling worker in `services/worker/` (simple script, not FastAPI)
@@ -364,26 +364,30 @@
 - [ ] Bulk actions (retry all failed, clear completed)
 
 ### 4.3 Admin Review UI
-- [x] `/review` page with split-pane interface
-- [x] Left panel: document queue (needs_review status)
-- [x] Right panel: PDF viewer + extracted data form
+- [x] `/review` page with 3-column layout (collapsible queue | PDF + form bar | Archer panel)
+- [x] Left panel: document queue (needs_review status, collapsible to icon-width)
+- [x] Center panel: PDF viewer (full height) + collapsible review form bar at bottom
+- [x] Right panel: Archer AI copilot (full height, 380px)
 - [x] Editable fields: title, document_type, date, severity, classification
-- [x] Extracted text preview (read-only)
-- [x] Forensic metadata collapsible view
 - [x] Review notes textarea
-- [x] Actions: Approve, Flag, Reject
+- [x] Actions: Approve, Flag, Reject (always visible in collapsed form bar)
 - [ ] Confirm/edit entity matches
 - [ ] Adjust tier assignments
 - [ ] Add/edit evidence items
 - [ ] Keyboard shortcuts for fast review
-- [x] **Archer Review Copilot** — AI analysis panel embedded in review page
-  - [x] Collapsible Archer panel alongside the PDF viewer (right side)
-  - [x] Auto-analyzes the current document on load (entities, dates, key quotes, metadata)
-  - [x] Contextual prompts: "Who is mentioned?", "What's significant?", "Cross-references?"
+- [x] **Archer Review Copilot** — AI investigative partner embedded in review page
+  - [x] Full-height right-side panel with markdown rendering (react-markdown + remark-gfm)
+  - [x] Conversational pace: brief first impression → numbered section menu → drill-down per section
+  - [x] Quick actions as 2-column card grid (welcome state) + horizontal scroll (after messages)
+  - [x] Contextual prompts: "Who is mentioned?", "What's significant?", "Cross-references?", etc.
   - [x] Surfaces entities, key quotes, evidence-grade information, and connections
   - [x] Recommends review action (approve/flag/reject) with reasoning
-  - [ ] Conversation persists per document (revisit later to continue analysis)
-  - [ ] Quick-action buttons to apply Archer suggestions directly
+  - [x] Conversation persists per document (revisit later to continue analysis)
+  - [x] Actionable suggestion cards (apply/dismiss connections, tier changes, evidence)
+  - [x] Prompt caching (`cache_control: ephemeral`) — ~90% cost reduction on messages 2+
+  - [x] Conversation history trimming (last 10 messages to prevent token bloat)
+  - [x] PDF annotation protocol (`<!--ANNOTATION:...-->`) — tier-colored entity highlights, key text, page navigation
+  - [x] Image navigation in PDF toolbar (pages with images dropdown from forensic metadata)
 
 ### 4.4 Tiered Processing
 - [x] **Tier A (automatic, all documents — stages 1-3):**

@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       }
 
       // Extract R2 key from file_url
-      const publicUrl = process.env.R2_PUBLIC_URL ?? ''
+      const publicUrl = (process.env.R2_PUBLIC_URL ?? '').trim()
       const key = doc.file_url.replace(`${publicUrl}/`, '')
 
       const exists = await headObject(key)

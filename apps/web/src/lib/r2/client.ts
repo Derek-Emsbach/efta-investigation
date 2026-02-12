@@ -9,14 +9,14 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 const R2 = new S3Client({
   region: 'auto',
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  endpoint: `https://${(process.env.R2_ACCOUNT_ID ?? '').trim()}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+    accessKeyId: (process.env.R2_ACCESS_KEY_ID ?? '').trim(),
+    secretAccessKey: (process.env.R2_SECRET_ACCESS_KEY ?? '').trim(),
   },
 })
 
-const BUCKET = process.env.R2_BUCKET_NAME!
+const BUCKET = (process.env.R2_BUCKET_NAME ?? '').trim()
 
 export async function uploadFile(
   key: string,
@@ -31,7 +31,7 @@ export async function uploadFile(
       ContentType: contentType,
     }),
   )
-  return `${process.env.R2_PUBLIC_URL}/${key}`
+  return `${(process.env.R2_PUBLIC_URL ?? '').trim()}/${key}`
 }
 
 export async function getSignedDownloadUrl(

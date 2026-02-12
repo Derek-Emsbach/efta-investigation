@@ -149,7 +149,7 @@ export async function POST(request: Request) {
       // Generate presigned URL (15 min expiry)
       const presignedUrl = await getPresignedUploadUrl(r2Key, 'application/pdf', 900)
 
-      const fileUrl = `${process.env.R2_PUBLIC_URL}/${r2Key}`
+      const fileUrl = `${(process.env.R2_PUBLIC_URL ?? '').trim()}/${r2Key}`
 
       // Create document record
       const { data: doc, error: docError } = await supabase

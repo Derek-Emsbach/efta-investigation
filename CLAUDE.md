@@ -12,16 +12,18 @@ Check `docs/TODO.md` for the current build phase and task list. Always read it b
 
 | Component | Technology | Hosting |
 |-----------|-----------|---------|
-| Frontend | Next.js 14+ (App Router, TypeScript) | Vercel |
-| Styling | Tailwind CSS + custom design system | - |
+| Frontend | Next.js 16 (App Router, TypeScript, React 19) | Vercel |
+| Styling | Tailwind CSS v4 + custom design system | - |
 | Database | PostgreSQL via Supabase | Supabase Cloud |
 | File Storage | Cloudflare R2 | Cloudflare |
 | Auth | Supabase Auth | Supabase Cloud |
 | Search | Supabase Full-Text Search | Supabase Cloud |
-| Processing Worker | Python (FastAPI + PyMuPDF) | Railway |
-| Queue | Supabase Realtime / BullMQ later | - |
-| Monorepo | Turborepo + pnpm | - |
+| Processing Worker | Python (PyMuPDF polling script) | Railway |
+| Monorepo | Turborepo + pnpm 10 | - |
 | Visualization | D3.js (graphs), custom React (timelines) | Client-side |
+| PDF Viewing | react-pdf (PDF.js worker served from public/) | Client-side |
+| AI (Detective) | Claude API with tool use (Supabase queries) | Anthropic API |
+| AI (Archer) | Claude API with prompt caching + streaming SSE | Anthropic API |
 
 ## Repository Structure
 
@@ -29,26 +31,43 @@ Check `docs/TODO.md` for the current build phase and task list. Always read it b
 efta-investigation/
   apps/
     web/                          # Next.js frontend
+      public/                     # Static assets (PDF.js worker, favicon)
       src/
         app/                      # App Router
-          (public)/               # Public-facing pages
-          (admin)/                # Auth-protected admin pages
+          (dashboard)/            # Auth-protected dashboard pages
+            review/               # Document review (3-column: queue | PDF | Archer)
+            detective/            # AI detective assistant
+            upload/               # Document upload
+            processing/           # Processing pipeline dashboard
+            entities/[id]/        # Entity profiles
+            documents/[id]/       # Document viewer
+            timeline/             # Event timeline
+            search/               # Full-text search
+            network/              # Network graph
+            datasets/             # Dataset browser
+            hierarchy/            # Entity hierarchy
           api/                    # API routes
+            review/archer/        # Archer SSE streaming endpoint
+            detective/            # Detective chat endpoint
+            upload/               # Presigned URL generation
         components/               # React components
-          ui/                     # Design system
+          ui/                     # Design system (breadcrumbs, theme-toggle)
+          layout/                 # Sidebar, footer, mobile toggle
+          review/                 # Archer panel, PDF viewer
           timeline/
           entity/
           network/
           documents/
         lib/                      # Utilities
-          supabase/
-          r2/
-          types/
+          supabase/               # Server + client Supabase helpers
+          ai/                     # AI prompts (archer-prompt, system-prompt, tools)
+          r2/                     # Cloudflare R2 presigned URLs
   packages/
     db/                           # Schema + migrations
-    shared/                       # Shared types + constants
+    shared/                       # Shared types + constants (@efta/shared)
   services/
-    worker/                       # Python processing worker
+    worker/                       # Python processing worker (polling script)
+      stages/                     # Pipeline stages (classify, entities, crossref, redactions)
   scripts/                        # Import + migration scripts
   docs/
     reference/                    # Architecture + domain reference
@@ -64,6 +83,7 @@ efta-investigation/
 - Serif display font for headings (Playfair Display), clean sans for body (IBM Plex Sans)
 - Every design decision should feel like ProPublica meets an intelligence briefing
 - NEVER use generic AI dashboard aesthetics (no purple gradients, no Inter font, no rounded pastel cards)
+- **Tailwind v4**: Theme is defined in CSS via `@theme inline {}` in `globals.css`, NOT in `tailwind.config.ts`. Use semantic color names (`bg-background`, `text-text-primary`, `border-border-default`, etc.).
 
 ### Data Integrity
 - Every claim needs a source document. Evidence items link to document records which link to R2 file URLs.
@@ -84,6 +104,8 @@ efta-investigation/
 - API routes in `app/api/` for data fetching.
 - Supabase client: server-side via `@supabase/ssr`, client-side via `@supabase/supabase-js`.
 - All database queries go through `lib/supabase/` helpers, never raw SQL in components.
+- **Next.js 16**: Route params are `Promise` — must `await params` in route handlers and dynamic pages.
+- Import shared types from `'@efta/shared'`, not deep paths into the package.
 
 ### Git Workflow
 - Commit after every meaningful step.
@@ -123,13 +145,30 @@ Before building any feature, read the relevant reference doc:
 - **The Five Systems**: Recruitment Pipeline, Logistics Network, Financial Infrastructure, Protection Apparatus, Inner Circle
 - **NPA**: 2007 Non-Prosecution Agreement that gave blanket immunity to co-conspirators
 
-## AI Assistant (In-Dashboard)
+## AI Assistants
 
-The platform includes an AI research assistant built into the admin dashboard. It has read-only access to the full Supabase database and can:
+### Detective (Research Assistant)
+
+General-purpose research assistant on the `/detective` page. Has read-only access to the full Supabase database and can:
 - Query documents, entities, events, and connections to answer research questions
 - Surface missed connections (entity co-occurrence without connection records)
 - Detect anomalies (inconsistent redactions, timeline gaps, under-investigated entities)
 - Assemble evidence summaries for entity profiles
 - Suggest new connections, tier changes, and investigation threads (user approves with one click)
 
-Built using Claude API with tool use (Supabase queries as tools). System prompt includes investigation context, entity tiers, and redaction framework. See `docs/reference/WORKFLOW.md` for interaction examples.
+Built using Claude API with tool use (Supabase queries as tools). System prompt in `lib/ai/system-prompt.ts`. Tools defined in `lib/ai/tools.ts`.
+
+### Archer (Document Review Copilot)
+
+Embedded in the `/review` page as a right-side panel. Analyzes the currently-selected document and helps the reviewer:
+- Gives a brief first impression, then offers numbered analysis sections (conversational pace — NOT a monologue)
+- Highlights entity names and key phrases directly in the PDF via annotation protocol
+- Can navigate to specific pages, flag redaction patterns, and assess document significance
+- Has access to the same Supabase tools as the Detective (minus platform-meta tools)
+
+Key implementation details:
+- **Prompt caching**: System prompt split into `buildArcherStaticPrompt()` (cacheable, ~950 tokens) + `buildArcherDocumentContext(document)` (per-document). Uses `cache_control: { type: 'ephemeral' }` for 90% cost reduction on repeat calls.
+- **Streaming**: SSE via `text/event-stream` response. Events: `text`, `tool_start`, `tool_result`, `annotation`, `done`, `error`.
+- **Annotation protocol**: Archer emits `[ANNOTATION:{"type":"entity","text":"...","tier":N}]` markers that the panel strips from display text and passes to the PDF viewer for in-document highlighting.
+- **History trimming**: Last 10 messages sent per request to prevent token bloat.
+- Prompt in `lib/ai/archer-prompt.ts`. Route in `app/api/review/archer/route.ts`.
