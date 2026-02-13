@@ -22,11 +22,12 @@ export async function GET() {
       .select('*', { count: 'exact', head: true })
       .eq('processing_status', 'needs_review'),
 
-    // Pending reviews by severity
-    supabase
-      .from('documents')
-      .select('severity')
-      .eq('processing_status', 'needs_review'),
+    // Pending reviews by severity — RPC GROUP BY instead of fetching all rows
+    supabase.rpc('count_documents_by', {
+      p_group_col: 'severity',
+      p_filter_col: 'processing_status',
+      p_filter_val: 'needs_review',
+    }),
 
     // Failed processing
     supabase
@@ -75,11 +76,11 @@ export async function GET() {
       .maybeSingle(),
   ])
 
-  // Compute severity breakdown for pending reviews
+  // RPC returns { "critical": N, "null": N, ... } — rename "null" key to "unassessed"
+  const rawSeverity = (pendingBySeverityResult.data as Record<string, number>) ?? {}
   const bySeverity: Record<string, number> = {}
-  for (const row of pendingBySeverityResult.data ?? []) {
-    const sev = (row as { severity: string | null }).severity ?? 'unassessed'
-    bySeverity[sev] = (bySeverity[sev] ?? 0) + 1
+  for (const [key, count] of Object.entries(rawSeverity)) {
+    bySeverity[key === 'null' ? 'unassessed' : key] = count
   }
 
   // Compute category breakdown for suspect redactions

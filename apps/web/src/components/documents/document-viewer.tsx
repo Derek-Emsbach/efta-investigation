@@ -7,6 +7,7 @@ type PdfLoadState = 'loading' | 'loaded' | 'error'
 
 interface DocumentViewerProps {
   extractedText: string | null
+  documentId: string
   fileUrl: string | null
   batesNumber: string | null
   pageCount: number | null
@@ -15,6 +16,7 @@ interface DocumentViewerProps {
 
 export default function DocumentViewer({
   extractedText,
+  documentId,
   fileUrl,
   batesNumber,
   pageCount,
@@ -31,6 +33,29 @@ export default function DocumentViewer({
   const [pdfState, setPdfState] = useState<PdfLoadState>('loading')
   const [pdfError, setPdfError] = useState<string | null>(null)
   const textRef = useRef<HTMLDivElement>(null)
+
+  // Lazy-load full text from R2 (DB only stores 2000-char preview)
+  const [fullText, setFullText] = useState<string | null>(null)
+  const [textLoading, setTextLoading] = useState(false)
+  const fullTextFetched = useRef(false)
+
+  useEffect(() => {
+    if (mode !== 'text' || fullTextFetched.current || !hasText) return
+    fullTextFetched.current = true
+    setTextLoading(true)
+    fetch(`/api/documents/${documentId}/text`)
+      .then((res) => (res.ok ? res.text() : null))
+      .then((text) => {
+        if (text && text.length > (extractedText?.length ?? 0)) {
+          setFullText(text)
+        }
+      })
+      .catch(() => {})
+      .finally(() => setTextLoading(false))
+  }, [mode, documentId, extractedText, hasText])
+
+  // Use full text if loaded, otherwise preview
+  const displayText = fullText ?? extractedText
 
   // Pre-check PDF availability so we can show a graceful error
   useEffect(() => {
@@ -84,8 +109,8 @@ export default function DocumentViewer({
   )
 
   const matchCount =
-    textSearch.trim() && extractedText
-      ? (extractedText.match(new RegExp(escapeRegex(textSearch), 'gi')) ?? []).length
+    textSearch.trim() && displayText
+      ? (displayText.match(new RegExp(escapeRegex(textSearch), 'gi')) ?? []).length
       : 0
 
   const forensicEntries = Object.entries(forensicMetadata).filter(
@@ -246,7 +271,11 @@ export default function DocumentViewer({
           <span>{pageCount} {pageCount === 1 ? 'page' : 'pages'}</span>
         )}
         {mode === 'text' && hasText && (
-          <span>{extractedText!.length.toLocaleString()} characters</span>
+          <span>
+            {displayText!.length.toLocaleString()} characters
+            {textLoading && ' (loading full text...)'}
+            {!textLoading && fullText && ' (full)'}
+          </span>
         )}
       </div>
 
@@ -258,7 +287,7 @@ export default function DocumentViewer({
           style={{ fontSize: `${fontSize}px` }}
         >
           <pre className="whitespace-pre-wrap font-body text-text-secondary leading-relaxed break-words">
-            {highlightText(extractedText!)}
+            {highlightText(displayText!)}
           </pre>
         </div>
       )}

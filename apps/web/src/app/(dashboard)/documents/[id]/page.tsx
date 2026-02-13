@@ -237,6 +237,7 @@ export default async function DocumentDetailPage({
         </h3>
         <DocumentViewer
           extractedText={document.extracted_text}
+          documentId={id}
           fileUrl={document.file_url ? `/api/documents/${id}/file` : null}
           batesNumber={document.bates_number}
           pageCount={document.page_count}

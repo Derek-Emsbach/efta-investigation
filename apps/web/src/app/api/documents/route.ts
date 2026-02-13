@@ -33,8 +33,11 @@ export async function GET(request: NextRequest) {
     const sort = ALLOWED_SORT_COLUMNS.has(searchParams.get('sort') ?? '') ? searchParams.get('sort')! : DEFAULT_SORT
     const order = searchParams.get('order') === 'asc' ? 'asc' : DEFAULT_ORDER
 
-    // Build query with filters
-    let query = supabase.from('documents').select('*', { count: 'exact' })
+    // Build query — project only columns the table needs (avoids sending large JSONB fields)
+    let query = supabase.from('documents').select(
+      'id, bates_number, title, document_type, original_date, severity, page_count, processing_status, dataset_id, created_at, updated_at',
+      { count: 'exact' }
+    )
 
     if (documentType) {
       query = query.eq('document_type', documentType)

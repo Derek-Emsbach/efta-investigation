@@ -53,3 +53,20 @@ def file_exists(key: str) -> bool:
         return True
     except s3.exceptions.ClientError:
         return False
+
+
+def upload_text(bates: str, text: str) -> str:
+    """Upload extracted text to R2 as text/{bates}.txt and return the key."""
+    key = f"text/{bates}.txt"
+    upload_file(key, text.encode("utf-8"), "text/plain; charset=utf-8")
+    return key
+
+
+def download_text(bates: str) -> str | None:
+    """Download extracted text from R2. Returns None if the file doesn't exist."""
+    key = f"text/{bates}.txt"
+    try:
+        data = download_file(key)
+        return data.decode("utf-8")
+    except Exception:
+        return None

@@ -11,8 +11,8 @@ import re
 from datetime import date
 
 import fitz  # PyMuPDF
-from db import update_document
-from storage import download_file
+from db import update_document, fetch_document_for_processing
+from storage import download_file, upload_text
 
 
 # Date patterns commonly found in EFTA documents
@@ -162,9 +162,19 @@ def run_extract(document_id: str, r2_key: str) -> dict:
     if len(full_text.strip()) == 0:
         flags.append("no_text")
 
-    # Update document
+    # Upload full text to R2 and store truncated preview in Supabase
+    text_r2_key = None
+    if full_text.strip():
+        doc_record = fetch_document_for_processing(document_id)
+        bates = doc_record.get("bates_number") if doc_record else None
+        if bates:
+            text_r2_key = upload_text(bates, full_text)
+
+    # Store only first 2000 chars in DB (preview for search/display)
+    preview = full_text[:2000] if full_text.strip() else None
+
     update_fields: dict = {
-        "extracted_text": full_text if full_text.strip() else None,
+        "extracted_text": preview,
     }
     if doc_type:
         update_fields["document_type"] = doc_type
@@ -182,4 +192,5 @@ def run_extract(document_id: str, r2_key: str) -> dict:
         "document_type": doc_type,
         "document_date": doc_date,
         "flags": flags,
+        "text_r2_key": text_r2_key,
     }

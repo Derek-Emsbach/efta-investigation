@@ -14,6 +14,7 @@ import re
 from difflib import SequenceMatcher
 from typing import Any
 
+from storage import download_text
 from db import (
     create_entity_document,
     fetch_all_entities,
@@ -274,7 +275,11 @@ def run_entities(document_id: str, r2_key: str) -> dict[str, Any]:
     if not doc:
         return {"entities_found": 0, "error": "document not found"}
 
-    text = doc.get("extracted_text") or ""
+    # Fetch full text from R2 (DB only has 2000-char preview)
+    bates = doc.get("bates_number")
+    text = download_text(bates) if bates else None
+    if not text:
+        text = doc.get("extracted_text") or ""  # Fallback to DB preview
     if not text.strip():
         return {"entities_found": 0, "entity_ids": [], "case_numbers": []}
 

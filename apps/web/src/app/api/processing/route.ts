@@ -9,29 +9,21 @@ export async function GET(request: Request) {
     const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1)
     const limit = Math.min(200, Math.max(1, parseInt(searchParams.get('limit') ?? '50', 10) || 50))
 
-    // Stats query — count all items by status (unaffected by filter/pagination)
-    const { data: allItems, error: statsError } = await supabase
-      .from('processing_queue')
-      .select('status')
+    // Stats query — RPC does GROUP BY server-side instead of fetching all rows
+    const { data: statsCounts, error: statsError } = await supabase.rpc('processing_queue_stats')
 
     if (statsError) {
       throw new Error(`Failed to fetch stats: ${statsError.message}`)
     }
 
+    const rawStats = (statsCounts as Record<string, number>) ?? {}
     const stats = {
-      queued: 0,
-      processing: 0,
-      completed: 0,
-      failed: 0,
-      needs_review: 0,
-      total: allItems?.length ?? 0,
-    }
-
-    for (const item of allItems ?? []) {
-      const s = item.status as keyof typeof stats
-      if (s in stats && s !== 'total') {
-        stats[s]++
-      }
+      queued: rawStats.queued ?? 0,
+      processing: rawStats.processing ?? 0,
+      completed: rawStats.completed ?? 0,
+      failed: rawStats.failed ?? 0,
+      needs_review: rawStats.needs_review ?? 0,
+      total: Object.values(rawStats).reduce((s, n) => s + n, 0),
     }
 
     // Data query — paginated with optional filter

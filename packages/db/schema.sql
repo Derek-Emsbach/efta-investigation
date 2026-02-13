@@ -407,8 +407,7 @@ BEGIN
   NEW.search_vector :=
     setweight(to_tsvector('english', COALESCE(NEW.bates_number, '')), 'A') ||
     setweight(to_tsvector('english', COALESCE(NEW.title, '')), 'A') ||
-    setweight(to_tsvector('english', COALESCE(NEW.summary, '')), 'B') ||
-    setweight(to_tsvector('english', COALESCE(NEW.extracted_text, '')), 'C');
+    setweight(to_tsvector('english', COALESCE(NEW.summary, '')), 'B');
   NEW.updated_at := now();
   RETURN NEW;
 END;

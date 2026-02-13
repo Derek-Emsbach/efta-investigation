@@ -24,7 +24,7 @@ export async function GET() {
     evidence,
     redactions,
     queue,
-    storageData,
+    storageBytesResult,
   ] = await Promise.all([
     supabase
       .from('api_usage_log')
@@ -45,7 +45,8 @@ export async function GET() {
       .select('*', { count: 'exact', head: true }),
     supabase.from('redactions').select('*', { count: 'exact', head: true }),
     supabase.from('processing_queue').select('*', { count: 'exact', head: true }),
-    supabase.from('documents').select('file_size_bytes'),
+    // RPC: SUM(file_size_bytes) server-side instead of fetching 1.3M rows
+    supabase.rpc('document_storage_bytes'),
   ])
 
   const logs = usageLogs.data ?? []
@@ -55,11 +56,7 @@ export async function GET() {
   // Estimate cost: blended rate ~$6/M tokens (mix of input/output/cache)
   const estimatedCost = totalTokens * 0.000006
 
-  const totalStorageBytes =
-    storageData.data?.reduce(
-      (s, r) => s + (r.file_size_bytes ?? 0),
-      0,
-    ) ?? 0
+  const totalStorageBytes = (storageBytesResult.data as number) ?? 0
 
   // Group usage by day for chart
   const dailyUsage: Record<
