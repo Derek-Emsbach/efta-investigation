@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { EvidenceStrength } from '@/components/ui/evidence-strength'
 import { SeverityMarker } from '@/components/ui/severity-marker'
 import { TierBadge } from '@/components/ui/tier-badge'
+import ImageGallery from '@/components/images/image-gallery'
+import type { GalleryImage } from '@/components/images/image-gallery'
 import type {
   Entity,
   EntityDocument,
@@ -26,7 +28,7 @@ type DocumentJoin = EntityDocument & { document: Document }
 type EventJoin = EntityEvent & { event: Event }
 type ConnectionJoin = EntityConnection & { connected_entity: Entity }
 
-type TabKey = 'evidence' | 'timeline' | 'documents' | 'connections'
+type TabKey = 'evidence' | 'timeline' | 'documents' | 'connections' | 'photos'
 
 interface EntityProfileTabsProps {
   documents: DocumentJoin[]
@@ -45,6 +47,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'timeline', label: 'Timeline' },
   { key: 'documents', label: 'Documents' },
   { key: 'connections', label: 'Connections' },
+  { key: 'photos', label: 'Photos' },
 ]
 
 function formatDate(dateStr: string | null): string {
@@ -91,11 +94,33 @@ export default function EntityProfileTabs({
 }: EntityProfileTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('evidence')
 
+  // Photos are lazy-loaded — count fetched on demand
+  const [photoCount, setPhotoCount] = useState<number | null>(null)
+  const [photos, setPhotos] = useState<GalleryImage[]>([])
+  const [photosLoading, setPhotosLoading] = useState(false)
+
+  useEffect(() => {
+    if (activeTab !== 'photos' || photoCount !== null) return
+    setPhotosLoading(true)
+    fetch(`/api/images?entity_id=${entityId}&limit=100`)
+      .then((r) => r.json())
+      .then((json) => {
+        setPhotos(json.data ?? [])
+        setPhotoCount(json.count ?? 0)
+      })
+      .catch(() => {
+        setPhotos([])
+        setPhotoCount(0)
+      })
+      .finally(() => setPhotosLoading(false))
+  }, [activeTab, entityId, photoCount])
+
   const counts: Record<TabKey, number> = {
     evidence: evidence.length,
     timeline: events.length,
     documents: documents.length,
     connections: connections.length,
+    photos: photoCount ?? 0,
   }
 
   return (
@@ -134,6 +159,9 @@ export default function EntityProfileTabs({
         {activeTab === 'timeline' && <TimelineTab items={events} />}
         {activeTab === 'documents' && <DocumentsTab items={documents} />}
         {activeTab === 'connections' && <ConnectionsTab items={connections} />}
+        {activeTab === 'photos' && (
+          <ImageGallery images={photos} loading={photosLoading} />
+        )}
       </div>
     </div>
   )

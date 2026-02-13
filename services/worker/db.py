@@ -293,6 +293,53 @@ def fetch_redaction_summary(document_id: str) -> dict[str, Any]:
     }
 
 
+def upsert_document_image(
+    document_id: str,
+    page_number: int,
+    image_index: int,
+    r2_key: str,
+    thumbnail_r2_key: str | None = None,
+    file_size_bytes: int | None = None,
+    width: int | None = None,
+    height: int | None = None,
+    format: str | None = None,
+    image_type: str = "embedded",
+    metadata: dict | None = None,
+) -> None:
+    """Insert or update a document image record (upsert on unique constraint)."""
+    client = get_client()
+    row: dict[str, Any] = {
+        "document_id": document_id,
+        "page_number": page_number,
+        "image_index": image_index,
+        "r2_key": r2_key,
+        "image_type": image_type,
+    }
+    if thumbnail_r2_key:
+        row["thumbnail_r2_key"] = thumbnail_r2_key
+    if file_size_bytes is not None:
+        row["file_size_bytes"] = file_size_bytes
+    if width is not None:
+        row["width"] = width
+    if height is not None:
+        row["height"] = height
+    if format:
+        row["format"] = format
+    if metadata:
+        row["metadata"] = metadata
+    client.table("document_images").upsert(
+        row, on_conflict="document_id,page_number,image_index"
+    ).execute()
+
+
+def delete_document_images(document_id: str) -> None:
+    """Delete all images for a document (cleanup before re-processing)."""
+    client = get_client()
+    client.table("document_images").delete().eq(
+        "document_id", document_id
+    ).execute()
+
+
 def fetch_entity_ids_for_document(document_id: str) -> list[str]:
     """Get all entity IDs linked to a document."""
     client = get_client()

@@ -4,7 +4,8 @@ EFTA Document Processing Worker
 Polls the Supabase processing_queue for queued documents, then runs
 up to seven processing stages:
 
-  Tier A (always): 1. Ingest  2. Forensics  3. Text Extraction
+  Tier A (always): 1. Ingest  1.5. Image Extraction  2. Forensics
+                   3. Text Extraction
   Tier B (gated):  4. Entity Extraction  5. Redaction Detection
                    6. Cross-Reference  7. Classification
 
@@ -31,6 +32,7 @@ from db import (
     update_queue_step,
 )
 from stages.ingest import run_ingest
+from stages.images import run_images
 from stages.forensics import run_forensics
 from stages.extract import run_extract
 from stages.entities import run_entities
@@ -88,6 +90,17 @@ def process_document(queue_item: dict) -> None:
     update_queue_step(queue_id, "ingest")
     ingest_results = run_ingest(document_id, r2_key)
     update_queue_step(queue_id, "ingest", {"ingest": ingest_results})
+
+    print(f"  Stage 1.5: Image Extraction")
+    update_queue_step(queue_id, "images")
+    image_results = run_images(document_id, r2_key)
+    update_queue_step(queue_id, "images", {"images": image_results})
+    img_count = image_results.get("images_extracted", 0)
+    scan_count = image_results.get("page_scan_pages", 0)
+    if img_count > 0:
+        print(f"    Extracted {img_count} images ({scan_count} scan pages skipped)")
+    elif scan_count > 0:
+        print(f"    No embedded images ({scan_count} scan pages)")
 
     print(f"  Stage 2: Forensics")
     update_queue_step(queue_id, "forensics")

@@ -21,6 +21,7 @@ const investigationItems = [
   { label: "Datasets", href: "/datasets", icon: "database" as const },
   { label: "Hierarchy", href: "/hierarchy", icon: "sitemap" as const },
   { label: "Forensics", href: "/forensics", icon: "microscope" as const },
+  { label: "Photos", href: "/photos", icon: "image" as const },
   { label: "Locations", href: "/locations", icon: "map-pin" as const },
   { label: "Investigations", href: "/investigations", icon: "briefcase" as const },
 ];

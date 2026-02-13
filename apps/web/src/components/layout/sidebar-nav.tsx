@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 interface NavItem {
   label: string;
   href: string;
-  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle" | "microscope" | "briefcase" | "map-pin" | "gauge";
+  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle" | "microscope" | "briefcase" | "image" | "map-pin" | "gauge";
 }
 
 interface SidebarNavProps {
@@ -134,6 +134,14 @@ function NavIcon({ icon, className }: { icon: NavItem["icon"]; className?: strin
         <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
           <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
+        </svg>
+      );
+    case "image":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <polyline points="21 15 16 10 5 21" />
         </svg>
       );
     case "map-pin":

@@ -49,6 +49,8 @@ export type SightingType =
 export type SightingConfidence = 'confirmed' | 'likely' | 'possible' | 'inferred'
 export type TimePrecision = 'exact' | 'approximate' | 'day' | 'am_pm'
 
+export type ImageType = 'embedded' | 'photo' | 'graphic' | 'signature' | 'map' | 'chart' | 'unknown'
+
 export type DatasetStatus = 'not_started' | 'in_progress' | 'completed'
 export type DatasetPriority = 'critical' | 'high' | 'medium' | 'low'
 export type InvestigationStatus = 'active' | 'completed' | 'pending'
@@ -137,6 +139,25 @@ export interface Document {
   version_notes: string | null
   created_at: string
   updated_at: string
+}
+
+export interface DocumentImage {
+  id: string
+  document_id: string
+  page_number: number
+  image_index: number
+  r2_key: string
+  thumbnail_r2_key: string | null
+  file_size_bytes: number | null
+  width: number | null
+  height: number | null
+  format: string | null
+  image_type: ImageType
+  tags: string[]
+  caption: string | null
+  is_redacted: boolean
+  metadata: Record<string, unknown>
+  created_at: string
 }
 
 export interface Event {

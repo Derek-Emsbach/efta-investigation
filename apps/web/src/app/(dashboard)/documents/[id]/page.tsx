@@ -7,10 +7,12 @@ import { SeverityMarker } from '@/components/ui/severity-marker'
 import { EvidenceStrength } from '@/components/ui/evidence-strength'
 import { TierBadge } from '@/components/ui/tier-badge'
 import { VersionDiffAlert, VersionHistory, ReprocessButton } from '@/components/documents/version-panel'
+import DocumentImagesStrip from '@/components/images/document-images-strip'
 import { createClient } from '@/lib/supabase/server'
 import { REDACTION_CATEGORIES } from '@efta/shared'
 import type {
   Document,
+  DocumentImage,
   Dataset,
   DocumentVersion,
   Entity,
@@ -99,7 +101,7 @@ export default async function DocumentDetailPage({
   const supabase = await createClient()
 
   // Fetch document with all relations in parallel
-  const [documentResult, entitiesResult, eventsResult, redactionsResult, evidenceResult, versionsResult] = await Promise.all([
+  const [documentResult, entitiesResult, eventsResult, redactionsResult, evidenceResult, versionsResult, imagesResult] = await Promise.all([
     supabase
       .from('documents')
       .select('*, dataset:datasets(*)')
@@ -127,6 +129,11 @@ export default async function DocumentDetailPage({
       .select('*')
       .eq('document_id', id)
       .order('version_number', { ascending: false }),
+    supabase
+      .from('document_images')
+      .select('*')
+      .eq('document_id', id)
+      .order('page_number', { ascending: true }),
   ])
 
   if (documentResult.error || !documentResult.data) {
@@ -139,6 +146,7 @@ export default async function DocumentDetailPage({
   const redactions = (redactionsResult.data ?? []) as Redaction[]
   const evidenceItems = (evidenceResult.data ?? []) as EvidenceItem[]
   const versions = (versionsResult.data ?? []) as DocumentVersion[]
+  const documentImages = (imagesResult.data ?? []) as DocumentImage[]
   const versionDiff = document.forensic_metadata?.version_diff as Record<string, unknown> | undefined
 
   return (
@@ -244,6 +252,16 @@ export default async function DocumentDetailPage({
           forensicMetadata={document.forensic_metadata}
         />
       </section>
+
+      {/* Extracted Images */}
+      {documentImages.length > 0 && (
+        <section className="mb-8">
+          <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
+            Extracted Images ({documentImages.length})
+          </h3>
+          <DocumentImagesStrip images={documentImages} />
+        </section>
+      )}
 
       {/* Linked Entities */}
       {linkedEntities.length > 0 && (
