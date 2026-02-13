@@ -515,9 +515,11 @@
 
 ### Rich Entity Profiles
 - [ ] AI-generated mentions summary (how entity appears across all documents)
-- [ ] News component (external news articles about entity)
-- [ ] Wikipedia/reputable-source bio section (separate from investigation bio)
-- [ ] Profile picture sourcing (Wikipedia, public domain, extracted from documents)
+- [x] External sources section on entity profile (news, court records, flight logs from `external_sources` table)
+- [x] Wikipedia bio section with cached thumbnail and verification badge
+- [x] Profile picture sourcing (Wikipedia thumbnail → `profile_image_url` → initials fallback)
+- [x] External sources API route (`GET /api/entities/[id]/sources`)
+- [ ] News article fetching worker (populate `external_sources` with `news_article` type)
 
 ### Access Control & Roles
 - [ ] Detective (`/assistant`) restricted to admin role before deployment

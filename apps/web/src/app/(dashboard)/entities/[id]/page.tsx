@@ -6,6 +6,7 @@ import { StatCard } from '@/components/ui/stat-card'
 import EntityProfileTabs from '@/components/entity/profile-tabs'
 import { EntityProfileLayout } from '@/components/entity/entity-profile-layout'
 import { WikipediaSection } from '@/components/entity/wikipedia-section'
+import { ExternalSourcesSection } from '@/components/entity/external-sources-section'
 import { createClient } from '@/lib/supabase/server'
 import type {
   Entity,
@@ -58,7 +59,7 @@ export default async function EntityProfilePage({
   const supabase = await createClient()
 
   // Fetch entity and all related data in parallel
-  const [entityResult, documentsResult, eventsResult, connectionsAsAResult, connectionsAsBResult, evidenceResult] =
+  const [entityResult, documentsResult, eventsResult, connectionsAsAResult, connectionsAsBResult, evidenceResult, wikiThumbResult] =
     await Promise.all([
       supabase.from('entities').select('*').eq('id', id).single(),
       supabase.from('entity_documents').select('*, document:documents(*)').eq('entity_id', id),
@@ -66,6 +67,7 @@ export default async function EntityProfilePage({
       supabase.from('entity_connections').select('*, connected_entity:entities!entity_b(*)').eq('entity_a', id),
       supabase.from('entity_connections').select('*, connected_entity:entities!entity_a(*)').eq('entity_b', id),
       supabase.from('evidence_items').select('*').eq('entity_id', id),
+      supabase.from('external_sources').select('thumbnail_url').eq('entity_id', id).eq('source_type', 'wikipedia').limit(1).maybeSingle(),
     ])
 
   if (entityResult.error || !entityResult.data) {
@@ -73,6 +75,11 @@ export default async function EntityProfilePage({
   }
 
   const entity = entityResult.data as Entity
+
+  // Profile image: explicit URL > Wikipedia thumbnail > initials fallback
+  const profileImageUrl = entity.profile_image_url
+    ?? wikiThumbResult.data?.thumbnail_url
+    ?? null
 
   // Merge and prepare related data
   const documents = (documentsResult.data ?? []) as (EntityDocument & { document: Document })[]
@@ -105,12 +112,23 @@ export default async function EntityProfilePage({
         <div className="lg:col-span-2 space-y-8">
           {/* Hero section */}
           <div className="flex items-start gap-5">
-            {/* Avatar with initials */}
-            <div className="w-16 h-16 rounded-full bg-elevated border border-border-default flex items-center justify-center shrink-0">
-              <span className="font-display text-xl font-bold text-text-secondary">
-                {getInitials(entity.name)}
-              </span>
-            </div>
+            {/* Avatar: profile image or initials fallback */}
+            {profileImageUrl ? (
+              <div className="w-16 h-16 rounded-full border border-border-default overflow-hidden shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={profileImageUrl}
+                  alt={entity.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-elevated border border-border-default flex items-center justify-center shrink-0">
+                <span className="font-display text-xl font-bold text-text-secondary">
+                  {getInitials(entity.name)}
+                </span>
+              </div>
+            )}
 
             <div className="min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
@@ -173,6 +191,9 @@ export default async function EntityProfilePage({
         <div className="space-y-6">
           {/* Wikipedia */}
           <WikipediaSection entityId={id} />
+
+          {/* Other External Sources (news, court records, etc.) */}
+          <ExternalSourcesSection entityId={id} />
 
           {/* Quick Facts */}
           <div className="bg-surface border border-border-default rounded-lg p-5">
