@@ -10,6 +10,7 @@ import { DataTable, type Column } from '@/components/ui/data-table'
 import { Pagination } from '@/components/ui/pagination'
 import { EmptyState } from '@/components/ui/empty-state'
 import { TierBadge } from '@/components/ui/tier-badge'
+import { TierSummaryBlocks } from '@/components/entity/tier-summary-blocks'
 import { TIER_CONFIG } from '@efta/shared'
 import type { Entity, Tier } from '@efta/shared'
 
@@ -129,7 +130,7 @@ interface ApiResponse {
 export default function EntitiesPage() {
   const router = useRouter()
   const [search, setSearch] = useState('')
-  const [filters, setFilters] = useState<Record<string, string>>({
+  const [filters, setFilters] = useState<Record<string, string | string[]>>({
     tier: '',
     category: '',
     entity_type: '',
@@ -147,9 +148,9 @@ export default function EntitiesPage() {
       params.set('limit', String(PAGE_SIZE))
 
       if (search) params.set('search', search)
-      if (filters.tier) params.set('tier', filters.tier)
-      if (filters.category) params.set('category', filters.category)
-      if (filters.entity_type) params.set('entity_type', filters.entity_type)
+      if (filters.tier && typeof filters.tier === 'string') params.set('tier', filters.tier)
+      if (filters.category && typeof filters.category === 'string') params.set('category', filters.category)
+      if (filters.entity_type && typeof filters.entity_type === 'string') params.set('entity_type', filters.entity_type)
 
       const response = await fetch(`/api/entities?${params.toString()}`)
       if (!response.ok) {
@@ -184,7 +185,7 @@ export default function EntitiesPage() {
     setPage(1)
   }, [])
 
-  const handleFilterChange = useCallback((key: string, value: string) => {
+  const handleFilterChange = useCallback((key: string, value: string | string[]) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
     setPage(1)
   }, [])
@@ -202,6 +203,9 @@ export default function EntitiesPage() {
         title="Entities"
         subtitle="97+ persons, organizations, and properties identified across EFTA datasets"
       />
+
+      {/* Tier summary blocks */}
+      <TierSummaryBlocks />
 
       {/* Filters */}
       <div className="mb-6 space-y-4">

@@ -1,8 +1,17 @@
+'use client'
+
 import Link from "next/link";
+import { useSidebar } from "@/lib/sidebar-context";
 
 export default function Footer() {
+  const { collapsed } = useSidebar();
+
   return (
-    <footer className="border-t border-border-default bg-surface px-6 py-6 md:ml-60">
+    <footer
+      className={`border-t border-border-default bg-surface px-6 py-6 transition-all duration-200 ${
+        collapsed ? "md:ml-16" : "md:ml-60"
+      }`}
+    >
       {/* Disclaimer */}
       <p className="max-w-3xl text-xs leading-relaxed text-text-muted">
         This platform compiles publicly available evidence and documents released
@@ -32,6 +41,12 @@ export default function Footer() {
             className="text-text-muted transition-colors hover:text-text-secondary"
           >
             Privacy Policy
+          </Link>
+          <Link
+            href="/about"
+            className="text-text-muted transition-colors hover:text-text-secondary"
+          >
+            About
           </Link>
         </nav>
         <p className="text-[11px] text-text-muted">

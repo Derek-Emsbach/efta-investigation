@@ -6,11 +6,12 @@ import { usePathname } from "next/navigation";
 interface NavItem {
   label: string;
   href: string;
-  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle" | "microscope" | "briefcase";
+  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle" | "microscope" | "briefcase" | "map-pin" | "gauge";
 }
 
 interface SidebarNavProps {
   items: NavItem[];
+  collapsed?: boolean;
 }
 
 function NavIcon({ icon, className }: { icon: NavItem["icon"]; className?: string }) {
@@ -135,10 +136,26 @@ function NavIcon({ icon, className }: { icon: NavItem["icon"]; className?: strin
           <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
         </svg>
       );
+    case "map-pin":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+      );
+    case "gauge":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+          <path d="M12 6v6l4 2" />
+          <path d="M16.24 7.76l-1.41 1.41" />
+          <circle cx="12" cy="12" r="1.5" />
+        </svg>
+      );
   }
 }
 
-export default function SidebarNav({ items }: SidebarNavProps) {
+export default function SidebarNav({ items, collapsed }: SidebarNavProps) {
   const pathname = usePathname();
 
   return (
@@ -154,7 +171,10 @@ export default function SidebarNav({ items }: SidebarNavProps) {
             key={item.href}
             href={item.href}
             aria-current={isActive ? "page" : undefined}
-            className={`flex items-center gap-3 rounded-r px-4 py-2 text-sm transition-colors ${
+            title={collapsed ? item.label : undefined}
+            className={`flex items-center gap-3 rounded-r text-sm transition-colors ${
+              collapsed ? "justify-center px-2 py-2.5" : "px-4 py-2"
+            } ${
               isActive
                 ? "border-l-2 border-critical bg-elevated text-text-primary"
                 : "border-l-2 border-transparent text-text-secondary hover:bg-elevated/50 hover:text-text-primary"
@@ -163,7 +183,7 @@ export default function SidebarNav({ items }: SidebarNavProps) {
             <span aria-hidden="true">
               <NavIcon icon={item.icon} />
             </span>
-            <span>{item.label}</span>
+            {!collapsed && <span>{item.label}</span>}
           </Link>
         );
       })}

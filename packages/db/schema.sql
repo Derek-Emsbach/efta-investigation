@@ -514,5 +514,54 @@ ALTER TABLE conversation_messages ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Admin full access" ON conversations FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin full access" ON conversation_messages FOR ALL USING (auth.role() = 'authenticated');
 
+-- ============================================================
+-- ADMIN METRICS & NOTIFICATIONS
+-- ============================================================
+
+-- API usage tracking (one row per AI request)
+CREATE TABLE api_usage_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  endpoint TEXT NOT NULL,
+  model TEXT NOT NULL,
+  input_tokens INTEGER NOT NULL DEFAULT 0,
+  output_tokens INTEGER NOT NULL DEFAULT 0,
+  cache_creation_tokens INTEGER DEFAULT 0,
+  cache_read_tokens INTEGER DEFAULT 0,
+  total_tokens INTEGER NOT NULL DEFAULT 0,
+  tool_iterations INTEGER DEFAULT 1,
+  user_id UUID,
+  duration_ms INTEGER,
+  error TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_api_usage_created ON api_usage_log(created_at DESC);
+
+ALTER TABLE api_usage_log ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admin full access" ON api_usage_log FOR ALL USING (auth.role() = 'authenticated');
+
+-- Notification alerts
+CREATE TABLE notification_alerts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  alert_type TEXT NOT NULL CHECK (alert_type IN (
+    'token_usage_high', 'storage_warning', 'database_warning',
+    'failed_login', 'worker_failure', 'processing_backlog',
+    'system_info'
+  )),
+  severity TEXT NOT NULL CHECK (severity IN ('info', 'warning', 'critical')),
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT false,
+  dismissed BOOLEAN DEFAULT false,
+  metadata JSONB DEFAULT '{}',
+  action_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_notifications_active ON notification_alerts(created_at DESC) WHERE NOT dismissed;
+
+ALTER TABLE notification_alerts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admin full access" ON notification_alerts FOR ALL USING (auth.role() = 'authenticated');
+
 -- Service role bypass (for worker)
 -- The service_role key bypasses RLS automatically in Supabase

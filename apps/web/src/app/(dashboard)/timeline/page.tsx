@@ -108,7 +108,7 @@ function groupByMonth(events: TimelineEvent[]): { label: string; events: Timelin
 
 export default function TimelinePage() {
   const [search, setSearch] = useState('')
-  const [filters, setFilters] = useState<Record<string, string>>({
+  const [filters, setFilters] = useState<Record<string, string | string[]>>({
     event_type: '',
   })
   const [page, setPage] = useState(1)
@@ -124,7 +124,7 @@ export default function TimelinePage() {
       params.set('limit', String(PAGE_SIZE))
 
       if (search) params.set('search', search)
-      if (filters.event_type) params.set('event_type', filters.event_type)
+      if (filters.event_type && typeof filters.event_type === 'string') params.set('event_type', filters.event_type)
 
       const response = await fetch(`/api/timeline?${params.toString()}`)
       if (!response.ok) {
@@ -151,7 +151,7 @@ export default function TimelinePage() {
     setPage(1)
   }, [])
 
-  const handleFilterChange = useCallback((key: string, value: string) => {
+  const handleFilterChange = useCallback((key: string, value: string | string[]) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
     setPage(1)
   }, [])

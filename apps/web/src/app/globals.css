@@ -149,3 +149,59 @@ input:-webkit-autofill:focus {
   caret-color: var(--color-text-primary);
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* === Text Size Settings === */
+[data-text-size="small"] {
+  font-size: 14px;
+}
+
+[data-text-size="large"] {
+  font-size: 18px;
+}
+
+/* === Accessibility: Colorblind-Friendly (deuteranopia-safe) === */
+[data-a11y="colorblind"] {
+  --color-critical: #CC503E;
+  --color-warning: #E8A838;
+  --color-success: #2B7A78;
+  --color-tier-1: #CC503E;
+  --color-tier-2: #E8A838;
+  --color-tier-3: #D47B2E;
+  --color-tier-5: #2B7A78;
+  --color-severity-extreme: #CC503E;
+  --color-severity-critical: #D95B4B;
+  --color-severity-high: #E8A838;
+  --color-severity-routine: #2B7A78;
+}
+
+/* === Accessibility: High Contrast (dark) === */
+[data-a11y="high-contrast"] {
+  --color-background: #000000;
+  --color-surface: #0D0D0D;
+  --color-elevated: #1A1A1A;
+  --color-border-default: #808080;
+  --color-border-light: #999999;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #D4D4D4;
+  --color-text-muted: #A3A3A3;
+}
+
+/* === Accessibility: High Contrast (light) === */
+[data-a11y="high-contrast"][data-theme="light"] {
+  --color-background: #FFFFFF;
+  --color-surface: #F5F5F5;
+  --color-elevated: #E0E0E0;
+  --color-border-default: #000000;
+  --color-border-light: #333333;
+  --color-text-primary: #000000;
+  --color-text-secondary: #262626;
+  --color-text-muted: #525252;
+}
+
+/* === Reduced Motion === */
+[data-reduced-motion="true"],
+[data-reduced-motion="true"] * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

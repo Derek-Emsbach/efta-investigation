@@ -1,10 +1,11 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import MainContent from '@/components/layout/main-content'
 import Breadcrumbs from '@/components/ui/breadcrumbs'
 import { TierBadge } from '@/components/ui/tier-badge'
 import { StatCard } from '@/components/ui/stat-card'
 import EntityProfileTabs from '@/components/entity/profile-tabs'
+import { EntityProfileLayout } from '@/components/entity/entity-profile-layout'
+import { WikipediaSection } from '@/components/entity/wikipedia-section'
 import { createClient } from '@/lib/supabase/server'
 import type {
   Entity,
@@ -97,6 +98,7 @@ export default async function EntityProfilePage({
     <MainContent>
       <Breadcrumbs current={entity.name} />
 
+      <EntityProfileLayout entityId={id} entityName={entity.name}>
       {/* Main layout: 2-col on lg */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content area (2 cols) */}
@@ -169,6 +171,9 @@ export default async function EntityProfilePage({
 
         {/* Sidebar (1 col) */}
         <div className="space-y-6">
+          {/* Wikipedia */}
+          <WikipediaSection entityId={id} />
+
           {/* Quick Facts */}
           <div className="bg-surface border border-border-default rounded-lg p-5">
             <h3 className="font-display text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">
@@ -238,6 +243,7 @@ export default async function EntityProfilePage({
           </div>
         </div>
       </div>
+      </EntityProfileLayout>
     </MainContent>
   )
 }

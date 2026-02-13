@@ -5,6 +5,7 @@ import {
   IBM_Plex_Mono,
 } from "next/font/google";
 import { ThemeProvider } from "@/lib/theme-provider";
+import { SettingsProvider } from "@/lib/settings-provider";
 import "./globals.css";
 
 const playfairDisplay = Playfair_Display({
@@ -54,12 +55,14 @@ export default function RootLayout({
         {/* Prevent flash of wrong theme — runs before first paint */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("efta-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem("efta-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var ts=localStorage.getItem("efta-text-size");if(ts&&ts!=="medium")document.documentElement.setAttribute("data-text-size",ts);var a=localStorage.getItem("efta-a11y");if(a&&a!=="none")document.documentElement.setAttribute("data-a11y",a);if(localStorage.getItem("efta-reduced-motion")==="true")document.documentElement.setAttribute("data-reduced-motion","true")}catch(e){}})()`,
           }}
         />
       </head>
       <body className="bg-background text-text-primary font-body antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SettingsProvider>{children}</SettingsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

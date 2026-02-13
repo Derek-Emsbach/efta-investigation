@@ -7,6 +7,12 @@ import {
   type ArcherDocument,
 } from '@/lib/ai/archer-prompt'
 import { ASSISTANT_TOOLS, executeTool } from '@/lib/ai/tools'
+import {
+  createUsageAccumulator,
+  accumulateUsage,
+  logApiUsage,
+  type UsageAccumulator,
+} from '@/lib/ai/usage-tracker'
 
 export const maxDuration = 60
 
@@ -64,6 +70,8 @@ export async function POST(request: NextRequest) {
   }
 
   const encoder = new TextEncoder()
+  const usageAcc = createUsageAccumulator()
+  const startTime = Date.now()
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -73,15 +81,22 @@ export async function POST(request: NextRequest) {
         )
       }
 
+      let errorMsg: string | undefined
       try {
-        await runArcherConversation(messages, document, supabase, send)
+        await runArcherConversation(messages, document, supabase, send, usageAcc)
         send('done', {})
       } catch (error) {
-        send('error', {
-          message:
-            error instanceof Error ? error.message : 'An unexpected error occurred',
-        })
+        errorMsg = error instanceof Error ? error.message : 'An unexpected error occurred'
+        send('error', { message: errorMsg })
       } finally {
+        logApiUsage({
+          endpoint: '/api/review/archer',
+          model: 'claude-sonnet-4-5-20250929',
+          usage: usageAcc,
+          userId: user.id,
+          durationMs: Date.now() - startTime,
+          error: errorMsg,
+        })
         controller.close()
       }
     },
@@ -101,6 +116,7 @@ async function runArcherConversation(
   document: ArcherDocument,
   supabase: Awaited<ReturnType<typeof createClient>>,
   send: (event: string, data: unknown) => void,
+  usageAcc: UsageAccumulator,
 ): Promise<void> {
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY!.trim(),
@@ -158,6 +174,7 @@ async function runArcherConversation(
     })
 
     const finalMessage = await stream.finalMessage()
+    accumulateUsage(usageAcc, finalMessage.usage)
 
     if (finalMessage.stop_reason !== 'tool_use') {
       break

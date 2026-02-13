@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { useSidebar } from '@/lib/sidebar-context'
 
 interface MobileSidebarToggleProps {
   children: React.ReactNode
@@ -10,6 +11,7 @@ interface MobileSidebarToggleProps {
 export default function MobileSidebarToggle({ children }: MobileSidebarToggleProps) {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const { collapsed } = useSidebar()
 
   // Close sidebar on route change
   useEffect(() => {
@@ -59,10 +61,11 @@ export default function MobileSidebarToggle({ children }: MobileSidebarTogglePro
       {/* Sidebar drawer wrapper */}
       <div
         className={`
-          fixed left-0 top-0 z-50 h-screen w-60
-          transform transition-transform duration-200 ease-in-out
-          md:translate-x-0 md:transition-none
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          fixed left-0 top-0 z-50 h-screen
+          transition-all duration-200 ease-in-out
+          md:translate-x-0
+          ${collapsed ? 'md:w-16' : 'md:w-60'}
+          ${isOpen ? 'translate-x-0 w-60' : '-translate-x-full w-60'}
         `}
       >
         {/* Close button inside drawer — mobile only */}

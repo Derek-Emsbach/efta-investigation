@@ -10,6 +10,7 @@ import { DataTable, type Column } from '@/components/ui/data-table'
 import { Pagination } from '@/components/ui/pagination'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SeverityMarker } from '@/components/ui/severity-marker'
+import { SeveritySummaryBlocks } from '@/components/documents/severity-summary-blocks'
 import type { Document, Severity, ProcessingStatus } from '@efta/shared'
 
 const PAGE_SIZE = 25
@@ -163,7 +164,7 @@ interface ApiResponse {
 export default function DocumentsPage() {
   const router = useRouter()
   const [search, setSearch] = useState('')
-  const [filters, setFilters] = useState<Record<string, string>>({
+  const [filters, setFilters] = useState<Record<string, string | string[]>>({
     document_type: '',
     severity: '',
     status: '',
@@ -181,9 +182,9 @@ export default function DocumentsPage() {
       params.set('limit', String(PAGE_SIZE))
 
       if (search) params.set('search', search)
-      if (filters.document_type) params.set('document_type', filters.document_type)
-      if (filters.severity) params.set('severity', filters.severity)
-      if (filters.status) params.set('status', filters.status)
+      if (filters.document_type && typeof filters.document_type === 'string') params.set('document_type', filters.document_type)
+      if (filters.severity && typeof filters.severity === 'string') params.set('severity', filters.severity)
+      if (filters.status && typeof filters.status === 'string') params.set('status', filters.status)
 
       const response = await fetch(`/api/documents?${params.toString()}`)
       if (!response.ok) {
@@ -219,7 +220,7 @@ export default function DocumentsPage() {
     setPage(1)
   }, [])
 
-  const handleFilterChange = useCallback((key: string, value: string) => {
+  const handleFilterChange = useCallback((key: string, value: string | string[]) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
     setPage(1)
   }, [])
@@ -237,6 +238,9 @@ export default function DocumentsPage() {
         title="Documents"
         subtitle="Source documents from EFTA dataset releases, indexed and classified by severity"
       />
+
+      {/* Severity summary blocks */}
+      <SeveritySummaryBlocks />
 
       {/* Filters */}
       <div className="mb-6 space-y-4">

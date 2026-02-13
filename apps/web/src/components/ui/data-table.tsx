@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, type ReactNode } from 'react'
+import { useState, useCallback, useMemo, type ReactNode } from 'react'
 import { Skeleton } from './skeleton'
 
 export interface Column<T> {
@@ -11,24 +11,57 @@ export interface Column<T> {
   className?: string
 }
 
+export type SortDirection = 'asc' | 'desc'
+
+export interface SortState {
+  key: string
+  direction: SortDirection
+}
+
 interface DataTableProps<T> {
   columns: Column<T>[]
   data: T[]
   onRowClick?: (row: T) => void
   isLoading?: boolean
   emptyState?: ReactNode
+  /** Controlled multi-column sort stack. First element = primary sort. */
+  sortStack?: SortState[]
+  /** Callback when sort stack changes (controlled mode). */
+  onSortChange?: (stack: SortState[]) => void
+  /** Max number of simultaneous sort levels (default: 3). */
+  maxSortLevels?: number
 }
 
-type SortDirection = 'asc' | 'desc'
-
-interface SortState {
-  key: string
-  direction: SortDirection
+/** Compare two values for sorting. Handles null/undefined, strings, numbers. */
+function compareValues(a: unknown, b: unknown): number {
+  if (a === null || a === undefined) return 1
+  if (b === null || b === undefined) return -1
+  if (typeof a === 'string' && typeof b === 'string') return a.localeCompare(b)
+  if (typeof a === 'number' && typeof b === 'number') return a - b
+  return String(a).localeCompare(String(b))
 }
 
-function SortArrow({ direction, active }: { direction: SortDirection; active: boolean }) {
+/** Sort data by a stack of sort criteria. First non-zero comparison wins. */
+export function multiColumnSort<T extends Record<string, unknown>>(
+  data: T[],
+  stack: SortState[],
+): T[] {
+  if (stack.length === 0) return data
+  return [...data].sort((a, b) => {
+    for (const { key, direction } of stack) {
+      const cmp = compareValues(a[key], b[key])
+      if (cmp !== 0) return direction === 'asc' ? cmp : -cmp
+    }
+    return 0
+  })
+}
+
+function SortIndicator({ index, direction, active }: { index: number; direction: SortDirection; active: boolean }) {
   return (
-    <span className={`inline-flex ml-1 ${active ? 'text-text-primary' : 'text-text-muted/40'}`}>
+    <span className={`inline-flex items-center ml-1 gap-0.5 ${active ? 'text-text-primary' : 'text-text-muted/40'}`}>
+      {active && index >= 0 && (
+        <span className="text-[9px] font-bold text-info min-w-[12px] text-center">{index + 1}</span>
+      )}
       {direction === 'asc' ? (
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
@@ -48,42 +81,48 @@ export function DataTable<T extends Record<string, unknown>>({
   onRowClick,
   isLoading = false,
   emptyState,
+  sortStack: controlledStack,
+  onSortChange,
+  maxSortLevels = 3,
 }: DataTableProps<T>) {
-  const [sort, setSort] = useState<SortState | null>(null)
+  // Internal single-sort for backward compat (when no controlled props)
+  const [internalStack, setInternalStack] = useState<SortState[]>([])
+  const isControlled = controlledStack !== undefined && onSortChange !== undefined
+  const stack = isControlled ? controlledStack : internalStack
 
   const handleSort = useCallback((key: string) => {
-    setSort((prev) => {
-      if (prev?.key === key) {
-        return prev.direction === 'asc'
-          ? { key, direction: 'desc' }
-          : null
+    const update = (prev: SortState[]): SortState[] => {
+      const existingIdx = prev.findIndex((s) => s.key === key)
+      if (existingIdx !== -1) {
+        // Cycle: asc → desc → remove
+        const existing = prev[existingIdx]
+        if (existing.direction === 'asc') {
+          const next = [...prev]
+          next[existingIdx] = { key, direction: 'desc' }
+          return next
+        }
+        // Remove from stack
+        return prev.filter((_, i) => i !== existingIdx)
       }
-      return { key, direction: 'asc' }
-    })
-  }, [])
-
-  const sortedData = (() => {
-    if (!sort) return data
-    const { key, direction } = sort
-    return [...data].sort((a, b) => {
-      const aVal = a[key]
-      const bVal = b[key]
-
-      if (aVal === null || aVal === undefined) return 1
-      if (bVal === null || bVal === undefined) return -1
-
-      let comparison = 0
-      if (typeof aVal === 'string' && typeof bVal === 'string') {
-        comparison = aVal.localeCompare(bVal)
-      } else if (typeof aVal === 'number' && typeof bVal === 'number') {
-        comparison = aVal - bVal
-      } else {
-        comparison = String(aVal).localeCompare(String(bVal))
+      // Add to stack (if below max)
+      if (prev.length < maxSortLevels) {
+        return [...prev, { key, direction: 'asc' }]
       }
+      // At max — replace last
+      return [...prev.slice(0, -1), { key, direction: 'asc' }]
+    }
 
-      return direction === 'asc' ? comparison : -comparison
-    })
-  })()
+    if (isControlled) {
+      onSortChange(update(controlledStack))
+    } else {
+      setInternalStack(update)
+    }
+  }, [isControlled, controlledStack, onSortChange, maxSortLevels])
+
+  const sortedData = useMemo(() => multiColumnSort(data, stack), [data, stack])
+
+  // Find sort index for a column (-1 if not sorted)
+  const sortIndexOf = (key: string) => stack.findIndex((s) => s.key === key)
 
   if (isLoading) {
     return (
@@ -148,25 +187,28 @@ export function DataTable<T extends Record<string, unknown>>({
       <table className="w-full">
         <thead>
           <tr className="bg-elevated">
-            {columns.map((col) => (
-              <th
-                key={col.key}
-                className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted ${
-                  col.sortable ? 'cursor-pointer select-none hover:text-text-secondary transition-colors' : ''
-                } ${col.className ?? ''}`}
-                onClick={col.sortable ? () => handleSort(col.key) : undefined}
-              >
-                <span className="inline-flex items-center">
-                  {col.header}
-                  {col.sortable && (
-                    <SortArrow
-                      direction={sort?.key === col.key ? sort.direction : 'asc'}
-                      active={sort?.key === col.key}
-                    />
-                  )}
-                </span>
-              </th>
-            ))}
+            {columns.map((col) => {
+              const idx = sortIndexOf(col.key)
+              const isActive = idx !== -1
+              const direction = isActive ? stack[idx].direction : 'asc'
+
+              return (
+                <th
+                  key={col.key}
+                  className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-muted ${
+                    col.sortable ? 'cursor-pointer select-none hover:text-text-secondary transition-colors' : ''
+                  } ${col.className ?? ''}`}
+                  onClick={col.sortable ? () => handleSort(col.key) : undefined}
+                >
+                  <span className="inline-flex items-center">
+                    {col.header}
+                    {col.sortable && (
+                      <SortIndicator index={idx} direction={direction} active={isActive} />
+                    )}
+                  </span>
+                </th>
+              )
+            })}
           </tr>
         </thead>
         <tbody className="divide-y divide-border-default">

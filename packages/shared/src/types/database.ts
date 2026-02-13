@@ -337,6 +337,88 @@ export interface DocumentVersion {
 }
 
 // ============================================================
+// EXTERNAL SOURCES
+// ============================================================
+
+export type SourceType = 'wikipedia' | 'news_article' | 'court_record' | 'flight_log' | 'public_record' | 'financial_disclosure'
+export type VerificationStatus = 'verified' | 'unverified' | 'disputed' | 'retracted'
+
+export interface ExternalSource {
+  id: string
+  entity_id: string
+  source_type: SourceType
+  source_url: string | null
+  source_name: string | null
+  title: string | null
+  content: string | null
+  summary: string | null
+  published_date: string | null
+  thumbnail_url: string | null
+  retrieved_at: string
+  verification_status: VerificationStatus
+  verified_by: string | null
+  verified_at: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+}
+
+export interface ExternalEvent {
+  id: string
+  entity_id: string
+  date: string
+  description: string
+  source_id: string | null
+  event_type: string | null
+  verification_status: 'verified' | 'unverified' | 'disputed'
+  metadata: Record<string, unknown>
+  created_at: string
+}
+
+// ============================================================
+// ADMIN METRICS & NOTIFICATIONS
+// ============================================================
+
+export type AlertType =
+  | 'token_usage_high'
+  | 'storage_warning'
+  | 'database_warning'
+  | 'failed_login'
+  | 'worker_failure'
+  | 'processing_backlog'
+  | 'system_info'
+
+export type AlertSeverity = 'info' | 'warning' | 'critical'
+
+export interface ApiUsageLog {
+  id: string
+  endpoint: string
+  model: string
+  input_tokens: number
+  output_tokens: number
+  cache_creation_tokens: number
+  cache_read_tokens: number
+  total_tokens: number
+  tool_iterations: number
+  user_id: string | null
+  duration_ms: number | null
+  error: string | null
+  created_at: string
+}
+
+export interface NotificationAlert {
+  id: string
+  alert_type: AlertType
+  severity: AlertSeverity
+  title: string
+  message: string
+  is_read: boolean
+  dismissed: boolean
+  metadata: Record<string, unknown>
+  action_url: string | null
+  created_at: string
+}
+
+// ============================================================
 // COMPOSITE / "WITH RELATIONS" TYPES
 // ============================================================
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import type { Annotation } from '@/components/review/pdf-viewer'
@@ -8,6 +8,8 @@ import ArcherPanel from '@/components/review/archer-panel'
 import { EmptyState } from '@/components/ui/empty-state'
 import { ShortcutHelpOverlay } from '@/components/review/shortcut-help-overlay'
 import { useReviewShortcuts } from '@/hooks/use-review-shortcuts'
+import { QueueControls } from '@/components/review/queue-controls'
+import { multiColumnSort, type SortState } from '@/components/ui/data-table'
 import type { ArcherDocument } from '@/lib/ai/archer-prompt'
 
 // Dynamic import — react-pdf requires DOM APIs (DOMMatrix) unavailable during SSR
@@ -70,6 +72,10 @@ export default function ReviewPage() {
 
   // Queue collapse state
   const [queueCollapsed, setQueueCollapsed] = useState(false)
+
+  // Queue sort/filter state
+  const [queueSort, setQueueSort] = useState<SortState[]>([])
+  const [typeFilter, setTypeFilter] = useState<string[]>([])
 
   // Review form collapse state
   const [formExpanded, setFormExpanded] = useState(false)
@@ -166,8 +172,20 @@ export default function ReviewPage() {
 
   const handleShowHelp = useCallback(() => setShowHelp(true), [])
 
+  // Client-side sort + filter on the queue
+  const filteredDocs = useMemo(() => {
+    let result = documents
+    if (typeFilter.length > 0) {
+      result = result.filter((d) => d.document_type !== null && typeFilter.includes(d.document_type))
+    }
+    return multiColumnSort(
+      result as unknown as Record<string, unknown>[],
+      queueSort,
+    ) as unknown as ReviewDocument[]
+  }, [documents, queueSort, typeFilter])
+
   useReviewShortcuts({
-    documents,
+    documents: filteredDocs,
     selected,
     selectDocument,
     currentPage,
@@ -194,7 +212,7 @@ export default function ReviewPage() {
         <div className="flex items-center justify-between px-3 py-2.5 border-b border-border-default shrink-0">
           {!queueCollapsed && (
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider">
-              Queue ({documents.length})
+              Queue ({filteredDocs.length}{typeFilter.length > 0 ? `/${documents.length}` : ''})
             </p>
           )}
           <button
@@ -212,6 +230,16 @@ export default function ReviewPage() {
           </button>
         </div>
 
+        {/* Queue controls — sort + filter */}
+        {!queueCollapsed && documents.length > 0 && (
+          <QueueControls
+            sortStack={queueSort}
+            onSortChange={setQueueSort}
+            typeFilter={typeFilter}
+            onTypeFilterChange={setTypeFilter}
+          />
+        )}
+
         {/* Queue list */}
         {!queueCollapsed && (
           <div className="flex-1 overflow-y-auto">
@@ -227,7 +255,18 @@ export default function ReviewPage() {
                 className="py-10"
               />
             )}
-            {documents.map((doc) => (
+            {!loading && documents.length > 0 && filteredDocs.length === 0 && (
+              <div className="p-4 text-center">
+                <p className="text-xs text-text-muted">No documents match the current filter.</p>
+                <button
+                  onClick={() => setTypeFilter([])}
+                  className="text-xs text-info hover:underline mt-1"
+                >
+                  Clear filter
+                </button>
+              </div>
+            )}
+            {filteredDocs.map((doc) => (
               <button
                 key={doc.id}
                 onClick={() => selectDocument(doc)}
@@ -271,7 +310,7 @@ export default function ReviewPage() {
         {queueCollapsed && (
           <div className="flex-1 flex items-center justify-center">
             <span className="text-[10px] font-medium text-text-muted uppercase tracking-widest [writing-mode:vertical-rl] rotate-180">
-              Queue ({documents.length})
+              Queue ({filteredDocs.length})
             </span>
           </div>
         )}

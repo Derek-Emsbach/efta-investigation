@@ -7,6 +7,12 @@ import {
   type InvestigationContext,
 } from '@/lib/ai/investigation-prompt'
 import { ASSISTANT_TOOLS, executeTool } from '@/lib/ai/tools'
+import {
+  createUsageAccumulator,
+  accumulateUsage,
+  logApiUsage,
+  type UsageAccumulator,
+} from '@/lib/ai/usage-tracker'
 
 export const maxDuration = 60
 
@@ -138,6 +144,8 @@ export async function POST(
   }
 
   const encoder = new TextEncoder()
+  const usageAcc = createUsageAccumulator()
+  const startTime = Date.now()
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -149,17 +157,24 @@ export async function POST(
         )
       }
 
+      let errorMsg: string | undefined
       try {
-        await runInvestigationChat(messages, context, supabase, send)
+        await runInvestigationChat(messages, context, supabase, send, usageAcc)
         send('done', {})
       } catch (error) {
-        send('error', {
-          message:
-            error instanceof Error
-              ? error.message
-              : 'An unexpected error occurred',
-        })
+        errorMsg = error instanceof Error
+          ? error.message
+          : 'An unexpected error occurred'
+        send('error', { message: errorMsg })
       } finally {
+        logApiUsage({
+          endpoint: `/api/investigations/${id}/archer`,
+          model: 'claude-sonnet-4-5-20250929',
+          usage: usageAcc,
+          userId: user.id,
+          durationMs: Date.now() - startTime,
+          error: errorMsg,
+        })
         controller.close()
       }
     },
@@ -178,7 +193,8 @@ async function runInvestigationChat(
   chatMessages: ChatMessage[],
   context: InvestigationContext,
   supabase: Awaited<ReturnType<typeof createClient>>,
-  send: (event: string, data: unknown) => void
+  send: (event: string, data: unknown) => void,
+  usageAcc: UsageAccumulator,
 ): Promise<void> {
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY!.trim(),
@@ -235,6 +251,7 @@ async function runInvestigationChat(
     })
 
     const finalMessage = await stream.finalMessage()
+    accumulateUsage(usageAcc, finalMessage.usage)
 
     if (finalMessage.stop_reason !== 'tool_use') {
       break
