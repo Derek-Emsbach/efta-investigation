@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { StatCard } from '@/components/ui/stat-card'
@@ -140,9 +141,10 @@ export default async function DatasetsPage() {
             const progress = files > 0 ? (reviewed / files) * 100 : 0
 
             return (
-              <div
+              <Link
                 key={ds.id}
-                className="bg-surface border border-border-default rounded-lg p-6 hover:border-border-hover transition-colors"
+                href={`/documents?dataset=${ds.id}`}
+                className="block bg-surface border border-border-default rounded-lg p-6 hover:border-border-light transition-colors"
               >
                 {/* Header: title + badges */}
                 <div className="flex items-start justify-between mb-3">
@@ -237,7 +239,16 @@ export default async function DatasetsPage() {
                     </p>
                   </div>
                 )}
-              </div>
+
+                {/* View documents link */}
+                {files > 0 && (
+                  <div className="mt-3 pt-3 border-t border-border-default">
+                    <span className="text-xs font-medium text-info hover:text-info/80 transition-colors">
+                      View {files.toLocaleString()} documents &rarr;
+                    </span>
+                  </div>
+                )}
+              </Link>
             )
           })}
         </div>

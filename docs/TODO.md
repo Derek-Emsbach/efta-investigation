@@ -506,10 +506,11 @@
 - [ ] Congressional oversight monitoring
 
 ### Photo Album & Image Pipeline
-- [ ] Image extraction pipeline stage (Stage 1.5) — PyMuPDF `page.get_images()`, upload to R2 `images/{doc_id}/`
-- [ ] `document_images` table — document_id, page_number, r2_key, thumbnail_r2_key, tags[], caption, metadata JSONB
-- [ ] Photo Album page (`/photos`) — global gallery grid, filters (entity, date, location, tags), lightbox viewer
-- [ ] Entity photo tab — Photos tab on entity detail page from linked documents
+- [x] Image extraction pipeline stage (Stage 1.5) — PyMuPDF `page.get_images()`, upload to R2 `images/{doc_id}/`, scan detection (skip >85% page coverage)
+- [x] `document_images` table — document_id, page_number, r2_key, thumbnail_r2_key, tags[], caption, metadata JSONB, image_type, is_redacted
+- [x] Photo Album page (`/photos`) — global gallery grid, type/tag filters, pagination, lightbox viewer with metadata sidebar
+- [x] Entity photo tab — Photos tab on entity detail page (lazy-loaded via API)
+- [x] Document images strip — horizontal scrollable thumbnails on document detail page
 - [ ] Image tagging: entities, locations, dates, evidence type, redaction level
 
 ### Rich Entity Profiles

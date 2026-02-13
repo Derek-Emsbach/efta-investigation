@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search-input'
@@ -163,6 +163,8 @@ interface ApiResponse {
 
 export default function DocumentsPage() {
   const router = useRouter()
+  const urlParams = useSearchParams()
+  const datasetFilter = urlParams.get('dataset') ?? ''
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState<Record<string, string | string[]>>({
     document_type: '',
@@ -182,6 +184,7 @@ export default function DocumentsPage() {
       params.set('limit', String(PAGE_SIZE))
 
       if (search) params.set('search', search)
+      if (datasetFilter) params.set('dataset_id', datasetFilter)
       if (filters.document_type && typeof filters.document_type === 'string') params.set('document_type', filters.document_type)
       if (filters.severity && typeof filters.severity === 'string') params.set('severity', filters.severity)
       if (filters.status && typeof filters.status === 'string') params.set('status', filters.status)
@@ -209,7 +212,7 @@ export default function DocumentsPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [page, search, filters])
+  }, [page, search, filters, datasetFilter])
 
   useEffect(() => {
     void fetchDocuments()

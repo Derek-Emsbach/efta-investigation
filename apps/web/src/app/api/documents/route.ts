@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
     const documentType = searchParams.get('document_type')
     const severity = searchParams.get('severity')
     const status = searchParams.get('status')
+    const datasetId = searchParams.get('dataset_id')
     const search = searchParams.get('search')
     const page = Math.max(1, parseInt(searchParams.get('page') ?? String(DEFAULT_PAGE), 10) || DEFAULT_PAGE)
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? String(DEFAULT_LIMIT), 10) || DEFAULT_LIMIT))
@@ -49,6 +50,10 @@ export async function GET(request: NextRequest) {
 
     if (status) {
       query = query.eq('processing_status', status)
+    }
+
+    if (datasetId) {
+      query = query.eq('dataset_id', datasetId)
     }
 
     if (search) {
