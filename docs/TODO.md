@@ -274,7 +274,7 @@
 ### 3.3 Dataset Progress
 - [x] Dataset overview page (`/datasets`)
 - [x] Card per dataset: name, size, file count, progress bar, priority badge
-- [ ] Click card → filtered document list for that dataset
+- [x] Click card → filtered document list for that dataset
 - [x] Summary stats: total files, reviewed, critical findings per dataset
 
 ### 3.4 AI Research Assistant
@@ -363,8 +363,8 @@
 - [x] Filter by status
 - [x] Click row → navigate to document detail
 - [x] Re-process button on document detail page (queues without new PDF upload)
-- [ ] Retry failed documents
-- [ ] Bulk actions (retry all failed, clear completed)
+- [x] Retry failed documents (individual + bulk via `/api/processing/retry`)
+- [x] Bulk actions (retry all failed, clear completed, checkbox multi-select)
 
 ### 4.3 Admin Review UI
 - [x] `/review` page with 3-column layout (collapsible queue | PDF + form bar | Archer panel)
@@ -439,8 +439,8 @@
 ### 5.1 Visual Design Pass
 - [x] Full dark theme implementation
 - [x] Light/dark mode toggle with localStorage persistence and FOUC prevention
-- [ ] Custom loading states and skeleton screens
-- [ ] Micro-animations: page transitions, data updates, hover effects
+- [x] Custom loading states and skeleton screens (loading.tsx for dashboard, entity profile, document detail)
+- [x] Micro-animations: page transitions (fade-in-up on MainContent), shimmer skeletons, toast notifications
 - [ ] Empty states for pages with no data
 - [x] Error states with helpful messages (error.tsx global boundary + not-found.tsx 404 page)
 - [x] Responsive layout (works on tablet, graceful on mobile — hamburger sidebar)
@@ -514,12 +514,12 @@
 - [ ] Image tagging: entities, locations, dates, evidence type, redaction level
 
 ### Rich Entity Profiles
-- [ ] AI-generated mentions summary (how entity appears across all documents)
+- [x] AI-generated mentions summary (Claude-powered, cached in entity metadata, role distribution chips)
 - [x] External sources section on entity profile (news, court records, flight logs from `external_sources` table)
 - [x] Wikipedia bio section with cached thumbnail and verification badge
 - [x] Profile picture sourcing (Wikipedia thumbnail → `profile_image_url` → initials fallback)
 - [x] External sources API route (`GET /api/entities/[id]/sources`)
-- [ ] News article fetching worker (populate `external_sources` with `news_article` type)
+- [x] News article fetching (Google News RSS → `external_sources`, auto-triggered from entity profile)
 
 ### Access Control & Roles
 - [ ] Detective (`/assistant`) restricted to admin role before deployment

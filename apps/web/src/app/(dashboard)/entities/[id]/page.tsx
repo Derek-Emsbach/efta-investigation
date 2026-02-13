@@ -7,6 +7,7 @@ import EntityProfileTabs from '@/components/entity/profile-tabs'
 import { EntityProfileLayout } from '@/components/entity/entity-profile-layout'
 import { WikipediaSection } from '@/components/entity/wikipedia-section'
 import { ExternalSourcesSection } from '@/components/entity/external-sources-section'
+import { MentionsSummarySection } from '@/components/entity/mentions-summary-section'
 import { createClient } from '@/lib/supabase/server'
 import type {
   Entity,
@@ -191,6 +192,9 @@ export default async function EntityProfilePage({
         <div className="space-y-6">
           {/* Wikipedia */}
           <WikipediaSection entityId={id} />
+
+          {/* AI-generated mentions summary */}
+          <MentionsSummarySection entityId={id} />
 
           {/* Other External Sources (news, court records, etc.) */}
           <ExternalSourcesSection entityId={id} />

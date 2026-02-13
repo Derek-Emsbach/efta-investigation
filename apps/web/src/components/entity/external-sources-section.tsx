@@ -53,6 +53,27 @@ export function ExternalSourcesSection({ entityId }: ExternalSourcesSectionProps
         (s: ExternalSource) => s.source_type !== 'wikipedia'
       )
       setSources(nonWiki)
+
+      // If no news articles cached, trigger background fetch
+      const hasNews = nonWiki.some((s: ExternalSource) => s.source_type === 'news_article')
+      if (!hasNews) {
+        fetch(`/api/entities/${entityId}/news`).then(async (newsRes) => {
+          if (!newsRes.ok) return
+          const newsData = await newsRes.json()
+          if (newsData.count > 0) {
+            // Re-fetch sources to include new articles
+            const refreshRes = await fetch(`/api/entities/${entityId}/sources`)
+            if (refreshRes.ok) {
+              const refreshData = await refreshRes.json()
+              setSources(
+                (refreshData.data ?? []).filter(
+                  (s: ExternalSource) => s.source_type !== 'wikipedia'
+                )
+              )
+            }
+          }
+        }).catch(() => { /* silent */ })
+      }
     } catch {
       // Silent fail
     } finally {
