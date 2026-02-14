@@ -1,6 +1,7 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/supabase/require-admin'
 import { buildSystemPrompt } from '@/lib/ai/system-prompt'
 import { ASSISTANT_TOOLS, executeTool } from '@/lib/ai/tools'
 import {
@@ -18,18 +19,10 @@ interface ChatMessage {
 }
 
 export async function POST(request: NextRequest) {
-  // Auth check
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    })
-  }
+  // Admin-only auth check
+  const authResult = await requireAdmin()
+  if (authResult instanceof NextResponse) return authResult
+  const { user, supabase } = authResult
 
   // Check for API key
   if (!process.env.ANTHROPIC_API_KEY) {

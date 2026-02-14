@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/supabase/require-admin'
 import { getPresignedUploadUrl } from '@/lib/r2/client'
 import { randomUUID } from 'crypto'
 
@@ -113,13 +114,9 @@ async function createVersionSnapshot(
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient()
-
-    // Verify auth
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const result = await requireAdmin()
+    if (result instanceof NextResponse) return result
+    const { supabase } = result
 
     const body = await request.json()
     const files: FileRequest[] = body.files

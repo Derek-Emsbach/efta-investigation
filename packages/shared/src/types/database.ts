@@ -51,6 +51,8 @@ export type TimePrecision = 'exact' | 'approximate' | 'day' | 'am_pm'
 
 export type ImageType = 'embedded' | 'photo' | 'graphic' | 'signature' | 'map' | 'chart' | 'unknown'
 
+export type UserRole = 'admin' | 'viewer'
+
 export type DatasetStatus = 'not_started' | 'in_progress' | 'completed'
 export type DatasetPriority = 'critical' | 'high' | 'medium' | 'low'
 export type InvestigationStatus = 'active' | 'completed' | 'pending'
@@ -424,6 +426,15 @@ export interface ApiUsageLog {
   duration_ms: number | null
   error: string | null
   created_at: string
+}
+
+export interface Profile {
+  id: string
+  email: string | null
+  display_name: string | null
+  role: UserRole
+  created_at: string
+  updated_at: string
 }
 
 export interface NotificationAlert {

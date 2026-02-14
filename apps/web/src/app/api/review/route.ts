@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/supabase/require-admin'
 
 /** GET: Fetch documents that need review */
 export async function GET() {
@@ -24,15 +25,12 @@ export async function GET() {
   }
 }
 
-/** PATCH: Approve, flag, or reject a document */
+/** PATCH: Approve, flag, or reject a document (admin only) */
 export async function PATCH(request: Request) {
   try {
-    const supabase = await createClient()
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const result = await requireAdmin()
+    if (result instanceof NextResponse) return result
+    const { user, supabase } = result
 
     const body = await request.json()
     const { document_id, action, fields } = body

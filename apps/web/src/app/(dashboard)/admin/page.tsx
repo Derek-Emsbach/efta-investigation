@@ -5,6 +5,14 @@ import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { StatCard } from '@/components/ui/stat-card'
 
+interface UserProfile {
+  id: string
+  email: string | null
+  display_name: string | null
+  role: 'admin' | 'viewer'
+  created_at: string
+}
+
 interface DailyUsage {
   date: string
   input: number
@@ -58,13 +66,16 @@ interface Notification {
 export default function AdminPage() {
   const [metrics, setMetrics] = useState<Metrics | null>(null)
   const [notifications, setNotifications] = useState<Notification[]>([])
+  const [users, setUsers] = useState<UserProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [checkingThresholds, setCheckingThresholds] = useState(false)
+  const [togglingUser, setTogglingUser] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
-    const [metricsRes, notifRes] = await Promise.all([
+    const [metricsRes, notifRes, usersRes] = await Promise.all([
       fetch('/api/admin/metrics'),
       fetch('/api/admin/notifications'),
+      fetch('/api/admin/users'),
     ])
 
     if (metricsRes.ok) {
@@ -73,6 +84,10 @@ export default function AdminPage() {
     if (notifRes.ok) {
       const data = await notifRes.json()
       setNotifications(data.notifications ?? [])
+    }
+    if (usersRes.ok) {
+      const data = await usersRes.json()
+      setUsers(data.users ?? [])
     }
 
     setLoading(false)
@@ -107,6 +122,22 @@ export default function AdminPage() {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)),
     )
+  }
+
+  async function toggleRole(userId: string, currentRole: 'admin' | 'viewer') {
+    const newRole = currentRole === 'admin' ? 'viewer' : 'admin'
+    setTogglingUser(userId)
+    const res = await fetch('/api/admin/users', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, role: newRole }),
+    })
+    if (res.ok) {
+      setUsers((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)),
+      )
+    }
+    setTogglingUser(null)
   }
 
   if (loading) {
@@ -344,6 +375,70 @@ export default function AdminPage() {
           </div>
         </section>
       </div>
+
+      {/* ── User Management ──────────────────────── */}
+      <section className="mt-8">
+        <h2 className="mb-4 font-display text-lg font-semibold text-text-primary">
+          Users
+        </h2>
+        <div className="overflow-x-auto rounded-lg border border-border-default bg-surface">
+          {users.length === 0 ? (
+            <p className="px-4 py-8 text-center text-sm text-text-muted">
+              No user profiles found. Run the migration to create the profiles table.
+            </p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border-default bg-elevated/30">
+                  <th className="px-4 py-2.5 text-left font-medium text-text-secondary">Email</th>
+                  <th className="px-4 py-2.5 text-left font-medium text-text-secondary">Role</th>
+                  <th className="px-4 py-2.5 text-left font-medium text-text-secondary">Joined</th>
+                  <th className="px-4 py-2.5 text-right font-medium text-text-secondary">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u.id} className="border-b border-border-default/50 last:border-0">
+                    <td className="px-4 py-2.5 text-text-primary">
+                      {u.email ?? 'Unknown'}
+                      {u.display_name && (
+                        <span className="ml-2 text-text-muted">({u.display_name})</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <span
+                        className={`inline-flex rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                          u.role === 'admin'
+                            ? 'bg-critical/10 text-critical'
+                            : 'bg-info/10 text-info'
+                        }`}
+                      >
+                        {u.role}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-text-muted whitespace-nowrap">
+                      {new Date(u.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
+                      <button
+                        onClick={() => toggleRole(u.id, u.role)}
+                        disabled={togglingUser === u.id}
+                        className="rounded px-3 py-1 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-elevated transition-colors disabled:opacity-50"
+                      >
+                        {togglingUser === u.id
+                          ? 'Saving...'
+                          : u.role === 'admin'
+                            ? 'Demote to Viewer'
+                            : 'Promote to Admin'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </section>
 
       {/* ── Recent Request Log ─────────────────────── */}
       <section className="mt-8 mb-8">

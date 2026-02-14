@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getUserRole } from "@/lib/supabase/get-user-role";
 import Sidebar from "@/components/layout/sidebar";
 import MobileSidebarToggle from "@/components/layout/mobile-sidebar-toggle";
 import Footer from "@/components/layout/footer";
@@ -11,15 +11,13 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
+  const result = await getUserRole();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  if (!result) {
     redirect("/login");
   }
+
+  const { user, role } = result;
 
   return (
     <SidebarProvider>
@@ -33,7 +31,7 @@ export default async function DashboardLayout({
         </a>
 
         <MobileSidebarToggle>
-          <Sidebar userEmail={user.email ?? "Unknown"} />
+          <Sidebar userEmail={user.email ?? "Unknown"} userRole={role} />
         </MobileSidebarToggle>
         <DashboardMain>{children}</DashboardMain>
         <Footer />

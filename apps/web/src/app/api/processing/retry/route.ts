@@ -1,22 +1,20 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/supabase/require-admin'
 
 /**
  * POST /api/processing/retry
  *
  * Retry failed queue items by resetting them to 'queued'.
  * Accepts either specific IDs or retries all failed items.
+ * Admin only.
  *
  * Body: { ids?: string[] }  (omit ids to retry all failed)
  */
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient()
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const result = await requireAdmin()
+    if (result instanceof NextResponse) return result
+    const { supabase } = result
 
     const body = await request.json().catch(() => ({}))
     const ids: string[] | undefined = Array.isArray(body.ids) ? body.ids : undefined

@@ -6,9 +6,11 @@ import LogoutButton from "@/components/auth/logout-button";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import NotificationBell from "@/components/layout/notification-bell";
 import { useSidebar } from "@/lib/sidebar-context";
+import type { UserRole } from "@efta/shared";
 
 interface SidebarProps {
   userEmail: string;
+  userRole: UserRole;
 }
 
 const investigationItems = [
@@ -34,8 +36,9 @@ const adminItems = [
   { label: "Admin", href: "/admin", icon: "gauge" as const },
 ];
 
-export default function Sidebar({ userEmail }: SidebarProps) {
+export default function Sidebar({ userEmail, userRole }: SidebarProps) {
   const { collapsed, toggle } = useSidebar();
+  const isAdmin = userRole === "admin";
 
   return (
     <aside
@@ -93,15 +96,17 @@ export default function Sidebar({ userEmail }: SidebarProps) {
           <SidebarNav items={investigationItems} collapsed={collapsed} />
         </div>
 
-        {/* Admin section */}
-        <div>
-          {!collapsed && (
-            <p className="mb-2 px-5 text-xs font-medium uppercase tracking-wider text-text-muted">
-              Admin
-            </p>
-          )}
-          <SidebarNav items={adminItems} collapsed={collapsed} />
-        </div>
+        {/* Admin section — visible to admins only */}
+        {isAdmin && (
+          <div>
+            {!collapsed && (
+              <p className="mb-2 px-5 text-xs font-medium uppercase tracking-wider text-text-muted">
+                Admin
+              </p>
+            )}
+            <SidebarNav items={adminItems} collapsed={collapsed} />
+          </div>
+        )}
       </div>
 
       {/* User section */}
@@ -115,12 +120,23 @@ export default function Sidebar({ userEmail }: SidebarProps) {
           </div>
         ) : (
           <>
-            <p
-              className="mb-1 truncate text-sm text-text-secondary px-2"
-              title={userEmail}
-            >
-              {userEmail}
-            </p>
+            <div className="flex items-center gap-2 px-2 mb-1">
+              <p
+                className="truncate text-sm text-text-secondary"
+                title={userEmail}
+              >
+                {userEmail}
+              </p>
+              <span
+                className={`shrink-0 text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                  isAdmin
+                    ? "bg-critical/10 text-critical"
+                    : "bg-info/10 text-info"
+                }`}
+              >
+                {userRole}
+              </span>
+            </div>
             <div className="flex items-center justify-between px-2">
               <LogoutButton />
               <div className="flex items-center gap-1">
