@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import * as d3 from 'd3'
 import MainContent from '@/components/layout/main-content'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
 
 // -------------------------------------------------------------------
@@ -418,9 +419,17 @@ export default function HierarchyPage() {
             </h1>
           </div>
         </div>
-        <div className="bg-surface border border-border-default rounded-lg p-12 text-center text-text-muted text-sm">
-          No entity data available. Import entities and connections to view hierarchy.
-        </div>
+        <EmptyState
+          icon={
+            <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+            </svg>
+          }
+          label="Hierarchy"
+          title="No entity data available"
+          description="Import entities and connections to visualize organizational structures and ownership chains."
+          action={{ label: 'View Entities', href: '/entities' }}
+        />
       </MainContent>
     )
   }

@@ -190,10 +190,10 @@
 - [x] **Filters:**
   - [x] By event type
   - [x] Search by title/description
-  - [ ] By entity (show only events involving selected person)
-  - [ ] By dataset
+  - [x] By entity (show only events involving selected person)
+  - [x] By dataset
   - [ ] By severity
-  - [ ] Date range picker
+  - [x] Date range picker (from/to date inputs)
 - [ ] Interactive horizontal timeline component (zoomable: year → month → day)
 - [ ] **Day View** (click any date for full daily intelligence briefing)
 - [ ] **Parallel view:** stack 2-3 entities to compare timelines side-by-side
@@ -206,8 +206,8 @@
 - [x] Faceted results: grouped by Entities, Documents, Events with count badges
 - [x] Click any result → navigate to detail page
 - [ ] Supabase `ts_rank` scoring for relevance ordering
-- [ ] Filters: dataset, entity type, date range, severity
-- [ ] Highlight search terms in results
+- [x] Client-side facet filters: entity tier, document type/severity, event type
+- [x] Highlight search terms in results (word-splitting + `<mark>` wrapping)
 
 ### 2.5 API Routes
 - [x] `GET /api/entities` — list with filters, pagination, FTS search *(built in Phase 1)*
@@ -377,7 +377,7 @@
 - [ ] Confirm/edit entity matches
 - [ ] Adjust tier assignments
 - [ ] Add/edit evidence items
-- [ ] Keyboard shortcuts for fast review
+- [x] Keyboard shortcuts for fast review (j/k nav, a/f/r actions, q/e toggle panels, ? help)
 - [x] **Archer Review Copilot** — AI investigative partner embedded in review page
   - [x] Full-height right-side panel with markdown rendering (react-markdown + remark-gfm)
   - [x] Conversational pace: brief first impression → numbered section menu → drill-down per section
@@ -441,7 +441,7 @@
 - [x] Light/dark mode toggle with localStorage persistence and FOUC prevention
 - [x] Custom loading states and skeleton screens (loading.tsx for dashboard, entity profile, document detail)
 - [x] Micro-animations: page transitions (fade-in-up on MainContent), shimmer skeletons, toast notifications
-- [ ] Empty states for pages with no data
+- [x] Empty states for pages with no data (EmptyState component on photos, datasets, hierarchy + existing on entities, documents, timeline, network, processing, review)
 - [x] Error states with helpful messages (error.tsx global boundary + not-found.tsx 404 page)
 - [x] Responsive layout (works on tablet, graceful on mobile — hamburger sidebar)
 - [x] Favicon and meta tags (icon.svg, Open Graph metadata)
@@ -487,11 +487,54 @@
 
 ## Future Phases (Backlog)
 
-### Public Access
-- [ ] Toggle pages from private to public
-- [ ] Public entity profiles (non-victim, non-sensitive)
-- [ ] Public timeline
-- [ ] SEO optimization for public pages
+### Infrastructure Scaling (Supabase Pro + Bulk Import)
+> Full plan: `.claude/plans/hashed-herding-beaver.md`
+- [ ] Upgrade Supabase to Pro ($25/mo) — 8 GB database, 100K MAUs
+- [ ] Migration `008_user_profiles_and_roles.sql` — user_profiles table, role function, RLS overhaul
+- [ ] `user_profiles` table: role (admin/editor/viewer), subscription_tier (free/pro/enterprise), Stripe fields, AI query metering
+- [ ] `handle_new_user()` trigger — auto-create profile on signup (first user = admin, rest = viewer)
+- [ ] `user_role()` helper function for RLS policies
+- [ ] Replace all 18+ RLS policies: public read on data tables, admin-only on admin tables, own-user on conversations
+- [ ] Performance indexes: `idx_documents_dataset_status`, partial indexes for review queue + processing queue
+- [ ] Grant anon access to RPC functions (from migration 005)
+- [ ] Bulk import 1.37M documents (VOL09/10/11): disable search trigger → import → rebuild → VACUUM
+- [ ] Verify DB size stays under 8 GB after import
+
+### Public Access & User Signup
+> Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase C + F)
+- [ ] Update middleware — define PROTECTED_PATHS, allow anonymous browsing on public pages
+- [ ] Update dashboard layout — anonymous-friendly (no admin section, "Sign In" button)
+- [ ] Update sidebar — conditionally show admin links based on user role
+- [ ] Access control utility (`lib/access-control.ts`) — canViewPDF, canUseDetective, canUpload
+- [ ] Signup page (`/signup`) — email/password, email verification, Turnstile bot prevention
+- [ ] Password reset page (`/reset-password`) — uses Supabase built-in flow
+- [ ] OAuth sign-in (Google) — enable in Supabase dashboard + Google Cloud Console
+- [ ] Update login page — add "Create Account", "Forgot Password" links, OAuth buttons
+- [ ] Account settings page — display name, change password, delete account (GDPR)
+- [ ] Gate API routes: public GET routes remove auth check, write routes keep auth + role check
+- [ ] Content tiers: anon (browse only), free (full text), pro (PDF + AI), admin (upload/review)
+
+### Security Hardening
+> Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase E)
+- [ ] Rate limiting — Upstash Redis + `@upstash/ratelimit` (free tier: 10K/day)
+- [ ] API rate limit: 60 req/min per IP, AI rate limit: 10 req/min per user, auth: 5 attempts/min
+- [ ] Email verification — enable "Confirm email" in Supabase Auth settings
+- [ ] Bot prevention — Cloudflare Turnstile (free) on signup + login
+- [ ] Security headers — X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+- [ ] Anthropic API spend cap — set monthly budget in Anthropic Console ($50/mo initially)
+- [ ] Error monitoring — Sentry (free tier: 5K events/mo)
+- [ ] Vercel Attack Challenge Mode — keep off normally, enable during active attacks
+
+### Monetization (Stripe + Pro Tier)
+> Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase D)
+- [ ] Stripe integration — `stripe` + `@stripe/stripe-js` packages
+- [ ] Stripe webhook handler (`/api/webhooks/stripe`) — subscription lifecycle events
+- [ ] Checkout route (`/api/billing/checkout`) — create Stripe Checkout session
+- [ ] Billing portal route (`/api/billing/portal`) — manage subscription
+- [ ] AI query metering — check `ai_queries_used` vs `ai_queries_limit` before Claude API calls
+- [ ] Monthly usage reset via `ai_queries_reset_at`
+- [ ] Billing settings page — current plan, usage meter, upgrade/manage buttons
+- [ ] Add `estimated_cost` column to `api_usage_log` table
 
 ### AI-Assisted Analysis (Phase 2 of processing)
 - [ ] Train entity extraction on our reviewed data
@@ -522,6 +565,10 @@
 - [x] News article fetching (Google News RSS → `external_sources`, auto-triggered from entity profile)
 
 ### Access Control & Roles
-- [ ] Detective (`/assistant`) restricted to admin role before deployment
-- [ ] Role-based access: admin vs viewer (Supabase custom claims or role column)
-- [ ] Non-admin users: read-only dashboard, no upload/review/detective
+- [x] `profiles` table with `role` column (admin/viewer) + auto-create trigger on signup
+- [x] `getUserRole()` server helper + `requireAdmin()` API route guard
+- [x] Middleware route guards — viewers redirected from admin paths (/upload, /processing, /review, /assistant, /admin, /settings)
+- [x] API guards on mutating endpoints (presign, retry, clear, review PATCH, assistant POST)
+- [x] Sidebar hides admin section for viewers, shows role badge
+- [x] User management table on `/admin` page with role toggle
+- [ ] RLS policy rewrite (future — currently application-layer enforcement only)

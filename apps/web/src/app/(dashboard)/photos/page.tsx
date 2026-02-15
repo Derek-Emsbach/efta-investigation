@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
+import { EmptyState } from '@/components/ui/empty-state'
 import ImageGallery from '@/components/images/image-gallery'
 import type { GalleryImage } from '@/components/images/image-gallery'
 import type { ImageType } from '@efta/shared'
@@ -109,8 +110,25 @@ export default function PhotosPage() {
         )}
       </div>
 
+      {/* Empty state */}
+      {!loading && images.length === 0 && (
+        <EmptyState
+          icon={
+            <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A1.5 1.5 0 0 0 21.75 19.5V4.5A1.5 1.5 0 0 0 20.25 3H3.75A1.5 1.5 0 0 0 2.25 4.5v15A1.5 1.5 0 0 0 3.75 21Z" />
+            </svg>
+          }
+          label="Photo Album"
+          title="No images extracted yet"
+          description="Images are extracted during document processing. Upload and process documents to populate the photo album."
+          action={{ label: 'Upload Documents', href: '/upload' }}
+        />
+      )}
+
       {/* Gallery grid */}
-      <ImageGallery images={images} loading={loading} />
+      {(loading || images.length > 0) && (
+        <ImageGallery images={images} loading={loading} />
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (
