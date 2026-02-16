@@ -5,8 +5,13 @@ Extracts text from each page using PyMuPDF. If a page has minimal text
 (< 50 chars), it's flagged as potentially needing OCR (OCR not run in
 this stage — just flagged). Also detects document type and date from
 content patterns.
+
+For email documents with base64-encoded attachments (PDFs, images),
+the extraction stage decodes those attachments and extracts text from
+them, replacing the raw base64 noise with useful content.
 """
 
+import base64
 import re
 from datetime import date
 
@@ -125,6 +130,146 @@ def detect_document_type(text: str) -> str | None:
     return None
 
 
+# Regex to find MIME base64 sections: captures headers block + base64 body
+_MIME_ATTACHMENT_RE = re.compile(
+    r"(Content-(?:Type|Disposition)[^\n]*\n"  # Content-Type/Disposition line
+    r"(?:[A-Za-z-]+:[^\n]*\n)*?"  # Other MIME headers
+    r"Content-Transfer-Encoding:\s*base64\s*\n"  # Must have base64 encoding
+    r"(?:[A-Za-z-]+:[^\n]*\n)*?"  # Any remaining headers
+    r"\n)"  # Blank line separating headers from body
+    r"((?:[A-Za-z0-9+/=]{20,}\s*\n?)+)",  # base64 body lines
+    re.MULTILINE | re.IGNORECASE,
+)
+
+# Extract filename from MIME headers
+_MIME_FILENAME_RE = re.compile(r'name\s*=\s*"?([^"\n;]+)"?', re.IGNORECASE)
+
+# Simpler fallback: just Content-Transfer-Encoding: base64 followed by base64 lines
+_SIMPLE_BASE64_RE = re.compile(
+    r"(Content-Transfer-Encoding:\s*base64\s*\n\s*\n)"
+    r"((?:[A-Za-z0-9+/=]{20,}\s*\n?)+)",
+    re.MULTILINE | re.IGNORECASE,
+)
+
+
+def _extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str | None:
+    """Try to open decoded bytes as PDF and extract text."""
+    try:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        pages = []
+        for page_num in range(doc.page_count):
+            text = doc[page_num].get_text()
+            if text.strip():
+                pages.append(text.strip())
+        doc.close()
+        return "\n\n".join(pages) if pages else None
+    except Exception:
+        return None
+
+
+def decode_mime_attachments(text: str) -> tuple[str, int]:
+    """
+    Find base64-encoded MIME attachments in extracted text, decode them,
+    and if they're PDFs, extract text and inline it.
+
+    Returns (cleaned_text, attachment_count).
+    """
+    attachments_decoded = 0
+
+    def _decode_and_replace(match: re.Match) -> str:
+        nonlocal attachments_decoded
+        headers = match.group(1)
+        b64_body = match.group(2)
+
+        # Extract filename from headers
+        fn_match = _MIME_FILENAME_RE.search(headers)
+        filename = fn_match.group(1).strip() if fn_match else "attachment"
+
+        # Clean base64: remove whitespace/newlines
+        b64_clean = re.sub(r"\s+", "", b64_body)
+
+        # Need a minimum amount of base64 to be worth decoding
+        if len(b64_clean) < 100:
+            return match.group(0)
+
+        try:
+            decoded = base64.b64decode(b64_clean)
+        except Exception:
+            return match.group(0)  # Not valid base64, leave as-is
+
+        # Check if decoded bytes are a PDF (%PDF magic bytes)
+        if decoded[:5] == b"%PDF-":
+            extracted = _extract_text_from_pdf_bytes(decoded)
+            if extracted:
+                attachments_decoded += 1
+                return (
+                    f"\n[Decoded PDF attachment: {filename}]\n"
+                    f"{extracted}\n"
+                    f"[End of decoded attachment: {filename}]\n"
+                )
+
+        # Not a PDF — check if it's readable text (plain text attachment)
+        try:
+            text_content = decoded.decode("utf-8", errors="strict")
+            if text_content.isprintable() or text_content.strip():
+                attachments_decoded += 1
+                return (
+                    f"\n[Decoded text attachment: {filename}]\n"
+                    f"{text_content}\n"
+                    f"[End of decoded attachment: {filename}]\n"
+                )
+        except (UnicodeDecodeError, ValueError):
+            pass
+
+        # Binary attachment we can't extract text from — strip it with a note
+        attachments_decoded += 1
+        size_kb = len(decoded) / 1024
+        return f"\n[Binary attachment: {filename} ({size_kb:.0f} KB) — not text-extractable]\n"
+
+    # Try the detailed MIME regex first
+    result = _MIME_ATTACHMENT_RE.sub(_decode_and_replace, text)
+
+    # If the detailed regex didn't find anything, try the simpler pattern
+    if attachments_decoded == 0:
+        def _simple_replace(match: re.Match) -> str:
+            nonlocal attachments_decoded
+            b64_body = match.group(2)
+            b64_clean = re.sub(r"\s+", "", b64_body)
+
+            if len(b64_clean) < 100:
+                return match.group(0)
+
+            try:
+                decoded = base64.b64decode(b64_clean)
+            except Exception:
+                return match.group(0)
+
+            if decoded[:5] == b"%PDF-":
+                extracted = _extract_text_from_pdf_bytes(decoded)
+                if extracted:
+                    attachments_decoded += 1
+                    return (
+                        f"\n[Decoded PDF attachment]\n"
+                        f"{extracted}\n"
+                        f"[End of decoded attachment]\n"
+                    )
+
+            # Strip unextractable binary
+            if len(b64_clean) > 1000:
+                attachments_decoded += 1
+                size_kb = len(b64_clean) * 3 / 4 / 1024  # approximate decoded size
+                return f"\n[Binary attachment ({size_kb:.0f} KB) — not text-extractable]\n"
+
+            return match.group(0)
+
+        result = _SIMPLE_BASE64_RE.sub(_simple_replace, result)
+
+    # Clean up: collapse runs of blank lines left by removed base64
+    result = re.sub(r"\n{4,}", "\n\n\n", result)
+
+    return result, attachments_decoded
+
+
 def run_extract(document_id: str, r2_key: str) -> dict:
     """
     Extract text from the PDF.
@@ -151,6 +296,9 @@ def run_extract(document_id: str, r2_key: str) -> dict:
 
     full_text = "\n\n".join(pages_text)
 
+    # Decode base64-encoded MIME attachments (e.g., PDF CVs in email documents)
+    full_text, attachments_decoded = decode_mime_attachments(full_text)
+
     # Detect document type and date
     doc_type = detect_document_type(full_text)
     doc_date = detect_date(full_text)
@@ -161,6 +309,8 @@ def run_extract(document_id: str, r2_key: str) -> dict:
         flags.append("needs_ocr")
     if len(full_text.strip()) == 0:
         flags.append("no_text")
+    if attachments_decoded > 0:
+        flags.append("decoded_attachments")
 
     # Upload full text to R2 and store truncated preview in Supabase
     text_r2_key = None
@@ -193,4 +343,5 @@ def run_extract(document_id: str, r2_key: str) -> dict:
         "document_date": doc_date,
         "flags": flags,
         "text_r2_key": text_r2_key,
+        "attachments_decoded": attachments_decoded,
     }

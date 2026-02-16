@@ -42,20 +42,44 @@ export async function POST(request: Request) {
 
       const exists = await headObject(key)
       if (exists) {
+        // File confirmed in R2 — create queue entry and mark document as queued.
+        // Queue entries are created here (not in /presign) to prevent the worker
+        // from picking up documents before the file finishes uploading.
+
+        // Check if this is a reupload by looking for a version snapshot
+        const { data: versionSnapshot } = await supabase
+          .from('document_versions')
+          .select('id')
+          .eq('document_id', doc.id)
+          .order('version_number', { ascending: false })
+          .limit(1)
+          .single()
+
+        const isReprocess = !!versionSnapshot
+        await supabase.from('processing_queue').insert({
+          document_id: doc.id,
+          status: 'queued',
+          priority: isReprocess ? 3 : 5,
+          ...(isReprocess && {
+            is_reprocess: true,
+            previous_version_id: versionSnapshot.id,
+          }),
+        })
+
+        await supabase
+          .from('documents')
+          .update({ processing_status: 'queued' })
+          .eq('id', doc.id)
+
         confirmed++
       } else {
         failures.push(doc.id)
 
-        // Mark failed uploads
+        // Mark failed uploads — no queue entry exists to update
         await supabase
           .from('documents')
           .update({ processing_status: 'failed' })
           .eq('id', doc.id)
-
-        await supabase
-          .from('processing_queue')
-          .update({ status: 'failed', error_message: 'File not found in R2 after upload' })
-          .eq('document_id', doc.id)
       }
     }
 

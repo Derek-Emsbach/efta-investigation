@@ -391,6 +391,8 @@
   - [x] "Catalog all entities" quick action — auto-search + create/link every entity in a document
   - [x] **Full document text access**: system prompt enriched with R2 text (30K chars, up from 2K DB preview)
   - [x] `get_document_text` tool — on-demand page-range text retrieval from R2 for long documents (>30K chars)
+  - [x] Base64 noise stripping (`stripBinaryNoise`) — removes MIME-encoded attachments before AI sees text
+  - [x] **MIME attachment decoding** (worker): decodes base64 PDF/text attachments and extracts content at extraction time
   - [x] Prompt caching (`cache_control: ephemeral`) — ~90% cost reduction on messages 2+
   - [x] Conversation history trimming (last 10 messages to prevent token bloat)
   - [x] PDF annotation protocol (`<!--ANNOTATION:...-->`) — tier-colored entity highlights, key text, page navigation
@@ -400,7 +402,7 @@
 - [x] **Tier A (automatic, all documents — stages 1-3):**
   - [x] R2 download, page count, file size, thumbnail (stage 1)
   - [x] PDF forensic metadata extraction (stage 2)
-  - [x] Text extraction + document type + date detection (stage 3)
+  - [x] Text extraction + document type + date detection + MIME attachment decoding (stage 3)
 - [x] **Tier B (gated, non-blank documents — stages 4-7):**
   - [x] Entity name extraction (regex + fuzzy matching) (stage 4)
   - [x] Redaction detection and A-D classification (stage 5)
