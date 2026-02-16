@@ -1,6 +1,7 @@
 import type Anthropic from '@anthropic-ai/sdk'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getSignedDownloadUrl } from '@/lib/r2/client'
+import { stripBinaryNoise } from '@/lib/ai/archer-prompt'
 
 // -------------------------------------------------------------------
 // Tool Definitions (Claude API format)
@@ -903,7 +904,7 @@ async function getDocumentText(
         suggestion: 'The document may not have been processed yet',
       })
     }
-    fullText = await response.text()
+    fullText = stripBinaryNoise(await response.text())
   } catch {
     return JSON.stringify({ error: 'Failed to fetch document text from storage' })
   }

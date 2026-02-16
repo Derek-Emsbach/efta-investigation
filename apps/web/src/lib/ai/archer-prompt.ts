@@ -15,6 +15,34 @@ export interface ArcherDocument {
 const MAX_TEXT_LENGTH = 30_000
 
 /**
+ * Strip base64-encoded blocks and other binary noise from extracted text.
+ * Email documents often contain base64 PDF/image attachments that waste
+ * tokens without providing any analytical value.
+ */
+export function stripBinaryNoise(text: string): string {
+  // Replace long base64 blocks (40+ chars of base64 alphabet on a line)
+  let cleaned = text.replace(/^[A-Za-z0-9+/=]{40,}$/gm, '')
+
+  // Replace MIME-encoded attachment headers + content
+  cleaned = cleaned.replace(
+    /Content-Transfer-Encoding:\s*base64[\s\S]*?(?=\n--|\n\n[A-Z]|$)/gi,
+    '[base64 attachment removed]',
+  )
+
+  // Collapse runs of 3+ blank lines into 2
+  cleaned = cleaned.replace(/\n{4,}/g, '\n\n\n')
+
+  // If we removed a lot, note it
+  const removed = text.length - cleaned.length
+  if (removed > 1000) {
+    cleaned = cleaned.trimEnd() +
+      `\n\n[${removed.toLocaleString()} characters of base64/binary data stripped — not useful for analysis]`
+  }
+
+  return cleaned
+}
+
+/**
  * Static portion of the Archer system prompt — persona, rules, tiers, annotation
  * instructions. This part is identical across all document reviews and should be
  * cached via `cache_control: { type: 'ephemeral' }` to reduce cost by ~90%.

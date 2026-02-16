@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import {
   buildArcherStaticPrompt,
   buildArcherDocumentContext,
+  stripBinaryNoise,
   type ArcherDocument,
 } from '@/lib/ai/archer-prompt'
 import { ASSISTANT_TOOLS, executeTool } from '@/lib/ai/tools'
@@ -143,9 +144,11 @@ async function runArcherConversation(
   })
 
   // Fetch full text from R2 to replace the 2000-char DB preview
+  // Strip base64/binary noise (emails with PDF attachments can be 90%+ encoded junk)
   const fullText = await fetchFullTextFromR2(document.bates_number)
-  const enrichedDocument: ArcherDocument = fullText
-    ? { ...document, extracted_text: fullText }
+  const cleanedText = fullText ? stripBinaryNoise(fullText) : null
+  const enrichedDocument: ArcherDocument = cleanedText
+    ? { ...document, extracted_text: cleanedText }
     : document
 
   // Trim conversation history to prevent token bloat
