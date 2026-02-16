@@ -8,10 +8,14 @@ import {
   EVIDENCE_ITEM_STRENGTHS,
   SUGGESTION_CATEGORIES,
   SUGGESTION_PRIORITIES,
+  ENTITY_TYPES,
+  ENTITY_CATEGORIES,
+  ENTITY_STATUSES,
+  EVENT_TYPES,
 } from '@/lib/ai/tools'
 
 interface ApplyRequest {
-  type: 'connection' | 'tier_change' | 'evidence' | 'platform'
+  type: 'connection' | 'tier_change' | 'evidence' | 'platform' | 'new_entity' | 'event' | 'entity_document_link'
   data: Record<string, unknown>
 }
 
@@ -41,6 +45,12 @@ export async function POST(request: NextRequest) {
         return await applyEvidenceItem(body.data, supabase)
       case 'platform':
         return await applyPlatformSuggestion(body.data, supabase)
+      case 'new_entity':
+        return await applyNewEntity(body.data, supabase)
+      case 'event':
+        return await applyEvent(body.data, supabase)
+      case 'entity_document_link':
+        return await applyEntityDocumentLink(body.data, supabase)
       default:
         return NextResponse.json({ error: `Unknown suggestion type: ${body.type}` }, { status: 400 })
     }
@@ -239,4 +249,190 @@ async function applyPlatformSuggestion(
 
   if (error) throw error
   return NextResponse.json({ success: true, message: 'Suggestion saved to backlog' })
+}
+
+async function applyNewEntity(
+  data: Record<string, unknown>,
+  supabase: Awaited<ReturnType<typeof createClient>>,
+) {
+  const {
+    name, entity_type, tier, category, bio, status, aliases,
+    document_id, role_in_document,
+  } = data as {
+    name: string
+    entity_type: string
+    tier: number
+    category: string
+    bio: string | null
+    status: string
+    aliases: string[]
+    document_id: string | null
+    role_in_document: string | null
+  }
+
+  if (!name || !entity_type || !tier || !category) {
+    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  }
+
+  if (!ENTITY_TYPES.has(entity_type)) {
+    return NextResponse.json({ error: `Invalid entity_type: ${entity_type}` }, { status: 400 })
+  }
+  if (!ENTITY_CATEGORIES.has(category)) {
+    return NextResponse.json({ error: `Invalid category: ${category}` }, { status: 400 })
+  }
+  if (!Number.isInteger(tier) || tier < 1 || tier > 6) {
+    return NextResponse.json({ error: `Invalid tier: ${tier}` }, { status: 400 })
+  }
+  if (status && !ENTITY_STATUSES.has(status)) {
+    return NextResponse.json({ error: `Invalid status: ${status}` }, { status: 400 })
+  }
+
+  // Create the entity
+  const { data: entity, error: entityError } = await supabase
+    .from('entities')
+    .insert({
+      name,
+      entity_type,
+      tier,
+      category,
+      bio: bio ?? null,
+      status: status ?? 'identified',
+      aliases: aliases ?? [],
+    })
+    .select('id')
+    .single()
+
+  if (entityError) throw entityError
+
+  // Link to source document if provided
+  if (document_id && entity) {
+    await supabase.from('entity_documents').insert({
+      entity_id: entity.id,
+      document_id,
+      role_in_document: role_in_document ?? 'mentioned',
+    })
+  }
+
+  return NextResponse.json({
+    success: true,
+    message: `Entity "${name}" created (Tier ${tier})${document_id ? ' and linked to document' : ''}`,
+    entity_id: entity?.id,
+  })
+}
+
+async function applyEvent(
+  data: Record<string, unknown>,
+  supabase: Awaited<ReturnType<typeof createClient>>,
+) {
+  const { title, description, date, event_type, significance, document_id, entity_ids } =
+    data as {
+      title: string
+      description: string
+      date: string
+      event_type: string
+      significance: number | null
+      document_id: string | null
+      entity_ids: string[]
+    }
+
+  if (!title || !description || !date || !event_type) {
+    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  }
+
+  if (!EVENT_TYPES.has(event_type)) {
+    return NextResponse.json({ error: `Invalid event_type: ${event_type}` }, { status: 400 })
+  }
+
+  // Create the event
+  const { data: event, error: eventError } = await supabase
+    .from('events')
+    .insert({
+      title,
+      description,
+      date,
+      event_type,
+      significance: significance ?? null,
+    })
+    .select('id')
+    .single()
+
+  if (eventError) throw eventError
+
+  // Link to source document
+  if (document_id && event) {
+    await supabase.from('event_documents').insert({
+      event_id: event.id,
+      document_id,
+    })
+  }
+
+  // Link to entities
+  if (entity_ids && entity_ids.length > 0 && event) {
+    const entityEventRows = entity_ids.map((entityId) => ({
+      entity_id: entityId,
+      event_id: event.id,
+    }))
+    await supabase.from('entity_events').insert(entityEventRows)
+  }
+
+  return NextResponse.json({
+    success: true,
+    message: `Event "${title}" created on ${date}`,
+    event_id: event?.id,
+  })
+}
+
+async function applyEntityDocumentLink(
+  data: Record<string, unknown>,
+  supabase: Awaited<ReturnType<typeof createClient>>,
+) {
+  const { entity_id, document_id, role_in_document, excerpt } = data as {
+    entity_id: string
+    document_id: string
+    role_in_document: string
+    excerpt: string | null
+  }
+
+  if (!entity_id || !document_id || !role_in_document) {
+    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  }
+
+  // Verify both exist
+  const [entityCheck, docCheck] = await Promise.all([
+    supabase.from('entities').select('id, name').eq('id', entity_id).single(),
+    supabase.from('documents').select('id, bates_number').eq('id', document_id).single(),
+  ])
+
+  if (!entityCheck.data) {
+    return NextResponse.json({ error: 'Entity not found' }, { status: 404 })
+  }
+  if (!docCheck.data) {
+    return NextResponse.json({ error: 'Document not found' }, { status: 404 })
+  }
+
+  // Check for existing link
+  const { data: existing } = await supabase
+    .from('entity_documents')
+    .select('id')
+    .eq('entity_id', entity_id)
+    .eq('document_id', document_id)
+    .limit(1)
+
+  if (existing && existing.length > 0) {
+    return NextResponse.json({ error: 'Link already exists' }, { status: 409 })
+  }
+
+  const { error } = await supabase.from('entity_documents').insert({
+    entity_id,
+    document_id,
+    role_in_document,
+    excerpt: excerpt ?? null,
+  })
+
+  if (error) throw error
+
+  return NextResponse.json({
+    success: true,
+    message: `Linked ${entityCheck.data.name} to ${docCheck.data.bates_number}`,
+  })
 }

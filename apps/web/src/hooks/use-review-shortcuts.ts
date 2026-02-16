@@ -10,8 +10,7 @@ interface UseReviewShortcutsOptions<T extends { id: string }> {
   setCurrentPage: (page: number | undefined) => void
   numPages: number
   handleAction: (action: 'approve' | 'flag' | 'reject', flag?: string) => Promise<void>
-  queueCollapsed: boolean
-  setQueueCollapsed: (v: boolean) => void
+  toggleQueue: () => void
   formExpanded: boolean
   setFormExpanded: (v: boolean) => void
   saving: boolean
@@ -33,8 +32,7 @@ export function useReviewShortcuts<T extends { id: string }>({
   setCurrentPage,
   numPages,
   handleAction,
-  queueCollapsed,
-  setQueueCollapsed,
+  toggleQueue,
   formExpanded,
   setFormExpanded,
   saving,
@@ -46,7 +44,6 @@ export function useReviewShortcuts<T extends { id: string }>({
   const currentPageRef = useRef(currentPage)
   const numPagesRef = useRef(numPages)
   const savingRef = useRef(saving)
-  const queueCollapsedRef = useRef(queueCollapsed)
   const formExpandedRef = useRef(formExpanded)
 
   // Keep refs in sync
@@ -55,7 +52,6 @@ export function useReviewShortcuts<T extends { id: string }>({
   currentPageRef.current = currentPage
   numPagesRef.current = numPages
   savingRef.current = saving
-  queueCollapsedRef.current = queueCollapsed
   formExpandedRef.current = formExpanded
 
   useEffect(() => {
@@ -135,7 +131,7 @@ export function useReviewShortcuts<T extends { id: string }>({
 
         // ── View Controls ───────────────────────
         case 'q': {
-          setQueueCollapsed(!queueCollapsedRef.current)
+          toggleQueue()
           break
         }
         case 'e': {
@@ -154,5 +150,5 @@ export function useReviewShortcuts<T extends { id: string }>({
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
     // Stable callbacks only — mutable state read through refs
-  }, [selectDocument, setCurrentPage, handleAction, setQueueCollapsed, setFormExpanded, onShowHelp])
+  }, [selectDocument, setCurrentPage, handleAction, toggleQueue, setFormExpanded, onShowHelp])
 }

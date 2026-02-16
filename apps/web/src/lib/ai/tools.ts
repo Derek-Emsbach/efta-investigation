@@ -1,5 +1,6 @@
 import type Anthropic from '@anthropic-ai/sdk'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { getSignedDownloadUrl } from '@/lib/r2/client'
 
 // -------------------------------------------------------------------
 // Tool Definitions (Claude API format)
@@ -115,6 +116,33 @@ export const ASSISTANT_TOOLS: Anthropic.Tool[] = [
         bates_number: {
           type: 'string',
           description: 'Bates number (e.g., EFTA02731623)',
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'get_document_text',
+    description:
+      'Fetch the full extracted text of a document from storage. Use this when the system prompt text shows "[truncated]" and you need to read more of the document, or to read a different document\'s text. Supports page ranges for long documents.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        document_id: {
+          type: 'string',
+          description: 'UUID of the document',
+        },
+        bates_number: {
+          type: 'string',
+          description: 'Bates number (e.g., EFTA02731623). Used if document_id not provided.',
+        },
+        page_start: {
+          type: 'number',
+          description: 'First page to return (1-indexed). Omit to start from the beginning.',
+        },
+        page_end: {
+          type: 'number',
+          description: 'Last page to return (1-indexed, inclusive). Omit to read to the end.',
         },
       },
       required: [],
@@ -271,6 +299,79 @@ export const ASSISTANT_TOOLS: Anthropic.Tool[] = [
       required: ['category', 'title', 'description', 'rationale', 'priority'],
     },
   },
+  {
+    name: 'suggest_new_entity',
+    description:
+      'Propose creating a new entity (person, organization, property, etc.) discovered in the current document. The user will see an approval card. If a bates_number is provided, the entity will be automatically linked to that source document when approved.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        name: { type: 'string', description: 'Full name of the entity (person, org, property, etc.)' },
+        entity_type: {
+          type: 'string',
+          description: 'Type: person, organization, property, vehicle, trust, agency',
+        },
+        tier: { type: 'number', description: 'Evidence tier (1-6). Use 6 for peripheral, 4 for associated with no criminal evidence, etc.' },
+        category: {
+          type: 'string',
+          description: 'Category: abuser, attorney, judge, prosecutor, victim, staff, witness, recruiter, shell_company, law_firm, financial, government, nonprofit, media',
+        },
+        bio: { type: 'string', description: 'Brief description of who this entity is and their relevance (1-3 sentences)' },
+        status: {
+          type: 'string',
+          description: 'Status: convicted, not_investigated, settled, identified, deceased, active, unknown. Default: identified',
+        },
+        aliases: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Alternative names, nicknames, or spellings',
+        },
+        bates_number: { type: 'string', description: 'Bates number of the source document to auto-link' },
+        role_in_document: { type: 'string', description: 'Role of this entity in the source document (e.g., "sender", "recipient", "mentioned", "subject")' },
+      },
+      required: ['name', 'entity_type', 'tier', 'category'],
+    },
+  },
+  {
+    name: 'suggest_event',
+    description:
+      'Propose creating a new timeline event discovered in the current document. The user will see an approval card. Can optionally link to source document and entities.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        title: { type: 'string', description: 'Short event title (e.g., "Wire transfer from JPMorgan to Southern Trust")' },
+        description: { type: 'string', description: 'Detailed description of the event' },
+        date: { type: 'string', description: 'Event date in YYYY-MM-DD format' },
+        event_type: {
+          type: 'string',
+          description: 'Type: legal, evidence, communication, institutional, personal, financial, legislative, travel, sighting',
+        },
+        significance: { type: 'number', description: 'Significance score 1-10 (10 = most significant)' },
+        bates_number: { type: 'string', description: 'Bates number of the source document to link' },
+        entity_names: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Names of entities involved in this event (will be linked if they exist in the database)',
+        },
+      },
+      required: ['title', 'description', 'date', 'event_type'],
+    },
+  },
+  {
+    name: 'suggest_entity_document_link',
+    description:
+      'Propose linking an existing entity to a document. Use this when you find a known entity mentioned in the current document but the link does not exist in the database yet. The user will see an approval card.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        entity_name: { type: 'string', description: 'Name of the entity to link' },
+        bates_number: { type: 'string', description: 'Bates number of the document to link to' },
+        role_in_document: { type: 'string', description: 'Role: sender, recipient, mentioned, subject, author, witness, attorney, signatory' },
+        excerpt: { type: 'string', description: 'Brief excerpt from the document where this entity appears (1-2 sentences)' },
+      },
+      required: ['entity_name', 'bates_number', 'role_in_document'],
+    },
+  },
 ]
 
 // -------------------------------------------------------------------
@@ -292,6 +393,25 @@ export const EVIDENCE_TYPES = new Set([
 export const EVIDENCE_CATEGORIES = new Set(['primary', 'corroborating', 'contradictory', 'timeline'])
 
 export const EVIDENCE_ITEM_STRENGTHS = new Set(['strong', 'moderate', 'weak'])
+
+export const ENTITY_TYPES = new Set([
+  'person', 'organization', 'property', 'vehicle', 'trust', 'agency',
+])
+
+export const ENTITY_CATEGORIES = new Set([
+  'abuser', 'attorney', 'judge', 'prosecutor', 'victim', 'staff',
+  'witness', 'recruiter', 'shell_company', 'law_firm', 'financial',
+  'government', 'nonprofit', 'media',
+])
+
+export const ENTITY_STATUSES = new Set([
+  'convicted', 'not_investigated', 'settled', 'identified', 'deceased', 'active', 'unknown',
+])
+
+export const EVENT_TYPES = new Set([
+  'legal', 'evidence', 'communication', 'institutional', 'personal',
+  'financial', 'legislative', 'travel', 'sighting',
+])
 
 export const SUGGESTION_CATEGORIES = new Set([
   'feature', 'tracking', 'tool', 'investigation', 'data_model', 'ux',
@@ -331,6 +451,8 @@ export async function executeTool(
         return await getEntityProfile(toolInput, supabase)
       case 'get_document_detail':
         return await getDocumentDetail(toolInput, supabase)
+      case 'get_document_text':
+        return await getDocumentText(toolInput, supabase)
       case 'query_connections':
         return await queryConnections(toolInput, supabase)
       case 'cross_reference':
@@ -345,6 +467,12 @@ export async function executeTool(
         return await suggestEvidenceItem(toolInput, supabase)
       case 'suggest_platform_improvement':
         return suggestPlatformImprovement(toolInput)
+      case 'suggest_new_entity':
+        return await suggestNewEntity(toolInput, supabase)
+      case 'suggest_event':
+        return await suggestEvent(toolInput, supabase)
+      case 'suggest_entity_document_link':
+        return await suggestEntityDocumentLink(toolInput, supabase)
       default:
         return JSON.stringify({ error: `Unknown tool: ${toolName}` })
     }
@@ -732,6 +860,94 @@ async function getDocumentDetail(
   })
 }
 
+// Maximum chars returned per get_document_text tool call (~15K tokens)
+const MAX_TEXT_TOOL_RESPONSE = 60_000
+
+async function getDocumentText(
+  input: Record<string, unknown>,
+  supabase: SupabaseClient,
+): Promise<string> {
+  const { document_id, bates_number, page_start, page_end } = input as {
+    document_id?: string
+    bates_number?: string
+    page_start?: number
+    page_end?: number
+  }
+
+  // Resolve to bates number (needed for R2 key)
+  let resolvedBates = bates_number
+  if (!resolvedBates) {
+    if (!document_id) {
+      return JSON.stringify({ error: 'Provide document_id or bates_number' })
+    }
+    const { data: doc } = await supabase
+      .from('documents')
+      .select('bates_number')
+      .eq('id', document_id)
+      .single()
+    if (!doc?.bates_number) {
+      return JSON.stringify({ error: 'Document not found or has no bates number' })
+    }
+    resolvedBates = doc.bates_number
+  }
+
+  // Fetch full text from R2
+  let fullText: string
+  try {
+    const r2Key = `text/${resolvedBates}.txt`
+    const signedUrl = await getSignedDownloadUrl(r2Key, 3600)
+    const response = await fetch(signedUrl)
+    if (!response.ok) {
+      return JSON.stringify({
+        error: 'Full text not available in storage',
+        suggestion: 'The document may not have been processed yet',
+      })
+    }
+    fullText = await response.text()
+  } catch {
+    return JSON.stringify({ error: 'Failed to fetch document text from storage' })
+  }
+
+  // Split into approximate pages (worker joins pages with \n\n)
+  const pages = fullText.split('\n\n')
+  const totalPages = pages.length
+  const totalChars = fullText.length
+
+  // Apply page range if specified (1-indexed)
+  const start = Math.max(1, page_start ?? 1)
+  const end = Math.min(totalPages, page_end ?? totalPages)
+
+  if (start > totalPages) {
+    return JSON.stringify({
+      error: `page_start (${start}) exceeds total pages (${totalPages})`,
+      total_pages: totalPages,
+      total_chars: totalChars,
+    })
+  }
+
+  // Extract requested pages (convert to 0-indexed for array slice)
+  const selectedPages = pages.slice(start - 1, end)
+  let resultText = selectedPages.join('\n\n')
+
+  // Truncate if still too long
+  let wasTruncated = false
+  if (resultText.length > MAX_TEXT_TOOL_RESPONSE) {
+    resultText = resultText.slice(0, MAX_TEXT_TOOL_RESPONSE)
+    wasTruncated = true
+  }
+
+  // Bypass safeJson — this tool intentionally returns large text (up to 60K chars)
+  return JSON.stringify({
+    bates_number: resolvedBates,
+    total_pages: totalPages,
+    total_chars: totalChars,
+    pages_returned: `${start}-${end}`,
+    chars_returned: resultText.length,
+    truncated: wasTruncated,
+    text: resultText,
+  })
+}
+
 async function queryConnections(
   input: Record<string, unknown>,
   supabase: SupabaseClient,
@@ -1022,6 +1238,9 @@ async function getPlatformContext(supabase: SupabaseClient): Promise<string> {
       'suggest_connection — propose a new entity connection',
       'suggest_tier_change — propose a tier reclassification',
       'suggest_evidence_item — propose a new evidence record',
+      'suggest_new_entity — create a new entity (person, org, property) and auto-link to document',
+      'suggest_event — create a new timeline event with entity/document links',
+      'suggest_entity_document_link — link an existing entity to a document',
       'suggest_platform_improvement — propose a platform feature/tool/tracking improvement',
     ],
   })
@@ -1258,6 +1477,249 @@ function suggestPlatformImprovement(
       context: {
         category,
         priority,
+      },
+    },
+  })
+}
+
+// -------------------------------------------------------------------
+// Entity / Event / Link Creation Tools
+// -------------------------------------------------------------------
+
+async function suggestNewEntity(
+  input: Record<string, unknown>,
+  supabase: SupabaseClient,
+): Promise<string> {
+  const {
+    name, entity_type, tier, category, bio, status, aliases,
+    bates_number, role_in_document,
+  } = input as {
+    name: string
+    entity_type: string
+    tier: number
+    category: string
+    bio?: string
+    status?: string
+    aliases?: string[]
+    bates_number?: string
+    role_in_document?: string
+  }
+
+  // Validate required fields
+  if (!name?.trim()) return JSON.stringify({ error: 'Name is required' })
+
+  // Validate enums
+  if (!ENTITY_TYPES.has(entity_type)) {
+    return JSON.stringify({ error: `Invalid entity_type: ${entity_type}. Valid: ${[...ENTITY_TYPES].join(', ')}` })
+  }
+  if (!ENTITY_CATEGORIES.has(category)) {
+    return JSON.stringify({ error: `Invalid category: ${category}. Valid: ${[...ENTITY_CATEGORIES].join(', ')}` })
+  }
+  if (!Number.isInteger(tier) || tier < 1 || tier > 6) {
+    return JSON.stringify({ error: `Invalid tier: ${tier}. Must be 1-6.` })
+  }
+  if (status && !ENTITY_STATUSES.has(status)) {
+    return JSON.stringify({ error: `Invalid status: ${status}. Valid: ${[...ENTITY_STATUSES].join(', ')}` })
+  }
+
+  // Check for duplicate name
+  const { data: existing } = await supabase
+    .from('entities')
+    .select('id, name, tier, category')
+    .ilike('name', name.trim())
+    .limit(1)
+
+  if (existing && existing.length > 0) {
+    return JSON.stringify({
+      error: `Entity "${existing[0].name}" already exists (Tier ${existing[0].tier}, ${existing[0].category}). Use suggest_entity_document_link to link them to this document, or suggest_evidence_item to add evidence.`,
+    })
+  }
+
+  // Resolve source document if bates provided
+  let documentId: string | null = null
+  let documentTitle: string | null = null
+  if (bates_number) {
+    const { data: doc } = await supabase
+      .from('documents')
+      .select('id, title, bates_number')
+      .eq('bates_number', bates_number)
+      .single()
+    if (doc) {
+      documentId = doc.id
+      documentTitle = doc.title
+    }
+  }
+
+  return JSON.stringify({
+    __suggestion: {
+      type: 'new_entity',
+      summary: `Create ${entity_type}: ${name.trim()} (Tier ${tier}, ${category})`,
+      data: {
+        name: name.trim(),
+        entity_type,
+        tier,
+        category,
+        bio: bio ?? null,
+        status: status ?? 'identified',
+        aliases: aliases ?? [],
+        document_id: documentId,
+        role_in_document: role_in_document ?? null,
+      },
+      context: {
+        name: name.trim(),
+        entity_type,
+        tier,
+        category,
+        source_document_bates: bates_number ?? null,
+        source_document_title: documentTitle,
+      },
+    },
+  })
+}
+
+async function suggestEvent(
+  input: Record<string, unknown>,
+  supabase: SupabaseClient,
+): Promise<string> {
+  const { title, description, date, event_type, significance, bates_number, entity_names } =
+    input as {
+      title: string
+      description: string
+      date: string
+      event_type: string
+      significance?: number
+      bates_number?: string
+      entity_names?: string[]
+    }
+
+  // Validate required fields
+  if (!title?.trim()) return JSON.stringify({ error: 'Title is required' })
+  if (!description?.trim()) return JSON.stringify({ error: 'Description is required' })
+  if (!date) return JSON.stringify({ error: 'Date is required (YYYY-MM-DD)' })
+
+  // Validate date format
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return JSON.stringify({ error: `Invalid date format: ${date}. Use YYYY-MM-DD.` })
+  }
+
+  if (!EVENT_TYPES.has(event_type)) {
+    return JSON.stringify({ error: `Invalid event_type: ${event_type}. Valid: ${[...EVENT_TYPES].join(', ')}` })
+  }
+
+  if (significance !== undefined && (!Number.isInteger(significance) || significance < 1 || significance > 10)) {
+    return JSON.stringify({ error: `Invalid significance: ${significance}. Must be 1-10.` })
+  }
+
+  // Resolve source document
+  let documentId: string | null = null
+  if (bates_number) {
+    const { data: doc } = await supabase
+      .from('documents')
+      .select('id')
+      .eq('bates_number', bates_number)
+      .single()
+    if (doc) documentId = doc.id
+  }
+
+  // Resolve entity names to IDs
+  const resolvedEntities: { id: string; name: string }[] = []
+  if (entity_names && entity_names.length > 0) {
+    for (const eName of entity_names) {
+      const { data: entity } = await supabase
+        .from('entities')
+        .select('id, name')
+        .ilike('name', eName)
+        .limit(1)
+        .single()
+      if (entity) resolvedEntities.push({ id: entity.id, name: entity.name })
+    }
+  }
+
+  return JSON.stringify({
+    __suggestion: {
+      type: 'event',
+      summary: `${date}: ${title.trim()}`,
+      data: {
+        title: title.trim(),
+        description: description.trim(),
+        date,
+        event_type,
+        significance: significance ?? null,
+        document_id: documentId,
+        entity_ids: resolvedEntities.map((e) => e.id),
+      },
+      context: {
+        date,
+        event_type,
+        source_document_bates: bates_number ?? null,
+        linked_entities: resolvedEntities.map((e) => e.name),
+        unresolved_entities: entity_names?.filter(
+          (n) => !resolvedEntities.some((r) => r.name.toLowerCase() === n.toLowerCase()),
+        ) ?? [],
+      },
+    },
+  })
+}
+
+async function suggestEntityDocumentLink(
+  input: Record<string, unknown>,
+  supabase: SupabaseClient,
+): Promise<string> {
+  const { entity_name, bates_number, role_in_document, excerpt } = input as {
+    entity_name: string
+    bates_number: string
+    role_in_document: string
+    excerpt?: string
+  }
+
+  if (!entity_name?.trim()) return JSON.stringify({ error: 'Entity name is required' })
+  if (!bates_number?.trim()) return JSON.stringify({ error: 'Bates number is required' })
+  if (!role_in_document?.trim()) return JSON.stringify({ error: 'Role in document is required' })
+
+  // Resolve entity
+  const { data: entity } = await supabase
+    .from('entities')
+    .select('id, name, tier, category')
+    .ilike('name', entity_name)
+    .limit(1)
+    .single()
+  if (!entity) return JSON.stringify({ error: `Entity not found: ${entity_name}. Use suggest_new_entity to create it first.` })
+
+  // Resolve document
+  const { data: doc } = await supabase
+    .from('documents')
+    .select('id, title, bates_number')
+    .eq('bates_number', bates_number)
+    .single()
+  if (!doc) return JSON.stringify({ error: `Document not found: ${bates_number}` })
+
+  // Check for existing link
+  const { data: existingLink } = await supabase
+    .from('entity_documents')
+    .select('id')
+    .eq('entity_id', entity.id)
+    .eq('document_id', doc.id)
+    .limit(1)
+  if (existingLink && existingLink.length > 0) {
+    return JSON.stringify({ error: `${entity.name} is already linked to ${doc.bates_number}` })
+  }
+
+  return JSON.stringify({
+    __suggestion: {
+      type: 'entity_document_link',
+      summary: `Link ${entity.name} → ${doc.bates_number} (${role_in_document})`,
+      data: {
+        entity_id: entity.id,
+        document_id: doc.id,
+        role_in_document,
+        excerpt: excerpt ?? null,
+      },
+      context: {
+        entity_name: entity.name,
+        entity_tier: entity.tier,
+        entity_category: entity.category,
+        document_bates: doc.bates_number,
+        document_title: doc.title,
       },
     },
   })

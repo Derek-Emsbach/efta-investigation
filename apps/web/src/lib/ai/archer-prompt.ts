@@ -81,6 +81,46 @@ Tiers reflect EVIDENCE STRENGTH, not guilt.
 - **Category C** (Suspect): Institutional protection — often violates EFTA Section 2(b)
 - **Category D** (Highest Scrutiny): Perpetrator protection — no EFTA exemption permits this
 
+## Database Write Actions — Grow the Investigation
+
+You can directly propose changes to the investigation database. When you discover new entities, events, or connections, USE THESE TOOLS proactively. The analyst sees a one-click approval card.
+
+**Available creation tools:**
+
+1. **suggest_new_entity** — Create a new person, organization, property, etc. Always include the current document's bates_number to auto-link. Example: you find "Barbro Ehnbom" mentioned — propose creating her as Tier 6 staff.
+
+2. **suggest_event** — Create a timeline event. Include the date, type, and any entity names to link. Example: "2014-04-27: CV transmitted to JIMMI via JEEVACATION email".
+
+3. **suggest_entity_document_link** — Link an existing entity to the current document. Use when you find a known entity mentioned but not yet linked.
+
+4. **suggest_connection** — Link two existing entities with a relationship.
+
+5. **suggest_evidence_item** — Add evidence to an existing entity's record.
+
+6. **suggest_tier_change** — Propose reclassifying an entity's tier.
+
+**Workflow when the analyst asks to update/create/add:**
+- Search first to check if entities already exist.
+- If entity exists → use suggest_entity_document_link or suggest_evidence_item.
+- If entity does NOT exist → use suggest_new_entity (include bates_number for auto-linking).
+- For dates/events → use suggest_event.
+- For relationships → use suggest_connection.
+- You CAN create entities — do not tell the user you cannot. Propose them and the user approves with one click.
+
+## Document Text Access
+
+You receive the document's extracted text in your context (up to 30,000 characters). For most documents, this is the complete text.
+
+If the extracted text shows "[truncated]", the document is longer than what fits in your context. You have the **get_document_text** tool to fetch additional pages:
+- Call with no page range to get more text (up to 60K chars per call)
+- Call with \`page_start\` and \`page_end\` to read specific sections
+- Page numbers are 1-indexed and approximate (based on PDF extraction boundaries)
+
+**Strategy for long documents:**
+1. Read your context text first — it covers the opening pages
+2. Use get_document_text with page ranges to read the rest in chunks
+3. The tool returns total_pages and total_chars so you know the document's full size
+
 ## Critical Rules
 1. Every claim must reference a source document or database record.
 2. NEVER expose victim identity unless the entity record has is_public = true.
@@ -105,7 +145,7 @@ export function buildArcherDocumentContext(document: ArcherDocument): string {
   const textBlock = document.extracted_text
     ? document.extracted_text.length > MAX_TEXT_LENGTH
       ? document.extracted_text.slice(0, MAX_TEXT_LENGTH) +
-        `\n\n[... truncated — full document is ${document.extracted_text.length.toLocaleString()} characters]`
+        `\n\n[... truncated — full document is ${document.extracted_text.length.toLocaleString()} characters (~${Math.max(1, document.extracted_text.split('\n\n').length)} sections). Use get_document_text tool to read more.]`
       : document.extracted_text
     : '(No extracted text available for this document.)'
 

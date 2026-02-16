@@ -15,7 +15,7 @@ import type { ArcherDocument } from '@/lib/ai/archer-prompt'
 // ─── Types ──────────────────────────────────────────────
 
 interface Suggestion {
-  type: 'connection' | 'tier_change' | 'evidence'
+  type: 'connection' | 'tier_change' | 'evidence' | 'new_entity' | 'event' | 'entity_document_link'
   summary: string
   data: Record<string, unknown>
   context: Record<string, unknown>
@@ -41,7 +41,15 @@ interface ChatMessage {
 
 // ─── Constants ──────────────────────────────────────────
 
+const DEFAULT_PROMPT =
+  'Give me your first impression of this document — what type is it, what\'s the general subject, and what stands out? Then list the analysis sections I can explore with you.'
+
 const QUICK_ACTIONS = [
+  {
+    label: 'First impression',
+    description: 'Type, subject, and standout details',
+    prompt: DEFAULT_PROMPT,
+  },
   {
     label: 'Who is mentioned?',
     description: 'Identify every person, org, and entity',
@@ -72,6 +80,11 @@ const QUICK_ACTIONS = [
     description: 'Should I approve, flag, or reject?',
     prompt: 'Based on your analysis, should I approve, flag, or reject this document? What severity and classification would you assign? Explain your reasoning.',
   },
+  {
+    label: 'Catalog all entities',
+    description: 'Create/link every entity in this doc',
+    prompt: 'Search for every person, organization, and entity mentioned in this document. For each one: if they already exist in our database, propose linking them to this document using suggest_entity_document_link. If they do NOT exist, propose creating them using suggest_new_entity with an appropriate tier, category, and this document\'s bates number. Do them all — I\'ll approve each one.',
+  },
 ]
 
 const TIER_COLORS: Record<number, string> = {
@@ -89,11 +102,15 @@ const TOOL_LABELS: Record<string, string> = {
   search_events: 'Searching events',
   get_entity_profile: 'Loading entity profile',
   get_document_detail: 'Loading document detail',
+  get_document_text: 'Reading document text',
   query_connections: 'Querying connections',
   cross_reference: 'Cross-referencing',
   suggest_connection: 'Proposing connection',
   suggest_tier_change: 'Proposing tier change',
   suggest_evidence_item: 'Proposing evidence item',
+  suggest_new_entity: 'Creating entity',
+  suggest_event: 'Creating event',
+  suggest_entity_document_link: 'Linking entity to document',
 }
 
 // ─── Markdown Components ────────────────────────────────
@@ -237,7 +254,7 @@ export default function ArcherPanel({
     loadDocumentConversation(document.id)
   }, [document?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ─── Auto-analysis on first view — conversational pace ──
+  // ─── Pre-fill default prompt on first view (no auto-send) ──
   useEffect(() => {
     if (
       !document ||
@@ -250,15 +267,8 @@ export default function ArcherPanel({
 
     if (conversationId) return
 
-    const timer = setTimeout(() => {
-      if (autoAnalysisTriggered.current === document.id) return
-      autoAnalysisTriggered.current = document.id
-      sendMessage(
-        'Give me your first impression of this document — what type is it, what\'s the general subject, and what stands out? Then list the analysis sections I can explore with you.',
-      )
-    }, 500)
-
-    return () => clearTimeout(timer)
+    autoAnalysisTriggered.current = document.id
+    setInput(DEFAULT_PROMPT)
   }, [document, messages.length, conversationId, isStreaming]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ─── Load existing conversation for document ───────
@@ -707,7 +717,7 @@ export default function ArcherPanel({
   const isEmpty = messages.length === 0 && !isStreaming
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full min-w-0 w-full flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border-default px-4 py-2.5 shrink-0">
         <div className="flex items-center gap-2">
@@ -742,7 +752,7 @@ export default function ArcherPanel({
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-3 space-y-4">
         {isEmpty ? (
           /* Welcome state with quick action cards */
           <div className="flex flex-col h-full">
@@ -763,10 +773,10 @@ export default function ArcherPanel({
               </div>
               <div className="text-center">
                 <p className="text-xs text-text-secondary mb-0.5">
-                  Archer is analyzing this document...
+                  Ask Archer to analyze this document
                 </p>
                 <p className="text-[10px] text-text-muted">
-                  Or choose an analysis below
+                  Send the default prompt or choose an analysis below
                 </p>
               </div>
             </div>
@@ -808,7 +818,7 @@ export default function ArcherPanel({
                 ))}
 
                 {streamingContent ? (
-                  <div className="archer-markdown">
+                  <div className="archer-markdown break-words">
                     <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                       {extractAnnotations(streamingContent).cleanText}
                     </ReactMarkdown>
@@ -909,7 +919,7 @@ function MessageBubble({
   if (message.role === 'user') {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-lg bg-info/10 px-3 py-2 text-xs text-text-primary leading-relaxed">
+        <div className="max-w-[85%] rounded-lg bg-info/10 px-3 py-2 text-xs text-text-primary leading-relaxed break-words">
           {message.content}
         </div>
       </div>
@@ -934,7 +944,7 @@ function MessageBubble({
 
       {/* Text content — rendered as markdown */}
       {message.content && (
-        <div className="archer-markdown">
+        <div className="archer-markdown break-words">
           <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
             {message.content}
           </ReactMarkdown>
@@ -985,12 +995,18 @@ function SuggestionCard({
     connection: 'Connection',
     tier_change: 'Tier Change',
     evidence: 'Evidence',
+    new_entity: 'New Entity',
+    event: 'Timeline Event',
+    entity_document_link: 'Document Link',
   }
 
   const typeColors: Record<string, string> = {
     connection: 'border-info/30 bg-info/5',
     tier_change: 'border-warning/30 bg-warning/5',
     evidence: 'border-success/30 bg-success/5',
+    new_entity: 'border-violet-500/30 bg-violet-500/5',
+    event: 'border-amber-500/30 bg-amber-500/5',
+    entity_document_link: 'border-cyan-500/30 bg-cyan-500/5',
   }
 
   if (status === 'applied') {
@@ -1040,16 +1056,50 @@ function SuggestionCard({
           <p className="text-xs text-text-secondary mt-0.5 truncate">
             {suggestion.summary}
           </p>
-          {suggestion.type === 'tier_change' && typeof suggestion.data.new_tier === 'number' && (
+          {/* Tier badge for tier_change */}
+          {suggestion.type === 'tier_change' && typeof suggestion.data.new_tier === 'number' ? (
             <span
               className={`mt-1 inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${
-                TIER_COLORS[suggestion.data.new_tier] ??
+                TIER_COLORS[suggestion.data.new_tier as number] ??
                 'bg-gray-500/20 text-gray-400 border-gray-500/30'
               }`}
             >
-              T{suggestion.data.new_tier}
+              {'T' + String(suggestion.data.new_tier)}
             </span>
-          )}
+          ) : null}
+          {/* Entity metadata for new_entity */}
+          {suggestion.type === 'new_entity' ? (() => {
+            const tier = Number(suggestion.data.tier)
+            return (
+              <div className="flex items-center gap-1.5 mt-1">
+                {!isNaN(tier) && (
+                  <span
+                    className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${
+                      TIER_COLORS[tier] ?? 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+                    }`}
+                  >
+                    {'T' + String(tier)}
+                  </span>
+                )}
+                {suggestion.data.entity_type ? (
+                  <span className="text-[10px] text-text-muted">
+                    {String(suggestion.data.entity_type)}
+                  </span>
+                ) : null}
+                {suggestion.data.category ? (
+                  <span className="text-[10px] text-text-muted">
+                    {String(suggestion.data.category).replace(/_/g, ' ')}
+                  </span>
+                ) : null}
+              </div>
+            )
+          })() : null}
+          {/* Event date */}
+          {suggestion.type === 'event' && suggestion.context.date ? (
+            <span className="mt-1 inline-flex text-[10px] font-mono text-text-muted">
+              {String(suggestion.context.date)}
+            </span>
+          ) : null}
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <button

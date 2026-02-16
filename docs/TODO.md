@@ -387,6 +387,10 @@
   - [x] Recommends review action (approve/flag/reject) with reasoning
   - [x] Conversation persists per document (revisit later to continue analysis)
   - [x] Actionable suggestion cards (apply/dismiss connections, tier changes, evidence)
+  - [x] **Write tools**: suggest_new_entity, suggest_event, suggest_entity_document_link — one-click entity/event creation from review
+  - [x] "Catalog all entities" quick action — auto-search + create/link every entity in a document
+  - [x] **Full document text access**: system prompt enriched with R2 text (30K chars, up from 2K DB preview)
+  - [x] `get_document_text` tool — on-demand page-range text retrieval from R2 for long documents (>30K chars)
   - [x] Prompt caching (`cache_control: ephemeral`) — ~90% cost reduction on messages 2+
   - [x] Conversation history trimming (last 10 messages to prevent token bloat)
   - [x] PDF annotation protocol (`<!--ANNOTATION:...-->`) — tier-colored entity highlights, key text, page navigation

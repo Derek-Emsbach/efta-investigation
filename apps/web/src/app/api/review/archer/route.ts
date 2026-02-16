@@ -13,8 +13,28 @@ import {
   logApiUsage,
   type UsageAccumulator,
 } from '@/lib/ai/usage-tracker'
+import { getSignedDownloadUrl } from '@/lib/r2/client'
 
 export const maxDuration = 60
+
+/**
+ * Fetch the full extracted text from R2 for a document.
+ * The DB only stores a 2000-char preview; full text lives at text/{bates}.txt.
+ */
+async function fetchFullTextFromR2(batesNumber: string | null): Promise<string | null> {
+  if (!batesNumber) return null
+  try {
+    const r2Key = `text/${batesNumber}.txt`
+    const signedUrl = await getSignedDownloadUrl(r2Key, 3600)
+    const response = await fetch(signedUrl)
+    if (response.ok) {
+      return await response.text()
+    }
+  } catch {
+    // R2 fetch failed — fall back to DB preview
+  }
+  return null
+}
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -122,6 +142,12 @@ async function runArcherConversation(
     apiKey: process.env.ANTHROPIC_API_KEY!.trim(),
   })
 
+  // Fetch full text from R2 to replace the 2000-char DB preview
+  const fullText = await fetchFullTextFromR2(document.bates_number)
+  const enrichedDocument: ArcherDocument = fullText
+    ? { ...document, extracted_text: fullText }
+    : document
+
   // Trim conversation history to prevent token bloat
   const trimmedMessages = chatMessages.length > MAX_HISTORY_MESSAGES
     ? chatMessages.slice(-MAX_HISTORY_MESSAGES)
@@ -141,7 +167,7 @@ async function runArcherConversation(
     },
     {
       type: 'text' as const,
-      text: buildArcherDocumentContext(document),
+      text: buildArcherDocumentContext(enrichedDocument),
     },
   ]
 
