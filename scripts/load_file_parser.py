@@ -62,10 +62,18 @@ EXPECTED_EDISCOVERY_FIELDS = [
 def parse_dat_file(filepath: str) -> tuple[list[str], list[dict]]:
     """Parse a Concordance DAT file.
 
-    Auto-detects delimiter (thorn vs ASCII 20) and text qualifier.
+    Auto-detects encoding (UTF-8 vs latin-1) and delimiter (ASCII 20 vs thorn).
+    Standard Concordance format: þ is text qualifier, \\x14 is field separator.
     Returns (headers, list_of_record_dicts).
     """
-    content = Path(filepath).read_text(encoding="latin-1")
+    # Try UTF-8 first (DOJ large volumes use UTF-8 encoded thorn),
+    # fall back to latin-1 for older volumes
+    raw = Path(filepath).read_bytes()
+    try:
+        content = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        content = raw.decode("latin-1")
+
     lines = [l for l in content.splitlines() if l.strip()]
 
     if not lines:
@@ -73,14 +81,19 @@ def parse_dat_file(filepath: str) -> tuple[list[str], list[dict]]:
 
     header_line = lines[0]
 
-    # Detect delimiter: thorn is standard, ASCII 20 is alternate
-    if THORN in header_line:
-        delimiter = THORN
-    elif ALT_DELIM in header_line:
+    # Detect delimiter: ASCII 20 (\x14) is the standard Concordance field separator.
+    # Thorn (þ) is the text qualifier, NOT the delimiter — but some volumes use
+    # thorn as delimiter when \x14 is absent.
+    if ALT_DELIM in header_line:
         delimiter = ALT_DELIM
+    elif THORN in header_line:
+        delimiter = THORN
     else:
         # Fallback: try comma
         delimiter = ","
+
+    # Text qualifiers to strip from field values
+    qualifiers = {THORN, REGISTERED}
 
     def parse_row(line: str) -> list[str]:
         """Split a row by delimiter, stripping text qualifiers."""
@@ -88,14 +101,10 @@ def parse_dat_file(filepath: str) -> tuple[list[str], list[dict]]:
         result = []
         for field in fields:
             f = field.strip()
-            # Strip text qualifiers (® or ASCII 20) from both ends
-            if f.startswith(REGISTERED):
+            # Strip text qualifiers (þ or ®) from both ends
+            while f and f[0] in qualifiers:
                 f = f[1:]
-            if f.endswith(REGISTERED):
-                f = f[:-1]
-            if f.startswith(ALT_DELIM):
-                f = f[1:]
-            if f.endswith(ALT_DELIM):
+            while f and f[-1] in qualifiers:
                 f = f[:-1]
             result.append(f.strip())
         return result

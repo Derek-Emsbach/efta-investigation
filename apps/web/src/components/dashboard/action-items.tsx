@@ -51,7 +51,7 @@ export function ActionItems() {
 
   if (allClear) {
     return (
-      <div className="bg-surface border border-success/20 rounded-lg p-5 flex items-center gap-3">
+      <div className="bg-surface border border-success/20 rounded-lg p-5 flex items-center gap-3 flex-1">
         <svg className="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
@@ -64,12 +64,12 @@ export function ActionItems() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-3 flex-1">
       {/* Pending Reviews */}
       {hasReviews && (
         <Link
           href="/review"
-          className="block bg-surface border-l-4 border-warning rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
+          className="flex-1 block bg-surface border-l-4 border-warning rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
         >
           <div className="flex items-start gap-3">
             <svg className="w-5 h-5 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -104,7 +104,7 @@ export function ActionItems() {
       {hasFailed && (
         <Link
           href="/processing"
-          className="block bg-surface border-l-4 border-critical rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
+          className="flex-1 block bg-surface border-l-4 border-critical rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
         >
           <div className="flex items-start gap-3">
             <svg className="w-5 h-5 text-critical shrink-0 mt-0.5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -128,7 +128,7 @@ export function ActionItems() {
       {hasSuspect && (
         <Link
           href="/documents"
-          className="block bg-surface border-l-4 border-critical/70 rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
+          className="flex-1 block bg-surface border-l-4 border-critical/70 rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
         >
           <div className="flex items-start gap-3">
             <svg className="w-5 h-5 text-critical/70 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

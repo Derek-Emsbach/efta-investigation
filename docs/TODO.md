@@ -489,16 +489,20 @@
 
 ### Infrastructure Scaling (Supabase Pro + Bulk Import)
 > Full plan: `.claude/plans/hashed-herding-beaver.md`
-- [ ] Upgrade Supabase to Pro ($25/mo) — 8 GB database, 100K MAUs
-- [ ] Migration `008_user_profiles_and_roles.sql` — user_profiles table, role function, RLS overhaul
-- [ ] `user_profiles` table: role (admin/editor/viewer), subscription_tier (free/pro/enterprise), Stripe fields, AI query metering
-- [ ] `handle_new_user()` trigger — auto-create profile on signup (first user = admin, rest = viewer)
-- [ ] `user_role()` helper function for RLS policies
+- [x] Upgrade Supabase to Pro ($25/mo) — 8 GB database, 100K MAUs
+- [x] Migration `008_profiles.sql` — profiles table with role column (admin/viewer), auto-create trigger, RLS
+- [x] Admin user seeded in profiles table
+- [ ] `user_profiles` table expansion: subscription_tier (free/pro/enterprise), Stripe fields, AI query metering
 - [ ] Replace all 18+ RLS policies: public read on data tables, admin-only on admin tables, own-user on conversations
 - [ ] Performance indexes: `idx_documents_dataset_status`, partial indexes for review queue + processing queue
 - [ ] Grant anon access to RPC functions (from migration 005)
-- [ ] Bulk import 1.37M documents (VOL09/10/11): disable search trigger → import → rebuild → VACUUM
-- [ ] Verify DB size stays under 8 GB after import
+- [x] Fix load_file_parser.py encoding (UTF-8 first, ALT_DELIM priority, thorn stripping)
+- [x] Clean up ~1.37M corrupted docs from encoding bug (cleanup_corrupted_docs.py)
+- [x] Bulk import large volumes: VOL09 (531,307) + VOL10 (503,154) + VOL11 (331,655) = 1,366,069 created
+- [x] Bulk import small volumes: VOL01/03/04/05/06/07/12 = 3,679 updated (existing seed docs)
+- [x] Rebuild search vectors (1,366,537 via RPC + Python batching script)
+- [x] VACUUM ANALYZE documents
+- [x] Verify DB size stays under 8 GB in Supabase dashboard (3.61 GB / 8 GB = 45%)
 
 ### Public Access & User Signup
 > Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase C + F)

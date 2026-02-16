@@ -45,11 +45,11 @@ export function RedactionIntel() {
   if (!stats) return null
 
   return (
-    <div>
-      <h3 className="font-display text-lg font-semibold text-text-primary mb-4">
+    <div className="flex flex-col">
+      <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
         Redaction Intelligence
       </h3>
-      <div className="bg-surface border border-border-default rounded-lg p-5">
+      <div className="bg-surface border border-border-default rounded-lg p-5 flex-1">
         {/* Category cards */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           {(['A', 'B', 'C', 'D'] as const).map((cat) => {

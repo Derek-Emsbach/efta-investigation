@@ -203,7 +203,7 @@ export default async function DashboardPage() {
   return (
     <MainContent>
       {/* ── H1: Investigation Briefing Hero ──────────────────────── */}
-      <div className="relative mb-8 -mx-6 -mt-6 px-6 pt-8 pb-6 bg-gradient-to-r from-surface via-surface to-transparent border-b border-border-default">
+      <div className="relative mb-6 -mx-6 -mt-6 px-6 pt-8 pb-6 bg-gradient-to-r from-surface via-surface to-transparent border-b border-border-default">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.3em] text-text-muted mb-1">
@@ -242,8 +242,9 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      <div className="space-y-5">
       {/* ── H2: Enhanced Stat Cards ──────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <StatCard
           label="Entities"
           value={entityCount}
@@ -294,23 +295,21 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── H3: Pipeline Status Bar ──────────────────────────────── */}
-      <div className="mb-8">
-        <PipelineStatus />
-      </div>
+      <PipelineStatus />
 
       {/* ── Row: Alerts + Recent Timeline ────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Alerts & Action Items */}
-        <section>
-          <h3 className="font-display text-lg font-semibold text-text-primary mb-4">
+        <section className="flex flex-col">
+          <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
             Action Items
           </h3>
           <ActionItems />
         </section>
 
         {/* Recent Timeline Activity */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
+        <section className="flex flex-col">
+          <div className="flex items-center justify-between mb-3">
             <h3 className="font-display text-lg font-semibold text-text-primary">
               Recent Timeline
             </h3>
@@ -318,7 +317,7 @@ export default async function DashboardPage() {
               View all &rarr;
             </Link>
           </div>
-          <div className="bg-surface border border-border-default rounded-lg divide-y divide-border-default">
+          <div className="bg-surface border border-border-default rounded-lg divide-y divide-border-default flex-1">
             {recentEvents.length === 0 ? (
               <div className="p-8 text-center text-text-muted text-sm">
                 No timeline events yet.
@@ -357,10 +356,10 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Row: Key Entities + Redaction Intel ───────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Key Entities */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
+        <section className="flex flex-col">
+          <div className="flex items-center justify-between mb-3">
             <h3 className="font-display text-lg font-semibold text-text-primary">
               Key Entities
             </h3>
@@ -368,7 +367,7 @@ export default async function DashboardPage() {
               View all &rarr;
             </Link>
           </div>
-          <div className="bg-surface border border-border-default rounded-lg divide-y divide-border-default">
+          <div className="bg-surface border border-border-default rounded-lg divide-y divide-border-default flex-1">
             {keyEntities.length === 0 ? (
               <div className="p-8 text-center text-text-muted text-sm">
                 No high-tier entities loaded yet.
@@ -406,8 +405,8 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Document Severity Distribution (full width) ──────────── */}
-      <section className="mb-8">
-        <h3 className="font-display text-lg font-semibold text-text-primary mb-4">
+      <section>
+        <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
           Document Severity
         </h3>
         <div className="bg-surface border border-border-default rounded-lg p-5 space-y-4">
@@ -439,8 +438,8 @@ export default async function DashboardPage() {
       </section>
 
       {/* ── Critical Documents (horizontal scroll) ───────────────── */}
-      <section className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+      <section>
+        <div className="flex items-center justify-between mb-3">
           <h3 className="font-display text-lg font-semibold text-text-primary">
             Critical Documents
           </h3>
@@ -497,8 +496,8 @@ export default async function DashboardPage() {
       </section>
 
       {/* ── Entity Tier Distribution ─────────────────────────────── */}
-      <section className="mb-8">
-        <h3 className="font-display text-lg font-semibold text-text-primary mb-4">
+      <section>
+        <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
           Entity Distribution by Tier
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -534,7 +533,7 @@ export default async function DashboardPage() {
 
       {/* ── Dataset Progress ─────────────────────────────────────── */}
       <section>
-        <h3 className="font-display text-lg font-semibold text-text-primary mb-4">
+        <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
           Dataset Progress
         </h3>
         {datasets.length === 0 ? (
@@ -581,6 +580,7 @@ export default async function DashboardPage() {
           </div>
         )}
       </section>
+      </div>
     </MainContent>
   )
 }
