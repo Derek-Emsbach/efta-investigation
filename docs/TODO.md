@@ -494,7 +494,7 @@
 - [x] Admin user seeded in profiles table
 - [ ] `user_profiles` table expansion: subscription_tier (free/pro/enterprise), Stripe fields, AI query metering
 - [ ] Replace all 18+ RLS policies: public read on data tables, admin-only on admin tables, own-user on conversations
-- [ ] Performance indexes: `idx_documents_dataset_status`, partial indexes for review queue + processing queue
+- [x] Performance indexes (migration 009): 6 composite + partial indexes for documents, processing_queue, events
 - [ ] Grant anon access to RPC functions (from migration 005)
 - [x] Fix load_file_parser.py encoding (UTF-8 first, ALT_DELIM priority, thorn stripping)
 - [x] Clean up ~1.37M corrupted docs from encoding bug (cleanup_corrupted_docs.py)
