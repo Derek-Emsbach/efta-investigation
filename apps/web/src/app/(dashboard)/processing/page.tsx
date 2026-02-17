@@ -198,14 +198,36 @@ export default function ProcessingPage() {
           <StatCard label="Processing" value={stats.processing} accent="#3B82F6" />
           <StatCard label="Completed" value={stats.completed} accent="#10B981" />
           <StatCard label="Failed" value={stats.failed} accent="#DC2626" />
-          <StatCard label="Needs Review" value={stats.needs_review} accent="#F59E0B" />
+          <Link href="/review" className="block">
+            <StatCard label="Needs Review" value={stats.needs_review} accent="#F59E0B" />
+          </Link>
         </div>
+      )}
+
+      {/* Review banner */}
+      {stats && stats.needs_review > 0 && (
+        <Link
+          href="/review"
+          className="flex items-center justify-between mb-4 px-4 py-3 rounded-lg bg-warning/5 border border-warning/20 hover:bg-warning/10 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <svg className="w-5 h-5 text-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            <span className="text-sm font-medium text-text-primary">
+              {stats.needs_review} document{stats.needs_review !== 1 ? 's' : ''} ready for review
+            </span>
+          </div>
+          <span className="text-xs text-warning group-hover:underline">
+            Open review queue →
+          </span>
+        </Link>
       )}
 
       {/* Filter bar + bulk actions */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <span className="text-xs text-text-muted">Filter:</span>
-        {['all', 'queued', 'processing', 'completed', 'failed', 'needs_review'].map((s) => (
+        {['all', 'queued', 'processing', 'completed', 'failed'].map((s) => (
           <button
             key={s}
             onClick={() => handleStatusFilter(s)}

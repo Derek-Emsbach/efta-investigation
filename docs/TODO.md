@@ -460,7 +460,8 @@
 
 ### 5.2 Performance
 - [ ] Database indexes audit (EXPLAIN ANALYZE on common queries)
-- [ ] Pagination on all list pages (cursor-based for large tables)
+- [x] Cursor-based pagination on documents page (1.37M rows) — cursor encode/decode, estimated count RPC, server-side sort
+- [ ] Pagination on remaining list pages (entities, events, locations use offset — fine at current scale)
 - [ ] Image optimization (Next.js Image component, R2 transforms)
 - [ ] Edge caching for public pages
 - [ ] Lazy loading for below-fold content
@@ -564,7 +565,8 @@
 - [x] Photo Album page (`/photos`) — global gallery grid, type/tag filters, pagination, lightbox viewer with metadata sidebar
 - [x] Entity photo tab — Photos tab on entity detail page (lazy-loaded via API)
 - [x] Document images strip — horizontal scrollable thumbnails on document detail page
-- [ ] Image tagging: entities, locations, dates, evidence type, redaction level
+- [x] Image tagging: entities + locations (junction tables, API endpoints, search-select components, lightbox tagging UI, photos page filters)
+- [ ] Image tagging: dates, evidence type, redaction level (future enhancement)
 
 ### Rich Entity Profiles
 - [x] AI-generated mentions summary (Claude-powered, cached in entity metadata, role distribution chips)

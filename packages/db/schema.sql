@@ -79,8 +79,8 @@ CREATE TABLE documents (
   summary TEXT,
   classification TEXT CHECK (classification IN ('high', 'medium', 'low')),
   severity TEXT CHECK (severity IN ('extreme_critical', 'critical', 'high', 'routine')),
-  processing_status TEXT DEFAULT 'queued' 
-    CHECK (processing_status IN ('queued', 'processing', 'extracted', 'needs_review', 'reviewed', 'published', 'failed')),
+  processing_status TEXT DEFAULT 'pending_upload'
+    CHECK (processing_status IN ('pending_upload', 'queued', 'processing', 'extracted', 'needs_review', 'reviewed', 'published', 'failed')),
   review_notes TEXT,
   reviewed_by TEXT,
   reviewed_at TIMESTAMPTZ,

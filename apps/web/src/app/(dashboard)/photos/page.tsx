@@ -4,9 +4,12 @@ import { useState, useEffect, useCallback } from 'react'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { EmptyState } from '@/components/ui/empty-state'
+import { EntitySearchSelect } from '@/components/ui/entity-search-select'
+import { LocationSearchSelect } from '@/components/ui/location-search-select'
+import { TierBadge } from '@/components/ui/tier-badge'
 import ImageGallery from '@/components/images/image-gallery'
 import type { GalleryImage } from '@/components/images/image-gallery'
-import type { ImageType } from '@efta/shared'
+import type { ImageType, Tier } from '@efta/shared'
 
 const IMAGE_TYPES: { value: string; label: string }[] = [
   { value: '', label: 'All Types' },
@@ -21,6 +24,19 @@ const IMAGE_TYPES: { value: string; label: string }[] = [
 
 const PAGE_SIZE = 40
 
+interface SelectedEntity {
+  id: string
+  name: string
+  tier: number
+}
+
+interface SelectedLocation {
+  id: string
+  name: string
+  location_type: string | null
+  city: string | null
+}
+
 export default function PhotosPage() {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
@@ -30,6 +46,8 @@ export default function PhotosPage() {
   // Filters
   const [imageType, setImageType] = useState('')
   const [tagFilter, setTagFilter] = useState('')
+  const [selectedEntity, setSelectedEntity] = useState<SelectedEntity | null>(null)
+  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null)
 
   const fetchImages = useCallback(async () => {
     setLoading(true)
@@ -39,6 +57,8 @@ export default function PhotosPage() {
     })
     if (imageType) params.set('image_type', imageType)
     if (tagFilter.trim()) params.set('tag', tagFilter.trim())
+    if (selectedEntity) params.set('entity_id', selectedEntity.id)
+    if (selectedLocation) params.set('location_id', selectedLocation.id)
 
     try {
       const res = await fetch(`/api/images?${params}`)
@@ -52,7 +72,7 @@ export default function PhotosPage() {
     } finally {
       setLoading(false)
     }
-  }, [page, imageType, tagFilter])
+  }, [page, imageType, tagFilter, selectedEntity, selectedLocation])
 
   useEffect(() => {
     fetchImages()
@@ -61,9 +81,17 @@ export default function PhotosPage() {
   // Reset page when filters change
   useEffect(() => {
     setPage(1)
-  }, [imageType, tagFilter])
+  }, [imageType, tagFilter, selectedEntity, selectedLocation])
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE)
+  const hasActiveFilters = !!(imageType || tagFilter || selectedEntity || selectedLocation)
+
+  function clearAllFilters() {
+    setImageType('')
+    setTagFilter('')
+    setSelectedEntity(null)
+    setSelectedLocation(null)
+  }
 
   return (
     <MainContent>
@@ -73,7 +101,7 @@ export default function PhotosPage() {
       />
 
       {/* Filter bar */}
-      <div className="flex flex-wrap items-center gap-3 mb-6">
+      <div className="flex flex-wrap items-start gap-3 mb-6">
         {/* Image type filter */}
         <select
           value={imageType}
@@ -96,14 +124,57 @@ export default function PhotosPage() {
           className="text-sm bg-surface border border-border-default rounded px-3 py-1.5 text-text-primary placeholder:text-text-muted focus:border-info focus:outline-none w-48"
         />
 
+        {/* Entity filter */}
+        <div className="w-56">
+          {selectedEntity ? (
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-surface border border-border-default rounded text-sm text-text-primary">
+              <span className="truncate flex-1">{selectedEntity.name}</span>
+              <TierBadge tier={selectedEntity.tier as Tier} />
+              <button
+                onClick={() => setSelectedEntity(null)}
+                className="text-text-muted hover:text-critical transition-colors ml-1"
+                aria-label="Clear entity filter"
+              >
+                &times;
+              </button>
+            </div>
+          ) : (
+            <EntitySearchSelect
+              onSelect={(e) => setSelectedEntity(e)}
+              placeholder="Filter by entity..."
+            />
+          )}
+        </div>
+
+        {/* Location filter */}
+        <div className="w-56">
+          {selectedLocation ? (
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-surface border border-border-default rounded text-sm text-text-primary">
+              <span className="truncate flex-1">{selectedLocation.name}</span>
+              {selectedLocation.city && (
+                <span className="text-xs text-text-muted shrink-0">{selectedLocation.city}</span>
+              )}
+              <button
+                onClick={() => setSelectedLocation(null)}
+                className="text-text-muted hover:text-critical transition-colors ml-1"
+                aria-label="Clear location filter"
+              >
+                &times;
+              </button>
+            </div>
+          ) : (
+            <LocationSearchSelect
+              onSelect={(l) => setSelectedLocation(l)}
+              placeholder="Filter by location..."
+            />
+          )}
+        </div>
+
         {/* Active filter indicator */}
-        {(imageType || tagFilter) && (
+        {hasActiveFilters && (
           <button
-            onClick={() => {
-              setImageType('')
-              setTagFilter('')
-            }}
-            className="text-xs text-text-muted hover:text-text-primary transition-colors"
+            onClick={clearAllFilters}
+            className="text-xs text-text-muted hover:text-text-primary transition-colors py-1.5"
           >
             Clear filters
           </button>

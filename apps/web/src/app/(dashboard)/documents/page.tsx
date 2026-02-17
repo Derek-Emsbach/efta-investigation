@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search-input'
 import { FilterBar, type FilterDef } from '@/components/ui/filter-bar'
-import { DataTable, type Column } from '@/components/ui/data-table'
+import { DataTable, type Column, type SortState } from '@/components/ui/data-table'
 import { Pagination } from '@/components/ui/pagination'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SeverityMarker } from '@/components/ui/severity-marker'
@@ -38,12 +38,14 @@ const SEVERITY_OPTIONS = [
 ]
 
 const STATUS_OPTIONS = [
-  { value: 'queued', label: 'Queued' },
-  { value: 'processing', label: 'Processing' },
-  { value: 'extracted', label: 'Extracted' },
   { value: 'needs_review', label: 'Needs Review' },
   { value: 'reviewed', label: 'Reviewed' },
   { value: 'published', label: 'Published' },
+  { value: 'pending_upload', label: 'Pending Upload' },
+  { value: 'queued', label: 'Queued' },
+  { value: 'processing', label: 'Processing' },
+  { value: 'extracted', label: 'Extracted' },
+  { value: 'failed', label: 'Failed' },
 ]
 
 const FILTER_DEFS: FilterDef[] = [
@@ -63,7 +65,8 @@ interface DocumentRow extends Record<string, unknown> {
 }
 
 function ProcessingStatusBadge({ status }: { status: ProcessingStatus }) {
-  const colorMap: Record<ProcessingStatus, string> = {
+  const colorMap: Record<string, string> = {
+    pending_upload: 'bg-text-muted/10 text-text-muted',
     queued: 'bg-text-muted/10 text-text-muted',
     processing: 'bg-info/10 text-info',
     extracted: 'bg-info/10 text-info',
@@ -154,11 +157,33 @@ const columns: Column<DocumentRow>[] = [
   },
 ]
 
-interface ApiResponse {
+// ─── Cursor pagination state ─────────────────────────────
+
+interface CursorState {
+  current: string | null     // cursor used for this page
+  next: string | null        // cursor for next page
+  prev: string | null        // cursor for prev page
+  hasMore: boolean
+  hasPrev: boolean
+  estimatedTotal: number
+}
+
+interface CursorApiResponse {
   data: Document[]
-  count: number
-  page: number
-  limit: number
+  nextCursor: string | null
+  prevCursor: string | null
+  hasMore: boolean
+  hasPrev: boolean
+  estimatedTotal: number
+}
+
+const INITIAL_CURSOR: CursorState = {
+  current: null,
+  next: null,
+  prev: null,
+  hasMore: false,
+  hasPrev: false,
+  estimatedTotal: 0,
 }
 
 export default function DocumentsPage() {
@@ -171,17 +196,31 @@ export default function DocumentsPage() {
     severity: '',
     status: '',
   })
-  const [page, setPage] = useState(1)
+  const [sortStack, setSortStack] = useState<SortState[]>([
+    { key: 'created_at', direction: 'desc' },
+  ])
   const [data, setData] = useState<DocumentRow[]>([])
-  const [totalCount, setTotalCount] = useState(0)
+  const [cursorState, setCursorState] = useState<CursorState>(INITIAL_CURSOR)
   const [isLoading, setIsLoading] = useState(true)
 
-  const fetchDocuments = useCallback(async () => {
+  // Track cursor history for prev navigation
+  const cursorHistoryRef = useRef<string[]>([])
+
+  const fetchDocuments = useCallback(async (cursor: string | null, direction: 'next' | 'prev' = 'next') => {
     setIsLoading(true)
     try {
       const params = new URLSearchParams()
-      params.set('page', String(page))
       params.set('limit', String(PAGE_SIZE))
+
+      // Sort: use first sort in stack (single-column for cursor correctness)
+      const activeSort = sortStack[0] ?? { key: 'created_at', direction: 'desc' }
+      params.set('sort', activeSort.key)
+      params.set('order', activeSort.direction)
+
+      if (cursor) {
+        params.set('cursor', cursor)
+        params.set('direction', direction)
+      }
 
       if (search) params.set('search', search)
       if (datasetFilter) params.set('dataset_id', datasetFilter)
@@ -194,7 +233,7 @@ export default function DocumentsPage() {
         throw new Error('Failed to fetch documents')
       }
 
-      const result: ApiResponse = await response.json()
+      const result: CursorApiResponse = await response.json()
       const rows: DocumentRow[] = result.data.map((doc) => ({
         id: doc.id,
         bates_number: doc.bates_number,
@@ -205,28 +244,60 @@ export default function DocumentsPage() {
         processing_status: doc.processing_status,
       }))
       setData(rows)
-      setTotalCount(result.count)
+      setCursorState({
+        current: cursor,
+        next: result.nextCursor,
+        prev: result.prevCursor,
+        hasMore: result.hasMore,
+        hasPrev: result.hasPrev,
+        estimatedTotal: result.estimatedTotal,
+      })
     } catch {
       setData([])
-      setTotalCount(0)
+      setCursorState(INITIAL_CURSOR)
     } finally {
       setIsLoading(false)
     }
-  }, [page, search, filters, datasetFilter])
+  }, [sortStack, search, filters, datasetFilter])
 
+  // Initial fetch + re-fetch when filters/sort/search change
   useEffect(() => {
-    void fetchDocuments()
+    cursorHistoryRef.current = []
+    void fetchDocuments(null)
   }, [fetchDocuments])
 
   const handleSearch = useCallback((query: string) => {
     setSearch(query)
-    setPage(1)
   }, [])
 
   const handleFilterChange = useCallback((key: string, value: string | string[]) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
-    setPage(1)
   }, [])
+
+  const handleSortChange = useCallback((stack: SortState[]) => {
+    // Limit to single sort for cursor correctness
+    setSortStack(stack.length > 0 ? [stack[0]] : [{ key: 'created_at', direction: 'desc' }])
+  }, [])
+
+  const handleNext = useCallback(() => {
+    if (cursorState.next) {
+      // Push current cursor to history for going back
+      if (cursorState.current) {
+        cursorHistoryRef.current.push(cursorState.current)
+      } else {
+        cursorHistoryRef.current.push('') // sentinel for first page
+      }
+      void fetchDocuments(cursorState.next, 'next')
+    }
+  }, [cursorState.next, cursorState.current, fetchDocuments])
+
+  const handlePrev = useCallback(() => {
+    const history = cursorHistoryRef.current
+    if (history.length > 0) {
+      const prevCursor = history.pop()!
+      void fetchDocuments(prevCursor === '' ? null : prevCursor, 'next')
+    }
+  }, [fetchDocuments])
 
   const handleRowClick = useCallback(
     (row: DocumentRow) => {
@@ -251,12 +322,15 @@ export default function DocumentsPage() {
         <SearchInput placeholder="Search documents by content or bates number..." onSearch={handleSearch} />
       </div>
 
-      {/* Data Table */}
+      {/* Data Table — server-side sort, single column */}
       <DataTable<DocumentRow>
         columns={columns}
         data={data}
         onRowClick={handleRowClick}
         isLoading={isLoading}
+        sortStack={sortStack}
+        onSortChange={handleSortChange}
+        maxSortLevels={1}
         emptyState={
           <EmptyState
             icon={
@@ -272,11 +346,12 @@ export default function DocumentsPage() {
       />
 
       <Pagination
-        page={page}
-        totalPages={Math.ceil(totalCount / PAGE_SIZE)}
-        onPageChange={setPage}
-        totalCount={totalCount}
-        pageSize={PAGE_SIZE}
+        mode="cursor"
+        hasNext={cursorState.hasMore}
+        hasPrev={cursorState.hasPrev || cursorHistoryRef.current.length > 0}
+        onNext={handleNext}
+        onPrev={handlePrev}
+        estimatedTotal={cursorState.estimatedTotal}
         noun="documents"
       />
     </MainContent>

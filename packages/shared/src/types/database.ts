@@ -23,7 +23,7 @@ export type DocumentType =
 
 export type Classification = 'high' | 'medium' | 'low'
 export type Severity = 'extreme_critical' | 'critical' | 'high' | 'routine'
-export type ProcessingStatus = 'queued' | 'processing' | 'extracted' | 'needs_review' | 'reviewed' | 'published' | 'failed'
+export type ProcessingStatus = 'pending_upload' | 'queued' | 'processing' | 'extracted' | 'needs_review' | 'reviewed' | 'published' | 'failed'
 
 export type EventType = 'legal' | 'evidence' | 'communication' | 'institutional' | 'personal' | 'financial' | 'legislative' | 'travel' | 'sighting'
 export type DatePrecision = 'day' | 'month' | 'year' | 'approximate'
@@ -50,6 +50,8 @@ export type SightingConfidence = 'confirmed' | 'likely' | 'possible' | 'inferred
 export type TimePrecision = 'exact' | 'approximate' | 'day' | 'am_pm'
 
 export type ImageType = 'embedded' | 'photo' | 'graphic' | 'signature' | 'map' | 'chart' | 'unknown'
+export type ImageEntityRole = 'subject' | 'background' | 'mentioned'
+export type TagConfidence = 'confirmed' | 'likely' | 'possible'
 
 export type UserRole = 'admin' | 'viewer'
 
@@ -159,6 +161,24 @@ export interface DocumentImage {
   caption: string | null
   is_redacted: boolean
   metadata: Record<string, unknown>
+  created_at: string
+}
+
+export interface ImageEntity {
+  id: string
+  image_id: string
+  entity_id: string
+  role: ImageEntityRole | null
+  confidence: TagConfidence
+  created_at: string
+}
+
+export interface ImageLocation {
+  id: string
+  image_id: string
+  location_id: string
+  confidence: TagConfidence
+  notes: string | null
   created_at: string
 }
 

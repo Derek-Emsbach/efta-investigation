@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState, useMemo } from 'react'
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Group, Panel, Separator, usePanelRef } from 'react-resizable-panels'
@@ -23,6 +23,17 @@ const PdfViewer = dynamic(() => import('@/components/review/pdf-viewer'), {
   ),
 })
 
+interface ClassifyResult {
+  score?: number
+  classification?: string
+  severity?: string
+  priority?: number
+  needs_review?: boolean
+  review_reasons?: string[]
+  reasons?: string[]
+  is_reprocess?: boolean
+}
+
 interface ReviewDocument {
   id: string
   bates_number: string | null
@@ -39,6 +50,7 @@ interface ReviewDocument {
   flags: string[] | null
   review_notes: string | null
   dataset_id: string | null
+  classify: ClassifyResult | null
 }
 
 const DOC_TYPES = [
@@ -77,11 +89,20 @@ function ResizeHandle() {
 
 // ─── Page ─────────────────────────────────────────────────
 
+interface Toast {
+  message: string
+  type: 'success' | 'warning' | 'error'
+}
+
 export default function ReviewPage() {
   const [documents, setDocuments] = useState<ReviewDocument[]>([])
   const [selected, setSelected] = useState<ReviewDocument | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+
+  // Toast notification
+  const [toast, setToast] = useState<Toast | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Queue collapse state (driven by panel callbacks)
   const [queueCollapsed, setQueueCollapsed] = useState(false)
@@ -109,6 +130,12 @@ export default function ReviewPage() {
   const [editSeverity, setEditSeverity] = useState('')
   const [editClassification, setEditClassification] = useState('')
   const [editNotes, setEditNotes] = useState('')
+
+  const showToast = useCallback((message: string, type: Toast['type'] = 'success') => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    setToast({ message, type })
+    toastTimerRef.current = setTimeout(() => setToast(null), 3000)
+  }, [])
 
   const fetchQueue = useCallback(async () => {
     try {
@@ -165,12 +192,42 @@ export default function ReviewPage() {
 
       if (!res.ok) throw new Error('Action failed')
 
+      const docName = selected.bates_number ?? selected.title ?? 'Document'
+
+      // Find the next document in the filtered queue before removing current
+      const currentIndex = filteredDocs.findIndex((d) => d.id === selected.id)
+      const remaining = filteredDocs.filter((d) => d.id !== selected.id)
+      // Advance to next doc at same index (or last if we were at end)
+      const nextDoc = remaining.length > 0
+        ? remaining[Math.min(currentIndex, remaining.length - 1)]
+        : null
+
+      // Remove from queue
       setDocuments((prev) => prev.filter((d) => d.id !== selected.id))
-      setSelected(null)
-      setAnnotations([])
-      setCurrentPage(undefined)
+
+      // Auto-advance or clear
+      if (nextDoc) {
+        selectDocument(nextDoc)
+      } else {
+        setSelected(null)
+        setAnnotations([])
+        setCurrentPage(undefined)
+      }
+
+      // Toast
+      const labels: Record<string, string> = {
+        approve: 'Approved',
+        flag: 'Flagged',
+        reject: 'Rejected',
+      }
+      const types: Record<string, Toast['type']> = {
+        approve: 'success',
+        flag: 'warning',
+        reject: 'error',
+      }
+      showToast(`${labels[action]} ${docName}`, types[action])
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Action failed')
+      showToast(err instanceof Error ? err.message : 'Action failed', 'error')
     } finally {
       setSaving(false)
     }
@@ -297,43 +354,84 @@ export default function ReviewPage() {
                     </button>
                   </div>
                 )}
-                {filteredDocs.map((doc) => (
-                  <button
-                    key={doc.id}
-                    onClick={() => selectDocument(doc)}
-                    className={`w-full text-left px-3 py-3 border-b border-border-default transition-colors ${
-                      selected?.id === doc.id
-                        ? 'bg-info/5 border-l-2 border-l-info'
-                        : 'hover:bg-elevated/50 border-l-2 border-l-transparent'
-                    }`}
-                  >
-                    <p className="text-sm text-text-primary font-medium truncate">
-                      {doc.bates_number ?? doc.title ?? doc.id.slice(0, 8)}
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      {doc.document_type && (
-                        <span className="text-xs text-text-muted capitalize">
-                          {doc.document_type.replace(/_/g, ' ')}
-                        </span>
-                      )}
-                      {doc.page_count && (
-                        <span className="text-xs text-text-muted">{doc.page_count}p</span>
-                      )}
-                    </div>
-                    {doc.flags && doc.flags.length > 0 && (
-                      <div className="flex gap-1 mt-1">
-                        {doc.flags.map((flag) => (
-                          <span
-                            key={flag}
-                            className="text-[10px] bg-warning/10 text-warning px-1.5 py-0.5 rounded"
-                          >
-                            {flag}
+                {filteredDocs.map((doc) => {
+                  const score = doc.classify?.score ?? null
+                  const sevColor =
+                    doc.severity === 'extreme_critical' ? 'bg-critical' :
+                    doc.severity === 'critical' ? 'bg-critical/70' :
+                    doc.severity === 'high' ? 'bg-warning' :
+                    'bg-text-muted/30'
+
+                  return (
+                    <button
+                      key={doc.id}
+                      onClick={() => selectDocument(doc)}
+                      className={`w-full text-left px-3 py-3 border-b border-border-default transition-colors ${
+                        selected?.id === doc.id
+                          ? 'bg-info/5 border-l-2 border-l-info'
+                          : 'hover:bg-elevated/50 border-l-2 border-l-transparent'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-text-primary font-medium truncate flex-1">
+                          {doc.bates_number ?? doc.title ?? doc.id.slice(0, 8)}
+                        </p>
+                        {score !== null && (
+                          <span className={`shrink-0 text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded ${
+                            score >= 70 ? 'bg-critical/10 text-critical' :
+                            score >= 40 ? 'bg-warning/10 text-warning' :
+                            'bg-elevated text-text-muted'
+                          }`}>
+                            {score}
                           </span>
-                        ))}
+                        )}
                       </div>
-                    )}
-                  </button>
-                ))}
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className={`shrink-0 w-1.5 h-1.5 rounded-full ${sevColor}`} />
+                        {doc.severity && (
+                          <span className="text-[10px] text-text-muted capitalize">
+                            {doc.severity.replace(/_/g, ' ')}
+                          </span>
+                        )}
+                        {doc.document_type && (
+                          <span className="text-[10px] text-text-muted capitalize">
+                            · {doc.document_type.replace(/_/g, ' ')}
+                          </span>
+                        )}
+                        {doc.page_count && (
+                          <span className="text-[10px] text-text-muted">{doc.page_count}p</span>
+                        )}
+                        {doc.classify?.is_reprocess && (
+                          <span className="text-[10px] text-info">re-proc</span>
+                        )}
+                      </div>
+                      {doc.classify?.review_reasons && doc.classify.review_reasons.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {doc.classify.review_reasons.map((reason) => (
+                            <span
+                              key={reason}
+                              className="text-[9px] bg-warning/8 text-warning/80 px-1 py-0.5 rounded"
+                            >
+                              {reason}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {doc.flags && doc.flags.length > 0 && (
+                        <div className="flex gap-1 mt-1">
+                          {doc.flags.map((flag) => (
+                            <span
+                              key={flag}
+                              className="text-[10px] bg-warning/10 text-warning px-1.5 py-0.5 rounded"
+                            >
+                              {flag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </button>
+                  )
+                })}
               </div>
             )}
 
@@ -379,6 +477,20 @@ export default function ReviewPage() {
                         {selected.document_type.replace(/_/g, ' ')}
                       </span>
                     )}
+                    {selected.classify?.score != null && (
+                      <span className={`text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded shrink-0 ${
+                        selected.classify.score >= 70 ? 'bg-critical/10 text-critical' :
+                        selected.classify.score >= 40 ? 'bg-warning/10 text-warning' :
+                        'bg-surface text-text-muted'
+                      }`}>
+                        Score {selected.classify.score}
+                      </span>
+                    )}
+                    {selected.classify?.is_reprocess && (
+                      <span className="text-[10px] bg-info/10 text-info px-1.5 py-0.5 rounded shrink-0">
+                        Re-processed
+                      </span>
+                    )}
                   </div>
                   <Link
                     href={`/documents/${selected.id}`}
@@ -387,6 +499,38 @@ export default function ReviewPage() {
                     Open detail
                   </Link>
                 </div>
+
+                {/* Score breakdown — shown when classify data exists */}
+                {selected.classify?.reasons && selected.classify.reasons.length > 0 && (
+                  <div className="px-4 py-2 bg-surface border-b border-border-default shrink-0">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                      {selected.classify.reasons.map((reason, i) => {
+                        const isPositive = reason.startsWith('+')
+                        return (
+                          <span
+                            key={i}
+                            className={`text-[10px] font-mono ${isPositive ? 'text-success' : 'text-text-muted'}`}
+                          >
+                            {reason}
+                          </span>
+                        )
+                      })}
+                    </div>
+                    {selected.classify.review_reasons && selected.classify.review_reasons.length > 0 && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-text-muted">Review triggers:</span>
+                        {selected.classify.review_reasons.map((reason) => (
+                          <span
+                            key={reason}
+                            className="text-[10px] bg-warning/10 text-warning px-1.5 py-0.5 rounded"
+                          >
+                            {reason}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* PDF Viewer — fills available height */}
                 <div className="flex-1 min-h-0">
@@ -575,6 +719,24 @@ export default function ReviewPage() {
       </button>
 
       <ShortcutHelpOverlay open={showHelp} onClose={() => setShowHelp(false)} />
+
+      {/* Toast notification */}
+      {toast && (
+        <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg border text-sm font-medium ${
+            toast.type === 'success' ? 'bg-success/10 border-success/30 text-success' :
+            toast.type === 'warning' ? 'bg-warning/10 border-warning/30 text-warning' :
+            'bg-critical/10 border-critical/30 text-critical'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${
+              toast.type === 'success' ? 'bg-success' :
+              toast.type === 'warning' ? 'bg-warning' :
+              'bg-critical'
+            }`} />
+            {toast.message}
+          </div>
+        </div>
+      )}
     </>
   )
 }

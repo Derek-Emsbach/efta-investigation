@@ -3,7 +3,207 @@
 import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
+import { TierBadge } from '@/components/ui/tier-badge'
+import { EntitySearchSelect } from '@/components/ui/entity-search-select'
+import { LocationSearchSelect } from '@/components/ui/location-search-select'
+import type { Tier } from '@efta/shared'
 import type { GalleryImage } from './image-gallery'
+
+// ─── Types for linked entities/locations ──────────────────
+
+interface LinkedEntity {
+  id: string
+  entity_id: string
+  role: string | null
+  confidence: string
+  entities: { id: string; name: string; tier: number } | null
+}
+
+interface LinkedLocation {
+  id: string
+  location_id: string
+  confidence: string
+  notes: string | null
+  locations: { id: string; name: string; location_type: string | null; city: string | null } | null
+}
+
+// ─── Tagging section component ────────────────────────────
+
+function LinkedEntitiesSection({ imageId }: { imageId: string }) {
+  const [entities, setEntities] = useState<LinkedEntity[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  const fetchEntities = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/images/${imageId}/entities`)
+      if (res.ok) {
+        const data = await res.json()
+        setEntities(data)
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }, [imageId])
+
+  useEffect(() => {
+    void fetchEntities()
+  }, [fetchEntities])
+
+  async function handleAdd(entity: { id: string; name: string; tier: number }) {
+    const res = await fetch(`/api/images/${imageId}/entities`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entity_id: entity.id }),
+    })
+    if (res.ok) {
+      void fetchEntities()
+    }
+  }
+
+  async function handleRemove(entityId: string) {
+    const res = await fetch(`/api/images/${imageId}/entities`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entity_id: entityId }),
+    })
+    if (res.ok) {
+      setEntities((prev) => prev.filter((e) => e.entity_id !== entityId))
+    }
+  }
+
+  const excludeIds = entities.map((e) => e.entity_id)
+
+  return (
+    <div>
+      <h4 className="text-[10px] font-medium uppercase tracking-wider text-text-muted mb-2">
+        Linked Entities
+      </h4>
+      {isLoading ? (
+        <div className="text-xs text-text-muted">Loading...</div>
+      ) : (
+        <>
+          {entities.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {entities.map((link) => (
+                <span
+                  key={link.id}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded bg-elevated border border-border-default text-text-secondary group"
+                >
+                  <Link
+                    href={`/entities/${link.entity_id}`}
+                    className="hover:text-info transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {link.entities?.name ?? 'Unknown'}
+                  </Link>
+                  {link.entities?.tier && (
+                    <TierBadge tier={link.entities.tier as Tier} />
+                  )}
+                  <button
+                    onClick={() => handleRemove(link.entity_id)}
+                    className="ml-0.5 text-text-muted hover:text-critical transition-colors opacity-0 group-hover:opacity-100"
+                    aria-label={`Remove ${link.entities?.name}`}
+                  >
+                    &times;
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          <EntitySearchSelect onSelect={handleAdd} excludeIds={excludeIds} />
+        </>
+      )}
+    </div>
+  )
+}
+
+function LinkedLocationsSection({ imageId }: { imageId: string }) {
+  const [locations, setLocations] = useState<LinkedLocation[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  const fetchLocations = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/images/${imageId}/locations`)
+      if (res.ok) {
+        const data = await res.json()
+        setLocations(data)
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }, [imageId])
+
+  useEffect(() => {
+    void fetchLocations()
+  }, [fetchLocations])
+
+  async function handleAdd(location: { id: string; name: string }) {
+    const res = await fetch(`/api/images/${imageId}/locations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ location_id: location.id }),
+    })
+    if (res.ok) {
+      void fetchLocations()
+    }
+  }
+
+  async function handleRemove(locationId: string) {
+    const res = await fetch(`/api/images/${imageId}/locations`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ location_id: locationId }),
+    })
+    if (res.ok) {
+      setLocations((prev) => prev.filter((l) => l.location_id !== locationId))
+    }
+  }
+
+  const excludeIds = locations.map((l) => l.location_id)
+
+  return (
+    <div>
+      <h4 className="text-[10px] font-medium uppercase tracking-wider text-text-muted mb-2">
+        Linked Locations
+      </h4>
+      {isLoading ? (
+        <div className="text-xs text-text-muted">Loading...</div>
+      ) : (
+        <>
+          {locations.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {locations.map((link) => (
+                <span
+                  key={link.id}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded bg-elevated border border-border-default text-text-secondary group"
+                >
+                  <Link
+                    href={`/locations/${link.location_id}`}
+                    className="hover:text-info transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {link.locations?.name ?? 'Unknown'}
+                  </Link>
+                  {link.locations?.city && (
+                    <span className="text-text-muted">{link.locations.city}</span>
+                  )}
+                  <button
+                    onClick={() => handleRemove(link.location_id)}
+                    className="ml-0.5 text-text-muted hover:text-critical transition-colors opacity-0 group-hover:opacity-100"
+                    aria-label={`Remove ${link.locations?.name}`}
+                  >
+                    &times;
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          <LocationSearchSelect onSelect={handleAdd} excludeIds={excludeIds} />
+        </>
+      )}
+    </div>
+  )
+}
 
 interface ImageLightboxProps {
   images: GalleryImage[]
@@ -234,6 +434,12 @@ export default function ImageLightbox({ images, initialIndex, onClose }: ImageLi
               </div>
             </div>
           )}
+
+          {/* Linked entities */}
+          <LinkedEntitiesSection imageId={img.id} />
+
+          {/* Linked locations */}
+          <LinkedLocationsSection imageId={img.id} />
 
           {/* Metadata extras */}
           {img.metadata && Object.keys(img.metadata).length > 0 && (

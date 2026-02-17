@@ -9,20 +9,26 @@ export async function GET(request: Request) {
     const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1)
     const limit = Math.min(200, Math.max(1, parseInt(searchParams.get('limit') ?? '50', 10) || 50))
 
-    // Stats query — RPC does GROUP BY server-side instead of fetching all rows
-    const { data: statsCounts, error: statsError } = await supabase.rpc('processing_queue_stats')
+    // Stats: queue status counts + document-level needs_review count
+    const [queueStatsResult, needsReviewResult] = await Promise.all([
+      supabase.rpc('processing_queue_stats'),
+      supabase
+        .from('documents')
+        .select('*', { count: 'exact', head: true })
+        .eq('processing_status', 'needs_review'),
+    ])
 
-    if (statsError) {
-      throw new Error(`Failed to fetch stats: ${statsError.message}`)
+    if (queueStatsResult.error) {
+      throw new Error(`Failed to fetch stats: ${queueStatsResult.error.message}`)
     }
 
-    const rawStats = (statsCounts as Record<string, number>) ?? {}
+    const rawStats = (queueStatsResult.data as Record<string, number>) ?? {}
     const stats = {
       queued: rawStats.queued ?? 0,
       processing: rawStats.processing ?? 0,
       completed: rawStats.completed ?? 0,
       failed: rawStats.failed ?? 0,
-      needs_review: rawStats.needs_review ?? 0,
+      needs_review: needsReviewResult.count ?? 0,
       total: Object.values(rawStats).reduce((s, n) => s + n, 0),
     }
 

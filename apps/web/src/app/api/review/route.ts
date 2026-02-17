@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/supabase/require-admin'
 
-/** GET: Fetch documents that need review */
+/** GET: Fetch documents that need review, enriched with pipeline classify results */
 export async function GET() {
   try {
     const supabase = await createClient()
@@ -18,7 +18,39 @@ export async function GET() {
       throw new Error(`Failed to fetch review queue: ${error.message}`)
     }
 
-    return NextResponse.json({ documents: data ?? [] })
+    const docs = data ?? []
+
+    // Fetch classify results from the most recent completed queue entry per document
+    let classifyMap: Record<string, Record<string, unknown>> = {}
+    if (docs.length > 0) {
+      const docIds = docs.map((d) => d.id)
+      const { data: queueItems } = await supabase
+        .from('processing_queue')
+        .select('document_id, results, is_reprocess')
+        .in('document_id', docIds)
+        .eq('status', 'completed')
+        .order('completed_at', { ascending: false })
+
+      // Keep only the most recent queue entry per document
+      for (const item of queueItems ?? []) {
+        if (!classifyMap[item.document_id]) {
+          const results = (item.results ?? {}) as Record<string, unknown>
+          const classify = (results.classify ?? {}) as Record<string, unknown>
+          classifyMap[item.document_id] = {
+            ...classify,
+            is_reprocess: item.is_reprocess ?? false,
+          }
+        }
+      }
+    }
+
+    // Merge classify data into each document
+    const enriched = docs.map((doc) => ({
+      ...doc,
+      classify: classifyMap[doc.id] ?? null,
+    }))
+
+    return NextResponse.json({ documents: enriched })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })

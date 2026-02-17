@@ -13,18 +13,34 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? String(DEFAULT_LIMIT), 10) || DEFAULT_LIMIT))
     const documentId = searchParams.get('document_id')
     const entityId = searchParams.get('entity_id')
+    const locationId = searchParams.get('location_id')
     const imageType = searchParams.get('image_type')
     const tag = searchParams.get('tag')
 
-    // If filtering by entity, first get their document IDs
-    let entityDocIds: string[] | null = null
+    // If filtering by entity: union of indirect (entity_documents) + direct (image_entities)
+    let entityImageFilter: { docIds: string[]; directImageIds: string[] } | null = null
     if (entityId) {
-      const { data: edLinks } = await supabase
-        .from('entity_documents')
-        .select('document_id')
-        .eq('entity_id', entityId)
-      entityDocIds = (edLinks ?? []).map((r) => r.document_id)
-      if (entityDocIds.length === 0) {
+      const [edResult, ieResult] = await Promise.all([
+        supabase.from('entity_documents').select('document_id').eq('entity_id', entityId),
+        supabase.from('image_entities').select('image_id').eq('entity_id', entityId),
+      ])
+      const docIds = (edResult.data ?? []).map((r) => r.document_id)
+      const directImageIds = (ieResult.data ?? []).map((r) => r.image_id)
+      if (docIds.length === 0 && directImageIds.length === 0) {
+        return NextResponse.json({ data: [], count: 0, page, limit })
+      }
+      entityImageFilter = { docIds, directImageIds }
+    }
+
+    // If filtering by location: query image_locations
+    let locationImageIds: string[] | null = null
+    if (locationId) {
+      const { data: ilLinks } = await supabase
+        .from('image_locations')
+        .select('image_id')
+        .eq('location_id', locationId)
+      locationImageIds = (ilLinks ?? []).map((r) => r.image_id)
+      if (locationImageIds.length === 0) {
         return NextResponse.json({ data: [], count: 0, page, limit })
       }
     }
@@ -40,8 +56,17 @@ export async function GET(request: NextRequest) {
       query = query.eq('document_id', documentId)
     }
 
-    if (entityDocIds) {
-      query = query.in('document_id', entityDocIds)
+    if (entityImageFilter) {
+      const { docIds, directImageIds } = entityImageFilter
+      // Build an OR filter: images from entity's documents OR directly tagged
+      const parts: string[] = []
+      if (docIds.length > 0) parts.push(`document_id.in.(${docIds.join(',')})`)
+      if (directImageIds.length > 0) parts.push(`id.in.(${directImageIds.join(',')})`)
+      if (parts.length > 0) query = query.or(parts.join(','))
+    }
+
+    if (locationImageIds) {
+      query = query.in('id', locationImageIds)
     }
 
     if (imageType) {
