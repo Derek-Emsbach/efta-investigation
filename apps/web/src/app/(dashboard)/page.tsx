@@ -137,6 +137,7 @@ export default async function DashboardPage() {
     highTierResult,
     strongEvidenceResult,
     eventDateRangeResult,
+    datasetReviewedResult,
     ...tierAndSeverityResults
   ] = await Promise.all([
     supabase.from('entities').select('*', { count: 'exact', head: true }),
@@ -156,6 +157,8 @@ export default async function DashboardPage() {
     supabase.from('entities').select('*', { count: 'exact', head: true }).in('tier', [1, 2]),
     supabase.from('evidence_items').select('*', { count: 'exact', head: true }).eq('strength', 'strong'),
     supabase.from('events').select('date').order('date', { ascending: true }).limit(1),
+
+    supabase.rpc('dataset_reviewed_counts'),
 
     ...TIERS.map((tier) =>
       supabase.from('entities').select('*', { count: 'exact', head: true }).eq('tier', tier)
@@ -180,6 +183,14 @@ export default async function DashboardPage() {
   const highTierCount = highTierResult.count ?? 0
   const strongEvidenceCount = strongEvidenceResult.count ?? 0
   const earliestDate = (eventDateRangeResult.data?.[0] as { date: string } | undefined)?.date
+
+  // Live reviewed counts per dataset
+  const datasetReviewedCounts: Record<string, number> = {}
+  if (datasetReviewedResult.data && Array.isArray(datasetReviewedResult.data)) {
+    for (const row of datasetReviewedResult.data as { dataset_id: string; count: number }[]) {
+      datasetReviewedCounts[row.dataset_id] = row.count
+    }
+  }
 
   const tierCounts: Record<Tier, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
   for (let i = 0; i < TIERS.length; i++) {
@@ -544,7 +555,7 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {datasets.map((dataset) => {
               const totalFiles = dataset.total_files ?? 0
-              const reviewed = dataset.reviewed_count ?? 0
+              const reviewed = datasetReviewedCounts[dataset.id] ?? 0
               const progress = totalFiles > 0 ? (reviewed / totalFiles) * 100 : 0
 
               return (

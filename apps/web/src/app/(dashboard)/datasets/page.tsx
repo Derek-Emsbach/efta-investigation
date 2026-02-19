@@ -71,12 +71,22 @@ function formatDate(d: string): string {
 export default async function DatasetsPage() {
   const supabase = await createClient()
 
-  const { data, error } = await supabase
-    .from('datasets')
-    .select('*')
-    .order('number', { ascending: true })
+  // Fetch datasets + live reviewed counts from documents table in parallel
+  const [datasetsResult, reviewedResult] = await Promise.all([
+    supabase.from('datasets').select('*').order('number', { ascending: true }),
+    supabase.rpc('dataset_reviewed_counts'),
+  ])
 
+  const { data, error } = datasetsResult
   const datasets = (data ?? []) as Dataset[]
+
+  // Build lookup: dataset_id → count of reviewed documents
+  const reviewedCounts: Record<string, number> = {}
+  if (reviewedResult.data && Array.isArray(reviewedResult.data)) {
+    for (const row of reviewedResult.data as { dataset_id: string; count: number }[]) {
+      reviewedCounts[row.dataset_id] = row.count
+    }
+  }
 
   if (error) {
     return (
@@ -89,10 +99,10 @@ export default async function DatasetsPage() {
     )
   }
 
-  // Aggregate stats
+  // Aggregate stats — use live reviewed counts
   const totalFiles = datasets.reduce((sum, d) => sum + (d.total_files ?? 0), 0)
   const totalPages = datasets.reduce((sum, d) => sum + (d.total_pages ?? 0), 0)
-  const totalReviewed = datasets.reduce((sum, d) => sum + (d.reviewed_count ?? 0), 0)
+  const totalReviewed = datasets.reduce((sum, d) => sum + (reviewedCounts[d.id] ?? 0), 0)
   const totalSize = datasets.reduce((sum, d) => sum + (d.size_bytes ?? 0), 0)
   const overallProgress = totalFiles > 0 ? ((totalReviewed / totalFiles) * 100).toFixed(1) : '0.0'
   const completedCount = datasets.filter((d) => d.status === 'completed').length
@@ -145,7 +155,7 @@ export default async function DatasetsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {datasets.map((ds) => {
             const files = ds.total_files ?? 0
-            const reviewed = ds.reviewed_count ?? 0
+            const reviewed = reviewedCounts[ds.id] ?? 0
             const progress = files > 0 ? (reviewed / files) * 100 : 0
 
             return (
