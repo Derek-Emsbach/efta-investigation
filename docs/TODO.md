@@ -321,7 +321,7 @@
 
 **Goal:** Automated document ingestion and analysis with human review.
 
-> **Status:** Core pipeline complete. 8-stage worker (ingest → forensics → extract → entities → redactions → crossref → classify → version diff), upload with re-upload detection + folder upload, processing dashboard, review page with Archer AI copilot (3-column layout, markdown rendering, prompt caching, image navigation), document versioning and diff, atomic multi-worker support. Remaining: worker deployment, zip upload, bulk actions.
+> **Status:** Core pipeline complete. 8-stage worker (ingest → forensics → extract → entities → redactions → crossref → classify → version diff), upload with re-upload detection + folder upload, processing dashboard, review page with Archer AI copilot (3-column layout, markdown rendering, prompt caching, image navigation, scoring display, auto-advance, toast notifications), document versioning and diff, atomic multi-worker support, live dataset progress tracking. Remaining: worker deployment, zip upload, entity/evidence editing in review.
 
 ### 4.1 Python Worker
 - [x] Python polling worker in `services/worker/` (simple script, not FastAPI)
@@ -375,6 +375,12 @@
 - [x] Editable fields: title, document_type, date, severity, classification
 - [x] Review notes textarea
 - [x] Actions: Approve, Flag, Reject (always visible in collapsed form bar)
+- [x] Toast notifications on review actions (Approved/Flagged/Rejected with doc name)
+- [x] Auto-advance to next document in queue after approve/flag/reject
+- [x] Evidence value score, severity, and classification badges on queue list items
+- [x] Score breakdown panel (point-by-point reasons + review triggers) shown when document is selected
+- [x] Live dataset reviewed counts (RPC replaces stale `reviewed_count` column)
+- [x] Processing dashboard: "Needs Review" count from documents table, review banner link
 - [ ] Confirm/edit entity matches
 - [ ] Adjust tier assignments
 - [ ] Add/edit evidence items
