@@ -29,6 +29,7 @@ from db import (
     complete_queue_item,
     complete_queue_item_with_status,
     fail_queue_item,
+    update_document,
     update_queue_step,
 )
 from stages.ingest import run_ingest
@@ -115,8 +116,22 @@ def process_document(queue_item: dict) -> None:
     # ── Tier B gate ──────────────────────────────────────────────
 
     if not should_run_advanced(document, extract_results):
+        # Tag with skip reason so reviewers can distinguish blank pages
+        # (safe to batch-approve) from handwritten notes with bad OCR
+        # (need human attention). Stage 3 flags like needs_ocr are already set.
+        skip_flags = ["tier_b_skipped"]
+        doc_type = extract_results.get("document_type") or document.get("document_type")
+        if doc_type == "blank":
+            skip_flags.append("blank_page")
+        elif doc_type == "photo":
+            skip_flags.append("photo_only")
+
+        existing_flags = document.get("flags") or []
+        merged = list(set(existing_flags + skip_flags))
+        update_document(document_id, {"flags": merged})
+
         complete_queue_item(queue_id, document_id)
-        print(f"  Done (basic) — skipped advanced stages, ready for review")
+        print(f"  Done (basic) — {', '.join(skip_flags)}, ready for review")
         return
 
     # ── Tier B: Advanced stages (4-7) ────────────────────────────

@@ -342,6 +342,7 @@
 - [x] Queue management: process one document at a time, report progress
 - [x] Atomic queue claiming via Postgres RPC (`FOR UPDATE SKIP LOCKED`) — safe for multiple parallel workers
 - [x] Error handling: failed documents marked with error message, retryable
+- [x] Entity catalog TTL cache (5-min refresh) — worker picks up newly added entities without restart
 
 ### 4.2 Admin Upload UI
 - [x] `/upload` page with drag-and-drop PDF upload
@@ -408,6 +409,7 @@
   - [x] Redaction detection and A-D classification (stage 5)
   - [x] Cross-reference matching (dates, entities, case numbers) (stage 6)
   - [x] Evidence value scoring (0-100), severity, auto-approve (stage 7)
+- [x] **Tier B skip reason flags:** `tier_b_skipped`, `blank_page`, `photo_only` written to document flags when advanced stages are skipped — reviewers can distinguish blank separators from handwritten notes with bad OCR
 - [ ] **Tier C (human review, high-value documents):**
   - [ ] Full forensic analysis
   - [ ] Manual entity verification
@@ -429,6 +431,8 @@
 - [x] Version diff alert card with significant findings
 - [x] Flags: `redaction_decrease`, `unredacted_names` for DOJ re-release detection
 - [x] Migration SQL run in Supabase SQL Editor (`packages/db/migrations/003_document_versions.sql`) + `claim_next_queued()` RPC function
+- [x] Cross-dataset reconciliation script (`scripts/reconcile-cross-dataset.py`) — detects same-Bates-number documents across datasets, triggers version diff pipeline
+- [ ] Pre-DS9 scaling: replace 100-candidate Jaccard duplicate detection with MinHash LSH or Bates-number index for cross-referencing at 500K+ document scale
 
 ### 4.6 Deploy Worker
 - [ ] Create Dockerfile for Python worker

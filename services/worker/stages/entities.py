@@ -11,6 +11,7 @@ excerpt context. Also detects FBI/court case numbers.
 """
 
 import re
+import time
 from difflib import SequenceMatcher
 from typing import Any
 
@@ -22,15 +23,20 @@ from db import (
 )
 
 
-# Module-level cache — populated once per worker lifetime
+# Module-level cache with TTL — refreshes every 5 minutes so new entities
+# added during deep analysis sessions are picked up without restarting the worker.
 _entity_catalog: list[dict[str, Any]] | None = None
+_catalog_refreshed_at: float = 0
+CATALOG_TTL = 300  # seconds
 
 
 def _get_entity_catalog() -> list[dict[str, Any]]:
-    """Load and cache the entity catalog from the database."""
-    global _entity_catalog
-    if _entity_catalog is None:
+    """Load and cache the entity catalog from the database (5-min TTL)."""
+    global _entity_catalog, _catalog_refreshed_at
+    now = time.time()
+    if _entity_catalog is None or (now - _catalog_refreshed_at) > CATALOG_TTL:
         _entity_catalog = fetch_all_entities()
+        _catalog_refreshed_at = now
     return _entity_catalog
 
 
