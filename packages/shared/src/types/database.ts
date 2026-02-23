@@ -53,6 +53,10 @@ export type ImageType = 'embedded' | 'photo' | 'graphic' | 'signature' | 'map' |
 export type ImageEntityRole = 'subject' | 'background' | 'mentioned'
 export type TagConfidence = 'confirmed' | 'likely' | 'possible'
 
+export type SuspectStatus = 'confirmed_co_conspirator' | 'suspect' | 'watchlist' | 'possible_suspect' | 'watch' | 'deprioritized'
+export type SuspectPriority = 'P1' | 'P2' | 'P3' | 'P4' | 'P5'
+export type SuspectDbStatus = 'not_in_db' | 'pending_promotion' | 'in_db'
+
 export type UserRole = 'admin' | 'viewer'
 
 export type DatasetStatus = 'not_started' | 'in_progress' | 'completed'
@@ -227,6 +231,7 @@ export interface EntityConnection {
   entity_b: string
   relationship_type: RelationshipType
   evidence_strength: EvidenceStrength | null
+  strength: number | null
   description: string | null
   source_document_ids: string[]
   start_date: string | null
@@ -377,6 +382,26 @@ export interface DocumentVersion {
   entity_ids: string[]
   processing_results: Record<string, unknown>
   created_at: string
+}
+
+export interface SuspectWatchlist {
+  id: string
+  name: string
+  aliases: string[]
+  status: SuspectStatus
+  category: string | null
+  priority: SuspectPriority | null
+  public_sources: string | null
+  known_connections: string | null
+  entity_id: string | null
+  db_status: SuspectDbStatus
+  cross_references: string | null
+  known_associates: string[]
+  first_seen_document_id: string | null
+  notes: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+  updated_at: string
 }
 
 // ============================================================

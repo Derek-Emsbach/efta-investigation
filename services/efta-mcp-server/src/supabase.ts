@@ -23,5 +23,39 @@ export function getSupabase(): SupabaseClient {
 export function safeJson(data: unknown, maxLen = 8000): string {
   const raw = JSON.stringify(data, null, 2);
   if (raw.length <= maxLen) return raw;
-  return raw.slice(0, maxLen) + '\n... [truncated]';
+  const truncated = raw.slice(0, maxLen);
+  return truncated + `\n\n[TRUNCATION_INFO: ${JSON.stringify({ truncated: true, shown_chars: maxLen, total_chars: raw.length })}]`;
+}
+
+// ---------------------------------------------------------------------------
+// Standardized MCP tool response helpers
+// ---------------------------------------------------------------------------
+
+export type ToolResult = {
+  content: [{ type: 'text'; text: string }];
+};
+
+export function toolResponse(payload: {
+  success: boolean;
+  data?: unknown;
+  count?: number;
+  total_count?: number;
+  message?: string;
+  id?: string;
+}, maxLen = 8000): ToolResult {
+  return {
+    content: [{
+      type: 'text' as const,
+      text: safeJson(payload, maxLen),
+    }],
+  };
+}
+
+export function errorResponse(message: string): ToolResult {
+  return {
+    content: [{
+      type: 'text' as const,
+      text: JSON.stringify({ success: false, error: message }),
+    }],
+  };
 }

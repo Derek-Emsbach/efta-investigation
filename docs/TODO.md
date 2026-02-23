@@ -594,3 +594,22 @@
 - [x] Sidebar hides admin section for viewers, shows role badge
 - [x] User management table on `/admin` page with role toggle
 - [ ] RLS policy rewrite (future — currently application-layer enforcement only)
+
+### MCP Server Upgrades
+- [x] Migration 013: `suspect_watchlist` table + `pg_trgm` extension + `strength` column on `entity_connections` + fuzzy search RPCs
+- [x] Split monolithic `tools.ts` (812 lines) into 10 domain modules under `src/tools/`
+- [x] Fix 4 critical bugs: `connections` → `entity_connections`, remove `document_cross_references`, remove `entity_evidence_items`, fix `get_schema` RPC fallback
+- [x] Standardize all tool responses: `toolResponse()` / `errorResponse()` helpers, `{success, count, total_count, data, message, id}` envelope
+- [x] Enhanced `safeJson`: truncation metadata `[TRUNCATION_INFO: {shown_chars, total_chars}]`
+- [x] 5 suspect watchlist tools: search, create, update, promote (→ entities), delete (soft/hard)
+- [x] 5 entity sighting tools (using existing `entity_sightings` + `locations` tables): search_entity_locations, add_entity_location, find_co_locations, get_location_timeline, find_entities_at_location
+- [x] `lookup_person`: unified fuzzy name search across entities + suspects (exact + ilike + pg_trgm trigram)
+- [x] `batch_link_entities_to_document`: upsert multiple entity-doc links in one call
+- [x] All search tools enhanced with `total_count` and `summary` mode
+- [x] All write tools return `{success, id, data, message}` consistently
+- [x] `link_entity_to_document` uses upsert (no error on duplicate)
+- [x] `get_schema` rewritten with hardcoded `TABLE_INFO` map (purposes + FK relationships)
+- [x] Entity/document search uses FTS via `search_vector` with ilike fallback
+- [x] `SuspectWatchlist` types added to `@efta/shared`
+- [x] Run migration 013 in Supabase SQL Editor
+- [x] Deploy updated MCP server

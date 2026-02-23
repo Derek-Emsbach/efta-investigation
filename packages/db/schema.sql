@@ -153,6 +153,7 @@ CREATE TABLE entity_connections (
                                    -- paid_by, connected_to, family_of, victim_of, attorney_for,
                                    -- hired_by, referred_by, subsidiary_of, owned_by
   evidence_strength TEXT CHECK (evidence_strength IN ('documented', 'alleged', 'circumstantial')),
+  strength INTEGER CHECK (strength >= 0 AND strength <= 100), -- numeric strength 0-100 (added migration 013)
   description TEXT,
   source_document_ids UUID[] DEFAULT '{}',
   start_date DATE,
@@ -561,6 +562,46 @@ CREATE INDEX idx_notifications_active ON notification_alerts(created_at DESC) WH
 
 ALTER TABLE notification_alerts ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Admin full access" ON notification_alerts FOR ALL USING (auth.role() = 'authenticated');
+
+-- ============================================================
+-- SUSPECT WATCHLIST (MCP Server Investigation Tracking)
+-- ============================================================
+
+CREATE TABLE suspect_watchlist (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  aliases TEXT[] DEFAULT '{}',
+  status TEXT NOT NULL DEFAULT 'watchlist'
+    CHECK (status IN (
+      'confirmed_co_conspirator', 'suspect', 'watchlist',
+      'possible_suspect', 'watch', 'deprioritized'
+    )),
+  category TEXT,
+  priority TEXT CHECK (priority IN ('P1', 'P2', 'P3', 'P4', 'P5')),
+  public_sources TEXT,
+  known_connections TEXT,
+  entity_id UUID REFERENCES entities(id) ON DELETE SET NULL,
+  db_status TEXT DEFAULT 'not_in_db'
+    CHECK (db_status IN ('not_in_db', 'pending_promotion', 'in_db')),
+  cross_references TEXT,
+  known_associates TEXT[] DEFAULT '{}',
+  first_seen_document_id UUID REFERENCES documents(id),
+  notes TEXT,
+  metadata JSONB DEFAULT '{}',
+  search_vector TSVECTOR,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_suspects_name ON suspect_watchlist(name);
+CREATE INDEX idx_suspects_name_trgm ON suspect_watchlist USING GIN(name gin_trgm_ops);
+CREATE INDEX idx_suspects_status ON suspect_watchlist(status);
+CREATE INDEX idx_suspects_priority ON suspect_watchlist(priority);
+CREATE INDEX idx_suspects_search ON suspect_watchlist USING GIN(search_vector);
+
+ALTER TABLE suspect_watchlist ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Authenticated full access" ON suspect_watchlist
+  FOR ALL USING (auth.role() = 'authenticated');
 
 -- Service role bypass (for worker)
 -- The service_role key bypasses RLS automatically in Supabase
