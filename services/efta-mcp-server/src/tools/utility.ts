@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { getSupabase, toolResponse, errorResponse, safeJson } from '../supabase.js';
+import { getCorpusDb, getRedactionDb } from '../db/sqlite.js';
 
 // ---------------------------------------------------------------------------
 // Hardcoded schema metadata — table purposes and FK relationships
@@ -58,6 +59,14 @@ const TABLE_INFO: Record<string, { purpose: string; key_relationships: string[] 
   investigations: {
     purpose: 'Named investigation threads (e.g. "Leon Black Prosecution Failure"). Links to entities, documents, events.',
     key_relationships: ['entity_investigations', 'investigation_documents', 'investigation_events', 'investigation_notes'],
+  },
+  public_events: {
+    purpose: 'Public events timeline — congressional actions, DOJ releases, arrests, resignations, media breaks. Separate from investigation events table.',
+    key_relationships: [],
+  },
+  doj_accountability: {
+    purpose: 'DOJ behavior tracker — file deletions, re-redactions, surveillance, compliance failures, misleading statements.',
+    key_relationships: [],
   },
   processing_queue: {
     purpose: 'Document processing pipeline queue. Tracks stage progress, errors, results.',
@@ -198,12 +207,14 @@ export function registerUtilityTools(server: McpServer) {
     },
     async () => {
       const sb = getSupabase();
-      const [docsRes, entitiesRes, eventsRes, datasetsRes, suspectsRes] = await Promise.all([
+      const [docsRes, entitiesRes, eventsRes, datasetsRes, suspectsRes, pubEventsRes, dojAcctRes] = await Promise.all([
         sb.rpc('processing_queue_stats'),
         sb.from('entities').select('tier, id'),
         sb.from('events').select('id', { count: 'exact', head: true }),
         sb.from('datasets').select('id, name, document_count'),
         sb.from('suspect_watchlist').select('status, priority'),
+        sb.from('public_events').select('category, impact_level'),
+        sb.from('doj_accountability').select('action_type, severity, status'),
       ]);
 
       // Count entities by tier
@@ -222,6 +233,42 @@ export function registerUtilityTools(server: McpServer) {
         }
       }
 
+      // Public events stats
+      const pubEventsByCategory: Record<string, number> = {};
+      const pubEventsByImpact: Record<string, number> = {};
+      if (pubEventsRes.data) {
+        for (const e of pubEventsRes.data) {
+          pubEventsByCategory[e.category] = (pubEventsByCategory[e.category] || 0) + 1;
+          pubEventsByImpact[e.impact_level] = (pubEventsByImpact[e.impact_level] || 0) + 1;
+        }
+      }
+
+      // DOJ accountability stats
+      const dojByType: Record<string, number> = {};
+      const dojBySeverity: Record<string, number> = {};
+      const dojByStatus: Record<string, number> = {};
+      if (dojAcctRes.data) {
+        for (const d of dojAcctRes.data) {
+          dojByType[d.action_type] = (dojByType[d.action_type] || 0) + 1;
+          dojBySeverity[d.severity] = (dojBySeverity[d.severity] || 0) + 1;
+          dojByStatus[d.status] = (dojByStatus[d.status] || 0) + 1;
+        }
+      }
+
+      // Corpus stats (SQLite — fast, cached by OS page cache)
+      let corpusStats: Record<string, unknown> = { available: false };
+      const corpusDb = getCorpusDb();
+      const redactionDb = getRedactionDb();
+      if (corpusDb) {
+        const pages = (corpusDb.prepare('SELECT COUNT(*) as c FROM pages').get() as { c: number }).c;
+        const docs = (corpusDb.prepare('SELECT COUNT(*) as c FROM documents').get() as { c: number }).c;
+        corpusStats = { available: true, total_documents: docs, total_pages: pages };
+      }
+      if (redactionDb) {
+        const redactions = (redactionDb.prepare('SELECT COUNT(*) as c FROM redactions').get() as { c: number }).c;
+        corpusStats.redaction_records = redactions;
+      }
+
       return toolResponse({
         success: true,
         data: {
@@ -232,6 +279,18 @@ export function registerUtilityTools(server: McpServer) {
           datasets: datasetsRes.data ?? [],
           suspect_count: suspectsRes.data?.length ?? 0,
           suspects_by_status: suspectsByStatus,
+          public_events: {
+            total: pubEventsRes.data?.length ?? 0,
+            by_category: pubEventsByCategory,
+            by_impact: pubEventsByImpact,
+          },
+          doj_accountability: {
+            total: dojAcctRes.data?.length ?? 0,
+            by_type: dojByType,
+            by_severity: dojBySeverity,
+            by_status: dojByStatus,
+          },
+          corpus: corpusStats,
         },
       });
     },

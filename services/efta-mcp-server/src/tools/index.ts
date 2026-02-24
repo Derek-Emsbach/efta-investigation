@@ -8,6 +8,8 @@ import { registerSightingTools } from './sightings.js';
 import { registerSuspectTools } from './suspects.js';
 import { registerLinkTools } from './links.js';
 import { registerUtilityTools } from './utility.js';
+import { registerCorpusTools } from './corpus.js';
+import { registerPublicEventTools } from './public-events.js';
 
 export function registerTools(server: McpServer) {
   registerEntityTools(server);
@@ -19,4 +21,6 @@ export function registerTools(server: McpServer) {
   registerSuspectTools(server);
   registerLinkTools(server);
   registerUtilityTools(server);
+  registerCorpusTools(server);
+  registerPublicEventTools(server);
 }
