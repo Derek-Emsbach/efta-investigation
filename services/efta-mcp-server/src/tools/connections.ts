@@ -122,4 +122,71 @@ export function registerConnectionTools(server: McpServer) {
       });
     },
   );
+
+  // ── update_connection ─────────────────────────────────────────────────────
+  server.registerTool(
+    'update_connection',
+    {
+      title: 'Update Connection',
+      description:
+        'Update an entity connection. Pass only the fields you want to change.',
+      inputSchema: {
+        connection_id: z.string().uuid().describe('Connection UUID to update'),
+        relationship_type: z.string().optional().describe('Updated relationship type'),
+        description: z.string().optional().describe('Updated description'),
+        strength: z.number().min(0).max(100).optional().describe('Updated strength (0-100)'),
+        evidence_strength: z.enum(['documented', 'alleged', 'circumstantial']).optional(),
+        start_date: z.string().optional(),
+        end_date: z.string().optional(),
+      },
+    },
+    async ({ connection_id, ...fields }) => {
+      const sb = getSupabase();
+      const update: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(fields)) {
+        if (v !== undefined) update[k] = v;
+      }
+      if (Object.keys(update).length === 0) {
+        return errorResponse('No fields to update');
+      }
+      const { data, error } = await sb.from('entity_connections')
+        .update(update)
+        .eq('id', connection_id)
+        .select('id, entity_a, entity_b, relationship_type, strength')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        data,
+        message: `Connection updated: ${data.relationship_type}`,
+      });
+    },
+  );
+
+  // ── delete_connection ─────────────────────────────────────────────────────
+  server.registerTool(
+    'delete_connection',
+    {
+      title: 'Delete Connection',
+      description: 'Delete an entity connection by ID.',
+      inputSchema: {
+        connection_id: z.string().uuid().describe('Connection UUID to delete'),
+      },
+    },
+    async ({ connection_id }) => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('entity_connections')
+        .delete()
+        .eq('id', connection_id)
+        .select('id, relationship_type')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        message: `Deleted connection: ${data.relationship_type}`,
+      });
+    },
+  );
 }

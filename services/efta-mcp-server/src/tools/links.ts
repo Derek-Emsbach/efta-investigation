@@ -75,4 +75,63 @@ export function registerLinkTools(server: McpServer) {
       });
     },
   );
+
+  // ── unlink_entity_from_document ───────────────────────────────────────────
+  server.registerTool(
+    'unlink_entity_from_document',
+    {
+      title: 'Unlink Entity from Document',
+      description:
+        'Remove an entity-document link. Specify entity_id + document_id, optionally with role to remove only a specific role.',
+      inputSchema: {
+        entity_id: z.string().uuid(),
+        document_id: z.string().uuid(),
+        role: z.string().optional().describe('If provided, only remove this specific role link. Otherwise removes all roles for this entity-document pair.'),
+      },
+    },
+    async ({ entity_id, document_id, role }) => {
+      const sb = getSupabase();
+      let q = sb.from('entity_documents')
+        .delete()
+        .eq('entity_id', entity_id)
+        .eq('document_id', document_id);
+      if (role) q = q.eq('role_in_document', role);
+      const { data, error } = await q.select('id');
+      if (error) return errorResponse(error.message);
+      const count = data?.length ?? 0;
+      if (count === 0) return errorResponse('No matching link found');
+      return toolResponse({
+        success: true,
+        count,
+        message: `Removed ${count} entity-document link(s)`,
+      });
+    },
+  );
+
+  // ── unlink_entity_from_event ──────────────────────────────────────────────
+  server.registerTool(
+    'unlink_entity_from_event',
+    {
+      title: 'Unlink Entity from Event',
+      description: 'Remove an entity-event link.',
+      inputSchema: {
+        entity_id: z.string().uuid(),
+        event_id: z.string().uuid(),
+      },
+    },
+    async ({ entity_id, event_id }) => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('entity_events')
+        .delete()
+        .eq('entity_id', entity_id)
+        .eq('event_id', event_id)
+        .select('entity_id');
+      if (error) return errorResponse(error.message);
+      if (!data || data.length === 0) return errorResponse('No matching link found');
+      return toolResponse({
+        success: true,
+        message: 'Entity-event link removed',
+      });
+    },
+  );
 }

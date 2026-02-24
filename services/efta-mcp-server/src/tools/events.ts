@@ -109,4 +109,75 @@ export function registerEventTools(server: McpServer) {
       });
     },
   );
+
+  // ── update_event ──────────────────────────────────────────────────────────
+  server.registerTool(
+    'update_event',
+    {
+      title: 'Update Event',
+      description:
+        'Update an investigation timeline event. Pass only the fields you want to change.',
+      inputSchema: {
+        event_id: z.string().uuid().describe('Event UUID to update'),
+        title: z.string().optional().describe('Updated title'),
+        description: z.string().optional().describe('Updated description'),
+        date: z.string().optional().describe('Corrected date (ISO format)'),
+        date_precision: z.enum(['exact', 'month', 'year', 'approximate']).optional(),
+        event_type: z.string().optional().describe('Updated type'),
+        location: z.string().optional().describe('Updated location'),
+        significance: z.string().optional().describe('Updated significance assessment'),
+      },
+    },
+    async ({ event_id, ...fields }) => {
+      const sb = getSupabase();
+      const update: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(fields)) {
+        if (v !== undefined) update[k] = v;
+      }
+      if (Object.keys(update).length === 0) {
+        return errorResponse('No fields to update');
+      }
+      const { data, error } = await sb.from('events')
+        .update(update)
+        .eq('id', event_id)
+        .select('id, title, date, event_type')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        data,
+        message: `Event updated: "${data.title}" (${data.date})`,
+      });
+    },
+  );
+
+  // ── delete_event ──────────────────────────────────────────────────────────
+  server.registerTool(
+    'delete_event',
+    {
+      title: 'Delete Event',
+      description:
+        'Delete an investigation timeline event and its entity links.',
+      inputSchema: {
+        event_id: z.string().uuid().describe('Event UUID to delete'),
+      },
+    },
+    async ({ event_id }) => {
+      const sb = getSupabase();
+      // Remove entity links first
+      await sb.from('entity_events').delete().eq('event_id', event_id);
+      const { data, error } = await sb.from('events')
+        .delete()
+        .eq('id', event_id)
+        .select('id, title')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        message: `Deleted event: "${data.title}"`,
+      });
+    },
+  );
 }

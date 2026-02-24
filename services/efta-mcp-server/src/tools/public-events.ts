@@ -206,4 +206,149 @@ export function registerPublicEventTools(server: McpServer) {
       });
     },
   );
+
+  // ── update_public_event ───────────────────────────────────────────────────
+  server.registerTool(
+    'update_public_event',
+    {
+      title: 'Update Public Event',
+      description:
+        'Update an existing public event. Pass only the fields you want to change. Array fields (source_urls, efta_numbers, entity_names, tags) are replaced entirely — merge client-side if appending.',
+      inputSchema: {
+        id: z.string().uuid().describe('Event UUID to update'),
+        date: z.string().optional().describe('Corrected date (ISO format)'),
+        date_end: z.string().optional().describe('End date for multi-day events'),
+        title: z.string().optional().describe('Updated headline'),
+        description: z.string().optional().describe('Updated description'),
+        category: z.enum(PUBLIC_EVENT_CATEGORIES).optional().describe('Updated category'),
+        impact_level: z.enum(IMPACT_LEVELS).optional().describe('Updated impact level'),
+        source_urls: z.array(z.string()).optional().describe('Replacement source URLs array'),
+        efta_numbers: z.array(z.string()).optional().describe('Replacement EFTA numbers array'),
+        entity_names: z.array(z.string()).optional().describe('Replacement entity names array'),
+        tags: z.array(z.string()).optional().describe('Replacement tags array'),
+        notes: z.string().optional().describe('Updated notes'),
+      },
+    },
+    async ({ id, ...fields }) => {
+      const sb = getSupabase();
+      const update: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(fields)) {
+        if (v !== undefined) update[k] = v;
+      }
+      if (Object.keys(update).length === 0) {
+        return errorResponse('No fields to update');
+      }
+      update.updated_at = new Date().toISOString();
+      const { data, error } = await sb.from('public_events')
+        .update(update)
+        .eq('id', id)
+        .select('id, date, title, category, impact_level')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        data,
+        message: `Public event updated: "${data.title}"`,
+      });
+    },
+  );
+
+  // ── delete_public_event ───────────────────────────────────────────────────
+  server.registerTool(
+    'delete_public_event',
+    {
+      title: 'Delete Public Event',
+      description: 'Delete a public event by ID.',
+      inputSchema: {
+        id: z.string().uuid().describe('Event UUID to delete'),
+      },
+    },
+    async ({ id }) => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('public_events')
+        .delete()
+        .eq('id', id)
+        .select('id, title')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        message: `Deleted public event: "${data.title}"`,
+      });
+    },
+  );
+
+  // ── update_doj_action ─────────────────────────────────────────────────────
+  server.registerTool(
+    'update_doj_action',
+    {
+      title: 'Update DOJ Action',
+      description:
+        'Update a DOJ accountability record. Common use: changing status (documented → reported → under_investigation), adding evidence, correcting details.',
+      inputSchema: {
+        id: z.string().uuid().describe('DOJ action UUID to update'),
+        date: z.string().optional().describe('Corrected date'),
+        title: z.string().optional().describe('Updated headline'),
+        description: z.string().optional().describe('Updated description'),
+        action_type: z.enum(DOJ_ACTION_TYPES).optional().describe('Updated action type'),
+        severity: z.enum(SEVERITY_LEVELS).optional().describe('Updated severity'),
+        legal_basis: z.string().optional().describe('Updated legal basis'),
+        efta_numbers: z.array(z.string()).optional().describe('Replacement EFTA numbers array'),
+        source_urls: z.array(z.string()).optional().describe('Replacement source URLs array'),
+        status: z.enum(DOJ_STATUSES).optional().describe('Updated status'),
+        notes: z.string().optional().describe('Updated notes'),
+      },
+    },
+    async ({ id, ...fields }) => {
+      const sb = getSupabase();
+      const update: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(fields)) {
+        if (v !== undefined) update[k] = v;
+      }
+      if (Object.keys(update).length === 0) {
+        return errorResponse('No fields to update');
+      }
+      update.updated_at = new Date().toISOString();
+      const { data, error } = await sb.from('doj_accountability')
+        .update(update)
+        .eq('id', id)
+        .select('id, date, title, action_type, severity, status')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        data,
+        message: `DOJ action updated: "${data.title}"`,
+      });
+    },
+  );
+
+  // ── delete_doj_action ─────────────────────────────────────────────────────
+  server.registerTool(
+    'delete_doj_action',
+    {
+      title: 'Delete DOJ Action',
+      description: 'Delete a DOJ accountability record by ID.',
+      inputSchema: {
+        id: z.string().uuid().describe('DOJ action UUID to delete'),
+      },
+    },
+    async ({ id }) => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('doj_accountability')
+        .delete()
+        .eq('id', id)
+        .select('id, title')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        message: `Deleted DOJ action: "${data.title}"`,
+      });
+    },
+  );
 }
