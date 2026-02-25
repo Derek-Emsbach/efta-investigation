@@ -100,9 +100,10 @@ export function registerSuspectTools(server: McpServer) {
         first_seen_document_id: z.string().uuid().optional().describe('Document where this person was first identified'),
         notes: z.string().optional().describe('Internal analysis notes'),
         metadata: z.record(z.unknown()).optional(),
+        external_urls: z.record(z.any()).optional().describe('External research links: { "jmail": "url", "rhowardstone": "url", ... }'),
       },
     },
-    async ({ name, status, priority, category, public_sources, known_connections, cross_references, aliases, known_associates, first_seen_document_id, notes, metadata }) => {
+    async ({ name, status, priority, category, public_sources, known_connections, cross_references, aliases, known_associates, first_seen_document_id, notes, metadata, external_urls }) => {
       const sb = getSupabase();
 
       // Check for duplicates in both suspects and entities
@@ -139,6 +140,7 @@ export function registerSuspectTools(server: McpServer) {
           first_seen_document_id,
           notes,
           metadata: metadata ?? {},
+          external_urls: external_urls ?? {},
         })
         .select('id, name, status, priority')
         .single();
@@ -171,15 +173,17 @@ export function registerSuspectTools(server: McpServer) {
         notes: z.string().optional(),
         add_aliases: z.array(z.string()).optional().describe('Aliases to ADD to existing list'),
         add_associates: z.array(z.string()).optional().describe('Associates to ADD to existing list'),
+        external_urls: z.record(z.any()).optional().describe('External research links (replaces entire JSONB)'),
       },
     },
-    async ({ suspect_id, add_aliases, add_associates, ...fields }) => {
+    async ({ suspect_id, add_aliases, add_associates, external_urls, ...fields }) => {
       const sb = getSupabase();
 
       const update: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(fields)) {
         if (v !== undefined) update[k] = v;
       }
+      if (external_urls !== undefined) update.external_urls = external_urls;
 
       // Handle array appends
       if ((add_aliases && add_aliases.length > 0) || (add_associates && add_associates.length > 0)) {

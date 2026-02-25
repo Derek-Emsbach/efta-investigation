@@ -125,9 +125,10 @@ export function registerEntityTools(server: McpServer) {
         bio: z.string().optional().describe('Brief biographical note'),
         evidence_summary: z.string().optional().describe('Summary of evidence supporting tier assignment'),
         aliases: z.array(z.string()).optional().describe('Known aliases or alternate spellings'),
+        external_urls: z.record(z.any()).optional().describe('External research links: { "jmail": "url", "rhowardstone": "url", ... }'),
       },
     },
-    async ({ name, tier, entity_type, category, bio, evidence_summary, aliases }) => {
+    async ({ name, tier, entity_type, category, bio, evidence_summary, aliases, external_urls }) => {
       const sb = getSupabase();
 
       // Check for duplicates first
@@ -149,6 +150,7 @@ export function registerEntityTools(server: McpServer) {
           bio,
           evidence_summary,
           aliases: aliases ?? [],
+          external_urls: external_urls ?? {},
         })
         .select('id, name, tier')
         .single();
@@ -176,9 +178,10 @@ export function registerEntityTools(server: McpServer) {
         bio: z.string().optional(),
         evidence_summary: z.string().optional().describe('Will REPLACE existing summary — include all evidence'),
         add_aliases: z.array(z.string()).optional().describe('Aliases to ADD to existing list'),
+        external_urls: z.record(z.any()).optional().describe('External research links (replaces entire JSONB)'),
       },
     },
-    async ({ entity_id, tier, category, bio, evidence_summary, add_aliases }) => {
+    async ({ entity_id, tier, category, bio, evidence_summary, add_aliases, external_urls }) => {
       const sb = getSupabase();
 
       const update: Record<string, unknown> = {};
@@ -186,6 +189,7 @@ export function registerEntityTools(server: McpServer) {
       if (category !== undefined) update.category = category;
       if (bio !== undefined) update.bio = bio;
       if (evidence_summary !== undefined) update.evidence_summary = evidence_summary;
+      if (external_urls !== undefined) update.external_urls = external_urls;
 
       // Handle alias append
       if (add_aliases && add_aliases.length > 0) {

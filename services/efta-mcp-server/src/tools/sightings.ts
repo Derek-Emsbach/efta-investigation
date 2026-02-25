@@ -10,7 +10,62 @@ const SIGHTING_TYPES = [
 
 const CONFIDENCE_LEVELS = ['confirmed', 'likely', 'possible', 'inferred'] as const;
 
+const LOCATION_TYPES = [
+  'property', 'airport', 'office', 'court', 'restaurant', 'hotel', 'school',
+  'epstein_property', 'associated_property', 'recruitment_site', 'government_facility',
+  'other',
+] as const;
+
 export function registerSightingTools(server: McpServer) {
+
+  // ── create_location ─────────────────────────────────────────────────────────
+  server.registerTool(
+    'create_location',
+    {
+      title: 'Create Location',
+      description:
+        'Create a location record (property, airport, office, etc.). This creates the place itself — to record an entity being at this location on a date, use add_entity_location afterward.',
+      inputSchema: {
+        name: z.string().describe('Location name (e.g. "Little St. James Island", "9 E. 71st St Townhouse")'),
+        location_type: z.enum(LOCATION_TYPES).optional().describe('Type of location'),
+        address: z.string().optional(),
+        city: z.string().optional(),
+        state: z.string().optional(),
+        country: z.string().optional(),
+        latitude: z.number().optional().describe('Decimal latitude'),
+        longitude: z.number().optional().describe('Decimal longitude'),
+        owner_entity_id: z.string().uuid().optional().describe('Entity that owns/owned this location'),
+        description: z.string().optional().describe('Notes about this location'),
+        aliases: z.array(z.string()).optional().describe('Alternate names for this location'),
+      },
+    },
+    async (params) => {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('locations')
+        .insert({
+          name: params.name,
+          location_type: params.location_type,
+          address: params.address,
+          city: params.city,
+          state: params.state,
+          country: params.country,
+          latitude: params.latitude,
+          longitude: params.longitude,
+          owner_entity_id: params.owner_entity_id,
+          description: params.description,
+          aliases: params.aliases ?? [],
+        })
+        .select('id, name, location_type, city, country')
+        .single();
+      if (error) return errorResponse(error.message);
+      return toolResponse({
+        success: true,
+        id: data.id,
+        data,
+        message: `Location created: "${data.name}" (${data.location_type ?? 'untyped'})`,
+      });
+    },
+  );
 
   // ── search_entity_locations ─────────────────────────────────────────────────
   server.registerTool(

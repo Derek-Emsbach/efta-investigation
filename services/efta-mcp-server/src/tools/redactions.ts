@@ -51,7 +51,6 @@ export function registerRedactionTools(server: McpServer) {
         is_suspect: z.boolean().default(false),
         description: z.string().optional().describe('What appears to be redacted and why the category was assigned'),
         red_flags: z.array(z.string()).optional().describe('Red flag codes (e.g. RF-1 through RF-10)'),
-        nearby_entities: z.array(z.string()).optional().describe('Entity names near the redaction'),
       },
     },
     async (params) => {
@@ -80,30 +79,29 @@ export function registerRedactionTools(server: McpServer) {
         document_id: z.string().uuid(),
         entity_id: z.string().uuid().optional().describe('Entity this evidence relates to (direct FK on evidence_items)'),
         evidence_type: z.enum(['primary', 'corroborating', 'contradictory', 'timeline']).describe('Evidence classification'),
-        title: z.string().describe('Brief evidence title'),
         description: z.string().describe('What this evidence establishes'),
         significance: z.enum(['high', 'medium', 'low']).default('medium'),
       },
     },
-    async ({ document_id, entity_id, evidence_type, title, description, significance }) => {
+    async ({ document_id, entity_id, evidence_type, description, significance }) => {
       const sb = getSupabase();
-      // FIX: evidence_items has direct entity_id column — no junction table needed
       const { data, error } = await sb.from('evidence_items')
         .insert({
           document_id,
           entity_id,
           evidence_type,
           description,
-          category: evidence_type, // maps to the category column
+          category: evidence_type,
           strength: significance === 'high' ? 'strong' : significance === 'medium' ? 'moderate' : 'weak',
         })
         .select('id')
         .single();
       if (error) return errorResponse(error.message);
+      const preview = description.length > 60 ? description.slice(0, 57) + '...' : description;
       return toolResponse({
         success: true,
         id: data.id,
-        message: `Evidence item created: "${title}" (${evidence_type}, ${significance})`,
+        message: `Evidence item created: "${preview}" (${evidence_type}, ${significance})`,
       });
     },
   );

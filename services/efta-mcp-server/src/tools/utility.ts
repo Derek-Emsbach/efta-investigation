@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { getSupabase, toolResponse, errorResponse, safeJson } from '../supabase.js';
+import { getSupabase, toolResponse, errorResponse } from '../supabase.js';
 import { getCorpusDb, getRedactionDb } from '../db/sqlite.js';
 
 // ---------------------------------------------------------------------------
@@ -67,6 +67,14 @@ const TABLE_INFO: Record<string, { purpose: string; key_relationships: string[] 
   doj_accountability: {
     purpose: 'DOJ behavior tracker — file deletions, re-redactions, surveillance, compliance failures, misleading statements.',
     key_relationships: [],
+  },
+  research_platforms: {
+    purpose: 'Registry of external research tools and data sources (Jmail, rhowardstone, Carstensen, PACER, etc.). Global registry, not per-entity.',
+    key_relationships: [],
+  },
+  external_entities: {
+    purpose: 'Cross-reference layer for external person registries (rhowardstone 1,536-person). matched_entity_id/matched_suspect_id links to our tracked entities/suspects.',
+    key_relationships: ['entities (matched_entity_id)', 'suspect_watchlist (matched_suspect_id)'],
   },
   processing_queue: {
     purpose: 'Document processing pipeline queue. Tracks stage progress, errors, results.',
@@ -207,14 +215,17 @@ export function registerUtilityTools(server: McpServer) {
     },
     async () => {
       const sb = getSupabase();
-      const [docsRes, entitiesRes, eventsRes, datasetsRes, suspectsRes, pubEventsRes, dojAcctRes] = await Promise.all([
+      const [docsRes, entitiesRes, eventsRes, datasetsRes, suspectsRes, pubEventsRes, dojAcctRes, rpRes, extEntRes, locRes] = await Promise.all([
         sb.rpc('processing_queue_stats'),
         sb.from('entities').select('tier, id'),
         sb.from('events').select('id', { count: 'exact', head: true }),
-        sb.from('datasets').select('id, name, document_count'),
+        sb.from('datasets').select('id, name, total_files'),
         sb.from('suspect_watchlist').select('status, priority'),
         sb.from('public_events').select('category, impact_level'),
         sb.from('doj_accountability').select('action_type, severity, status'),
+        sb.from('research_platforms').select('id', { count: 'exact', head: true }),
+        sb.from('external_entities').select('match_status, source'),
+        sb.from('locations').select('id', { count: 'exact', head: true }),
       ]);
 
       // Count entities by tier
@@ -255,6 +266,16 @@ export function registerUtilityTools(server: McpServer) {
         }
       }
 
+      // External entities stats
+      const extEntByStatus: Record<string, number> = {};
+      const extEntBySource: Record<string, number> = {};
+      if (extEntRes.data) {
+        for (const e of extEntRes.data) {
+          extEntByStatus[e.match_status] = (extEntByStatus[e.match_status] || 0) + 1;
+          extEntBySource[e.source] = (extEntBySource[e.source] || 0) + 1;
+        }
+      }
+
       // Corpus stats (SQLite — fast, cached by OS page cache)
       let corpusStats: Record<string, unknown> = { available: false };
       const corpusDb = getCorpusDb();
@@ -290,6 +311,13 @@ export function registerUtilityTools(server: McpServer) {
             by_severity: dojBySeverity,
             by_status: dojByStatus,
           },
+          research_platforms: { total: rpRes.count ?? 0 },
+          external_entities: {
+            total: extEntRes.data?.length ?? 0,
+            by_status: extEntByStatus,
+            by_source: extEntBySource,
+          },
+          locations: { total: locRes.count ?? 0 },
           corpus: corpusStats,
         },
       });

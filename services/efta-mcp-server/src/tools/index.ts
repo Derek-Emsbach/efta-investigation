@@ -10,6 +10,7 @@ import { registerLinkTools } from './links.js';
 import { registerUtilityTools } from './utility.js';
 import { registerCorpusTools } from './corpus.js';
 import { registerPublicEventTools } from './public-events.js';
+import { registerExternalTools } from './external.js';
 
 export function registerTools(server: McpServer) {
   registerEntityTools(server);
@@ -23,4 +24,5 @@ export function registerTools(server: McpServer) {
   registerUtilityTools(server);
   registerCorpusTools(server);
   registerPublicEventTools(server);
+  registerExternalTools(server);
 }
