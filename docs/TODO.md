@@ -622,3 +622,9 @@
 - [x] `docs/investigation/EFTA02731082_Analysis.md` — 12-section analysis report (overview, victim accounts, named subjects, evidence inventory, legal analysis, charging decision, key quotes, redaction analysis, entity register, cross-references, open questions, database updates)
 - [x] EFTA02731082 database updates — 3 suspects promoted to entities (Wexner T4, Dubin T1, Indyke T6), document record updated (extreme_critical), 10 entity-doc links, 7 events with entity links, 5 connections (Dubin↔Maxwell, Dubin↔Epstein, Wexner↔Epstein, Indyke↔Epstein attorney_for, Clinton↔Epstein)
 - [x] Fix `promote_suspect` phantom column bug — `evidence_summary` was inserted as column instead of `metadata.evidence_summary` JSONB
+- [x] EFTA01266403 deep read — all 24 pages read in 4 chunk calls (7 pages each), zero truncation, 60,494 chars
+- [x] `docs/investigation/EFTA01266403_Analysis.md` — 12-section analysis (trust structure, trustees, beneficiaries, properties, shell companies, key quotes, entity register, cross-references, open questions, database updates)
+- [x] `docs/investigation/EFTA01266403_Database_Updates_Prompt.md` — structured DB update spec: 5 new entities (Mitchell, Celina Dubin, Eva Andersson-Dubin, Shuliak, Kahn), 12 entity-doc links, 2 events, 9 connections, 11 suspect watchlist additions
+- [x] EFTA01266403 database updates — 5 new entities (Mitchell T6, Celina Dubin T4, Eva Andersson-Dubin T4, Shuliak T4, Kahn T6), 3 entity updates (Dubin/Indyke/Staley evidence_summary merged), 11 entity-doc links, 2 events, 9 connections (incl. 2 `family_of`), 11 suspects added to watchlist
+- [ ] EFTA01266380 deep read — original November 2014 trust (predecessor to 01266403). Was Staley in the original or added in the amendment?
+- [ ] EFTA01266427 deep read — first amendment to the amendment. What changed after May 2015?
