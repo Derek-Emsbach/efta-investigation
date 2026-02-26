@@ -62,40 +62,51 @@ export function registerCorpusTools(server: McpServer) {
       inputSchema: {
         query: z.string().describe('Search term or FTS5 phrase'),
         dataset: z.number().min(1).max(12).optional().describe('Filter to a specific dataset (1-12)'),
+        efta_number: z.string().optional().describe('Filter results to a specific EFTA document (e.g. "EFTA02731082")'),
         limit: z.number().min(1).max(100).default(20).describe('Max results to return'),
       },
       annotations: { readOnlyHint: true },
     },
-    async ({ query, dataset, limit }) => {
+    async ({ query, dataset, efta_number, limit }) => {
       const db = getCorpusDb();
       if (!db) return errorResponse('Full-text corpus not available. Run: cd services/efta-mcp-server/data && ./download.sh');
 
       try {
-        // Use FTS5 MATCH for fast search, with optional dataset filter via JOIN
-        if (dataset) {
-          const stmt = db.prepare(`
-            SELECT p.efta_number, p.page_number,
-                   snippet(pages_fts, 2, '>>>', '<<<', '...', 40) AS snippet
-            FROM pages_fts
-            JOIN documents d ON d.efta_number = pages_fts.efta_number
-            JOIN pages p ON p.rowid = pages_fts.rowid
-            WHERE pages_fts MATCH ?
-              AND d.dataset = ?
-            LIMIT ?
-          `);
-          const results = stmt.all(query, dataset, limit);
-          return toolResponse({ success: true, data: results, count: results.length, message: `FTS5 search for "${query}" in dataset ${dataset}` });
-        }
-
-        const stmt = db.prepare(`
-          SELECT pages_fts.efta_number, pages_fts.page_number,
+        // Dynamic SQL: always JOIN pages for consistent column access, optionally JOIN documents for dataset filter
+        let sql = `
+          SELECT p.efta_number, p.page_number,
                  snippet(pages_fts, 2, '>>>', '<<<', '...', 40) AS snippet
           FROM pages_fts
-          WHERE pages_fts MATCH ?
-          LIMIT ?
-        `);
-        const results = stmt.all(query, limit);
-        return toolResponse({ success: true, data: results, count: results.length, message: `FTS5 search for "${query}"` });
+          JOIN pages p ON p.rowid = pages_fts.rowid`;
+        const params: (string | number)[] = [query];
+
+        if (dataset) {
+          sql += `\n          JOIN documents d ON d.efta_number = p.efta_number`;
+        }
+
+        sql += `\n          WHERE pages_fts MATCH ?`;
+
+        if (efta_number) {
+          sql += `\n            AND p.efta_number = ?`;
+          params.push(normalizeEfta(efta_number));
+        }
+        if (dataset) {
+          sql += `\n            AND d.dataset = ?`;
+          params.push(dataset);
+        }
+
+        sql += `\n          LIMIT ?`;
+        params.push(limit);
+
+        const results = db.prepare(sql).all(...params);
+        const filterParts = [
+          efta_number ? `doc ${efta_number}` : null,
+          dataset ? `dataset ${dataset}` : null,
+        ].filter(Boolean).join(', ');
+        return toolResponse({
+          success: true, data: results, count: results.length,
+          message: `FTS5 search for "${query}"${filterParts ? ` in ${filterParts}` : ''}`,
+        });
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
         // FTS5 syntax errors are common — provide helpful feedback
@@ -114,15 +125,17 @@ export function registerCorpusTools(server: McpServer) {
       title: 'Get Corpus Document Text',
       description:
         'Get the full OCR-extracted text of a document from the external corpus by EFTA number. ' +
-        'Returns all pages or a specific page. This retrieves text from the researcher\'s corpus — ' +
+        'Returns all pages, a specific page, or a page range. This retrieves text from the researcher\'s corpus — ' +
         'for text from our own extraction pipeline (stored in R2), use get_document_full_text instead.',
       inputSchema: {
         efta_number: z.string().describe('EFTA number (e.g. "EFTA02731623" or "02731623")'),
-        page: z.number().optional().describe('Specific page number (0-indexed). If omitted, returns all pages.'),
+        page: z.number().optional().describe('Specific page number (0-indexed). Takes priority over start_page/end_page.'),
+        start_page: z.number().optional().describe('First page of range (0-indexed, inclusive). Use with end_page for multi-page reads.'),
+        end_page: z.number().optional().describe('Last page of range (0-indexed, inclusive). Use with start_page for multi-page reads.'),
       },
       annotations: { readOnlyHint: true },
     },
-    async ({ efta_number, page }) => {
+    async ({ efta_number, page, start_page, end_page }) => {
       const db = getCorpusDb();
       if (!db) return errorResponse('Full-text corpus not available. Run: cd services/efta-mcp-server/data && ./download.sh');
 
@@ -149,6 +162,33 @@ export function registerCorpusTools(server: McpServer) {
               char_count: row.char_count,
             }) + '\n\n' + output + (truncated
               ? `\n\n[TRUNCATION_INFO: ${JSON.stringify({ truncated: true, shown_chars: maxLen, total_chars: text.length })}]`
+              : ''),
+          }],
+        };
+      }
+
+      // Page range mode
+      if (start_page !== undefined && end_page !== undefined) {
+        const rows = db.prepare(
+          'SELECT page_number, text_content, char_count FROM pages WHERE efta_number = ? AND page_number >= ? AND page_number <= ? ORDER BY page_number',
+        ).all(efta, start_page, end_page) as Array<{ page_number: number; text_content: string; char_count: number }>;
+
+        if (rows.length === 0) return errorResponse(`No pages found for ${efta} in range ${start_page}-${end_page}`);
+
+        const fullText = rows.map(r => `--- PAGE ${r.page_number} ---\n${r.text_content || ''}`).join('\n\n');
+        const maxLen = 30000;
+        const truncated = fullText.length > maxLen;
+        const output = truncated ? fullText.slice(0, maxLen) : fullText;
+        return {
+          content: [{
+            type: 'text' as const,
+            text: JSON.stringify({
+              efta_number: efta,
+              page_range: `${start_page}-${end_page}`,
+              pages_returned: rows.length,
+              total_chars: fullText.length,
+            }) + '\n\n' + output + (truncated
+              ? `\n\n[TRUNCATION_INFO: ${JSON.stringify({ truncated: true, shown_chars: maxLen, total_chars: fullText.length })}]`
               : ''),
           }],
         };
