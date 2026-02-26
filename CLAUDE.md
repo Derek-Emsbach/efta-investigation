@@ -134,10 +134,10 @@ Before building any feature, read the relevant reference doc:
 | `docs/reference/WORKFLOW.md` | How data flows: 3 workflows, auto-approve rules, session checklist | Any data import/update work |
 | `docs/reference/LOCATION_INTELLIGENCE.md` | Location tracking, entity sightings, day-view timeline, co-location queries | Timeline, location, sighting features |
 | `docs/reference/INVESTIGATION_CONTEXT.md` | What this investigation is about | Understanding domain |
-| `docs/investigation/DS12_SUMMARY.md` | Dataset 12 complete findings | Importing DS12 data |
-| `docs/investigation/LEON_BLACK_CASE.md` | Leon Black prosecution failure | Key investigation thread |
-| `docs/investigation/ENTITIES.md` | All identified entities | Entity import/profiles |
-| `docs/investigation/TIMELINE.md` | All timeline events | Timeline import |
+| `docs/investigation/data/DS12_SUMMARY.md` | Dataset 12 complete findings | Importing DS12 data |
+| `docs/investigation/archive/LEON_BLACK_CASE.md` | Leon Black prosecution failure | Key investigation thread |
+| `docs/investigation/data/ENTITIES.md` | All identified entities | Entity import/profiles |
+| `docs/investigation/data/TIMELINE.md` | All timeline events | Timeline import |
 | `packages/db/schema.sql` | The actual SQL schema | Database work |
 
 ## Key Domain Concepts

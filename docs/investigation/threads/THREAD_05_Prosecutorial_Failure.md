@@ -22,7 +22,7 @@ primary_entities:
 source_documents:
   - efta: "EFTA02731082"
     title: "SDNY Co-Conspirator Prosecution Memo"
-    analysis_report: "EFTA02731082_Analysis.md"
+    analysis_report: "../sources/EFTA02731082/Analysis.md"
   - efta: "EFTA02731578"
     title: "SDNY 'not inclined to open'"
   - efta: "EFTA02731632"

@@ -19,16 +19,16 @@ primary_entities:
 source_documents:
   - efta: "EFTA01266380"
     title: "The Jeffrey E. Epstein 2014 Trust"
-    analysis_report: "EFTA01266380_Analysis.md"
+    analysis_report: "../sources/EFTA01266380/Analysis.md"
   - efta: "EFTA01266403"
     title: "Amendment and Restatement of the Jeffrey E. Epstein 2014 Trust"
-    analysis_report: "EFTA01266403_Analysis.md"
+    analysis_report: "../sources/EFTA01266403/Analysis.md"
   - efta: "EFTA01266427"
     title: "First Amendment to the Amendment and Restatement"
-    analysis_report: "EFTA01266380_Analysis.md"
+    analysis_report: "../sources/EFTA01266380/Analysis.md"
   - efta: "EFTA02731082"
     title: "SDNY Co-Conspirator Prosecution Memo"
-    analysis_report: "EFTA02731082_Analysis.md"
+    analysis_report: "../sources/EFTA02731082/Analysis.md"
 related_threads: ["THREAD_01", "THREAD_03", "THREAD_05"]
 key_finding: "Darren Indyke simultaneously served as Epstein's personal attorney, trustee, $5M beneficiary, debt beneficiary, spouse beneficiary, nominee holder of LLC property, and sole gatekeeper of the trust amendment power — an extraordinary and potentially disqualifying concentration of conflicting roles."
 ---

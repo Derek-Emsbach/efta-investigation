@@ -1,4 +1,4 @@
-> **SUPERSEDED**: This report's findings have been consolidated into [THREAD_01_Staley_Trustee.md](THREAD_01_Staley_Trustee.md), which adds trust analysis (three-way comparison), cross-thread connections, and the definitive answer to the "Was Staley in the original trust?" question. This document is retained as a primary source analysis reference.
+> **SUPERSEDED**: This report's findings have been consolidated into [THREAD_01_Staley_Trustee.md](../threads/THREAD_01_Staley_Trustee.md), which adds trust analysis (three-way comparison), cross-thread connections, and the definitive answer to the "Was Staley in the original trust?" question. This document is retained as a primary source analysis reference.
 
 # Jes Staley Investigation Report — Corpus Deep Dive
 

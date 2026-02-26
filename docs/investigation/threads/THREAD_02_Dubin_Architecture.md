@@ -22,16 +22,16 @@ primary_entities:
 source_documents:
   - efta: "EFTA01266380"
     title: "The Jeffrey E. Epstein 2014 Trust"
-    analysis_report: "EFTA01266380_Analysis.md"
+    analysis_report: "../sources/EFTA01266380/Analysis.md"
   - efta: "EFTA01266403"
     title: "Amendment and Restatement of the Jeffrey E. Epstein 2014 Trust"
-    analysis_report: "EFTA01266403_Analysis.md"
+    analysis_report: "../sources/EFTA01266403/Analysis.md"
   - efta: "EFTA01266427"
     title: "First Amendment to the A&R of the Jeffrey E. Epstein 2014 Trust"
-    analysis_report: "EFTA01266380_Analysis.md"
+    analysis_report: "../sources/EFTA01266380/Analysis.md"
   - efta: "EFTA02731082"
     title: "SDNY Co-Conspirator Prosecution Memo"
-    analysis_report: "EFTA02731082_Analysis.md"
+    analysis_report: "../sources/EFTA02731082/Analysis.md"
 related_threads: ["THREAD_01", "THREAD_03", "THREAD_04", "THREAD_05"]
 key_finding: "The Dubin family occupied three interlocking positions in the Epstein estate — primary beneficiary (Celina), successor trustee and contingent beneficiary (Eva), and evidence subject (Glenn) — creating a structural alignment where the family with the most to inherit also had the most to lose from exposure."
 ---

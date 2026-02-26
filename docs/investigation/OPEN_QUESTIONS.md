@@ -21,7 +21,7 @@ Priority levels: P1 (critical, pursue immediately), P2 (high, pursue when datase
 
 ## From Investigation Threads (February 2026)
 
-Thread-specific open questions are documented in full in each thread report. Top 10 are consolidated in [MASTER_INTELLIGENCE_BRIEF.md](MASTER_INTELLIGENCE_BRIEF.md) Section 6.
+Thread-specific open questions are documented in full in each thread report. Top 10 are consolidated in [MASTER_INTELLIGENCE_BRIEF.md](threads/MASTER_INTELLIGENCE_BRIEF.md) Section 6.
 
 | ID | Thread | Priority | Question | Cross-Ref |
 |----|--------|----------|----------|-----------|

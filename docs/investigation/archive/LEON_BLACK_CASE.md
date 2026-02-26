@@ -1,4 +1,4 @@
-> **SUPERSEDED**: This report's findings have been expanded into [THREAD_05_Prosecutorial_Failure.md](THREAD_05_Prosecutorial_Failure.md), which adds the prosecution memo analysis, cross-thread synthesis, and the two-track failure framework. This document is retained as a primary source evidence inventory.
+> **SUPERSEDED**: This report's findings have been expanded into [THREAD_05_Prosecutorial_Failure.md](../threads/THREAD_05_Prosecutorial_Failure.md), which adds the prosecution memo analysis, cross-thread synthesis, and the two-track failure framework. This document is retained as a primary source evidence inventory.
 
 # The Leon Black Case — Anatomy of a Prosecutorial Failure
 
