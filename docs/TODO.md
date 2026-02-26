@@ -620,4 +620,5 @@
 ### Investigation Analysis Reports
 - [x] EFTA02731082 deep read — all 86 pages read in 9 sequential chunk calls, zero truncation
 - [x] `docs/investigation/EFTA02731082_Analysis.md` — 12-section analysis report (overview, victim accounts, named subjects, evidence inventory, legal analysis, charging decision, key quotes, redaction analysis, entity register, cross-references, open questions, database updates)
-- [ ] EFTA02731082 database updates — create entities (Glen Dubin, Adriana Ross, Nadia Marcinkova, Juan Alessi, Sarah Kellen), events (Wexner proffer, search warrants, Clinton Africa trip, Subject 3 cooperation), connections (Maxwell-Groff, Dubin-trafficking), and ~40 entity-document links identified in Section 12 of the analysis
+- [x] EFTA02731082 database updates — 3 suspects promoted to entities (Wexner T4, Dubin T1, Indyke T6), document record updated (extreme_critical), 10 entity-doc links, 7 events with entity links, 5 connections (Dubin↔Maxwell, Dubin↔Epstein, Wexner↔Epstein, Indyke↔Epstein attorney_for, Clinton↔Epstein)
+- [x] Fix `promote_suspect` phantom column bug — `evidence_summary` was inserted as column instead of `metadata.evidence_summary` JSONB
