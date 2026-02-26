@@ -270,7 +270,8 @@ export function registerSuspectTools(server: McpServer) {
       if (suspect.cross_references) summaryParts.push(`Cross References: ${suspect.cross_references}`);
       const evidence_summary = summaryParts.length > 0 ? summaryParts.join('\n\n') : null;
 
-      // Create entity
+      // Create entity (evidence_summary goes in metadata JSONB, not a column)
+      const metadata = evidence_summary ? { evidence_summary } : {};
       const { data: entity, error: createErr } = await sb.from('entities')
         .insert({
           name: suspect.name,
@@ -278,7 +279,7 @@ export function registerSuspectTools(server: McpServer) {
           tier,
           category: categoryOverride ?? suspect.category,
           bio,
-          evidence_summary,
+          metadata,
           aliases: suspect.aliases ?? [],
         })
         .select('id, name, tier')
