@@ -39,14 +39,14 @@ key_finding: "Darren Indyke simultaneously served as Epstein's personal attorney
 
 ## Tier System Legend
 
-| Tier | Label | Meaning |
-|------|-------|---------|
-| 1 | Direct Evidence | Convicted, charged, or named in forensic victim journals |
-| 2 | Immunized | Named co-conspirators with 2007 NPA blanket immunity |
-| 3 | Circumstantial | Documentary evidence without direct proof of criminal conduct |
-| 4 | Associated | Documented contact, no evidence of criminal awareness |
-| 5 | Victim / Witness | Identified victims or witnesses |
-| 6 | Peripheral | Staff, pilots, attorneys, prosecutors |
+| Tier | Label | Short | Meaning |
+|------|-------|-------|---------|
+| 1 | Direct Evidence | DIRECT | Convicted, charged, or named in forensically authenticated victim journals |
+| 2 | Immunized | IMMUNIZED | Named co-conspirators with 2007 NPA blanket immunity |
+| 3 | Circumstantial | CIRCUMSTANTIAL | Documentary evidence without direct evidence |
+| 4 | Associated | ASSOCIATED | Documented contact, no criminal awareness evidence |
+| 5 | Victim / Witness | VICTIM | Identified victims or witnesses |
+| 6 | Peripheral | PERIPHERAL | Staff, pilots, estate executors, prosecutors, attorneys |
 
 Tiers reflect **evidence strength, not guilt**. Indyke is currently classified as Tier 6 (Peripheral) because there is no evidence of his participation in or awareness of Epstein's criminal conduct. His conflicts of interest are professional and financial, not criminal. This classification could change if evidence emerges connecting his professional activities to facilitation of criminal conduct.
 
