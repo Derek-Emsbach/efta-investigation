@@ -78,7 +78,7 @@ export function registerEntityTools(server: McpServer) {
       const [entityRes, docsRes, eventsRes, connARes, connBRes] = await Promise.all([
         sb.from('entities').select('*').eq('id', entity_id).single(),
         sb.from('entity_documents')
-          .select('*, document:documents(id, bates_number, title, document_type, date, processing_status)')
+          .select('*, document:documents(id, bates_number, title, document_type, original_date, processing_status)')
           .eq('entity_id', entity_id).limit(50),
         sb.from('entity_events')
           .select('*, event:events(*)')
@@ -141,6 +141,9 @@ export function registerEntityTools(server: McpServer) {
         });
       }
 
+      const metadata: Record<string, unknown> = {};
+      if (evidence_summary) metadata.evidence_summary = evidence_summary;
+
       const { data, error } = await sb.from('entities')
         .insert({
           name,
@@ -148,9 +151,9 @@ export function registerEntityTools(server: McpServer) {
           entity_type,
           category,
           bio,
-          evidence_summary,
           aliases: aliases ?? [],
           external_urls: external_urls ?? {},
+          ...(Object.keys(metadata).length > 0 ? { metadata } : {}),
         })
         .select('id, name, tier')
         .single();
@@ -188,8 +191,14 @@ export function registerEntityTools(server: McpServer) {
       if (tier !== undefined) update.tier = tier;
       if (category !== undefined) update.category = category;
       if (bio !== undefined) update.bio = bio;
-      if (evidence_summary !== undefined) update.evidence_summary = evidence_summary;
       if (external_urls !== undefined) update.external_urls = external_urls;
+
+      // evidence_summary stored in metadata JSONB (no dedicated column on entities table)
+      if (evidence_summary !== undefined) {
+        const { data: current } = await sb.from('entities').select('metadata').eq('id', entity_id).single();
+        const existingMeta = (current?.metadata as Record<string, unknown>) ?? {};
+        update.metadata = { ...existingMeta, evidence_summary };
+      }
 
       // Handle alias append
       if (add_aliases && add_aliases.length > 0) {

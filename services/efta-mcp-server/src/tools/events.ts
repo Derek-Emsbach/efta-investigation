@@ -64,16 +64,20 @@ export function registerEventTools(server: McpServer) {
         title: z.string().describe('Brief event title'),
         description: z.string().optional().describe('Detailed description with evidence references'),
         date: z.string().describe('Event date (ISO format, can be approximate: 2003-01-01)'),
-        date_precision: z.enum(['exact', 'month', 'year', 'approximate']).default('exact'),
-        event_type: z.string().optional().describe('e.g. meeting, flight, payment, legal, communication, abuse'),
-        location: z.string().optional(),
-        source_document_id: z.string().uuid().optional().describe('Document that evidences this event'),
+        date_precision: z.enum(['day', 'month', 'year', 'approximate']).default('day'),
+        event_type: z.enum(['legal', 'evidence', 'communication', 'institutional', 'personal', 'financial', 'legislative', 'travel', 'sighting']).optional(),
+        location: z.string().optional().describe('Location name (stored in metadata, not as FK — use location_id for linked locations)'),
+        source_document_id: z.string().uuid().optional().describe('Document that evidences this event (stored in metadata, not as FK)'),
       },
     },
-    async (params) => {
+    async ({ source_document_id, location, ...rest }) => {
       const sb = getSupabase();
+      // location and source_document_id have no backing columns — store in metadata
+      const metadata: Record<string, unknown> = {};
+      if (location) metadata.location = location;
+      if (source_document_id) metadata.source_document_id = source_document_id;
       const { data, error } = await sb.from('events')
-        .insert(params)
+        .insert({ ...rest, ...(Object.keys(metadata).length > 0 ? { metadata } : {}) })
         .select('id, title, date')
         .single();
       if (error) return errorResponse(error.message);
@@ -122,17 +126,22 @@ export function registerEventTools(server: McpServer) {
         title: z.string().optional().describe('Updated title'),
         description: z.string().optional().describe('Updated description'),
         date: z.string().optional().describe('Corrected date (ISO format)'),
-        date_precision: z.enum(['exact', 'month', 'year', 'approximate']).optional(),
-        event_type: z.string().optional().describe('Updated type'),
-        location: z.string().optional().describe('Updated location'),
+        date_precision: z.enum(['day', 'month', 'year', 'approximate']).optional(),
+        event_type: z.enum(['legal', 'evidence', 'communication', 'institutional', 'personal', 'financial', 'legislative', 'travel', 'sighting']).optional(),
+        location: z.string().optional().describe('Updated location (stored in metadata)'),
         significance: z.string().optional().describe('Updated significance assessment'),
       },
     },
-    async ({ event_id, ...fields }) => {
+    async ({ event_id, location, ...fields }) => {
       const sb = getSupabase();
       const update: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(fields)) {
         if (v !== undefined) update[k] = v;
+      }
+      if (location !== undefined) {
+        const { data: current } = await sb.from('events').select('metadata').eq('id', event_id).single();
+        const existingMeta = (current?.metadata as Record<string, unknown>) ?? {};
+        update.metadata = { ...existingMeta, location };
       }
       if (Object.keys(update).length === 0) {
         return errorResponse('No fields to update');

@@ -17,17 +17,17 @@ export function registerDocumentTools(server: McpServer) {
         document_type: z.string().optional().describe('Filter by type (e.g. fbi_302, email, court_filing, prosecution_memo)'),
         dataset_id: z.string().optional().describe('Filter by dataset UUID'),
         processing_status: z.string().optional().describe('Filter by status (reviewed, needs_review, extracted, etc.)'),
-        min_classification_score: z.number().optional().describe('Minimum classification score (0-100)'),
-        summary: z.boolean().optional().describe('If true, return only id, bates_number, title, document_type, processing_status, classification_score'),
+        classification: z.enum(['high', 'medium', 'low']).optional().describe('Filter by classification level'),
+        summary: z.boolean().optional().describe('If true, return only id, bates_number, title, document_type, processing_status, classification'),
         limit: z.number().min(1).max(50).default(20),
       },
       annotations: { readOnlyHint: true },
     },
-    async ({ query, document_type, dataset_id, processing_status, min_classification_score, summary, limit }) => {
+    async ({ query, document_type, dataset_id, processing_status, classification, summary, limit }) => {
       const sb = getSupabase();
       const cols = summary
-        ? 'id, bates_number, title, document_type, processing_status, classification_score'
-        : 'id, bates_number, title, document_type, date, page_count, processing_status, classification, classification_score, severity, dataset_id, extracted_text';
+        ? 'id, bates_number, title, document_type, processing_status, classification'
+        : 'id, bates_number, title, document_type, original_date, page_count, processing_status, classification, severity, dataset_id, extracted_text';
 
       // Use estimated count for 1.37M row table
       let q = sb.from('documents').select(cols, { count: 'estimated' });
@@ -44,8 +44,8 @@ export function registerDocumentTools(server: McpServer) {
           if (document_type) ftsQ.eq('document_type', document_type);
           if (dataset_id) ftsQ.eq('dataset_id', dataset_id);
           if (processing_status) ftsQ.eq('processing_status', processing_status);
-          if (min_classification_score) ftsQ.gte('classification_score', min_classification_score);
-          const ftsResult = await ftsQ.order('classification_score', { ascending: false }).limit(limit);
+          if (classification) ftsQ.eq('classification', classification);
+          const ftsResult = await ftsQ.order('bates_number', { ascending: true }).limit(limit);
 
           if (!ftsResult.error && ftsResult.data && ftsResult.data.length > 0) {
             return toolResponse({
@@ -64,8 +64,8 @@ export function registerDocumentTools(server: McpServer) {
       if (document_type) q = q.eq('document_type', document_type);
       if (dataset_id) q = q.eq('dataset_id', dataset_id);
       if (processing_status) q = q.eq('processing_status', processing_status);
-      if (min_classification_score) q = q.gte('classification_score', min_classification_score);
-      q = q.order('classification_score', { ascending: false }).limit(limit);
+      if (classification) q = q.eq('classification', classification);
+      q = q.order('bates_number', { ascending: true }).limit(limit);
 
       const { data, error, count: total } = await q;
       if (error) return errorResponse(error.message);
@@ -166,16 +166,17 @@ export function registerDocumentTools(server: McpServer) {
         page_count: z.number().optional(),
         dataset_id: z.string().uuid().optional(),
         classification: z.enum(['high', 'medium', 'low']).optional(),
-        classification_score: z.number().min(0).max(100).optional(),
         severity: z.string().optional(),
+        summary: z.string().optional().describe('Brief document summary'),
         review_notes: z.string().optional().describe('Analysis notes from review session'),
       },
     },
-    async (params) => {
+    async ({ date, ...rest }) => {
       const sb = getSupabase();
       const { data, error } = await sb.from('documents')
         .insert({
-          ...params,
+          ...rest,
+          ...(date ? { original_date: date } : {}),
           processing_status: 'reviewed',
           reviewed_at: new Date().toISOString(),
         })
@@ -203,18 +204,19 @@ export function registerDocumentTools(server: McpServer) {
         document_type: z.string().optional(),
         date: z.string().optional(),
         classification: z.enum(['high', 'medium', 'low']).optional(),
-        classification_score: z.number().min(0).max(100).optional(),
         severity: z.string().optional(),
+        summary: z.string().optional().describe('Brief document summary'),
         processing_status: z.string().optional(),
         review_notes: z.string().optional(),
       },
     },
-    async ({ document_id, ...updates }) => {
+    async ({ document_id, date, ...updates }) => {
       const sb = getSupabase();
       const clean: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(updates)) {
         if (v !== undefined) clean[k] = v;
       }
+      if (date !== undefined) clean.original_date = date;
       if (Object.keys(clean).length === 0) {
         return toolResponse({ success: false, message: 'No fields to update' });
       }
