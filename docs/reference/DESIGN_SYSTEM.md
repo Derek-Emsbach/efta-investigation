@@ -30,12 +30,12 @@ colors: {
   success: '#10B981',           // Completed, ROUTINE, Tier 5 (victims)
   
   // Tier Colors
-  'tier-1': '#DC2626',          // Convicted/Charged — deep red
-  'tier-2': '#F59E0B',          // NPA Immunity — amber
-  'tier-3': '#F97316',          // Suspicious/Concerning — orange
-  'tier-4': '#6B7280',          // Social/Professional — gray
-  'tier-5': '#14B8A6',          // Victims/Witnesses — teal
-  'tier-6': '#64748B',          // Staff/Legal — slate
+  'tier-1': '#DC2626',          // Direct Evidence — deep red
+  'tier-2': '#F59E0B',          // Immunized — amber
+  'tier-3': '#F97316',          // Circumstantial — orange
+  'tier-4': '#6B7280',          // Associated — gray
+  'tier-5': '#14B8A6',          // Victim / Witness — teal
+  'tier-6': '#64748B',          // Peripheral — slate
   
   // Severity Colors
   'severity-extreme': '#DC2626',
@@ -86,9 +86,12 @@ const ibmPlexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500'], 
 ### TierBadge
 Small chip showing entity tier. Color-coded per tier colors above.
 ```
-[TIER 1 · CONVICTED]  — red background, white text
-[TIER 3 · SUSPICIOUS] — orange background, white text
-[TIER 5 · VICTIM]     — teal background, white text
+[TIER 1 · DIRECT]          — red background, white text
+[TIER 2 · IMMUNIZED]       — amber background, white text
+[TIER 3 · CIRCUMSTANTIAL]  — orange background, white text
+[TIER 4 · ASSOCIATED]      — gray background, white text
+[TIER 5 · VICTIM]          — teal background, white text
+[TIER 6 · PERIPHERAL]      — slate background, white text
 ```
 
 ### SeverityMarker
@@ -145,23 +148,30 @@ Avatar initials in circle, tier badge, count stats at bottom.
 │ EFTA     │  [Page Content]                  │
 │ ────     │                                  │
 │          │                                  │
+│INVESTIG. │                                  │
 │ Dashboard│                                  │
 │ Entities │                                  │
 │ Documents│                                  │
 │ Timeline │                                  │
-│ Network  │                                  │
-│ Hierarchy│                                  │
-│ Datasets │                                  │
 │ Search   │                                  │
+│ Network  │                                  │
+│ Datasets │                                  │
+│ Hierarchy│                                  │
+│ Forensics│                                  │
+│ Photos   │                                  │
+│ Locations│                                  │
+│ Cases    │                                  │
 │          │                                  │
 │ ──────── │                                  │
-│ ADMIN    │                                  │
+│ ADMIN    │  (hidden for viewer role)        │
+│ Upload   │                                  │
 │ Process  │                                  │
 │ Review   │                                  │
-│ Import   │                                  │
+│ Detective│  → /assistant                    │
+│ Admin    │                                  │
 │          │                                  │
 │ ──────── │                                  │
-│ [user]   │                                  │
+│ [user]   │  role badge                      │
 │ Logout   │                                  │
 └──────────┴──────────────────────────────────┘
 ```

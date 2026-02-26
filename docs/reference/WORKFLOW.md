@@ -131,41 +131,70 @@ For large dataset uploads where the pipeline handles extraction.
 
 ## AI Assistant Integration
 
-### In-Dashboard AI (Phase 3+)
+### Three AI Interfaces
 
-An AI assistant built into the admin interface with full database access.
+The platform has three AI-powered interfaces, each serving a different workflow:
+
+#### 1. Detective (In-Dashboard, `/assistant`)
+
+Chat interface with full database read access + write suggestions. Uses Claude API with tool use.
 
 **Capabilities:**
 - **Connection discovery:** "What connections am I missing for Leon Black?" → queries all documents, entities, timeline overlaps
 - **Anomaly detection:** "These 3 documents share a date and entities but aren't linked"
-- **Pattern recognition:** "This redaction pattern matches 5 other documents from DS8"
 - **Evidence assembly:** "Build the evidence summary for Entity X" → pulls all evidence items, documents, connections
-- **Cross-reference:** "Find all documents from this date range mentioning any Tier 1 entity"
 - **Gap analysis:** "Which Tier 3 entities have fewer than 3 source documents?" → identifies under-investigated leads
 
-**How it works technically:**
-- Chat interface in admin dashboard
-- Uses Claude API (claude-sonnet-4-20250514 or equivalent)
-- System prompt includes: investigation context, entity tiers, redaction framework
-- Tool use: can query Supabase directly (read-only) to answer questions
-- Can generate structured suggestions (new connections, tier changes, investigation threads) that you approve with one click
+**Technical:** Claude API (claude-sonnet-4-5-20250929) with 12 read tools + 5 suggestion tools. SSE streaming. Conversation persistence. One-click approve/dismiss on suggestions.
 
-**Example interactions:**
-```
-You: "What patterns do you see across the 12 documents I reviewed today?"
-AI: "Three documents share a redaction pattern I haven't seen before — 
-     the same 3-line block is redacted in each, but the surrounding 
-     context suggests it's a name. Cross-referencing the dates with 
-     flight logs shows Entity X was in New York on all three dates. 
-     Suggest creating a connection?"
+#### 2. Archer (Review Copilot, `/review` right panel)
 
-You: "Show me everything we have on Mr. Dana from the journals"
-AI: "Mr. Dana appears in victim journal entries (EFTA02731420, 02731465). 
-     Currently Tier 3. No other documents reference this name. However, 
-     searching for 'Dana Rockefeller' returns 2 hits in DS9 emails — 
-     EFTA00052341 and EFTA00052789. Neither has been reviewed yet. 
-     Want me to flag them for priority review?"
-```
+Document-specific AI analysis embedded in the 3-column review page. Analyzes the currently-selected document.
+
+**Capabilities:**
+- Brief first impression → numbered analysis sections → drill-down
+- Entity extraction with in-PDF annotation highlighting
+- Significance assessment and review action recommendation
+- Write tools: create entities, events, and entity-document links directly
+
+**Technical:** Claude API with prompt caching (90% cost reduction). System prompt enriched with R2 full text (30K chars). `get_document_text` tool for on-demand page-range access.
+
+#### 3. MCP Server (Claude.ai Desktop, port 3001)
+
+Primary interface for deep investigation sessions. Connects Claude.ai to live investigation data.
+
+**Capabilities:**
+- Full read/write access to all Supabase tables (entities, documents, events, connections, suspects, sightings, locations)
+- SQLite corpus search (6.3GB full text + 940MB redaction analysis)
+- Document deep reads via `corpus_get_document_text` (page-range access)
+- Fuzzy entity lookup (`lookup_person`) across entities + suspect watchlist
+- Batch operations (`batch_link_entities_to_document`)
+
+**Technical:** 58 tools across 13 domain modules. Express + `@modelcontextprotocol/sdk` StreamableHTTP transport. See `services/efta-mcp-server/`.
+
+### MCP Investigation Workflow (Most Common)
+
+This is the primary way investigation data enters the database now.
+
+**Process:**
+1. Open Claude.ai with MCP server connected
+2. Identify a target document (by Bates number or corpus search)
+3. Read full text via `corpus_get_document_text` in page-range chunks
+4. Analyze content, identify entities, events, connections
+5. Lock findings into DB:
+   - `lookup_person` → find or create entities (via `promote_suspect` if needed)
+   - `batch_link_entities_to_document` → link all found entities
+   - `create_event` + `link_entity_to_event` → timeline entries
+   - `create_connection` → relationship records
+   - `create_suspect` → add to watchlist for future investigation
+6. Write analysis report to `docs/investigation/{EFTA}_Analysis.md`
+7. Commit and push
+
+**Key gotchas:**
+- `lookup_person` returns suspect IDs — must `promote_suspect` before using as FK
+- `batch_link_entities_to_document` needs document UUID, not Bates number — get UUID via `get_document` first
+- `corpus_get_document_text` limited to ~30K chars per call — use `start_page`/`end_page` params for long documents
+- Always verify `lookup_person` fuzzy matches — common surnames return wrong entities
 
 ## Dataset Progress Tracking
 

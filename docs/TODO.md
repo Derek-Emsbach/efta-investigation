@@ -626,5 +626,4 @@
 - [x] `docs/investigation/EFTA01266403_Analysis.md` — 12-section analysis (trust structure, trustees, beneficiaries, properties, shell companies, key quotes, entity register, cross-references, open questions, database updates)
 - [x] `docs/investigation/EFTA01266403_Database_Updates_Prompt.md` — structured DB update spec: 5 new entities (Mitchell, Celina Dubin, Eva Andersson-Dubin, Shuliak, Kahn), 12 entity-doc links, 2 events, 9 connections, 11 suspect watchlist additions
 - [x] EFTA01266403 database updates — 5 new entities (Mitchell T6, Celina Dubin T4, Eva Andersson-Dubin T4, Shuliak T4, Kahn T6), 3 entity updates (Dubin/Indyke/Staley evidence_summary merged), 11 entity-doc links, 2 events, 9 connections (incl. 2 `family_of`), 11 suspects added to watchlist
-- [ ] EFTA01266380 deep read — original November 2014 trust (predecessor to 01266403). Was Staley in the original or added in the amendment?
-- [ ] EFTA01266427 deep read — first amendment to the amendment. What changed after May 2015?
+- [x] EFTA01266380 + EFTA01266427 deep read — 3-way trust comparison complete. Staley confirmed as original trustee (Nov 2014). Combined analysis at `docs/investigation/EFTA01266380_Analysis.md`. Raw text for 01266427 extracted. Trust chain: 01266380 (original) → 01266403 (A&R May 2015) → 01266427 (1st amendment).

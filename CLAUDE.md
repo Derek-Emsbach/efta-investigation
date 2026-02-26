@@ -36,7 +36,7 @@ efta-investigation/
         app/                      # App Router
           (dashboard)/            # Auth-protected dashboard pages
             review/               # Document review (3-column: queue | PDF | Archer)
-            detective/            # AI detective assistant
+            assistant/            # AI detective assistant
             upload/               # Document upload
             processing/           # Processing pipeline dashboard
             entities/[id]/        # Entity profiles
@@ -48,7 +48,7 @@ efta-investigation/
             hierarchy/            # Entity hierarchy
           api/                    # API routes
             review/archer/        # Archer SSE streaming endpoint
-            detective/            # Detective chat endpoint
+            assistant/            # Detective chat endpoint
             upload/               # Presigned URL generation
         components/               # React components
           ui/                     # Design system (breadcrumbs, theme-toggle)
