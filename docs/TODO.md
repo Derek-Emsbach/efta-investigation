@@ -613,3 +613,11 @@
 - [x] `SuspectWatchlist` types added to `@efta/shared`
 - [x] Run migration 013 in Supabase SQL Editor
 - [x] Deploy updated MCP server
+- [x] `corpus_get_document_text`: added `start_page`/`end_page` range params for multi-page reads (up to 30K chars)
+- [x] `corpus_search`: added `efta_number` filter param for within-document FTS searches
+- [x] Dynamic SQL builder for `corpus_search` — handles all 4 filter combinations (dataset × efta_number)
+
+### Investigation Analysis Reports
+- [x] EFTA02731082 deep read — all 86 pages read in 9 sequential chunk calls, zero truncation
+- [x] `docs/investigation/EFTA02731082_Analysis.md` — 12-section analysis report (overview, victim accounts, named subjects, evidence inventory, legal analysis, charging decision, key quotes, redaction analysis, entity register, cross-references, open questions, database updates)
+- [ ] EFTA02731082 database updates — create entities (Glen Dubin, Adriana Ross, Nadia Marcinkova, Juan Alessi, Sarah Kellen), events (Wexner proffer, search warrants, Clinton Africa trip, Subject 3 cooperation), connections (Maxwell-Groff, Dubin-trafficking), and ~40 entity-document links identified in Section 12 of the analysis
