@@ -131,7 +131,7 @@ export default async function StoryPage({
       />
       <ReadingProgress />
 
-      <article className="mx-auto max-w-5xl px-6 py-10">
+      <article className="mx-auto max-w-7xl px-6 py-10">
         {/* Breadcrumb */}
         <nav className="mb-8 font-mono text-xs text-text-muted">
           <a href="/" className="hover:text-text-secondary transition-colors">

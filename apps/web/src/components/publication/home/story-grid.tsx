@@ -17,11 +17,11 @@ interface StoryGridProps {
 }
 
 const SECTION_COLORS: Record<string, string> = {
-  'the-network': '#c41e3a',
-  'follow-the-money': '#b8860b',
-  'the-cover-up': '#6b21a8',
-  'the-operation': '#0e7490',
-  'voices': '#0d9488',
+  'the-network': 'var(--color-section-network)',
+  'follow-the-money': 'var(--color-section-money)',
+  'the-cover-up': 'var(--color-section-coverup)',
+  'the-operation': 'var(--color-section-operation)',
+  'voices': 'var(--color-section-voices)',
 }
 
 const SECTION_LABELS: Record<string, string> = {

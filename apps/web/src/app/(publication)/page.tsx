@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import { Masthead } from '@/components/publication/home/masthead'
+import { BreakingNewsTicker } from '@/components/publication/home/breaking-ticker'
+import { SectionStoryGrid } from '@/components/publication/home/section-story-grid'
+import { FeaturedInvestigation } from '@/components/publication/home/featured-investigation'
 import { InvestigationStats } from '@/components/publication/home/investigation-stats'
-import { StoryGrid } from '@/components/publication/home/story-grid'
 import { CaseFilesPreview } from '@/components/publication/home/case-files-preview'
+import { TimelinePreview } from '@/components/publication/home/timeline-preview'
 import { EntitySpotlight } from '@/components/publication/home/entity-spotlight'
 import { EvidenceRoomPromo } from '@/components/publication/home/evidence-room-promo'
 
@@ -33,14 +36,14 @@ const supabase = createClient(
 
 export default async function HomePage() {
   // Fetch all homepage data in parallel
-  const [storiesResult, caseFilesResult, entitiesResult, docCountResult] =
+  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult] =
     await Promise.all([
       supabase
         .from('stories')
         .select('id, slug, title, deck, section, byline, reading_time_minutes, is_featured, published_at')
         .eq('is_published', true)
         .order('published_at', { ascending: false })
-        .limit(10),
+        .limit(20),
 
       supabase
         .from('case_files')
@@ -58,12 +61,20 @@ export default async function HomePage() {
         .order('name')
         .limit(8),
 
+      supabase
+        .from('events')
+        .select('id, date, title, description, significance, event_type')
+        .in('event_type', ['legal', 'legislative', 'institutional'])
+        .order('date', { ascending: true })
+        .limit(8),
+
       supabase.rpc('estimated_document_count'),
     ])
 
   const stories = storiesResult.data ?? []
   const caseFiles = caseFilesResult.data ?? []
   const entities = entitiesResult.data ?? []
+  const events = eventsResult.data ?? []
 
   const stats = {
     documents: (docCountResult.data as number) ?? 1_370_000,
@@ -76,18 +87,17 @@ export default async function HomePage() {
   return (
     <div>
       {/* Masthead */}
-      <div className="mx-auto max-w-5xl px-6">
+      <div className="mx-auto max-w-7xl px-6">
         <Masthead />
       </div>
 
-      {/* Stats bar (full-width dark) */}
-      <InvestigationStats stats={stats} />
+      {/* Breaking News Ticker (full-width) */}
+      <BreakingNewsTicker />
 
-      {/* Main content */}
-      <div className="mx-auto max-w-5xl px-6">
-        {/* Stories */}
+      {/* Section-organized stories */}
+      <div className="mx-auto max-w-7xl px-6">
         {stories.length > 0 ? (
-          <StoryGrid stories={stories} />
+          <SectionStoryGrid stories={stories} />
         ) : (
           <section className="py-10 text-center">
             <p className="font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
@@ -98,10 +108,16 @@ export default async function HomePage() {
             </p>
           </section>
         )}
+      </div>
 
-        {/* Divider */}
-        <div className="border-b border-border-default" />
+      {/* Featured Investigation (full-width dark section) */}
+      <FeaturedInvestigation />
 
+      {/* Stats bar (full-width dark) */}
+      <InvestigationStats stats={stats} />
+
+      {/* Lower content sections */}
+      <div className="mx-auto max-w-7xl px-6">
         {/* Case files */}
         {caseFiles.length > 0 ? (
           <CaseFilesPreview caseFiles={caseFiles} />
@@ -115,6 +131,12 @@ export default async function HomePage() {
             </p>
           </section>
         )}
+
+        {/* Divider */}
+        <div className="border-b border-border-default" />
+
+        {/* Timeline */}
+        <TimelinePreview events={events} />
 
         {/* Divider */}
         <div className="border-b border-border-default" />

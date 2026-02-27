@@ -181,7 +181,7 @@ export default async function EntityProfilePage({
       description={typedEntity.bio ?? undefined}
       slug={slug}
     />
-    <div className="mx-auto max-w-5xl px-6 py-12">
+    <div className="mx-auto max-w-7xl px-6 py-12">
       {/* Breadcrumb */}
       <nav className="mb-8 font-mono text-xs text-text-muted">
         <a href="/" className="hover:text-text-secondary transition-colors">

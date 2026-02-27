@@ -16,12 +16,12 @@ interface EntitySpotlightProps {
 }
 
 const TIER_COLORS: Record<Tier, string> = {
-  1: '#c41e3a',
-  2: '#d4a017',
-  3: '#e07020',
-  4: '#6b7280',
-  5: '#0d9488',
-  6: '#64748b',
+  1: 'var(--color-tier-1)',
+  2: 'var(--color-tier-2)',
+  3: 'var(--color-tier-3)',
+  4: 'var(--color-tier-4)',
+  5: 'var(--color-tier-5)',
+  6: 'var(--color-tier-6)',
 }
 
 export function EntitySpotlight({ entities }: EntitySpotlightProps) {

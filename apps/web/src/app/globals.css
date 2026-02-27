@@ -40,21 +40,21 @@
   --color-accent-red: #c41e3a;
 
   /* === Colors: Section (publication stories) === */
-  --color-section-network: #c41e3a;
-  --color-section-money: #b8860b;
-  --color-section-coverup: #6b21a8;
-  --color-section-operation: #0e7490;
-  --color-section-voices: #0d9488;
+  --color-section-network: #2c3e50;
+  --color-section-money: #1a472a;
+  --color-section-coverup: #4a1a2a;
+  --color-section-operation: #3a2a1a;
+  --color-section-voices: #2a2a4a;
 
   /* === Colors: Neon (evidence room) === */
-  --color-neon-green: #22c55e;
-  --color-neon-blue: #3b82f6;
-  --color-neon-cyan: #06b6d4;
-  --color-neon-purple: #a855f7;
-  --color-glow-green: rgba(34, 197, 94, 0.15);
-  --color-glow-blue: rgba(59, 130, 246, 0.15);
-  --color-glow-cyan: rgba(6, 182, 212, 0.15);
-  --color-glow-purple: rgba(168, 85, 247, 0.15);
+  --color-neon-green: #34d399;
+  --color-neon-blue: #60a5fa;
+  --color-neon-cyan: #22d3ee;
+  --color-neon-purple: #a78bfa;
+  --color-glow-green: rgba(52, 211, 153, 0.15);
+  --color-glow-blue: rgba(96, 165, 250, 0.15);
+  --color-glow-cyan: rgba(34, 211, 238, 0.15);
+  --color-glow-purple: rgba(167, 139, 250, 0.15);
 
   /* === Fonts === */
   --font-display: var(--font-playfair-display), "Playfair Display", Georgia, "Times New Roman", serif;
@@ -79,21 +79,40 @@
   --color-border-default: #d4d0c8;
   --color-border-light: #e8e4dc;
   --color-text-primary: #1a1a1a;
-  --color-text-secondary: #4a4540;
-  --color-text-muted: #8a857e;
+  --color-text-secondary: #4a4a4a;
+  --color-text-muted: #6b6b6b;
+  --color-text-light: #8a8a8a;
   --color-critical: #c41e3a;
-  --color-info: #2563eb;
+  --color-info: #1a3a5c;
   --color-accent-gold: #b8860b;
   --color-accent-red: #c41e3a;
+  --color-accent-red-dark: #9b1830;
+  --color-accent-red-light: #fce4ec;
+  --color-accent-blue: #1a3a5c;
+  --color-accent-blue-light: #e3edf7;
   /* Section colors */
-  --color-section-network: #c41e3a;
-  --color-section-money: #b8860b;
-  --color-section-coverup: #6b21a8;
-  --color-section-operation: #0e7490;
-  --color-section-voices: #0d9488;
+  --color-section-network: #2c3e50;
+  --color-section-money: #1a472a;
+  --color-section-coverup: #4a1a2a;
+  --color-section-operation: #3a2a1a;
+  --color-section-voices: #2a2a4a;
+  /* Tier colors (publication palette) */
+  --color-tier-1: #c62828;
+  --color-tier-1-bg: #fce4ec;
+  --color-tier-2: #e65100;
+  --color-tier-2-bg: #fff3e0;
+  --color-tier-3: #f57f17;
+  --color-tier-3-bg: #fff8e1;
+  --color-tier-4: #283593;
+  --color-tier-4-bg: #e8eaf6;
+  --color-tier-5: #6a1b9a;
+  --color-tier-5-bg: #f3e5f5;
+  --color-tier-6: #455a64;
+  --color-tier-6-bg: #eceff1;
   /* Font overrides */
   --font-body: var(--font-source-serif-4), "Source Serif 4", Georgia, "Times New Roman", serif;
   --font-display: var(--font-playfair-display), "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-dm-sans), "DM Sans", -apple-system, sans-serif;
 }
 
 /* === Manila Theme (case files) === */
@@ -118,25 +137,25 @@
 [data-theme="evidence-room"] {
   --color-background: #0d0f11;
   --color-surface: #181c22;
-  --color-elevated: #1e2430;
+  --color-elevated: #1e232b;
   --color-border-default: #2a3040;
-  --color-border-light: #354058;
+  --color-border-light: #343d4f;
   --color-text-primary: #e8eaf0;
-  --color-text-secondary: #9ca3b4;
-  --color-text-muted: #5c6478;
+  --color-text-secondary: #9aa3b4;
+  --color-text-muted: #6b7585;
   --color-critical: #e63950;
-  --color-info: #3b82f6;
-  --color-success: #10b981;
+  --color-info: #60a5fa;
+  --color-success: #34d399;
   --color-warning: #f59e0b;
   /* Neon accents */
-  --color-neon-green: #22c55e;
-  --color-neon-blue: #3b82f6;
-  --color-neon-cyan: #06b6d4;
-  --color-neon-purple: #a855f7;
-  --color-glow-green: rgba(34, 197, 94, 0.15);
-  --color-glow-blue: rgba(59, 130, 246, 0.15);
-  --color-glow-cyan: rgba(6, 182, 212, 0.15);
-  --color-glow-purple: rgba(168, 85, 247, 0.15);
+  --color-neon-green: #34d399;
+  --color-neon-blue: #60a5fa;
+  --color-neon-cyan: #22d3ee;
+  --color-neon-purple: #a78bfa;
+  --color-glow-green: rgba(52, 211, 153, 0.15);
+  --color-glow-blue: rgba(96, 165, 250, 0.15);
+  --color-glow-cyan: rgba(34, 211, 238, 0.15);
+  --color-glow-purple: rgba(167, 139, 250, 0.15);
   --font-body: var(--font-dm-sans), "DM Sans", system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, "Courier New", monospace;
 }

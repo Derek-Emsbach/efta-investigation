@@ -124,6 +124,7 @@
 - [x] Mobile hamburger menu on publication header
 - [x] Content seeding: 6 case files + 44 open questions + 34 entity links seeded from investigation threads
   - [x] Enhanced FindingsMarkdown component: markdown tables, `[SPECULATION_START/END]` blocks, HTML comment stripping, `<h4>` headings, multi-paragraph blockquotes, horizontal rules
+  - [x] Unified renderer upgrade: FindingsMarkdown now uses `lib/markdown-renderer.tsx` (React nodes, no `dangerouslySetInnerHTML`). Auto-links entity names (word-boundary, longest-first) and EFTA Bates numbers in case file findings.
 - [ ] Full cross-linking audit (entity mentions in stories → profile links, EFTA numbers → evidence room)
 
 ---

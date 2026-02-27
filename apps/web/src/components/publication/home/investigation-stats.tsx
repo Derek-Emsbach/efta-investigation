@@ -17,7 +17,7 @@ function formatNumber(n: number): string {
 export function InvestigationStats({ stats }: InvestigationStatsProps) {
   return (
     <div className="bg-[#1a1a1a] text-white">
-      <div className="mx-auto max-w-5xl px-6 py-6">
+      <div className="mx-auto max-w-7xl px-6 py-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 text-center">
           <StatItem value={formatNumber(stats.documents)} label="Documents Analyzed" />
           <StatItem value={formatNumber(stats.pages)} label="Pages Reviewed" />
