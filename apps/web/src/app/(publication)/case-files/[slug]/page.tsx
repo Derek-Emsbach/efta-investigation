@@ -115,7 +115,16 @@ export default async function CaseFilePage({
         <div className="space-y-12">
           {/* Findings */}
           <div id="findings">
-            <FindingsMarkdown markdown={typedCaseFile.findings_markdown} />
+            <FindingsMarkdown
+              markdown={typedCaseFile.findings_markdown}
+              entities={entities
+                .filter((e) => e.entity?.slug && e.entity?.profile_published)
+                .map((e) => ({
+                  slug: e.entity.slug!,
+                  name: e.entity.name,
+                  tier: e.entity.tier,
+                }))}
+            />
           </div>
 
           {/* Entity roster */}
