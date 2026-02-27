@@ -105,6 +105,7 @@ export interface Investigation {
 export interface Entity {
   id: string
   name: string
+  slug: string | null
   entity_type: EntityType
   tier: Tier | null
   tier_justification: string | null
@@ -115,6 +116,8 @@ export interface Entity {
   profile_image_url: string | null
   is_public: boolean
   datasets_appeared: number[]
+  financial_summary: Record<string, unknown>
+  profile_published: boolean
   metadata: Record<string, unknown>
   created_at: string
   updated_at: string
@@ -493,6 +496,93 @@ export interface NotificationAlert {
   metadata: Record<string, unknown>
   action_url: string | null
   created_at: string
+}
+
+// ============================================================
+// PUBLICATION TABLES (The Epstein Record)
+// ============================================================
+
+export type StorySection = 'the-network' | 'follow-the-money' | 'the-cover-up' | 'the-operation' | 'voices'
+export type CaseFileStatus = 'active' | 'complete' | 'archived'
+export type CaseFileClassification = 'public' | 'restricted'
+export type QuestionPriority = 'critical' | 'high' | 'medium' | 'low'
+export type QuestionStatus = 'open' | 'partially_answered' | 'answered'
+
+export interface Story {
+  id: string
+  slug: string
+  title: string
+  deck: string | null
+  section: StorySection | null
+  body_markdown: string
+  byline: string
+  reading_time_minutes: number | null
+  is_published: boolean
+  is_featured: boolean
+  published_at: string | null
+  case_file_id: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface StoryEntity {
+  id: string
+  story_id: string
+  entity_id: string
+  mention_count: number
+  is_primary: boolean
+}
+
+export interface StoryCitation {
+  id: string
+  story_id: string
+  citation_number: number
+  document_id: string | null
+  description: string | null
+  bates_number: string | null
+  page_reference: string | null
+}
+
+export interface CaseFile {
+  id: string
+  slug: string
+  case_id: string
+  title: string
+  status: CaseFileStatus
+  classification: CaseFileClassification
+  dataset_id: string | null
+  summary: string | null
+  findings_markdown: string
+  methodology_notes: string | null
+  date_range_start: string | null
+  date_range_end: string | null
+  docs_reviewed: number
+  completion_percentage: number
+  is_published: boolean
+  published_at: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface CaseFileEntity {
+  id: string
+  case_file_id: string
+  entity_id: string
+  role: string | null
+}
+
+export interface OpenQuestion {
+  id: string
+  case_file_id: string | null
+  question: string
+  priority: QuestionPriority
+  status: QuestionStatus
+  answer: string | null
+  metadata: Record<string, unknown>
+  created_at: string
+  updated_at: string
 }
 
 // ============================================================

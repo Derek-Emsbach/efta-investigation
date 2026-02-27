@@ -35,6 +35,27 @@
   --color-severity-high: #F59E0B;
   --color-severity-routine: #10B981;
 
+  /* === Colors: Publication Accents (overridden per theme) === */
+  --color-accent-gold: #b8860b;
+  --color-accent-red: #c41e3a;
+
+  /* === Colors: Section (publication stories) === */
+  --color-section-network: #c41e3a;
+  --color-section-money: #b8860b;
+  --color-section-coverup: #6b21a8;
+  --color-section-operation: #0e7490;
+  --color-section-voices: #0d9488;
+
+  /* === Colors: Neon (evidence room) === */
+  --color-neon-green: #22c55e;
+  --color-neon-blue: #3b82f6;
+  --color-neon-cyan: #06b6d4;
+  --color-neon-purple: #a855f7;
+  --color-glow-green: rgba(34, 197, 94, 0.15);
+  --color-glow-blue: rgba(59, 130, 246, 0.15);
+  --color-glow-cyan: rgba(6, 182, 212, 0.15);
+  --color-glow-purple: rgba(168, 85, 247, 0.15);
+
   /* === Fonts === */
   --font-display: var(--font-playfair-display), "Playfair Display", Georgia, "Times New Roman", serif;
   --font-body: var(--font-ibm-plex-sans), "IBM Plex Sans", system-ui, -apple-system, sans-serif;
@@ -46,6 +67,78 @@
   --animate-fade-in: fade-in 0.3s ease-out;
   --animate-fade-in-up: fade-in-up 0.35s ease-out;
   --animate-slide-in-right: slide-in-right 0.3s ease-out;
+  --animate-stamp-in: stamp-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --animate-ticker-scroll: ticker-scroll 30s linear infinite;
+}
+
+/* === Publication Theme (warm paper) === */
+[data-theme="publication"] {
+  --color-background: #faf8f5;
+  --color-surface: #ffffff;
+  --color-elevated: #f5f2ed;
+  --color-border-default: #d4d0c8;
+  --color-border-light: #e8e4dc;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #4a4540;
+  --color-text-muted: #8a857e;
+  --color-critical: #c41e3a;
+  --color-info: #2563eb;
+  --color-accent-gold: #b8860b;
+  --color-accent-red: #c41e3a;
+  /* Section colors */
+  --color-section-network: #c41e3a;
+  --color-section-money: #b8860b;
+  --color-section-coverup: #6b21a8;
+  --color-section-operation: #0e7490;
+  --color-section-voices: #0d9488;
+  /* Font overrides */
+  --font-body: var(--font-source-serif-4), "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-display: var(--font-playfair-display), "Playfair Display", Georgia, "Times New Roman", serif;
+}
+
+/* === Manila Theme (case files) === */
+[data-theme="manila"] {
+  --color-background: #f2ead8;
+  --color-surface: #f7f1e3;
+  --color-elevated: #ece4d0;
+  --color-border-default: #d4c9b0;
+  --color-border-light: #e0d7c4;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #4a4540;
+  --color-text-muted: #8a857e;
+  --color-critical: #c41e3a;
+  --color-accent-red: #c41e3a;
+  --color-accent-gold: #b8860b;
+  --font-body: var(--font-source-serif-4), "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-display: var(--font-playfair-display), "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, "Courier New", monospace;
+}
+
+/* === Evidence Room Theme (deep dark) === */
+[data-theme="evidence-room"] {
+  --color-background: #0d0f11;
+  --color-surface: #181c22;
+  --color-elevated: #1e2430;
+  --color-border-default: #2a3040;
+  --color-border-light: #354058;
+  --color-text-primary: #e8eaf0;
+  --color-text-secondary: #9ca3b4;
+  --color-text-muted: #5c6478;
+  --color-critical: #e63950;
+  --color-info: #3b82f6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  /* Neon accents */
+  --color-neon-green: #22c55e;
+  --color-neon-blue: #3b82f6;
+  --color-neon-cyan: #06b6d4;
+  --color-neon-purple: #a855f7;
+  --color-glow-green: rgba(34, 197, 94, 0.15);
+  --color-glow-blue: rgba(59, 130, 246, 0.15);
+  --color-glow-cyan: rgba(6, 182, 212, 0.15);
+  --color-glow-purple: rgba(168, 85, 247, 0.15);
+  --font-body: var(--font-dm-sans), "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, "Courier New", monospace;
 }
 
 /* === Light Theme Overrides === */
@@ -65,6 +158,14 @@
 [data-theme="light"] input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px var(--color-elevated) inset;
   -webkit-text-fill-color: var(--color-text-primary);
+}
+
+/* === Evidence Room grid background === */
+[data-theme="evidence-room"] .evidence-grid-bg {
+  background-image:
+    linear-gradient(rgba(42, 48, 64, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 48, 64, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 /* === Keyframes === */
@@ -114,6 +215,30 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: rotate(-15deg) scale(2);
+  }
+  60% {
+    opacity: 0.8;
+    transform: rotate(-15deg) scale(0.95);
+  }
+  100% {
+    opacity: 0.15;
+    transform: rotate(-15deg) scale(1);
+  }
+}
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
   }
 }
 
