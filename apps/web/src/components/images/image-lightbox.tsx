@@ -90,7 +90,7 @@ function LinkedEntitiesSection({ imageId }: { imageId: string }) {
                   className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded bg-elevated border border-border-default text-text-secondary group"
                 >
                   <Link
-                    href={`/entities/${link.entity_id}`}
+                    href={`/dashboard/entities/${link.entity_id}`}
                     className="hover:text-info transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -178,7 +178,7 @@ function LinkedLocationsSection({ imageId }: { imageId: string }) {
                   className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded bg-elevated border border-border-default text-text-secondary group"
                 >
                   <Link
-                    href={`/locations/${link.location_id}`}
+                    href={`/dashboard/locations/${link.location_id}`}
                     className="hover:text-info transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -350,7 +350,7 @@ export default function ImageLightbox({ images, initialIndex, onClose }: ImageLi
                 Source Document
               </h4>
               <Link
-                href={`/documents/${img.documents.id}`}
+                href={`/dashboard/documents/${img.documents.id}`}
                 className="font-mono text-sm text-info hover:text-info/80 transition-colors"
               >
                 {img.documents.bates_number ?? 'View Document'}

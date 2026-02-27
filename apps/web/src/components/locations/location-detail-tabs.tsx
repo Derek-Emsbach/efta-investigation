@@ -84,7 +84,7 @@ export default function LocationDetailTabs({
               {entities.map((entity) => (
                 <Link
                   key={entity.id}
-                  href={`/entities/${entity.id}`}
+                  href={`/dashboard/entities/${entity.id}`}
                   className="flex items-center justify-between bg-surface border border-border-default rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
                 >
                   <div className="flex items-center gap-3 min-w-0">

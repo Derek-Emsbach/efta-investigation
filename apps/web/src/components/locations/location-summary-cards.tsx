@@ -85,7 +85,7 @@ export function LocationSummaryCards() {
         {stats.topLocations.map((loc) => (
           <Link
             key={loc.id}
-            href={`/locations/${loc.id}`}
+            href={`/dashboard/locations/${loc.id}`}
             className="bg-surface border border-border-default rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
           >
             <div className="flex items-start justify-between mb-2">

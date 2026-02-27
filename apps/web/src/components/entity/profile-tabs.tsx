@@ -329,7 +329,7 @@ function DocumentsTab({ items }: { items: DocumentJoin[] }) {
               <div className="flex items-center gap-3 flex-wrap">
                 {doc.bates_number && (
                   <Link
-                    href={`/documents/${doc.id}`}
+                    href={`/dashboard/documents/${doc.id}`}
                     className="font-mono text-sm font-medium text-info hover:text-info/80 transition-colors"
                   >
                     {doc.bates_number}
@@ -350,7 +350,7 @@ function DocumentsTab({ items }: { items: DocumentJoin[] }) {
               {doc.title && (
                 <p className="text-sm text-text-primary mt-1">
                   <Link
-                    href={`/documents/${doc.id}`}
+                    href={`/dashboard/documents/${doc.id}`}
                     className="hover:text-info transition-colors"
                   >
                     {doc.title}
@@ -414,7 +414,7 @@ function ConnectionsTab({ items }: { items: ConnectionJoin[] }) {
             {/* Entity name + tier */}
             <div className="flex items-center gap-2 flex-wrap">
               <Link
-                href={`/entities/${other.id}`}
+                href={`/dashboard/entities/${other.id}`}
                 className="font-display text-sm font-semibold text-text-primary hover:text-info transition-colors"
               >
                 {other.name}

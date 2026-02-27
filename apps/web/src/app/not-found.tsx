@@ -18,7 +18,7 @@ export default function NotFound() {
           redacted, or was never entered into evidence.
         </p>
         <Link
-          href="/"
+          href="/dashboard"
           className="mt-8 inline-block rounded border border-border-default bg-elevated px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface"
         >
           Return to Dashboard

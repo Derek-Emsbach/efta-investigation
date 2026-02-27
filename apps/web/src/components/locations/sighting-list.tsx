@@ -105,7 +105,7 @@ export function SightingList({ sightings }: SightingListProps) {
                       <div className="flex items-center gap-2 flex-wrap">
                         {s.entity && (
                           <Link
-                            href={`/entities/${s.entity.id}`}
+                            href={`/dashboard/entities/${s.entity.id}`}
                             className="font-display font-medium text-sm text-text-primary hover:text-info transition-colors"
                           >
                             {s.entity.name}
@@ -133,7 +133,7 @@ export function SightingList({ sightings }: SightingListProps) {
                       {/* Source document */}
                       {s.document && (
                         <Link
-                          href={`/documents/${s.document.id}`}
+                          href={`/dashboard/documents/${s.document.id}`}
                           className="inline-flex items-center gap-1 text-[10px] text-text-muted hover:text-info transition-colors mt-1.5"
                         >
                           <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

@@ -125,7 +125,7 @@ export function CoPresencePanel({ sightings }: CoPresencePanelProps) {
               {event.entities.map((entity) => (
                 <Link
                   key={entity.id}
-                  href={`/entities/${entity.id}`}
+                  href={`/dashboard/entities/${entity.id}`}
                   className="inline-flex items-center gap-1.5 text-xs bg-surface border border-border-default rounded px-2 py-1 hover:border-info transition-colors"
                 >
                   <span className="text-text-primary font-medium">{entity.name}</span>

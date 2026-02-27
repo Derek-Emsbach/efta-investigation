@@ -85,7 +85,7 @@ export function RedactionIntel() {
         {/* Suspect callout */}
         {stats.suspectCount > 0 && (
           <Link
-            href="/documents"
+            href="/dashboard/documents"
             className="flex items-center gap-2 bg-critical/5 border border-critical/20 rounded-lg px-4 py-2.5 hover:bg-critical/10 transition-colors group"
           >
             <svg className="w-4 h-4 text-critical shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

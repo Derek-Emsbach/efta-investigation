@@ -1,7 +1,14 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const ADMIN_PATHS = ['/upload', '/processing', '/review', '/assistant', '/admin', '/settings']
+const ADMIN_PATHS = [
+  '/dashboard/upload',
+  '/dashboard/processing',
+  '/dashboard/review',
+  '/dashboard/assistant',
+  '/dashboard/admin',
+  '/dashboard/settings',
+]
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
@@ -33,21 +40,21 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
-  // Redirect unauthenticated users to login (except for /login itself and public pages)
-  if (!user && !pathname.startsWith('/login') && !pathname.startsWith('/disclaimer') && !pathname.startsWith('/privacy') && !pathname.startsWith('/terms')) {
+  // Only /dashboard/* requires authentication — everything else is public
+  if (!user && pathname.startsWith('/dashboard')) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from /login
+  // Redirect authenticated users away from /login to dashboard
   if (user && pathname.startsWith('/login')) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 
-  // Admin route guard: redirect viewers away from admin-only paths
+  // Admin route guard: redirect viewers away from admin-only dashboard paths
   if (user && ADMIN_PATHS.some((p) => pathname.startsWith(p))) {
     const { data: profile } = await supabase
       .from('profiles')
@@ -59,7 +66,7 @@ export async function updateSession(request: NextRequest) {
 
     if (role !== 'admin') {
       const url = request.nextUrl.clone()
-      url.pathname = '/'
+      url.pathname = '/dashboard'
       return NextResponse.redirect(url)
     }
   }

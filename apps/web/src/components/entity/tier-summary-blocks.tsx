@@ -141,7 +141,7 @@ export function TierSummaryBlocks() {
                   .map(([cat, count]) => (
                     <div key={cat} className="flex items-center justify-between">
                       <Link
-                        href={`/entities?tier=${expanded}&category=${cat}`}
+                        href={`/dashboard/entities?tier=${expanded}&category=${cat}`}
                         className="text-xs text-text-secondary hover:text-info transition-colors"
                       >
                         {formatLabel(cat)}
@@ -196,7 +196,7 @@ export function TierSummaryBlocks() {
           {/* View filtered link */}
           <div className="mt-4 pt-3 border-t border-border-default">
             <Link
-              href={`/entities?tier=${expanded}`}
+              href={`/dashboard/entities?tier=${expanded}`}
               className="text-xs text-info hover:text-info/80 transition-colors"
             >
               View all {stats.tiers[String(expanded)].total} Tier {expanded} entities →

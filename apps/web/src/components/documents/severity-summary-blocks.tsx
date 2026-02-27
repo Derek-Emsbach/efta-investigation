@@ -196,7 +196,7 @@ export function SeveritySummaryBlocks() {
           {/* View filtered link */}
           <div className="mt-4 pt-3 border-t border-border-default">
             <Link
-              href={`/documents?severity=${expanded}`}
+              href={`/dashboard/documents?severity=${expanded}`}
               className="text-xs text-info hover:text-info/80 transition-colors"
             >
               View all {stats.severities[expanded].total}{' '}
@@ -227,7 +227,7 @@ export function SeveritySummaryBlocks() {
             These may be newly uploaded or still in processing.
           </p>
           <Link
-            href="/documents?severity="
+            href="/dashboard/documents?severity="
             className="text-xs text-info hover:text-info/80 transition-colors"
           >
             View unassessed documents →

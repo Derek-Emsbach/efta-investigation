@@ -68,7 +68,7 @@ export function ActionItems() {
       {/* Pending Reviews */}
       {hasReviews && (
         <Link
-          href="/review"
+          href="/dashboard/review"
           className="flex-1 block bg-surface border-l-4 border-warning rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
         >
           <div className="flex items-start gap-3">
@@ -103,7 +103,7 @@ export function ActionItems() {
       {/* Failed Processing */}
       {hasFailed && (
         <Link
-          href="/processing"
+          href="/dashboard/processing"
           className="flex-1 block bg-surface border-l-4 border-critical rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
         >
           <div className="flex items-start gap-3">
@@ -127,7 +127,7 @@ export function ActionItems() {
       {/* Suspect Redactions */}
       {hasSuspect && (
         <Link
-          href="/documents"
+          href="/dashboard/documents"
           className="flex-1 block bg-surface border-l-4 border-critical/70 rounded-lg p-4 hover:bg-elevated/30 transition-colors group"
         >
           <div className="flex items-start gap-3">

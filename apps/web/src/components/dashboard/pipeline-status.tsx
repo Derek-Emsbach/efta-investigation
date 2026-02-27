@@ -47,7 +47,7 @@ export function PipelineStatus() {
           </svg>
           No documents in pipeline
         </div>
-        <Link href="/processing" className="text-xs text-info hover:text-info/80 transition-colors">
+        <Link href="/dashboard/processing" className="text-xs text-info hover:text-info/80 transition-colors">
           View Pipeline &rarr;
         </Link>
       </div>
@@ -110,7 +110,7 @@ export function PipelineStatus() {
           )}
         </div>
 
-        <Link href="/processing" className="text-xs text-info hover:text-info/80 transition-colors">
+        <Link href="/dashboard/processing" className="text-xs text-info hover:text-info/80 transition-colors">
           View Pipeline &rarr;
         </Link>
       </div>

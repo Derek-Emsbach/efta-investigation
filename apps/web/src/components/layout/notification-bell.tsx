@@ -35,7 +35,7 @@ export default function NotificationBell({ collapsed }: { collapsed?: boolean })
 
   return (
     <Link
-      href="/admin"
+      href="/dashboard/admin"
       className="relative flex items-center justify-center w-8 h-8 rounded-md text-text-muted hover:text-text-primary hover:bg-elevated/50 transition-colors"
       title="Notifications"
       aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}

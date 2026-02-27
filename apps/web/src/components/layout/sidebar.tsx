@@ -14,26 +14,26 @@ interface SidebarProps {
 }
 
 const investigationItems = [
-  { label: "Dashboard", href: "/", icon: "home" as const },
-  { label: "Entities", href: "/entities", icon: "users" as const },
-  { label: "Documents", href: "/documents", icon: "file-text" as const },
-  { label: "Timeline", href: "/timeline", icon: "clock" as const },
-  { label: "Search", href: "/search", icon: "search" as const },
-  { label: "Network", href: "/network", icon: "network" as const },
-  { label: "Datasets", href: "/datasets", icon: "database" as const },
-  { label: "Hierarchy", href: "/hierarchy", icon: "sitemap" as const },
-  { label: "Forensics", href: "/forensics", icon: "microscope" as const },
-  { label: "Photos", href: "/photos", icon: "image" as const },
-  { label: "Locations", href: "/locations", icon: "map-pin" as const },
-  { label: "Investigations", href: "/investigations", icon: "briefcase" as const },
+  { label: "Dashboard", href: "/dashboard", icon: "home" as const },
+  { label: "Entities", href: "/dashboard/entities", icon: "users" as const },
+  { label: "Documents", href: "/dashboard/documents", icon: "file-text" as const },
+  { label: "Timeline", href: "/dashboard/timeline", icon: "clock" as const },
+  { label: "Search", href: "/dashboard/search", icon: "search" as const },
+  { label: "Network", href: "/dashboard/network", icon: "network" as const },
+  { label: "Datasets", href: "/dashboard/datasets", icon: "database" as const },
+  { label: "Hierarchy", href: "/dashboard/hierarchy", icon: "sitemap" as const },
+  { label: "Forensics", href: "/dashboard/forensics", icon: "microscope" as const },
+  { label: "Photos", href: "/dashboard/photos", icon: "image" as const },
+  { label: "Locations", href: "/dashboard/locations", icon: "map-pin" as const },
+  { label: "Investigations", href: "/dashboard/investigations", icon: "briefcase" as const },
 ];
 
 const adminItems = [
-  { label: "Upload", href: "/upload", icon: "upload" as const },
-  { label: "Processing", href: "/processing", icon: "loader" as const },
-  { label: "Review", href: "/review", icon: "check-circle" as const },
-  { label: "Detective", href: "/assistant", icon: "sparkles" as const },
-  { label: "Admin", href: "/admin", icon: "gauge" as const },
+  { label: "Upload", href: "/dashboard/upload", icon: "upload" as const },
+  { label: "Processing", href: "/dashboard/processing", icon: "loader" as const },
+  { label: "Review", href: "/dashboard/review", icon: "check-circle" as const },
+  { label: "Detective", href: "/dashboard/assistant", icon: "sparkles" as const },
+  { label: "Admin", href: "/dashboard/admin", icon: "gauge" as const },
 ];
 
 export default function Sidebar({ userEmail, userRole }: SidebarProps) {
@@ -158,7 +158,7 @@ export default function Sidebar({ userEmail, userRole }: SidebarProps) {
 function SettingsGear({ collapsed }: { collapsed?: boolean }) {
   return (
     <Link
-      href="/settings"
+      href="/dashboard/settings"
       className="flex items-center justify-center w-8 h-8 rounded-md text-text-muted hover:text-text-primary hover:bg-elevated/50 transition-colors"
       title="Settings"
       aria-label="Settings"
