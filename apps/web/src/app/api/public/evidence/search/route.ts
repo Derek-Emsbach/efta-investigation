@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,6 +27,9 @@ function evictExpired() {
 }
 
 export async function GET(request: NextRequest) {
+  const rateLimited = checkRateLimit(request, 'search')
+  if (rateLimited) return rateLimited
+
   try {
     const { searchParams } = new URL(request.url)
     const q = searchParams.get('q')?.trim()

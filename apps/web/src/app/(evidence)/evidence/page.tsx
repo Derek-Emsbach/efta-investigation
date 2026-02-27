@@ -1,14 +1,28 @@
 import type { Metadata } from 'next'
 import { SearchInterface } from '@/components/evidence-room/search-interface'
 import { StatsBar } from '@/components/evidence-room/stats-bar'
+import { DatasetJsonLd } from '@/components/publication/json-ld'
 
 export const metadata: Metadata = {
   title: 'Evidence Room — The Epstein Record',
   description: 'Search 1.38 million documents from DOJ Epstein Files disclosures. Full-text search across the complete EFTA corpus.',
+  openGraph: {
+    title: 'Evidence Room — The Epstein Record',
+    description: 'Search 1.38 million documents from DOJ Epstein Files disclosures. Full-text search across the complete EFTA corpus.',
+    type: 'website',
+    siteName: 'The Epstein Record',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Evidence Room — The Epstein Record',
+    description: 'Search 1.38 million documents from DOJ Epstein Files disclosures.',
+  },
 }
 
 export default function EvidenceRoomPage() {
   return (
+    <>
+    <DatasetJsonLd />
     <div className="evidence-grid-bg min-h-[calc(100vh-48px)]">
       {/* Hero */}
       <div className="mx-auto max-w-5xl px-6 pt-16 pb-10">
@@ -37,5 +51,6 @@ export default function EvidenceRoomPage() {
         <StatsBar />
       </div>
     </div>
+    </>
   )
 }

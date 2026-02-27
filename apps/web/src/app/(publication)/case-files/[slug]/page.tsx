@@ -35,9 +35,22 @@ export async function generateMetadata({
     return { title: 'Case File Not Found — The Epstein Record' }
   }
 
+  const description = cf.summary?.slice(0, 160) ?? `Investigation report ${cf.case_id}`
+
   return {
     title: `${cf.case_id}: ${cf.title} — The Epstein Record`,
-    description: cf.summary?.slice(0, 160) ?? `Investigation report ${cf.case_id}`,
+    description,
+    openGraph: {
+      title: `${cf.case_id}: ${cf.title}`,
+      description,
+      type: 'article',
+      siteName: 'The Epstein Record',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${cf.case_id}: ${cf.title}`,
+      description,
+    },
   }
 }
 

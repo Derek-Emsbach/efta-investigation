@@ -25,6 +25,7 @@ import { DocumentsTable } from '@/components/publication/entity/documents-table'
 import { EntityTimeline } from '@/components/publication/entity/entity-timeline'
 import { StoriesSection } from '@/components/publication/entity/stories-section'
 import { CaseFilesSection } from '@/components/publication/entity/case-files-section'
+import { PersonJsonLd } from '@/components/publication/json-ld'
 import { ProfileTabsWrapper } from './profile-tabs-wrapper'
 
 const supabase = createClient(
@@ -53,11 +54,24 @@ export async function generateMetadata({
     ? TIER_CONFIG[entity.tier as Tier]?.label ?? ''
     : ''
 
+  const description = entity.bio
+    ? entity.bio.slice(0, 160)
+    : `${entity.name} dossier — Tier ${entity.tier} (${tierLabel}). EFTA Investigation entity profile.`
+
   return {
     title: `${entity.name} — The Epstein Record`,
-    description: entity.bio
-      ? entity.bio.slice(0, 160)
-      : `${entity.name} dossier — Tier ${entity.tier} (${tierLabel}). EFTA Investigation entity profile.`,
+    description,
+    openGraph: {
+      title: `${entity.name} — The Epstein Record`,
+      description,
+      type: 'profile',
+      siteName: 'The Epstein Record',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${entity.name} — The Epstein Record`,
+      description,
+    },
   }
 }
 
@@ -161,6 +175,12 @@ export default async function EntityProfilePage({
     Object.keys(typedEntity.financial_summary).length > 0
 
   return (
+    <>
+    <PersonJsonLd
+      name={typedEntity.name}
+      description={typedEntity.bio ?? undefined}
+      slug={slug}
+    />
     <div className="mx-auto max-w-5xl px-6 py-12">
       {/* Breadcrumb */}
       <nav className="mb-8 font-mono text-xs text-text-muted">
@@ -209,5 +229,6 @@ export default async function EntityProfilePage({
         </aside>
       </div>
     </div>
+    </>
   )
 }

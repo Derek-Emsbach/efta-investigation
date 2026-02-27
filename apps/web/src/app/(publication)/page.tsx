@@ -11,6 +11,19 @@ export const metadata: Metadata = {
   title: 'The Epstein Record — Independent Investigation',
   description:
     'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act. 12 DOJ dataset releases. 99 entities identified. The evidence speaks.',
+  openGraph: {
+    title: 'The Epstein Record — Independent Investigation',
+    description:
+      'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act.',
+    type: 'website',
+    siteName: 'The Epstein Record',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'The Epstein Record — Independent Investigation',
+    description:
+      'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act.',
+  },
 }
 
 const supabase = createClient(

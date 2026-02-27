@@ -11,6 +11,7 @@ import type {
 import { StoryHero } from '@/components/publication/story/story-hero'
 import { StorySidebar } from '@/components/publication/story/story-sidebar'
 import { ReadingProgress } from '@/components/publication/story/reading-progress'
+import { ArticleJsonLd } from '@/components/publication/json-ld'
 import { renderMarkdown } from '@/lib/markdown-renderer'
 
 const supabase = createClient(
@@ -35,9 +36,22 @@ export async function generateMetadata({
     return { title: 'Story Not Found — The Epstein Record' }
   }
 
+  const description = story.deck ?? `${story.title} by ${story.byline}`
+
   return {
     title: `${story.title} — The Epstein Record`,
-    description: story.deck ?? `${story.title} by ${story.byline}`,
+    description,
+    openGraph: {
+      title: story.title,
+      description,
+      type: 'article',
+      siteName: 'The Epstein Record',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: story.title,
+      description,
+    },
   }
 }
 
@@ -107,6 +121,14 @@ export default async function StoryPage({
 
   return (
     <>
+      <ArticleJsonLd
+        title={typedStory.title}
+        description={typedStory.deck ?? ''}
+        datePublished={typedStory.published_at ?? undefined}
+        authorName={typedStory.byline ?? undefined}
+        section={typedStory.section ?? undefined}
+        slug={slug}
+      />
       <ReadingProgress />
 
       <article className="mx-auto max-w-5xl px-6 py-10">
