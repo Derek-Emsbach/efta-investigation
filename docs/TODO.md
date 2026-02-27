@@ -464,7 +464,7 @@
 - [x] Legal infrastructure: footer with disclaimer, /disclaimer, /terms, /privacy pages
 - [x] Skip-to-content link for keyboard accessibility
 - [x] Breadcrumb navigation on entity and document detail pages
-- [x] robots.txt (disallow all — private tool)
+- [x] robots.txt (was disallow-all for private tool; now dynamic via robots.ts — allows public pages, blocks /dashboard/)
 - [x] aria-current on active nav links, aria-hidden on decorative icons
 - [x] Copyright notice (© Cyclops Digital LLC) in sidebar + footer
 
@@ -499,6 +499,71 @@
   - [ ] **Stale reviews:** Documents in `needs_review` status for more than 7 days
 - [ ] Reports surface on admin dashboard as notification cards
 - [ ] Click any finding → relevant entity/document/search
+
+---
+
+## The Epstein Record — Public Publication Build
+
+**Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
+
+> **Status:** All 6 phases complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`. Dashboard remains at `/dashboard/*`. Content seeding (stories, case files) needed to populate the homepage and article pages.
+
+### Phase 0: Route Surgery + Foundation
+- [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
+- [x] Update ~40 internal links (sidebar, pages, router.push)
+- [x] Simplify middleware: `pathname.startsWith('/dashboard')` → require auth
+- [x] Add redirects in next.config.ts for old dashboard-only paths
+- [x] Add publication theme (`data-theme="publication"`) with warm paper palette (#faf8f5, Source Serif 4, DM Sans)
+- [x] Add manila theme (`data-theme="manila"`) for case files
+- [x] Add evidence room theme dark variant
+- [x] Add fonts: Source Serif 4, DM Sans, JetBrains Mono
+- [x] Migration 016: `stories`, `story_entities`, `story_citations`, `case_files`, `case_file_entities`, `open_questions` tables + entity slug/financial/profile columns
+- [x] Generate slugs for all 99 entities (collision-safe)
+- [x] Publish 53 entities (tiers 1-4) via profile_published flag
+- [x] Publication layout (PublicHeader, PublicFooter), evidence layout (EvidenceHeader)
+- [x] Legal pages moved to (legal)/ route group
+
+### Phase 1: Entity Profiles
+- [x] Dossier-style `/entities/[slug]` pages
+- [x] 11 components: EntityHero, DossierCard, TierBadgePub, FinancialSummaryCard, EvidenceSection, ConnectionsGrid, DocumentsTable, EntityTimeline, StoriesSection, CaseFilesSection, ProfileTabs
+- [x] Public API: `/api/public/entities/[slug]` + `/api/public/entities`
+- [x] PersonJsonLd structured data
+
+### Phase 2: Case File Reports
+- [x] Manila-themed `/case-files/[slug]` pages
+- [x] 5 components: CaseFileCover (stamp watermark), EntityRoster, OpenQuestions, FindingsMarkdown, ReportSidebar
+- [x] Public API: `/api/public/case-files/[slug]` + `/api/public/case-files`
+
+### Phase 3: Evidence Room
+- [x] Dark-mode `/evidence` search interface
+- [x] Full-text search via Supabase TSVECTOR (websearch mode)
+- [x] In-memory search cache (5-min TTL)
+- [x] SearchInterface + StatsBar components
+- [x] Public API: `/api/public/evidence/search` + `/api/public/evidence/stats`
+- [x] DatasetJsonLd structured data
+
+### Phase 4: Story Pages
+- [x] Editorial `/stories/[slug]` articles
+- [x] Custom Markdown renderer with inline patterns: [CITE:N], {{entity:slug}}, {{doc:EFTA...}}, {{redacted:D}}, [!finding], [!data], [!quote]
+- [x] StoryHero, StorySidebar, ReadingProgress components
+- [x] Public API: `/api/public/stories/[slug]` + `/api/public/stories`
+- [x] ArticleJsonLd structured data
+
+### Phase 5: Homepage
+- [x] Editorial front page at `/`
+- [x] 6 components: Masthead, InvestigationStats, StoryGrid, CaseFilesPreview, EntitySpotlight, EvidenceRoomPromo
+- [x] Aggregated data via server-side parallel Supabase queries
+
+### Phase 6: Polish & Integration
+- [x] Open Graph + Twitter Card metadata on all public pages
+- [x] JSON-LD structured data (Article, Person, Dataset)
+- [x] Dynamic sitemap.xml from published content
+- [x] Dynamic robots.txt (allow public, block /dashboard/ + /api/)
+- [x] Publication-themed 404 page
+- [x] Rate limiting on all 9 public API routes (120/min general, 60/min search)
+- [x] Mobile hamburger menu on publication header
+- [ ] Content seeding: create pilot story + case file records in database
+- [ ] Full cross-linking audit (entity mentions in stories → profile links, EFTA numbers → evidence room)
 
 ---
 
