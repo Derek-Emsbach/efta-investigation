@@ -6,8 +6,11 @@
 ┌───────────────────────────────────────────────────────────────┐
 │                      VERCEL (Frontend)                         │
 │  Next.js 16 App Router + React 19 + Tailwind v4              │
-│  ├── (dashboard)/ — All pages (role-gated in middleware)      │
-│  └── api/ — REST endpoints (Supabase queries, AI streaming)  │
+│  ├── (publication)/ — Public pages (/, /entities/[slug], etc)│
+│  ├── (evidence)/ — Evidence room (/evidence, dark theme)     │
+│  ├── (legal)/ — Legal pages (/disclaimer, /terms, /privacy)  │
+│  ├── dashboard/ — Auth-protected admin pages (role-gated)    │
+│  └── api/ — REST + Public API endpoints                      │
 └───────┬──────────────────────┬────────────────────────────────┘
         │                      │
         │ Supabase SDK         │ Anthropic SDK
@@ -58,35 +61,57 @@
 
 ### Frontend (Next.js 16 on Vercel)
 
-Single `(dashboard)/` route group with all pages behind auth middleware. Viewer/admin role separation enforced at middleware + API level (not RLS).
+Dual-mode app: public publication at `/` (no auth) + private dashboard at `/dashboard/*` (auth-gated). Four route groups apply different CSS themes via `data-theme` attribute on the layout wrapper.
 
-**Pages (21 routes):**
+| Route Group | Theme | Purpose |
+|-------------|-------|---------|
+| `(publication)/` | `publication` (#faf8f5 cream paper) | Public-facing editorial pages |
+| `(evidence)/` | `evidence-room` (#0d0f11 deep dark) | Evidence room search |
+| `(legal)/` | default | Legal pages (disclaimer, terms, privacy) |
+| `dashboard/` | default (dark) | Auth-protected admin dashboard |
+
+**Publication Pages (public, no auth):**
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Editorial homepage — masthead, stats, story grid, entity spotlight |
+| `/entities` | Published entity index (tiers 1-4, `profile_published = true`) |
+| `/entities/[slug]` | Dossier-style entity profile (11 components) |
+| `/stories` | Story index |
+| `/stories/[slug]` | Long-form investigative articles with custom markdown |
+| `/case-files` | Case file index |
+| `/case-files/[slug]` | Manila-themed investigation reports |
+| `/evidence` | Dark-mode document search interface |
+| `/disclaimer` | Legal disclaimer |
+| `/terms` | Terms of service |
+| `/privacy` | Privacy policy |
+
+**Dashboard Pages (auth-gated, role-separated):**
 
 | Route | Purpose | Access |
 |-------|---------|--------|
-| `/` | Dashboard with stats, tier distribution, open questions | All |
-| `/entities` | Entity browser with filters (tier, category, type) | All |
-| `/entities/[id]` | Entity profile (tabs: evidence, timeline, docs, connections) | All |
-| `/documents` | Document browser (cursor pagination for 1.37M rows) | All |
-| `/documents/[id]` | Document viewer (text + PDF, metadata, entities, redactions) | All |
-| `/timeline` | Global timeline with date range, entity, dataset filters | All |
-| `/search` | Full-text search with faceted results | All |
-| `/network` | D3.js force-directed entity graph with path-finding | All |
-| `/datasets` | Dataset progress cards with review counts | All |
-| `/hierarchy` | Tree layout for institutional/business relationships | All |
-| `/forensics` | Forensic dashboard | All |
-| `/photos` | Image gallery with entity/location tagging | All |
-| `/locations` | Location browser | All |
-| `/investigations` | Investigation case builder | All |
-| `/upload` | Drag-and-drop PDF upload (presigned URLs → R2) | Admin |
-| `/processing` | Processing pipeline dashboard (auto-refresh) | Admin |
-| `/review` | 3-column review: queue \| PDF \| Archer AI copilot | Admin |
-| `/assistant` | AI Detective research assistant (chat + tool use) | Admin |
-| `/admin` | User management, role toggles | Admin |
-| `/settings` | App settings | Admin |
-| `/about` | About page | All |
+| `/dashboard` | Dashboard with stats, tier distribution, open questions | All auth |
+| `/dashboard/entities` | Entity browser with filters (tier, category, type) | All auth |
+| `/dashboard/entities/[id]` | Entity profile (tabs: evidence, timeline, docs, connections) | All auth |
+| `/dashboard/documents` | Document browser (cursor pagination for 1.37M rows) | All auth |
+| `/dashboard/documents/[id]` | Document viewer (text + PDF, metadata, entities, redactions) | All auth |
+| `/dashboard/timeline` | Global timeline with date range, entity, dataset filters | All auth |
+| `/dashboard/search` | Full-text search with faceted results | All auth |
+| `/dashboard/network` | D3.js force-directed entity graph with path-finding | All auth |
+| `/dashboard/datasets` | Dataset progress cards with review counts | All auth |
+| `/dashboard/hierarchy` | Tree layout for institutional/business relationships | All auth |
+| `/dashboard/forensics` | Forensic dashboard | All auth |
+| `/dashboard/photos` | Image gallery with entity/location tagging | All auth |
+| `/dashboard/locations` | Location browser | All auth |
+| `/dashboard/investigations` | Investigation case builder | All auth |
+| `/dashboard/upload` | Drag-and-drop PDF upload (presigned URLs → R2) | Admin |
+| `/dashboard/processing` | Processing pipeline dashboard (auto-refresh) | Admin |
+| `/dashboard/review` | 3-column review: queue \| PDF \| Archer AI copilot | Admin |
+| `/dashboard/assistant` | AI Detective research assistant (chat + tool use) | Admin |
+| `/dashboard/admin` | User management, role toggles | Admin |
+| `/dashboard/settings` | App settings | Admin |
 
-**API Routes (17 groups):**
+**Dashboard API Routes (auth-gated):**
 
 | Route | Methods | Purpose |
 |-------|---------|---------|
@@ -110,6 +135,22 @@ Single `(dashboard)/` route group with all pages behind auth middleware. Viewer/
 | `/api/assistant/conversations` | GET, POST | List + create conversations |
 | `/api/assistant/conversations/[id]` | GET, PATCH, DELETE | Load + rename/pin + delete |
 | `/api/assistant/conversations/[id]/messages` | POST | Save message |
+
+**Public API Routes (no auth, service role key, rate-limited):**
+
+| Route | Methods | Purpose | Rate Limit |
+|-------|---------|---------|------------|
+| `/api/public/entities` | GET | Published entity list | 120/min |
+| `/api/public/entities/[slug]` | GET | Full entity profile by slug | 120/min |
+| `/api/public/stories` | GET | Published story list | 120/min |
+| `/api/public/stories/[slug]` | GET | Full story with citations | 120/min |
+| `/api/public/case-files` | GET | Published case file list | 120/min |
+| `/api/public/case-files/[slug]` | GET | Full case file with entities + open questions | 120/min |
+| `/api/public/evidence/search` | GET | Full-text document search | 60/min |
+| `/api/public/evidence/stats` | GET | Evidence room statistics | 120/min |
+| `/api/public/homepage` | GET | Aggregated homepage data | 120/min |
+
+Rate limiting uses in-memory sliding window (`lib/rate-limit.ts`). Public API routes use `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS, filtering to `is_published`/`profile_published` records only. Search responses are cached in-memory (5-min TTL for search, 2-min for homepage, 10-min for stats).
 
 ### Database (Supabase Pro)
 
@@ -206,12 +247,14 @@ Uses `better-sqlite3` npm package (native addon, synchronous API, bundles FTS5).
 5. Changes appear immediately in the web app
 
 ### Auth Flow
-1. User hits protected route
-2. Middleware checks Supabase session
-3. No session → redirect to `/login`
-4. Session valid → check role from `profiles` table
-5. Viewer role → blocked from admin paths (/upload, /processing, /review, /assistant, /admin, /settings)
-6. RLS policies: all authenticated = full access (enforcement is application-layer)
+1. Request arrives at middleware
+2. Public paths (`/`, `/entities/*`, `/stories/*`, `/case-files/*`, `/evidence`, `/disclaimer`, `/terms`, `/privacy`) → pass through without auth check
+3. Dashboard paths (`/dashboard/*`) → check Supabase session
+4. No session → redirect to `/login`
+5. Session valid → check role from `profiles` table
+6. Viewer role → blocked from admin paths (`/dashboard/upload`, `/dashboard/processing`, `/dashboard/review`, `/dashboard/assistant`, `/dashboard/admin`, `/dashboard/settings`)
+7. RLS policies: all authenticated = full access (enforcement is application-layer)
+8. Public API routes use `SUPABASE_SERVICE_ROLE_KEY` directly (no user auth)
 
 ## Environment Variables
 

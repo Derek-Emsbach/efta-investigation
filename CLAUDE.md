@@ -34,12 +34,21 @@ efta-investigation/
       public/                     # Static assets (PDF.js worker, favicon)
       src/
         app/                      # App Router
-          (dashboard)/            # Auth-protected dashboard pages
+          (publication)/          # Public pages (warm paper theme, no auth)
+            page.tsx              # Homepage (theepsteinrecord.com)
+            entities/[slug]/      # Public entity dossier profiles
+            stories/[slug]/       # Editorial story articles
+            case-files/[slug]/    # Manila-themed case file reports
+          (evidence)/             # Public evidence room (dark theme, no auth)
+            evidence/             # Search interface for 1.37M documents
+          (legal)/                # Legal pages (minimal layout)
+            about/ disclaimer/ terms/ privacy/
+          dashboard/              # Auth-protected dashboard (existing dark theme)
             review/               # Document review (3-column: queue | PDF | Archer)
             assistant/            # AI detective assistant
             upload/               # Document upload
             processing/           # Processing pipeline dashboard
-            entities/[id]/        # Entity profiles
+            entities/[id]/        # Dashboard entity profiles (by UUID)
             documents/[id]/       # Document viewer
             timeline/             # Event timeline
             search/               # Full-text search
@@ -47,12 +56,25 @@ efta-investigation/
             datasets/             # Dataset browser
             hierarchy/            # Entity hierarchy
           api/                    # API routes
+            public/               # Public API (rate-limited, service role key)
+              entities/           # Published entities list + [slug] detail
+              stories/            # Published stories list + [slug] detail
+              case-files/         # Published case files list + [slug] detail
+              evidence/           # Evidence search + stats
+              homepage/           # Aggregated homepage data
             review/archer/        # Archer SSE streaming endpoint
             assistant/            # Detective chat endpoint
             upload/               # Presigned URL generation
+          login/                  # Standalone login page
         components/               # React components
           ui/                     # Design system (breadcrumbs, theme-toggle)
           layout/                 # Sidebar, footer, mobile toggle
+          publication/            # Public site components (~25)
+            entity/               # EntityHero, DossierCard, TierBadgePub, etc.
+            story/                # StoryHero, StorySidebar, ReadingProgress, etc.
+            case-file/            # CaseFileCover, EntityRoster, OpenQuestions, etc.
+            home/                 # Masthead, StoryGrid, EntitySpotlight, etc.
+          evidence-room/          # EvidenceHeader, SearchInterface, StatsBar
           review/                 # Archer panel, PDF viewer
           timeline/
           entity/
@@ -62,28 +84,35 @@ efta-investigation/
           supabase/               # Server + client Supabase helpers
           ai/                     # AI prompts (archer-prompt, system-prompt, tools)
           r2/                     # Cloudflare R2 presigned URLs
+          rate-limit.ts           # In-memory sliding window rate limiter
+          markdown-renderer.tsx   # Custom Markdown → React (citations, entities, etc.)
   packages/
-    db/                           # Schema + migrations
+    db/                           # Schema + migrations (016 = publication tables)
     shared/                       # Shared types + constants (@efta/shared)
   services/
     worker/                       # Python processing worker (polling script)
       stages/                     # Pipeline stages (classify, entities, crossref, redactions)
-  scripts/                        # Import + migration scripts
+    efta-mcp-server/              # MCP server (58 tools, Express + SDK, port 3001)
+  scripts/                        # Import + migration + investigation scripts
   docs/
     reference/                    # Architecture + domain reference
     investigation/                # Investigation findings + context
+      threads/                    # 6 investigation thread reports
+      sources/                    # Deep-read case files (EFTA*/Analysis.md)
+      data/                       # Reference data (ENTITIES.md, TIMELINE.md)
 ```
 
 ## Critical Rules
 
 ### Design
-- **Dark editorial investigative aesthetic** — NOT generic dashboard
-- Dark base: #0A0E17, content areas: #111827, elevated: #1F2937
-- Critical red: #DC2626, institutional blue: #3B82F6, amber warning: #F59E0B
-- Serif display font for headings (Playfair Display), clean sans for body (IBM Plex Sans)
-- Every design decision should feel like ProPublica meets an intelligence briefing
-- NEVER use generic AI dashboard aesthetics (no purple gradients, no Inter font, no rounded pastel cards)
-- **Tailwind v4**: Theme is defined in CSS via `@theme inline {}` in `globals.css`, NOT in `tailwind.config.ts`. Use semantic color names (`bg-background`, `text-text-primary`, `border-border-default`, etc.).
+- **Three visual themes** via `data-theme` attribute on layout wrappers:
+  - **Dashboard** (default dark): #0A0E17 base, #111827 content, #1F2937 elevated. Playfair Display headings, IBM Plex Sans body.
+  - **Publication** (`data-theme="publication"`): #faf8f5 cream paper. Source Serif 4 body, DM Sans UI, Playfair Display headings. Gold accent #b8860b.
+  - **Manila** (`data-theme="manila"`): #f2ead8 manila paper. Case file reports with stamp watermarks.
+  - **Evidence Room** (`data-theme="evidence-room"`): #0d0f11 deep dark. JetBrains Mono throughout, neon accents.
+- Dashboard aesthetic: ProPublica meets intelligence briefing. NEVER use generic AI dashboard aesthetics (no purple gradients, no Inter font, no rounded pastel cards).
+- Critical red: #DC2626 (dashboard) / #c41e3a (publication) / #e63950 (evidence room)
+- **Tailwind v4**: Theme is defined in CSS via `@theme inline {}` in `globals.css`, NOT in `tailwind.config.ts`. Use semantic color names (`bg-background`, `text-text-primary`, `border-border-default`, etc.). Theme overrides use `[data-theme]` selectors.
 
 ### Data Integrity
 - Every claim needs a source document. Evidence items link to document records which link to R2 file URLs.
@@ -116,7 +145,13 @@ efta-investigation/
 ### Session Bookkeeping
 After completing any task (feature, fix, or refactor):
 1. **Update `docs/TODO.md`** — check off completed items, add new items discovered during work, update the phase status summary if significant progress was made.
-2. **Update memory** — if the work revealed stable patterns, gotchas, or architectural decisions worth remembering, update the auto memory files (mainly `MEMORY.md`). Only record things that are confirmed and likely to stay relevant across sessions.
+2. **Update memory** — if the work revealed stable patterns, gotchas, or architectural decisions worth remembering, update the auto memory files. Memory is split into topic files: `MEMORY.md` (index), `technical-notes.md`, `investigation-tracker.md`, `completed-work.md`, `session-log.md`. Only record things that are confirmed and likely to stay relevant across sessions.
+3. **Context checkpoint** — when approaching ~90% context compaction (system will warn), proactively:
+   - Update `docs/TODO.md` with any completed or discovered items
+   - Update memory files with new patterns, gotchas, or investigation findings from the session
+   - Update `CLAUDE.md` if any structural changes were made (new routes, tables, tools)
+   - Add a session entry to `memory/session-log.md` summarizing what was done
+   - Summarize current work-in-progress so the continuation prompt has full context
 
 ## Reference Documents
 
@@ -149,6 +184,25 @@ Before building any feature, read the relevant reference doc:
 - **Redaction Category**: A=victim protection, B=legal privilege, C=institutional protection, D=perpetrator protection
 - **The Five Systems**: Recruitment Pipeline, Logistics Network, Financial Infrastructure, Protection Apparatus, Inner Circle
 - **NPA**: 2007 Non-Prosecution Agreement that gave blanket immunity to co-conspirators
+
+## Public API Routes
+
+All public API routes live at `/api/public/*` and share these patterns:
+- Use `SUPABASE_SERVICE_ROLE_KEY` (bypasses RLS, filters to `is_published`/`profile_published`)
+- Rate-limited via `lib/rate-limit.ts`: 120 req/min general, 60 req/min for evidence search
+- In-memory caching with TTL (2-min homepage, 5-min search, 10-min stats)
+
+| Route | Method | Description |
+|-------|--------|-------------|
+| `/api/public/entities` | GET | List published entities |
+| `/api/public/entities/[slug]` | GET | Entity profile with connections, docs, events |
+| `/api/public/stories` | GET | List published stories (optional `?section=` filter) |
+| `/api/public/stories/[slug]` | GET | Story with citations, entities, case file link |
+| `/api/public/case-files` | GET | List published case files |
+| `/api/public/case-files/[slug]` | GET | Case file with entities, open questions |
+| `/api/public/evidence/search` | GET | Full-text search (60/min rate limit) |
+| `/api/public/evidence/stats` | GET | Corpus aggregate counts |
+| `/api/public/homepage` | GET | Aggregated homepage data |
 
 ## AI Assistants
 

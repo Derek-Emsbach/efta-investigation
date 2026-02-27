@@ -36,6 +36,13 @@ datasets 1──────────M documents 1─────M document_v
 
     entities M────────M entity_connections ────────M entities
 
+    stories 1──────────M story_entities ──────M entities
+    stories 1──────────M story_citations ─────M documents
+    stories M──────────1 case_files (optional FK)
+
+    case_files 1───────M case_file_entities ──M entities
+    case_files 1───────M open_questions
+
     suspect_watchlist (staging table, optional FK to entities)
     external_entities (cross-reference registry, no FK to entities)
     research_platforms (global tool registry, standalone)
@@ -55,7 +62,7 @@ datasets 1──────────M documents 1─────M document_v
 |-------|---------|-------------|
 | `datasets` | DS1-12 collections | `number` (UNIQUE), `status`, `priority`, `reviewed_count` |
 | `investigations` | Case threads | `name` (UNIQUE), `status`, `open_questions` TEXT[] |
-| `entities` | Persons, orgs, properties, trusts | `name` (UNIQUE), `tier` (1-6), `entity_type`, `search_vector` TSVECTOR, `external_urls` JSONB |
+| `entities` | Persons, orgs, properties, trusts | `name` (UNIQUE), `tier` (1-6), `entity_type`, `slug` (UNIQUE), `financial_summary` JSONB, `profile_published` BOOLEAN, `search_vector` TSVECTOR, `external_urls` JSONB |
 | `documents` | Every ingested file (~1.37M rows) | `bates_number` (UNIQUE), `dataset_id` FK, `severity`, `processing_status`, `forensic_metadata` JSONB, `flags` TEXT[], `current_version`, `search_vector` TSVECTOR |
 | `events` | Timeline entries | `date`, `event_type`, `location_id` FK, `investigation_id` FK |
 | `locations` | Physical places | `name`, `location_type`, `latitude`/`longitude`, `owner_entity_id` FK |
@@ -127,6 +134,17 @@ datasets 1──────────M documents 1─────M document_v
 |-------|---------|-------------|
 | `suspect_watchlist` | Pre-entity staging for persons of interest | `name`, `status`, `priority` (P1-P5), `entity_id` FK (after promotion), `external_urls` JSONB |
 
+### Publication Tables (Migration 016)
+
+| Table | Purpose | Key Columns |
+|-------|---------|-------------|
+| `stories` | Long-form investigative articles | `slug` (UNIQUE), `title`, `deck`, `section`, `body_markdown`, `byline`, `reading_time_minutes`, `is_published`, `is_featured`, `published_at`, `case_file_id` FK |
+| `story_entities` | Story ↔ entity mentions | `story_id` FK, `entity_id` FK, `mention_context` |
+| `story_citations` | Inline document citations in stories | `story_id` FK, `citation_number`, `document_id` FK, `description`, `page_reference` |
+| `case_files` | Investigation case file reports | `slug` (UNIQUE), `case_id`, `title`, `status`, `classification`, `summary`, `findings_markdown`, `completion_percentage`, `is_published`, `published_at` |
+| `case_file_entities` | Case file ↔ entity links | `case_file_id` FK, `entity_id` FK, `role` |
+| `open_questions` | Unanswered investigative questions | `case_file_id` FK, `question`, `priority`, `category`, `status`, `context` |
+
 ## JSONB Column Schemas
 
 ### `documents.forensic_metadata`
@@ -184,6 +202,7 @@ datasets 1──────────M documents 1─────M document_v
 | 015 | `015_phase3_external.sql` | `research_platforms`, `external_entities`, `external_urls` JSONB, location_type expansion |
 | 015b | `015b_fix_fuzzy_rpcs.sql` | Fix fuzzy search to include aliases |
 | 015c | `015c_fix_fuzzy_rpcs_v2.sql` | Fix `similarity()` return type casting |
+| 016 | `016_publication.sql` | `stories`, `story_entities`, `story_citations`, `case_files`, `case_file_entities`, `open_questions` tables + entity `slug`, `financial_summary`, `profile_published` columns |
 
 **Note:** `schema.sql` contains the core tables (datasets through suspect_watchlist) but does NOT include migration-only tables (document_images, image_entities, image_locations, profiles, external_sources, external_events, research_platforms, external_entities). Both must be run for a complete database.
 
