@@ -9,7 +9,8 @@
     "import:documents": "tsx src/import-documents.ts",
     "import:events": "tsx src/import-events.ts",
     "import:connections": "tsx src/import-connections.ts",
-    "seed": "tsx src/seed-dataset.ts"
+    "seed": "tsx src/seed-dataset.ts",
+    "seed:publication": "tsx src/seed-publication.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2",

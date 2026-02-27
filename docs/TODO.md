@@ -506,7 +506,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 6 phases complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`. Dashboard remains at `/dashboard/*`. Content seeding (stories, case files) needed to populate the homepage and article pages.
+> **Status:** All 6 phases complete + content seeded. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`. Dashboard remains at `/dashboard/*`. 6 case files seeded from investigation threads (44 open questions, 34 entity links). Stories still need editorial content.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -562,7 +562,8 @@
 - [x] Publication-themed 404 page
 - [x] Rate limiting on all 9 public API routes (120/min general, 60/min search)
 - [x] Mobile hamburger menu on publication header
-- [ ] Content seeding: create pilot story + case file records in database
+- [x] Content seeding: 6 case files + 44 open questions + 34 entity links seeded from investigation threads
+  - [x] Enhanced FindingsMarkdown component: markdown tables, `[SPECULATION_START/END]` blocks, HTML comment stripping, `<h4>` headings, multi-paragraph blockquotes, horizontal rules
 - [ ] Full cross-linking audit (entity mentions in stories → profile links, EFTA numbers → evidence room)
 
 ---
