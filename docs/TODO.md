@@ -66,7 +66,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 7 phases complete + content seeded + first editorial story published. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`, `/network`. Dashboard remains at `/dashboard/*`. 6 case files seeded (44 open questions, 34 entity links). 1 story published ("The Golden Handcuffs", 18 citations, 8 entity links). 4 more stories planned.
+> **Status:** All 8 phases complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`, `/network`. Dashboard remains at `/dashboard/*`. 6 case files seeded (44 open questions, 34 entity links). 6 stories published (84 citations, 43 entity links) across 4 sections.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -146,7 +146,9 @@
 - [x] Story 3: "The Trustee With No Exit" (Jes Staley) — `docs/stories/the-trustee-with-no-exit.md`, section: the-network, 14 citations, 6 entity links, linked to CF-2026-001
 - [x] Story 4: "The Heirs With the Most to Hide" (Dubin Architecture) — `docs/stories/the-heirs-with-the-most-to-hide.md`, section: follow-the-money, 11 citations, 9 entity links, linked to CF-2026-002
 - [x] Story 5: "The Man Who Held Every Key" (Indyke Conflicts) — `docs/stories/the-man-who-held-every-key.md`, section: the-network, 12 citations, 4 entity links, linked to CF-2026-004
-- [ ] Story 6: "The System" (master synthesis, write last) — section: the-operation
+- [x] Story 6: "The System" (master synthesis) — `docs/stories/the-system.md`, section: the-operation, 9 citations, 10 entity links, linked to CF-2026-000
+
+**Phase 8 COMPLETE** — 6 stories, 84 total citations, 43 total entity links across 4 sections
 
 ---
 
