@@ -63,7 +63,7 @@
 
 ### 1.6 Base Layout & Design System
 - [x] Install fonts: Playfair Display (display), IBM Plex Sans (body), IBM Plex Mono (metadata)
-- [x] Set up Tailwind v4 theme in `globals.css` (`@theme inline {}`) with custom colors, fonts, animations
+- [x] Set up Tailwind v4 theme in `globals.css` (`@theme {}`) with custom colors, fonts, animations
 - [x] Create base layout: 240px fixed dark sidebar + main content area
 - [x] Build UI components:
   - [x] TierBadge (color-coded entity tier chip — "TIER 1 · CONVICTED")
@@ -78,7 +78,7 @@
   - [x] FilterBar (horizontal dropdown filter row)
   - [x] Skeleton (shimmer loading placeholder)
 
-> **Note:** Tailwind v4 uses CSS-based config, not `tailwind.config.ts`. Theme defined in `globals.css` with `@theme inline {}`.
+> **Note:** Tailwind v4 uses CSS-based config, not `tailwind.config.ts`. Theme defined in `globals.css` with `@theme {}`. Do NOT use `@theme inline` — it breaks multi-theme switching.
 
 ### 1.7 Core Pages (Basic Versions)
 - [x] `/` — Dashboard (Server Component)

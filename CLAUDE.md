@@ -112,7 +112,7 @@ efta-investigation/
   - **Evidence Room** (`data-theme="evidence-room"`): #0d0f11 deep dark. JetBrains Mono throughout, neon accents.
 - Dashboard aesthetic: ProPublica meets intelligence briefing. NEVER use generic AI dashboard aesthetics (no purple gradients, no Inter font, no rounded pastel cards).
 - Critical red: #DC2626 (dashboard) / #c41e3a (publication) / #e63950 (evidence room)
-- **Tailwind v4**: Theme is defined in CSS via `@theme inline {}` in `globals.css`, NOT in `tailwind.config.ts`. Use semantic color names (`bg-background`, `text-text-primary`, `border-border-default`, etc.). Theme overrides use `[data-theme]` selectors.
+- **Tailwind v4**: Theme is defined in CSS via `@theme {}` in `globals.css`, NOT in `tailwind.config.ts`. **NEVER use `@theme inline`** — it hardcodes values and breaks multi-theme switching. Use semantic Tailwind classes (`bg-background`, `bg-ink`, `text-text-primary`, `font-sans`, `font-display`). Never use arbitrary value syntax for tokens that exist in `@theme` (no `bg-[#1a1a1a]`, no `font-[var(--font-sans)]`). See `docs/reference/DESIGN_SYSTEM.md` for full styling rules.
 
 ### Data Integrity
 - Every claim needs a source document. Evidence items link to document records which link to R2 file URLs.
