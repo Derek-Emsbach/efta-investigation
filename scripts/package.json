@@ -10,7 +10,8 @@
     "import:events": "tsx src/import-events.ts",
     "import:connections": "tsx src/import-connections.ts",
     "seed": "tsx src/seed-dataset.ts",
-    "seed:publication": "tsx src/seed-publication.ts"
+    "seed:publication": "tsx src/seed-publication.ts",
+    "update:efta01266427": "tsx src/update-efta01266427.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2",
