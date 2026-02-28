@@ -115,6 +115,7 @@ export default async function StoryPage({
         name: se.entity.name,
         tier: se.entity.tier,
       })),
+    autoLink: true,
   }
 
   const bodyNodes = renderMarkdown(typedStory.body_markdown, renderContext)

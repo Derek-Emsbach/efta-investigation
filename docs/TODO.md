@@ -137,7 +137,7 @@
 - [x] Public network API (`/api/public/network`) — profile_published filter, post-filtered connections, rate limited
 - [x] Public network page (`/network`) — D3 force-directed graph adapted from dashboard, publication theme, slug-based navigation
 - [x] Recomposed homepage with new section order and open_questions query
-- [ ] Full cross-linking audit (entity mentions in stories → profile links, EFTA numbers → evidence room)
+- [x] Cross-linking audit: enabled `autoLink: true` for story pages — entity names auto-linked to `/entities/{slug}`, EFTA Bates numbers auto-linked to evidence room search. Sarah Kellen/Nadia Marcinkova intentionally unlinked (no published profiles).
 
 ### Phase 8: Editorial Stories
 - [x] Story seeding infrastructure in `seed-publication.ts` (StoryDef type, seedStories function, document/case-file UUID lookups)
