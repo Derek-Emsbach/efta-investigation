@@ -276,7 +276,7 @@ function renderBlock(
         key={key}
         className="border border-border-default bg-elevated my-6 overflow-hidden"
       >
-        <div className="bg-[#1a1a1a] px-4 py-2 flex items-center gap-2">
+        <div className="bg-ink px-4 py-2 flex items-center gap-2">
           <span className="font-mono text-xs font-bold text-accent-red">
             {bates}
           </span>
@@ -519,7 +519,7 @@ function renderInline(text: string, ctx: InternalContext): ReactNode[] {
       parts.push(
         <span
           key={`redact-${keyIdx++}`}
-          className="inline-flex items-center gap-1 bg-[#1a1a1a] text-text-muted px-1.5 py-0.5 font-mono text-xs"
+          className="inline-flex items-center gap-1 bg-ink text-text-muted px-1.5 py-0.5 font-mono text-xs"
           title={`Redacted — Category ${category}`}
         >
           <span className="text-[9px] font-bold text-accent-red">
