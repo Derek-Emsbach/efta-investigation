@@ -142,8 +142,8 @@
 ### Phase 8: Editorial Stories
 - [x] Story seeding infrastructure in `seed-publication.ts` (StoryDef type, seedStories function, document/case-file UUID lookups)
 - [x] Story 1: "The Golden Handcuffs" (witness control) — `docs/stories/the-golden-handcuffs.md`, section: the-cover-up, 18 citations, 8 entity links, linked to CF-2026-003
-- [ ] Story 2: "The Case That Wasn't" (prosecutorial failure) — section: the-cover-up
-- [ ] Story 3: "The Trustee With No Exit" (Jes Staley) — section: the-network
+- [x] Story 2: "The Case That Wasn't" (prosecutorial failure) — `docs/stories/the-case-that-wasnt.md`, section: the-cover-up, 20 citations, 6 entity links, linked to CF-2026-005
+- [x] Story 3: "The Trustee With No Exit" (Jes Staley) — `docs/stories/the-trustee-with-no-exit.md`, section: the-network, 14 citations, 6 entity links, linked to CF-2026-001
 - [ ] Story 4: "The Heirs With the Most to Hide" (Dubin architecture) — section: follow-the-money
 - [ ] Story 5: "The Man Who Held Every Key" (Indyke conflicts) — section: the-network
 - [ ] Story 6: "The System" (master synthesis, write last) — section: the-operation
