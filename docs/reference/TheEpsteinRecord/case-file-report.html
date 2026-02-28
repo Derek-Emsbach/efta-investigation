@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EFTA-IR-2026-004 — Dataset 12: Leon Black Prosecution File — The Epstein Record</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-secondary: #3d3d3d;
+    --ink-tertiary: #6b6b6b;
+    --ink-light: #8a8a8a;
+    --paper: #f7f5f2;
+    --paper-warm: #f0ebe3;
+    --paper-manila: #f2ead8;
+    --paper-white: #ffffff;
+    --paper-grid: #faf8f5;
+    --rule: #d4d0c8;
+    --rule-light: #e5e1d9;
+    --rule-heavy: #1a1a1a;
+    --accent-red: #c41e3a;
+    --accent-red-dark: #9b1830;
+    --accent-red-light: #fce4ec;
+    --accent-blue: #1a3a5c;
+    --accent-blue-light: #e3edf7;
+    --accent-green: #1a472a;
+    --accent-green-light: #e8f5e9;
+    --accent-amber: #f57f17;
+    --accent-amber-light: #fff8e1;
+    --stamp-red: rgba(196,30,58,0.12);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --font-sans: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes stampIn { 0% { opacity:0; transform:rotate(-8deg) scale(1.3); } 60% { opacity:0.15; transform:rotate(-6deg) scale(1); } 100% { opacity:0.08; transform:rotate(-6deg) scale(1); } }
+
+  /* ===== HEADER ===== */
+  .slim-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: rgba(247,245,242,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .slim-header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .slim-logo { font-family: var(--font-display); font-size: 18px; font-weight: 900; color: var(--ink); text-decoration: none; }
+  .slim-logo span { color: var(--accent-red); }
+  .slim-nav { display: flex; gap: 20px; }
+  .slim-nav a { font-family: var(--font-sans); font-size: 12px; font-weight: 500; color: var(--ink-tertiary); text-decoration: none; transition: color 0.2s; }
+  .slim-nav a:hover { color: var(--ink); }
+  .breadcrumb {
+    font-family: var(--font-sans); font-size: 11px; color: var(--ink-light);
+    max-width: 1100px; margin: 0 auto; padding: 12px 24px;
+  }
+  .breadcrumb a { color: var(--ink-tertiary); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--ink); }
+  .breadcrumb .sep { margin: 0 6px; opacity: 0.4; }
+
+  /* ===== CASE FILE WRAPPER ===== */
+  .case-file-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  /* ===== CASE FILE COVER ===== */
+  .case-cover {
+    background: var(--paper-manila);
+    border: 1px solid var(--rule);
+    padding: 48px 56px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease-out;
+  }
+  .case-cover::before {
+    content: 'INVESTIGATION REPORT';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-6deg);
+    font-family: var(--font-mono);
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(196,30,58,0.06);
+    white-space: nowrap;
+    pointer-events: none;
+    animation: stampIn 0.8s ease-out 0.3s both;
+  }
+  .case-cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+  }
+  .case-cover-id {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--accent-red);
+  }
+  .case-cover-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .status-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border: 2px solid;
+  }
+  .status-complete { border-color: #2e7d32; color: #2e7d32; background: rgba(46,125,50,0.06); }
+  .status-active { border-color: #e65100; color: #e65100; background: rgba(230,81,0,0.06); }
+  .classification-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    background: var(--accent-red);
+    color: white;
+  }
+
+  .case-cover-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+  .case-cover-subtitle {
+    font-family: var(--font-body);
+    font-size: 18px;
+    color: var(--ink-secondary);
+    line-height: 1.5;
+    max-width: 640px;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Metadata grid */
+  .case-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: var(--paper-white);
+    position: relative;
+    z-index: 1;
+  }
+  .case-meta-cell {
+    padding: 14px 18px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .case-meta-cell:nth-child(4n) { border-right: none; }
+  .case-meta-cell:nth-last-child(-n+4) { border-bottom: none; }
+  .meta-cell-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 4px;
+  }
+  .meta-cell-value {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .meta-cell-value.mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .meta-cell-value.highlight { color: var(--accent-red); }
+
+  /* ===== REPORT BODY ===== */
+  .report-body {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+  }
+  .report-main { }
+  .report-sidebar { }
+
+  /* ===== REPORT SECTIONS ===== */
+  .report-section {
+    margin-bottom: 40px;
+    animation: fadeIn 0.5s ease-out both;
+  }
+  .report-section:nth-child(2) { animation-delay: 0.05s; }
+  .report-section:nth-child(3) { animation-delay: 0.1s; }
+  .report-section:nth-child(4) { animation-delay: 0.15s; }
+
+  .section-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-light);
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-desc {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    margin-bottom: 20px;
+    letter-spacing: 0.01em;
+  }
+
+  .report-text {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--ink-secondary);
+    margin-bottom: 20px;
+  }
+  .report-text strong { color: var(--ink); font-weight: 600; }
+
+  /* ===== FINDINGS TABLE ===== */
+  .findings-summary {
+    border: 1px solid var(--rule);
+    background: var(--paper-white);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .findings-summary-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 18px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+  }
+  .findings-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 80px;
+    border-bottom: 1px solid var(--rule-light);
+    font-family: var(--font-sans);
+    font-size: 13px;
+  }
+  .findings-row:last-child { border-bottom: none; }
+  .findings-row:hover { background: var(--paper-warm); }
+  .findings-cell {
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+  }
+  .findings-cell:first-child {
+    border-right: 1px solid var(--rule-light);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .findings-cell:last-child {
+    border-left: 1px solid var(--rule-light);
+    justify-content: center;
+  }
+  .severity-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+  }
+  .severity-extreme { background: var(--accent-red); color: white; }
+  .severity-critical { background: var(--accent-red-light); color: var(--accent-red); }
+  .severity-high { background: var(--accent-amber-light); color: var(--accent-amber); }
+  .severity-routine { background: var(--paper-cool, #eceff1); color: var(--ink-tertiary); }
+
+  /* ===== EVIDENCE CATALOG ===== */
+  .evidence-catalog {
+    margin-bottom: 24px;
+  }
+  .evidence-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .evidence-item {
+    border: 1px solid var(--rule);
+    background: var(--paper-white);
+    padding: 16px 18px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .evidence-item:hover {
+    border-color: var(--ink-secondary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .evidence-item-type {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .etype-journal { background: var(--accent-amber-light); color: var(--accent-amber); }
+  .etype-financial { background: var(--accent-green-light); color: var(--accent-green); }
+  .etype-testimony { background: var(--accent-blue-light); color: var(--accent-blue); }
+  .etype-forensic { background: var(--accent-red-light); color: var(--accent-red); }
+  .etype-photo { background: #f3e5f5; color: #6a1b9a; }
+  .etype-comms { background: #e0f2f1; color: #00695c; }
+  .evidence-item-title {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+  .evidence-item-desc {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    line-height: 1.45;
+    margin-bottom: 8px;
+  }
+  .evidence-item-docs {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-light);
+    letter-spacing: 0.02em;
+  }
+
+  /* ===== ENTITY ROSTER ===== */
+  .entity-roster {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .roster-card {
+    border: 1px solid var(--rule);
+    background: var(--paper-white);
+    padding: 12px 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .roster-card:hover {
+    border-color: var(--ink-secondary);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+  .roster-tier {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+  .rt-1 { background: #fce4ec; color: #c62828; }
+  .rt-3 { background: #fff8e1; color: #f57f17; }
+  .rt-4 { background: #e8eaf6; color: #283593; }
+  .rt-5 { background: #f3e5f5; color: #6a1b9a; }
+  .rt-6 { background: #eceff1; color: #455a64; }
+  .roster-name {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .roster-role {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    color: var(--ink-light);
+    line-height: 1.3;
+    margin-top: 2px;
+  }
+
+  /* ===== TIMELINE ===== */
+  .report-timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+  .report-timeline::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 4px;
+    bottom: 16px;
+    width: 2px;
+    background: var(--rule);
+  }
+  .timeline-node {
+    position: relative;
+    padding-bottom: 20px;
+    padding-left: 20px;
+  }
+  .timeline-node::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-tertiary);
+    background: var(--paper);
+  }
+  .timeline-node.node-critical::before { border-color: var(--accent-red); background: var(--accent-red); }
+  .timeline-node.node-failure::before { border-color: var(--accent-red-dark); background: var(--accent-red-dark); box-shadow: 0 0 0 4px rgba(196,30,58,0.12); }
+  .timeline-node-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-light);
+    margin-bottom: 2px;
+  }
+  .timeline-node-event {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .timeline-node-detail {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    line-height: 1.45;
+  }
+  .timeline-node-doc {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-blue);
+    text-decoration: none;
+    margin-top: 4px;
+    display: inline-block;
+  }
+  .timeline-node-doc:hover { text-decoration: underline; }
+
+  /* ===== OPEN QUESTIONS ===== */
+  .open-question {
+    border-left: 3px solid var(--accent-amber);
+    padding: 14px 18px;
+    background: var(--accent-amber-light);
+    margin-bottom: 12px;
+  }
+  .open-question-id {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent-amber);
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .open-question-text {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+  .open-question-context {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    line-height: 1.45;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar-sticky { position: sticky; top: 70px; }
+
+  .sidebar-block {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .sidebar-block:last-child { border-bottom: none; }
+  .sidebar-block-header {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+
+  /* Report navigation */
+  .report-nav-item {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    text-decoration: none;
+    padding: 5px 0 5px 12px;
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+    line-height: 1.35;
+  }
+  .report-nav-item:hover { color: var(--ink); border-left-color: var(--rule); }
+  .report-nav-item.active { color: var(--ink); font-weight: 600; border-left-color: var(--accent-red); }
+  .report-nav-number {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-light);
+    margin-right: 6px;
+  }
+
+  /* Session info */
+  .session-info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    border-bottom: 1px solid var(--rule-light);
+  }
+  .session-info-item:last-child { border-bottom: none; }
+  .session-info-label { color: var(--ink-light); }
+  .session-info-value { color: var(--ink); font-weight: 500; text-align: right; }
+
+  /* Linked stories */
+  .linked-story {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule-light);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .linked-story:hover { background: var(--paper-warm); margin: 0 -8px; padding: 10px 8px; }
+  .linked-story:last-child { border-bottom: none; }
+  .linked-story-kicker {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-red);
+    margin-bottom: 2px;
+  }
+  .linked-story-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  /* Download block */
+  .download-block {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 18px;
+  }
+  .download-block-title {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+  .download-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .download-item:hover { opacity: 0.8; }
+  .download-item:last-child { border-bottom: none; }
+  .download-item-name { font-weight: 500; }
+  .download-item-size { font-family: var(--font-mono); font-size: 10px; opacity: 0.4; }
+
+  /* ===== REPORT FOOTER ===== */
+  .report-footer {
+    border-top: 2px solid var(--ink);
+    padding: 24px 0;
+    margin-top: 40px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-tertiary);
+    line-height: 1.6;
+  }
+  .report-footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .report-footer strong { color: var(--ink-secondary); }
+
+  /* Site footer */
+  .site-footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 28px 0;
+    text-align: center;
+  }
+  .site-footer-logo { font-family: var(--font-display); font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+  .site-footer-logo span { color: var(--accent-red); }
+  .site-footer p { font-family: var(--font-sans); font-size: 11px; opacity: 0.4; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 960px) {
+    .report-body { grid-template-columns: 1fr; }
+    .report-sidebar { order: -1; }
+    .sidebar-sticky { position: static; }
+    .case-meta-grid { grid-template-columns: repeat(2, 1fr); }
+    .evidence-catalog-grid { grid-template-columns: 1fr; }
+    .entity-roster { grid-template-columns: repeat(2, 1fr); }
+    .report-footer-grid { grid-template-columns: 1fr; }
+    .case-cover { padding: 32px 28px; }
+  }
+  @media (max-width: 600px) {
+    .case-meta-grid { grid-template-columns: 1fr; }
+    .entity-roster { grid-template-columns: 1fr; }
+    .findings-row { grid-template-columns: 100px 1fr 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="slim-header">
+  <div class="slim-header-inner">
+    <a href="#" class="slim-logo">The Epstein <span>Record</span></a>
+    <nav class="slim-nav">
+      <a href="#">Home</a>
+      <a href="#" style="font-weight:700;color:var(--ink);">The Case Files</a>
+      <a href="#">Evidence Room</a>
+      <a href="#">Entity Profiles</a>
+    </nav>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="#">Home</a><span class="sep">›</span>
+  <a href="#">The Case Files</a><span class="sep">›</span>
+  <span style="color:var(--ink);">EFTA-IR-2026-004</span>
+</div>
+
+<div class="case-file-wrapper">
+
+  <!-- CASE FILE COVER -->
+  <div class="case-cover">
+    <div class="case-cover-top">
+      <div class="case-cover-id">EFTA-IR-2026-004</div>
+      <div class="case-cover-status">
+        <span class="status-badge status-complete">Complete</span>
+        <span class="classification-badge">14 Extreme Findings</span>
+      </div>
+    </div>
+
+    <h1 class="case-cover-title">Dataset 12: The Leon Black Prosecution File</h1>
+    <p class="case-cover-subtitle">Systematic review of the DANY/SDNY investigation into Leon Black for serial sexual assault and trafficking of multiple women connected to the Epstein network. 137 of 152 documents reviewed across 12 analytical batches. What this dataset reveals is not a gap in evidence — it is a gap in will.</p>
+
+    <div class="case-meta-grid">
+      <div class="case-meta-cell">
+        <div class="meta-cell-label">Report Number</div>
+        <div class="meta-cell-value mono">EFTA-IR-2026-004</div>
+      </div>
+      <div class="case-meta-cell">
+        <div class="meta-cell-label">Dataset</div>
+        <div class="meta-cell-value">Dataset 12 of 12</div>
+      </div>
+      <div class="case-meta-cell">
+        <div class="meta-cell-label">Documents Reviewed</div>
+        <div class="meta-cell-value">137 / 152 <span style="font-size:12px;color:var(--ink-tertiary);">(90.1%)</span></div>
+      </div>
+      <div class="case-meta-cell">
+        <div class="meta-cell-label">Pages Analyzed</div>
+        <div class="meta-cell-value">~218 of 1,525</div>
+      </div>
+      <div class="case-meta-cell">
+        <div class="meta-cell-label">Bates Range</div>
+        <div class="meta-cell-value mono">02730265–02731789</div>
+      </div>
+      <div class="case-meta-cell">
+        <div class="meta-cell-label">Sessions</div>
+        <div class="meta-cell-value">Sessions 1–4 (Feb 5–6, 2026)</div>
+      </div>
+      <div class="case-meta-cell">
+        <div class="meta-cell-label">Entities Identified</div>
+        <div class="meta-cell-value highlight">50+ persons</div>
+      </div>
+      <div class="case-meta-cell">
+        <div class="meta-cell-label">Status</div>
+        <div class="meta-cell-value" style="color:#2e7d32;font-weight:700;">Analysis Complete</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT BODY -->
+  <div class="report-body">
+
+    <!-- MAIN CONTENT -->
+    <div class="report-main">
+
+      <!-- 1. EXECUTIVE SUMMARY -->
+      <div class="report-section">
+        <div class="section-number">Section 1</div>
+        <h2 class="section-heading">Executive Summary</h2>
+        <div class="report-text">
+          Dataset 12 is the twelfth and final dataset released by the DOJ under the Epstein Files Transparency Act on January 30, 2026. It is <strong>overwhelmingly dominated by a single subject: the failed prosecution of Leon Black</strong>, billionaire co-founder of Apollo Global Management, for the serial sexual assault and trafficking of multiple women connected to the Jeffrey Epstein network. Approximately 80% of the documents relate directly to the Leon Black investigation chain.
+        </div>
+        <div class="report-text">
+          Between May 2021 and August 2024, the Southern District of New York had in its possession overwhelming evidence of serial sexual violence — corroborated by multiple independent victims, authenticated forensic evidence, financial records, photographs, and medical documentation — and chose not to prosecute. The DANY investigation assembled the evidence. The SDNY's Civil Rights Unit formally declined to open. Zero charges were filed.
+        </div>
+
+        <!-- Findings Summary -->
+        <div class="findings-summary">
+          <div class="findings-summary-header">
+            <span>Findings by Severity</span>
+            <span>137 Documents</span>
+          </div>
+          <div class="findings-row">
+            <div class="findings-cell">Extreme Critical</div>
+            <div class="findings-cell">Prosecutorial failures, video evidence, signature violence corroboration, journal authentication</div>
+            <div class="findings-cell"><span class="severity-badge severity-extreme">14</span></div>
+          </div>
+          <div class="findings-row">
+            <div class="findings-cell">Critical</div>
+            <div class="findings-cell">FBI coordination, evidence transfers, victim proffers, internal deliberation</div>
+            <div class="findings-cell"><span class="severity-badge severity-critical">33</span></div>
+          </div>
+          <div class="findings-row">
+            <div class="findings-cell">High</div>
+            <div class="findings-cell">Financial records, witness statements, institutional communications</div>
+            <div class="findings-cell"><span class="severity-badge severity-high">22</span></div>
+          </div>
+          <div class="findings-row">
+            <div class="findings-cell">Routine</div>
+            <div class="findings-cell">Administrative correspondence, scheduling, case management</div>
+            <div class="findings-cell"><span class="severity-badge severity-routine">68</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. EVIDENCE CATALOG -->
+      <div class="report-section">
+        <div class="section-number">Section 2</div>
+        <h2 class="section-heading">Evidence Catalog</h2>
+        <div class="section-desc">Categorized inventory of evidence documented in the SDNY/DANY prosecution file</div>
+
+        <div class="evidence-catalog-grid">
+          <div class="evidence-item">
+            <span class="evidence-item-type etype-journal">Journal Evidence</span>
+            <div class="evidence-item-title">Victim Journals — 4+ Years of Documentation</div>
+            <div class="evidence-item-desc">Handwritten journals (ages 16–19), coded entries naming 30+ abusers. Forensically authenticated: gel pen, no fabrication evidence. Court-ordered forensic exam confirmed authenticity.</div>
+            <div class="evidence-item-docs">EFTA02731420, 02731465, 02731512, 02731724</div>
+          </div>
+          <div class="evidence-item">
+            <span class="evidence-item-type etype-testimony">Multiple Victims</span>
+            <div class="evidence-item-title">3+ Independent Victims with Corroborating Accounts</div>
+            <div class="evidence-item-desc">Two victims describe identical signature violence (biting genitalia intensifying with pain). One minor at time of abuse. One trafficked since childhood. Independent corroboration across victims who did not know each other.</div>
+            <div class="evidence-item-docs">EFTA02731488, 02731655, 02731662, 02731729</div>
+          </div>
+          <div class="evidence-item">
+            <span class="evidence-item-type etype-financial">Bank Statements</span>
+            <div class="evidence-item-title">Wire Payments — $15K to $167K (2012–2021)</div>
+            <div class="evidence-item-desc">~700 pages of bank records from 3 accounts (Leon J. Black, J. Black Trust, E Trust). Documents direct payments to victims spanning nearly a decade.</div>
+            <div class="evidence-item-docs">EFTA02731526, 02731529, 02731556</div>
+          </div>
+          <div class="evidence-item">
+            <span class="evidence-item-type etype-photo">Photographs</span>
+            <div class="evidence-item-title">Martha's Vineyard Photos — Epstein with Young Woman</div>
+            <div class="evidence-item-desc">10+ images, ~2003. Taken by Ghislaine Maxwell. Epstein photographed with young woman. Transferred as evidence to SDNY.</div>
+            <div class="evidence-item-docs">EFTA02731490, 02731501, 02731682, 02731703–712</div>
+          </div>
+          <div class="evidence-item">
+            <span class="evidence-item-type etype-forensic">Forensic / Medical</span>
+            <div class="evidence-item-title">OB-GYN Records Documenting Assault Injuries</div>
+            <div class="evidence-item-desc">Medical records from 2011 and 2019 documenting injuries consistent with sexual assault. 2021 notes state abuser "drugged her."</div>
+            <div class="evidence-item-docs">EFTA02731662 (pp. 3–4)</div>
+          </div>
+          <div class="evidence-item">
+            <span class="evidence-item-type etype-comms">Communications</span>
+            <div class="evidence-item-title">Text Messages — Black to Victim, Victim to Black</div>
+            <div class="evidence-item-desc">Black: "how damaging they would be to me." Victim: "You sexually harassed me, sex trafficked me, raped me." NDA signed under duress documented.</div>
+            <div class="evidence-item-docs">EFTA02731525, 02731576</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. PROSECUTORIAL TIMELINE -->
+      <div class="report-section">
+        <div class="section-number">Section 3</div>
+        <h2 class="section-heading">Prosecutorial Timeline</h2>
+        <div class="section-desc">Complete chronology of the Leon Black investigation from first contact through formal decline</div>
+
+        <div class="report-timeline">
+          <div class="timeline-node node-critical">
+            <div class="timeline-node-date">April 22, 2021</div>
+            <div class="timeline-node-event">SDNY First Contact with Victim Representative</div>
+            <div class="timeline-node-detail">Christensen/Wigdor LLP initiates contact with SDNY regarding Leon Black allegations.</div>
+            <a href="#" class="timeline-node-doc">EFTA02731684</a>
+          </div>
+          <div class="timeline-node node-failure">
+            <div class="timeline-node-date">May 28, 2021</div>
+            <div class="timeline-node-event">SDNY: "Not Inclined to Open" — One Day After Bank Statements</div>
+            <div class="timeline-node-detail">SDNY indicates reluctance to pursue, just one day after receiving bank statements documenting payments.</div>
+            <a href="#" class="timeline-node-doc">EFTA02731578</a>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-node-date">August 9, 2021</div>
+            <div class="timeline-node-event">Second Victim — Identical Signature Violence</div>
+            <div class="timeline-node-detail">Independent second victim describes same pattern of biting escalating with pain. Corroborates first victim without prior contact.</div>
+            <a href="#" class="timeline-node-doc">EFTA02731729</a>
+          </div>
+          <div class="timeline-node node-failure">
+            <div class="timeline-node-date">January 21, 2022</div>
+            <div class="timeline-node-event">SDNY to DANY: "Not Likely to Open Another Investigation"</div>
+            <div class="timeline-node-detail">SDNY formally signals to Manhattan DA that they will not be pursuing the case.</div>
+            <a href="#" class="timeline-node-doc">EFTA02731587</a>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-node-date">February 28, 2023</div>
+            <div class="timeline-node-event">Third Victim Identified — "Trafficked by Maxwell and Epstein"</div>
+            <div class="timeline-node-detail">DANY identifies additional victim who was trafficked through the Epstein/Maxwell network to Black.</div>
+            <a href="#" class="timeline-node-doc">EFTA02731593</a>
+          </div>
+          <div class="timeline-node node-critical">
+            <div class="timeline-node-date">May 26, 2023</div>
+            <div class="timeline-node-event">Evidence Mounts: 3 Victims, Biting, "Being 10," 25+ Men</div>
+            <div class="timeline-node-detail">Evidence summary now includes three corroborating victims, signature violence pattern, and victim journal reference to "being 10" (coded language).</div>
+            <a href="#" class="timeline-node-doc">EFTA02731488</a>
+          </div>
+          <div class="timeline-node node-failure">
+            <div class="timeline-node-date">July 22, 2023</div>
+            <div class="timeline-node-event">CRU Decline: "Doesn't Intend to Open Anything Separate"</div>
+            <div class="timeline-node-detail">SDNY Civil Rights Unit formally declines to open a separate investigation despite mounting evidence.</div>
+            <a href="#" class="timeline-node-doc">EFTA02731660</a>
+          </div>
+          <div class="timeline-node node-failure">
+            <div class="timeline-node-date">August 1–2, 2023</div>
+            <div class="timeline-node-event">"Agree with DTC" — Formal Decline to Charge</div>
+            <div class="timeline-node-detail">Final decision memorialized. DTC = Decline to Charge. Original AUSA never wrote a formal assessment. No declination memorandum identified.</div>
+            <a href="#" class="timeline-node-doc">EFTA02731632</a>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-node-date">March–May 2024</div>
+            <div class="timeline-node-event">Journals Transferred, Forensic Exam Authenticates</div>
+            <div class="timeline-node-detail">Journals, photos, bank statements transferred to SDNY. Victim testifies before Judge Rakoff. Court-ordered forensic exam: gel pen, no fabrication.</div>
+            <a href="#" class="timeline-node-doc">EFTA02731640, 02731724</a>
+          </div>
+          <div class="timeline-node node-failure">
+            <div class="timeline-node-date">January 30, 2026</div>
+            <div class="timeline-node-event">DS12 Released — Zero Charges Against Leon Black</div>
+            <div class="timeline-node-detail">Dataset released under EFTA. The complete prosecution file is now public. No charges have ever been filed.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. ENTITIES IDENTIFIED -->
+      <div class="report-section">
+        <div class="section-number">Section 4</div>
+        <h2 class="section-heading">Entities Identified</h2>
+        <div class="section-desc">24 key individuals identified and classified during DS12 review (50+ total named)</div>
+
+        <div class="entity-roster">
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-1">Tier 1</span>
+            <div class="roster-name">Jeffrey Epstein</div>
+            <div class="roster-role">Primary subject</div>
+          </a>
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-1">Tier 1</span>
+            <div class="roster-name">Ghislaine Maxwell</div>
+            <div class="roster-role">Co-conspirator, photographer</div>
+          </a>
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-3">Tier 3</span>
+            <div class="roster-name">Leon Black</div>
+            <div class="roster-role">Primary investigation subject</div>
+          </a>
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-6">Tier 6</span>
+            <div class="roster-name">Maurene Comey</div>
+            <div class="roster-role">SDNY AUSA</div>
+          </a>
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-6">Tier 6</span>
+            <div class="roster-name">Douglas Wigdor</div>
+            <div class="roster-role">Victim attorney, Wigdor LLP</div>
+          </a>
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-1">Tier 1</span>
+            <div class="roster-name">Prince Andrew</div>
+            <div class="roster-role">Named in journals</div>
+          </a>
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-6">Tier 6</span>
+            <div class="roster-name">Judge Jed Rakoff</div>
+            <div class="roster-role">Ordered forensic exam</div>
+          </a>
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-6">Tier 6</span>
+            <div class="roster-name">Susan Estrich</div>
+            <div class="roster-role">Defense attorney for Black</div>
+          </a>
+          <a href="#" class="roster-card">
+            <span class="roster-tier rt-5">Tier 5</span>
+            <div class="roster-name">Guzel Ganieva</div>
+            <div class="roster-role">Victim / witness (public)</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 5. OPEN QUESTIONS -->
+      <div class="report-section">
+        <div class="section-number">Section 5</div>
+        <h2 class="section-heading">Open Questions</h2>
+        <div class="section-desc">Unresolved leads and investigative targets emerging from DS12 analysis</div>
+
+        <div class="open-question">
+          <div class="open-question-id">OQ-01</div>
+          <div class="open-question-text">Who are the 5 remaining redacted names on the FBI inner circle diagram?</div>
+          <div class="open-question-context">The Bureau's organizational chart of the Epstein network has 5 positions still classified. Cross-reference against NPA immunity recipients.</div>
+        </div>
+        <div class="open-question">
+          <div class="open-question-id">OQ-02</div>
+          <div class="open-question-text">Who is the "Additional HT Subject" in EFTA02731736?</div>
+          <div class="open-question-context">Referenced alongside Leon Black. A separate human trafficking subject referred for investigation. Identity completely redacted. Represents potential third prosecutorial failure.</div>
+        </div>
+        <div class="open-question">
+          <div class="open-question-id">OQ-03</div>
+          <div class="open-question-text">What was in "Exhibit C" sent to Judge Rakoff?</div>
+          <div class="open-question-context">"Highly confidential information" sent under seal. Prompted the court-ordered forensic journal examination. Contents and subject completely concealed.</div>
+        </div>
+        <div class="open-question">
+          <div class="open-question-id">OQ-04</div>
+          <div class="open-question-text">Has the trafficking video described by Christensen been located?</div>
+          <div class="open-question-context">"6 men present, victim had to be with 3. One a former friend of Black's." Video reportedly uploaded to "disgusting sex site." Cross-reference DS10 (images/video).</div>
+        </div>
+        <div class="open-question">
+          <div class="open-question-id">OQ-05</div>
+          <div class="open-question-text">Who is the "federal worker" from the victim journals?</div>
+          <div class="open-question-context">A government employee participating in trafficking, named in victim journals. Identity unknown. Represents ongoing security risk if still in government.</div>
+        </div>
+      </div>
+
+      <!-- REPORT FOOTER -->
+      <div class="report-footer">
+        <div class="report-footer-grid">
+          <div>
+            <strong>Investigation Methodology</strong><br>
+            This report reflects systematic primary source analysis of DOJ EFTA releases. Every claim is supported by specific document citations. Entity tier classifications reflect evidence strength, not guilt. This is citizen investigation, not credentialed journalism.
+          </div>
+          <div>
+            <strong>Report History</strong><br>
+            Compiled: February 6, 2026 · Sessions 1–4<br>
+            Analysts: EFTA Investigation Team (Archer + Derek)<br>
+            Review Status: 137/152 documents (90.1%)<br>
+            15 documents in Bates gap 02731765–02731771 not in batches received.<br>
+            <strong>Linked Project Files:</strong> Entity Database v2.0, Master Document v10.0, DS12 Final Tracking.xlsx
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="report-sidebar">
+      <div class="sidebar-sticky">
+
+        <!-- Report Navigation -->
+        <div class="sidebar-block">
+          <div class="sidebar-block-header">Report Sections</div>
+          <a href="#" class="report-nav-item active"><span class="report-nav-number">1.</span>Executive Summary</a>
+          <a href="#" class="report-nav-item"><span class="report-nav-number">2.</span>Evidence Catalog</a>
+          <a href="#" class="report-nav-item"><span class="report-nav-number">3.</span>Prosecutorial Timeline</a>
+          <a href="#" class="report-nav-item"><span class="report-nav-number">4.</span>Entities Identified</a>
+          <a href="#" class="report-nav-item"><span class="report-nav-number">5.</span>Open Questions</a>
+        </div>
+
+        <!-- Session Info -->
+        <div class="sidebar-block">
+          <div class="sidebar-block-header">Session Details</div>
+          <div class="session-info-item">
+            <span class="session-info-label">Sessions</span>
+            <span class="session-info-value">1, 2, 3, 4</span>
+          </div>
+          <div class="session-info-item">
+            <span class="session-info-label">Dates</span>
+            <span class="session-info-value">Feb 5–6, 2026</span>
+          </div>
+          <div class="session-info-item">
+            <span class="session-info-label">Batches</span>
+            <span class="session-info-value">12 analytical</span>
+          </div>
+          <div class="session-info-item">
+            <span class="session-info-label">Completion</span>
+            <span class="session-info-value" style="color:var(--accent-green);font-weight:600;">90.1%</span>
+          </div>
+          <div class="session-info-item">
+            <span class="session-info-label">Extreme Findings</span>
+            <span class="session-info-value" style="color:var(--accent-red);font-weight:600;">14</span>
+          </div>
+          <div class="session-info-item">
+            <span class="session-info-label">New Entities</span>
+            <span class="session-info-value">47 added</span>
+          </div>
+          <div class="session-info-item">
+            <span class="session-info-label">Timeline Events</span>
+            <span class="session-info-value">27 mapped</span>
+          </div>
+        </div>
+
+        <!-- Stories from this report -->
+        <div class="sidebar-block">
+          <div class="sidebar-block-header">Stories from This Report</div>
+          <a href="#" class="linked-story">
+            <div class="linked-story-kicker">Follow the Money</div>
+            <div class="linked-story-title">$158 Million: The Leon Black–Epstein Financial Relationship</div>
+          </a>
+          <a href="#" class="linked-story">
+            <div class="linked-story-kicker">The Cover-Up</div>
+            <div class="linked-story-title">Asymmetric Justice: When Redactions Protect Perpetrators</div>
+          </a>
+          <a href="#" class="linked-story">
+            <div class="linked-story-kicker">The Network</div>
+            <div class="linked-story-title">Inside the FBI's Map of the Epstein Network</div>
+          </a>
+        </div>
+
+        <!-- Downloads -->
+        <div class="sidebar-block" style="padding-bottom:0;border-bottom:none;">
+          <div class="download-block">
+            <div class="download-block-title">Report Files</div>
+            <div class="download-item">
+              <span class="download-item-name">📄 DS12 Complete Analysis</span>
+              <span class="download-item-size">.docx</span>
+            </div>
+            <div class="download-item">
+              <span class="download-item-name">📊 DS12 Final Tracking</span>
+              <span class="download-item-size">.xlsx</span>
+            </div>
+            <div class="download-item">
+              <span class="download-item-name">📄 Session 3 Report (B2–7)</span>
+              <span class="download-item-size">.docx</span>
+            </div>
+            <div class="download-item">
+              <span class="download-item-name">📄 Session 4 Report (B8–12)</span>
+              <span class="download-item-size">.docx</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <div class="site-footer-logo">The Epstein <span>Record</span></div>
+  <p>Citizen investigation, not credentialed journalism · All findings backed by primary source documents</p>
+</footer>
+
+<script>
+  // Scroll-based section nav highlighting
+  const navItems = document.querySelectorAll('.report-nav-item');
+  const sections = document.querySelectorAll('.report-section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = Array.from(sections).indexOf(entry.target);
+        if (idx >= 0) {
+          navItems.forEach(n => n.classList.remove('active'));
+          if (navItems[idx]) navItems[idx].classList.add('active');
+        }
+      }
+    });
+  }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+  sections.forEach(s => observer.observe(s));
+
+  // Staggered entry animations
+  const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animation = 'fadeInUp 0.35s ease-out forwards';
+        animObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.evidence-item, .roster-card, .timeline-node, .open-question').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.animationDelay = (i * 0.03) + 's';
+    animObserver.observe(el);
+  });
+</script>
+
+</body>
+</html>

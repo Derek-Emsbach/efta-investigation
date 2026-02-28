@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leon Black — Entity Profile — The Epstein Record</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-secondary: #4a4a4a;
+    --ink-tertiary: #6b6b6b;
+    --ink-light: #8a8a8a;
+    --paper: #faf8f5;
+    --paper-warm: #f5f0e8;
+    --paper-cool: #f0f0ee;
+    --paper-white: #ffffff;
+    --rule: #d4d0c8;
+    --rule-light: #e8e4dc;
+    --rule-heavy: #1a1a1a;
+    --accent-red: #c41e3a;
+    --accent-red-dark: #9b1830;
+    --accent-red-light: #fce4ec;
+    --accent-gold: #b8860b;
+    --accent-gold-light: #fff8e1;
+    --accent-blue: #1a3a5c;
+    --accent-blue-light: #e3edf7;
+    --tier-1: #c62828;
+    --tier-1-bg: #fce4ec;
+    --tier-2: #e65100;
+    --tier-2-bg: #fff3e0;
+    --tier-3: #f57f17;
+    --tier-3-bg: #fff8e1;
+    --tier-4: #283593;
+    --tier-4-bg: #e8eaf6;
+    --tier-5: #6a1b9a;
+    --tier-5-bg: #f3e5f5;
+    --tier-6: #455a64;
+    --tier-6-bg: #eceff1;
+    --section-money: #1a472a;
+    --section-coverup: #4a1a2a;
+    --section-network: #2c3e50;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --font-sans: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes slideRight { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes drawLine { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+  @keyframes pulseNode { 0%,100% { box-shadow: 0 0 0 0 rgba(198,40,40,0.3); } 50% { box-shadow: 0 0 0 8px rgba(198,40,40,0); } }
+
+  /* ===== HEADER ===== */
+  .slim-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: rgba(250,248,245,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .slim-header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .slim-logo {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .slim-logo span { color: var(--accent-red); }
+  .slim-nav { display: flex; gap: 24px; }
+  .slim-nav a {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-tertiary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .slim-nav a:hover { color: var(--ink); }
+  .breadcrumb {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-light);
+    padding: 12px 0;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .breadcrumb a { color: var(--ink-tertiary); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--ink); text-decoration: underline; }
+  .breadcrumb .sep { margin: 0 6px; opacity: 0.4; }
+
+  /* ===== PROFILE HERO ===== */
+  .profile-hero {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 48px;
+    padding-top: 32px;
+    padding-bottom: 40px;
+    border-bottom: 2px solid var(--ink);
+    animation: fadeInUp 0.5s ease-out;
+  }
+  .profile-hero-main { }
+  .profile-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    margin-bottom: 16px;
+  }
+  .tier-3-style {
+    background: var(--tier-3-bg);
+    color: var(--tier-3);
+    border: 1px solid #ffe082;
+  }
+  .profile-tier-badge .tier-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .profile-name {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .profile-role {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    color: var(--ink-secondary);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .profile-summary {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink-secondary);
+    max-width: 600px;
+    margin-bottom: 24px;
+  }
+
+  /* Quick stats row */
+  .profile-stats-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: var(--paper-white);
+  }
+  .profile-stat {
+    flex: 1;
+    padding: 16px 20px;
+    border-right: 1px solid var(--rule);
+    text-align: center;
+  }
+  .profile-stat:last-child { border-right: none; }
+  .profile-stat-number {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .profile-stat-label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+  }
+
+  /* Sidebar dossier card */
+  .profile-dossier {
+    background: var(--paper-white);
+    border: 1px solid var(--rule);
+    padding: 0;
+    animation: fadeInUp 0.5s ease-out 0.15s both;
+  }
+  .dossier-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 20px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dossier-header .classified-stamp {
+    color: var(--accent-red);
+    font-weight: 600;
+  }
+  .dossier-body { padding: 20px; }
+  .dossier-field {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule-light);
+  }
+  .dossier-field:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .dossier-field-label {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 4px;
+  }
+  .dossier-field-value {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  .dossier-field-value a {
+    color: var(--accent-blue);
+    text-decoration: none;
+  }
+  .dossier-field-value a:hover { text-decoration: underline; }
+  .dossier-aliases {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .alias-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    background: var(--paper-cool);
+    border: 1px solid var(--rule);
+    color: var(--ink-secondary);
+  }
+  .dossier-datasets {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .dataset-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border: 1px solid var(--rule);
+    color: var(--ink-secondary);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .dataset-tag:hover { border-color: var(--ink-secondary); background: var(--paper-warm); }
+  .dataset-tag.primary { background: var(--accent-red-light); border-color: #f8bbd0; color: var(--accent-red); }
+
+  /* ===== TAB NAVIGATION ===== */
+  .profile-tabs {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .profile-tabs::-webkit-scrollbar { display: none; }
+  .tab-item {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    text-decoration: none;
+    padding: 16px 20px;
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .tab-item:hover { color: var(--ink); }
+  .tab-item.active {
+    color: var(--ink);
+  }
+  .tab-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-red);
+  }
+  .tab-count {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 400;
+    background: var(--paper-cool);
+    padding: 2px 6px;
+    margin-left: 6px;
+    border-radius: 2px;
+    color: var(--ink-tertiary);
+  }
+
+  /* ===== CONTENT AREA ===== */
+  .profile-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* ===== EVIDENCE SUMMARY (Overview Tab) ===== */
+  .evidence-summary-section {
+    margin-bottom: 48px;
+  }
+  .section-title {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-title .count {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--ink-light);
+    font-size: 10px;
+  }
+
+  /* Evidence timeline */
+  .evidence-timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+  .evidence-timeline::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 6px;
+    bottom: 20px;
+    width: 1px;
+    background: var(--rule);
+  }
+  .evidence-entry {
+    position: relative;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    animation: slideRight 0.4s ease-out both;
+  }
+  .evidence-entry:nth-child(1) { animation-delay: 0.05s; }
+  .evidence-entry:nth-child(2) { animation-delay: 0.1s; }
+  .evidence-entry:nth-child(3) { animation-delay: 0.15s; }
+  .evidence-entry:nth-child(4) { animation-delay: 0.2s; }
+  .evidence-entry:nth-child(5) { animation-delay: 0.25s; }
+  .evidence-entry:nth-child(6) { animation-delay: 0.3s; }
+  .evidence-entry::before {
+    content: '';
+    position: absolute;
+    left: -27px;
+    top: 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-secondary);
+    background: var(--paper);
+  }
+  .evidence-entry.critical::before {
+    border-color: var(--accent-red);
+    background: var(--accent-red);
+    animation: pulseNode 2s ease-in-out infinite;
+  }
+  .evidence-entry-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .evidence-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.02em;
+  }
+  .evidence-source {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 8px;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    color: var(--ink-tertiary);
+    letter-spacing: 0.04em;
+  }
+  .evidence-type-badge {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+  }
+  .type-financial { background: #e8f5e9; color: var(--section-money); }
+  .type-testimony { background: #e3edf7; color: var(--accent-blue); }
+  .type-prosecutorial { background: #fce4ec; color: var(--accent-red); }
+  .type-journal { background: #fff8e1; color: #f57f17; }
+  .evidence-entry-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-secondary);
+  }
+  .evidence-entry-doc {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-blue);
+    text-decoration: none;
+    margin-top: 6px;
+    transition: color 0.2s;
+  }
+  .evidence-entry-doc:hover { color: var(--ink); text-decoration: underline; }
+
+  /* ===== FINANCIAL SUMMARY CARD ===== */
+  .financial-card {
+    background: var(--paper-white);
+    border: 1px solid var(--rule);
+    padding: 28px;
+    margin-bottom: 48px;
+  }
+  .financial-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+  .financial-card h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .financial-card-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    background: #e8f5e9;
+    color: var(--section-money);
+    border: 1px solid #c8e6c9;
+  }
+  .financial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+  }
+  .financial-cell {
+    padding: 20px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .financial-cell:nth-child(3n) { border-right: none; }
+  .financial-cell:nth-last-child(-n+3) { border-bottom: none; }
+  .financial-cell-label {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+  }
+  .financial-cell-value {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--section-money);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .financial-cell-detail {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-tertiary);
+    line-height: 1.4;
+  }
+  .financial-note {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule-light);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .financial-note .note-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ===== CONNECTIONS ===== */
+  .connections-section { margin-bottom: 48px; }
+  .connections-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .connection-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    border: 1px solid var(--rule);
+    background: var(--paper-white);
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .connection-card:hover {
+    border-color: var(--ink-secondary);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transform: translateY(-1px);
+  }
+  .connection-node {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .connection-info { flex: 1; }
+  .connection-name {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .connection-relationship {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  .connection-evidence {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-light);
+    letter-spacing: 0.03em;
+  }
+  .connection-strength {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+  .strength-high { background: #fce4ec; color: var(--tier-1); }
+  .strength-medium { background: #fff8e1; color: #f57f17; }
+  .strength-documented { background: #e8f5e9; color: var(--section-money); }
+
+  /* ===== STORIES SECTION ===== */
+  .stories-section { margin-bottom: 48px; }
+  .story-list-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule-light);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .story-list-item:hover {
+    background: var(--paper-warm);
+    margin: 0 -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .story-list-item:last-child { border-bottom: none; }
+  .story-list-date {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    padding-top: 4px;
+  }
+  .story-list-content { }
+  .story-list-kicker {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .story-list-headline {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .story-list-summary {
+    font-size: 14px;
+    color: var(--ink-secondary);
+    line-height: 1.5;
+  }
+
+  /* ===== CASE FILES / INVESTIGATION REPORTS ===== */
+  .case-files-section { margin-bottom: 48px; }
+  .case-file-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid var(--rule);
+    background: var(--paper-white);
+    margin-bottom: 12px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .case-file-list-item:hover {
+    border-color: var(--ink-secondary);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .case-file-icon {
+    width: 48px;
+    height: 56px;
+    background: var(--paper-cool);
+    border: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--ink-tertiary);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .case-file-icon::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background: linear-gradient(135deg, var(--rule) 50%, var(--paper-cool) 50%);
+  }
+  .case-file-info { flex: 1; }
+  .case-file-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-blue);
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+  }
+  .case-file-title {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .case-file-desc {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .case-file-meta {
+    display: flex;
+    gap: 12px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-light);
+  }
+  .case-file-status {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+  .status-complete { background: #e8f5e9; color: #2e7d32; }
+  .status-active { background: #fff3e0; color: #e65100; }
+
+  /* ===== DOCUMENTS TABLE ===== */
+  .documents-section { margin-bottom: 48px; }
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 13px;
+  }
+  .doc-table thead {
+    position: sticky;
+    top: 54px;
+    z-index: 10;
+  }
+  .doc-table th {
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .doc-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule-light);
+    vertical-align: top;
+  }
+  .doc-table tr:hover td {
+    background: var(--paper-warm);
+  }
+  .doc-table .doc-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-blue);
+    white-space: nowrap;
+  }
+  .doc-table .doc-type {
+    font-size: 12px;
+    color: var(--ink-secondary);
+  }
+  .doc-table .doc-value {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    display: inline-block;
+  }
+  .value-high { background: var(--accent-red-light); color: var(--accent-red); }
+  .value-medium { background: var(--accent-gold-light); color: var(--accent-gold); }
+
+  /* ===== TIMELINE SECTION ===== */
+  .timeline-section { margin-bottom: 48px; }
+  .timeline-track {
+    position: relative;
+    padding-left: 32px;
+  }
+  .timeline-track::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 6px;
+    bottom: 20px;
+    width: 1px;
+    background: var(--rule);
+  }
+  .timeline-event {
+    position: relative;
+    padding-bottom: 24px;
+    padding-left: 24px;
+  }
+  .timeline-event::before {
+    content: '';
+    position: absolute;
+    left: -29px;
+    top: 7px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-secondary);
+    background: var(--paper);
+  }
+  .timeline-event.critical::before {
+    border-color: var(--accent-red);
+    background: var(--accent-red);
+  }
+  .timeline-event-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-light);
+    margin-bottom: 4px;
+  }
+  .timeline-event-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .timeline-event-desc {
+    font-size: 14px;
+    color: var(--ink-secondary);
+    line-height: 1.5;
+  }
+
+  /* ===== TIER EXPLANATION ===== */
+  .tier-explanation {
+    background: var(--tier-3-bg);
+    border: 1px solid #ffe082;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  .tier-explanation-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .tier-explanation-header h3 {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--tier-3);
+  }
+  .tier-explanation p {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+  }
+
+  /* ===== FOOTER ===== */
+  .profile-footer {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-tertiary);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .profile-footer a {
+    color: var(--accent-blue);
+    text-decoration: none;
+  }
+  .site-footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 28px 0;
+    text-align: center;
+  }
+  .site-footer-logo {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .site-footer-logo span { color: var(--accent-red); }
+  .site-footer p {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    opacity: 0.4;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .profile-hero { grid-template-columns: 1fr; }
+    .connections-grid { grid-template-columns: 1fr; }
+    .financial-grid { grid-template-columns: repeat(2, 1fr); }
+    .story-list-item { grid-template-columns: 1fr; gap: 4px; }
+    .story-list-date { font-size: 11px; }
+  }
+  @media (max-width: 768px) {
+    .profile-stats-row { flex-wrap: wrap; }
+    .profile-stat { min-width: calc(50% - 1px); }
+    .financial-grid { grid-template-columns: 1fr; }
+    .doc-table { font-size: 12px; }
+    .doc-table th, .doc-table td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="slim-header">
+  <div class="slim-header-inner">
+    <a href="#" class="slim-logo">The Epstein <span>Record</span></a>
+    <nav class="slim-nav">
+      <a href="#">Home</a>
+      <a href="#">Evidence Room</a>
+      <a href="#" style="font-weight:700;color:var(--ink);">Entity Profiles</a>
+      <a href="#">Case Files</a>
+    </nav>
+  </div>
+</header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="#">Home</a><span class="sep">›</span>
+  <a href="#">Entity Profiles</a><span class="sep">›</span>
+  <span style="color:var(--ink);">Leon Black</span>
+</div>
+
+<!-- PROFILE HERO -->
+<section class="profile-hero">
+  <div class="profile-hero-main">
+    <div class="profile-tier-badge tier-3-style">
+      <span class="tier-dot"></span>
+      Tier 3 — Suspicious / Concerning Conduct
+    </div>
+    <h1 class="profile-name">Leon Black</h1>
+    <p class="profile-role">Co-founder &amp; Former CEO, Apollo Global Management. Billionaire financier whose $158 million in payments to Jeffrey Epstein prompted a DANY investigation that assembled 152 documents of evidence — then ended without charges.</p>
+    <p class="profile-summary">
+      Black's financial relationship with Epstein is the most extensively documented in the entire EFTA release. Dataset 12 contains the complete DANY prosecution file, while Dataset 9 reveals additional financial entanglement including Epstein's $7 million equity stake in Apollo Global Management — establishing a bidirectional flow of funds that transforms the narrative from "advisory payments" to reciprocal financial enmeshment.
+    </p>
+    <div class="profile-stats-row">
+      <div class="profile-stat">
+        <div class="profile-stat-number" style="color:var(--section-money);">96</div>
+        <div class="profile-stat-label">Documents</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-number" style="color:var(--accent-blue);">12</div>
+        <div class="profile-stat-label">Connections</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-number" style="color:var(--accent-red);">3</div>
+        <div class="profile-stat-label">Stories</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-number" style="color:var(--ink);">2</div>
+        <div class="profile-stat-label">Case Files</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOSSIER CARD -->
+  <div class="profile-dossier">
+    <div class="dossier-header">
+      <span>Entity Dossier</span>
+      <span class="classified-stamp">Entity #4</span>
+    </div>
+    <div class="dossier-body">
+      <div class="dossier-field">
+        <div class="dossier-field-label">Full Name</div>
+        <div class="dossier-field-value">Leon David Black</div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Known Aliases</div>
+        <div class="dossier-aliases">
+          <span class="alias-tag">L. Black</span>
+          <span class="alias-tag">Leon</span>
+          <span class="alias-tag">"Leon Black"</span>
+        </div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Classification</div>
+        <div class="dossier-field-value" style="color:var(--tier-3);font-weight:600;">Tier 3 — Suspicious Conduct</div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Primary Role</div>
+        <div class="dossier-field-value">Co-founder & Former CEO, Apollo Global Management</div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Key Financial Link</div>
+        <div class="dossier-field-value" style="color:var(--section-money);font-weight:600;">$158M in documented payments to Epstein (2012–2017)</div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Case Status</div>
+        <div class="dossier-field-value">DANY investigation declined prosecution. No charges filed.</div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Journal Evidence</div>
+        <div class="dossier-field-value">Named with full name in forensically authenticated victim journals (DS12)</div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Appears in Datasets</div>
+        <div class="dossier-datasets">
+          <a href="#" class="dataset-tag primary">DS12</a>
+          <a href="#" class="dataset-tag primary">DS9</a>
+          <a href="#" class="dataset-tag">DS8</a>
+        </div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Key Case Numbers</div>
+        <div class="dossier-field-value" style="font-family:var(--font-mono);font-size:11px;">
+          <a href="#">19 Cr. 490 (RMB)</a> · <a href="#">15 Cv. 7433</a>
+        </div>
+      </div>
+      <div class="dossier-field">
+        <div class="dossier-field-label">Last Updated</div>
+        <div class="dossier-field-value" style="font-family:var(--font-mono);font-size:11px;">Feb 10, 2026 — Session 18</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAB NAVIGATION -->
+<nav class="profile-tabs">
+  <a class="tab-item active">Overview</a>
+  <a class="tab-item">Evidence<span class="tab-count">6</span></a>
+  <a class="tab-item">Connections<span class="tab-count">12</span></a>
+  <a class="tab-item">Documents<span class="tab-count">96</span></a>
+  <a class="tab-item">Timeline<span class="tab-count">8</span></a>
+  <a class="tab-item">Stories<span class="tab-count">3</span></a>
+  <a class="tab-item">Case Files<span class="tab-count">2</span></a>
+</nav>
+
+<!-- CONTENT -->
+<div class="profile-content">
+
+  <!-- Tier Explanation -->
+  <div class="tier-explanation">
+    <div class="tier-explanation-header">
+      <span style="font-size:18px;">⚠</span>
+      <h3>Tier 3 Classification — What This Means</h3>
+    </div>
+    <p>
+      Tier 3 indicates documentary evidence raising serious questions about this individual's involvement — including victim allegations, communications suggesting awareness, and behavioral patterns — but no criminal charges have been filed. Presence in this database does not establish criminal conduct. Named with full name in forensically authenticated victim journals, which under our expanded v2.0 criteria would support Tier 1 classification; maintained at Tier 3 pending further corroboration from independent sources. See our <a href="#" style="color:var(--tier-3);">tier methodology</a> for details.
+    </p>
+  </div>
+
+  <!-- Financial Summary -->
+  <div class="financial-card">
+    <div class="financial-card-header">
+      <h3>Financial Summary</h3>
+      <span class="financial-card-badge">Documented</span>
+    </div>
+    <div class="financial-grid">
+      <div class="financial-cell">
+        <div class="financial-cell-label">Direct Payments to Epstein</div>
+        <div class="financial-cell-value">$158M</div>
+        <div class="financial-cell-detail">14 transactions, 2012–2017, across 6 entities</div>
+      </div>
+      <div class="financial-cell">
+        <div class="financial-cell-label">Epstein's Apollo Equity</div>
+        <div class="financial-cell-value">$7.08M</div>
+        <div class="financial-cell-detail">263,157 shares AGM via SFLLC, valued 4/30/2013</div>
+      </div>
+      <div class="financial-cell">
+        <div class="financial-cell-label">Life Insurance Portfolio</div>
+        <div class="financial-cell-value">$150M</div>
+        <div class="financial-cell-detail">Death benefit, 8 policies. Apollo entity funded premiums.</div>
+      </div>
+      <div class="financial-cell">
+        <div class="financial-cell-label">Split-Dollar Advances</div>
+        <div class="financial-cell-value">$22.9M</div>
+        <div class="financial-cell-detail">From AIF IV Management (Apollo) to insurance trusts</div>
+      </div>
+      <div class="financial-cell">
+        <div class="financial-cell-label">Payment Entities</div>
+        <div class="financial-cell-value" style="font-size:18px;">6+</div>
+        <div class="financial-cell-detail">Shell entities used to route payments</div>
+      </div>
+      <div class="financial-cell">
+        <div class="financial-cell-label">Flow Direction</div>
+        <div class="financial-cell-value" style="font-size:18px;color:var(--accent-red);">↔</div>
+        <div class="financial-cell-detail">Bidirectional — money flowed both ways</div>
+      </div>
+    </div>
+    <div class="financial-note">
+      <span class="note-icon">📎</span>
+      <span>The presence of Black's confidential Bryant Group insurance review (EFTA02674239) in Epstein's DOJ files raises an unresolved provenance question: either seized during investigation, possessed by Epstein, or produced by counsel. Bates proximity to Epstein's own valuation document suggests they were gathered as part of documenting the financial nexus.</span>
+    </div>
+  </div>
+
+  <!-- Evidence Summary -->
+  <div class="evidence-summary-section">
+    <div class="section-title">
+      <span>Key Evidence</span>
+      <span class="count">6 items</span>
+    </div>
+
+    <div class="evidence-timeline">
+      <div class="evidence-entry critical">
+        <div class="evidence-entry-header">
+          <span class="evidence-date">2012–2017</span>
+          <span class="evidence-type-badge type-financial">Financial</span>
+        </div>
+        <div class="evidence-entry-text">
+          $158 million in confirmed payments from Black to Epstein across 14 transactions routed through 6+ shell entities. An additional redacted amount through an unidentified channel was documented but obscured in the EFTA release.
+        </div>
+        <a href="#" class="evidence-entry-doc">📄 EFTA02731623 — DANY Financial Summary →</a>
+      </div>
+
+      <div class="evidence-entry critical">
+        <div class="evidence-entry-header">
+          <span class="evidence-date">2013 (documented)</span>
+          <span class="evidence-type-badge type-financial">Financial</span>
+        </div>
+        <div class="evidence-entry-text">
+          Epstein held 263,157 shares of Apollo Global Management valued at $7.08M through Southern Financial LLC — establishing bidirectional financial relationship. Combined with $158M in payments, transforms "advisory" narrative to reciprocal financial entanglement.
+        </div>
+        <a href="#" class="evidence-entry-doc">📄 EFTA02674602 — Epstein Valuation Package →</a>
+      </div>
+
+      <div class="evidence-entry critical">
+        <div class="evidence-entry-header">
+          <span class="evidence-date">Ages 16–19 (victim)</span>
+          <span class="evidence-type-badge type-journal">Journal Evidence</span>
+        </div>
+        <div class="evidence-entry-text">
+          Named with full name in forensically authenticated victim journals. Journals written in code over 4+ years while victim was being actively trafficked. Authenticated by court-ordered forensic examination (gel pen analysis, no evidence of fabrication).
+        </div>
+        <a href="#" class="evidence-entry-doc">📄 DS12 — Forensic Journal Analysis →</a>
+      </div>
+
+      <div class="evidence-entry">
+        <div class="evidence-entry-header">
+          <span class="evidence-date">Feb 2013</span>
+          <span class="evidence-type-badge type-financial">Financial</span>
+        </div>
+        <div class="evidence-entry-text">
+          Confidential Bryant Group insurance review found in Epstein's DOJ files. $150M in trust-owned life insurance, premiums funded by AIF IV Management (Apollo entity). Provenance of this proprietary document in Epstein files is unresolved.
+        </div>
+        <a href="#" class="evidence-entry-doc">📄 EFTA02674239 — Insurance Portfolio Review →</a>
+      </div>
+
+      <div class="evidence-entry">
+        <div class="evidence-entry-header">
+          <span class="evidence-date">2023</span>
+          <span class="evidence-type-badge type-prosecutorial">Prosecutorial</span>
+        </div>
+        <div class="evidence-entry-text">
+          DANY investigation assembled 152 documents, conducted witness interviews, and prepared analytical memoranda showing temporal correlation between payments and meetings — then declined to prosecute. No declination memorandum explaining this decision has been identified.
+        </div>
+        <a href="#" class="evidence-entry-doc">📄 EFTA02731689 — DANY Internal Memo →</a>
+      </div>
+
+      <div class="evidence-entry">
+        <div class="evidence-entry-header">
+          <span class="evidence-date">DS12 Reference</span>
+          <span class="evidence-type-badge type-testimony">Testimony</span>
+        </div>
+        <div class="evidence-entry-text">
+          Christensen testimony references trafficking video: "6 men present, victim had to be with 3. One a former friend of Black's." Identities of the 6 men unknown. Video has not been located.
+        </div>
+        <a href="#" class="evidence-entry-doc">📄 EFTA02731515 — Witness Reference →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connections -->
+  <div class="connections-section">
+    <div class="section-title">
+      <span>Documented Connections</span>
+      <span class="count">12 connections</span>
+    </div>
+
+    <div class="connections-grid">
+      <a href="#" class="connection-card">
+        <span class="connection-node" style="background:var(--tier-1);"></span>
+        <div class="connection-info">
+          <div class="connection-name">Jeffrey Epstein</div>
+          <div class="connection-relationship">$158M in payments (2012–2017). Bidirectional: Epstein held $7M in Apollo equity. Named together in victim journals.</div>
+          <div class="connection-evidence">DS12: 96 docs · DS9: 3 docs</div>
+        </div>
+        <span class="connection-strength strength-high">Critical</span>
+      </a>
+
+      <a href="#" class="connection-card">
+        <span class="connection-node" style="background:var(--tier-1);"></span>
+        <div class="connection-info">
+          <div class="connection-name">Ghislaine Maxwell</div>
+          <div class="connection-relationship">Referenced in prosecution file communications. Relationship context documented in DANY materials.</div>
+          <div class="connection-evidence">DS12: multiple refs</div>
+        </div>
+        <span class="connection-strength strength-medium">Medium</span>
+      </a>
+
+      <a href="#" class="connection-card">
+        <span class="connection-node" style="background:var(--tier-6);"></span>
+        <div class="connection-info">
+          <div class="connection-name">Cyrus Vance Jr.</div>
+          <div class="connection-relationship">Manhattan DA whose office investigated then declined to prosecute Black despite assembling full prosecution file.</div>
+          <div class="connection-evidence">DS12: prosecution chain</div>
+        </div>
+        <span class="connection-strength strength-documented">Documented</span>
+      </a>
+
+      <a href="#" class="connection-card">
+        <span class="connection-node" style="background:var(--tier-6);"></span>
+        <div class="connection-info">
+          <div class="connection-name">Norman Brownstein</div>
+          <div class="connection-relationship">Trustee of both Leon Black Insurance Trusts. Senior partner at Brownstein Hyatt Farber Schreck.</div>
+          <div class="connection-evidence">DS9: EFTA02674239</div>
+        </div>
+        <span class="connection-strength strength-documented">Documented</span>
+      </a>
+
+      <a href="#" class="connection-card">
+        <span class="connection-node" style="background:var(--tier-4);"></span>
+        <div class="connection-info">
+          <div class="connection-name">Debra Black</div>
+          <div class="connection-relationship">Spouse. Co-insured on $100M second-to-die life insurance policies. Named in estate planning documents.</div>
+          <div class="connection-evidence">DS9: EFTA02674239</div>
+        </div>
+        <span class="connection-strength strength-documented">Documented</span>
+      </a>
+
+      <a href="#" class="connection-card">
+        <span class="connection-node" style="background:var(--tier-3);"></span>
+        <div class="connection-info">
+          <div class="connection-name">Glenn Dubin</div>
+          <div class="connection-relationship">Fellow financier with documented Epstein financial relationship. Cross-referenced in DS9 valuation documents.</div>
+          <div class="connection-evidence">DS9: EFTA02674602</div>
+        </div>
+        <span class="connection-strength strength-medium">Medium</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Stories -->
+  <div class="stories-section">
+    <div class="section-title">
+      <span>Stories Mentioning Leon Black</span>
+      <span class="count">3 stories</span>
+    </div>
+
+    <div class="story-list-item">
+      <div class="story-list-date">Feb 18, 2026</div>
+      <div class="story-list-content">
+        <div class="story-list-kicker" style="color:var(--section-money);">Follow the Money</div>
+        <div class="story-list-headline">$158 Million: The Leon Black–Epstein Financial Relationship, Document by Document</div>
+        <div class="story-list-summary">Dataset 12 — the Leon Black prosecution file — contains 152 documents spanning the complete DANY investigation. Our analysis reveals a financial relationship far more complex than previously reported.</div>
+      </div>
+    </div>
+
+    <div class="story-list-item">
+      <div class="story-list-date">Feb 16, 2026</div>
+      <div class="story-list-content">
+        <div class="story-list-kicker" style="color:var(--section-money);">Follow the Money</div>
+        <div class="story-list-headline">Shell Companies and Wire Transfers: Tracing the Payment Infrastructure</div>
+        <div class="story-list-summary">Estate documents reveal a web of entities designed to obscure the flow of funds between powerful individuals and a convicted sex trafficker.</div>
+      </div>
+    </div>
+
+    <div class="story-list-item">
+      <div class="story-list-date">Feb 21, 2026</div>
+      <div class="story-list-content">
+        <div class="story-list-kicker" style="color:var(--section-coverup);">The Cover-Up</div>
+        <div class="story-list-headline">Asymmetric Justice: When Redactions Protect Perpetrators and Expose Victims</div>
+        <div class="story-list-summary">Forensic analysis of redaction patterns across the EFTA releases reveals systematic asymmetry in whose identities are protected — and whose are not.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Files -->
+  <div class="case-files-section">
+    <div class="section-title">
+      <span>Investigation Reports Mentioning Leon Black</span>
+      <span class="count">2 reports</span>
+    </div>
+
+    <div class="case-file-list-item">
+      <div class="case-file-icon">IR</div>
+      <div class="case-file-info">
+        <div class="case-file-number">EFTA-IR-2026-004</div>
+        <div class="case-file-title">Dataset 12: Leon Black Prosecution File — Complete Analysis</div>
+        <div class="case-file-desc">Systematic review of 137/152 documents from the DANY investigation into Leon Black's financial relationship with Jeffrey Epstein. Primary subject of investigation.</div>
+        <div class="case-file-meta">
+          <span>📄 137 docs</span>
+          <span>👤 24 entities</span>
+          <span>📅 27 events</span>
+          <span>Sessions 12–15</span>
+        </div>
+      </div>
+      <span class="case-file-status status-complete">Complete</span>
+    </div>
+
+    <div class="case-file-list-item">
+      <div class="case-file-icon">IR</div>
+      <div class="case-file-info">
+        <div class="case-file-number">EFTA-IR-2026-005</div>
+        <div class="case-file-title">Dataset 9: Email Communications — Pre-Analysis Intelligence</div>
+        <div class="case-file-desc">Intelligence gathering and target identification for 533,000+ documents. Leon Black financial documents identified during preliminary review including insurance portfolio and Epstein valuation package.</div>
+        <div class="case-file-meta">
+          <span>📄 533K+ docs</span>
+          <span>👤 9 targets</span>
+          <span>📅 Ongoing</span>
+          <span>Session 18</span>
+        </div>
+      </div>
+      <span class="case-file-status status-active">In Progress</span>
+    </div>
+  </div>
+
+  <!-- Document Sample Table -->
+  <div class="documents-section">
+    <div class="section-title">
+      <span>Key Documents</span>
+      <span class="count">Showing 8 of 96</span>
+    </div>
+
+    <table class="doc-table">
+      <thead>
+        <tr>
+          <th>EFTA #</th>
+          <th>Type</th>
+          <th>Dataset</th>
+          <th>Pages</th>
+          <th>Value</th>
+          <th>Key Content</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="doc-id">02731623</td>
+          <td class="doc-type">Financial Summary</td>
+          <td>DS12</td>
+          <td>7</td>
+          <td><span class="doc-value value-high">High</span></td>
+          <td>DANY financial summary — $158M payment timeline</td>
+        </tr>
+        <tr>
+          <td class="doc-id">02731640</td>
+          <td class="doc-type">Wire Records</td>
+          <td>DS12</td>
+          <td>12</td>
+          <td><span class="doc-value value-high">High</span></td>
+          <td>Wire transfers through intermediary entities</td>
+        </tr>
+        <tr>
+          <td class="doc-id">02731689</td>
+          <td class="doc-type">Internal Memo</td>
+          <td>DS12</td>
+          <td>4</td>
+          <td><span class="doc-value value-high">High</span></td>
+          <td>DANY temporal analysis — payments vs meetings</td>
+        </tr>
+        <tr>
+          <td class="doc-id">02674602</td>
+          <td class="doc-type">Valuation</td>
+          <td>DS9</td>
+          <td>14</td>
+          <td><span class="doc-value value-high">High</span></td>
+          <td>Epstein portfolio — $7M Apollo equity via SFLLC</td>
+        </tr>
+        <tr>
+          <td class="doc-id">02674239</td>
+          <td class="doc-type">Insurance Review</td>
+          <td>DS9</td>
+          <td>19</td>
+          <td><span class="doc-value value-medium">Med-High</span></td>
+          <td>Bryant Group — $150M life insurance, Apollo-funded premiums</td>
+        </tr>
+        <tr>
+          <td class="doc-id">02731515</td>
+          <td class="doc-type">Witness Ref</td>
+          <td>DS12</td>
+          <td>3</td>
+          <td><span class="doc-value value-high">High</span></td>
+          <td>Christensen — trafficking video, "former friend of Black's"</td>
+        </tr>
+        <tr>
+          <td class="doc-id">02731636</td>
+          <td class="doc-type">Investigation</td>
+          <td>DS12</td>
+          <td>2</td>
+          <td><span class="doc-value value-high">High</span></td>
+          <td>DANY "potential targets" — identities redacted</td>
+        </tr>
+        <tr>
+          <td class="doc-id">02731485</td>
+          <td class="doc-type">Case Reference</td>
+          <td>DS12</td>
+          <td>4</td>
+          <td><span class="doc-value value-high">High</span></td>
+          <td>"Additional HT Subject" referenced alongside Black</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="text-align:center;padding:20px;">
+      <a href="#" style="font-family:var(--font-sans);font-size:12px;font-weight:600;color:var(--accent-blue);text-decoration:none;letter-spacing:0.04em;">View all 96 documents in Evidence Room →</a>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-section">
+    <div class="section-title">
+      <span>Timeline — Leon Black &amp; Epstein</span>
+      <span class="count">8 events</span>
+    </div>
+
+    <div class="timeline-track">
+      <div class="timeline-event">
+        <div class="timeline-event-date">September 1999</div>
+        <div class="timeline-event-title">Black Insurance Trusts Established</div>
+        <div class="timeline-event-desc">Two irrevocable life insurance trusts created for $150M in coverage. Norman Brownstein named trustee. Premiums later funded by Apollo entity AIF IV Management.</div>
+      </div>
+      <div class="timeline-event critical">
+        <div class="timeline-event-date">2012</div>
+        <div class="timeline-event-title">First Documented Payment to Epstein</div>
+        <div class="timeline-event-desc">Beginning of $158M payment series. Payments routed through multiple shell entities over the next five years.</div>
+      </div>
+      <div class="timeline-event">
+        <div class="timeline-event-date">April 2013</div>
+        <div class="timeline-event-title">Epstein Portfolio Valued — $7M in Apollo Equity</div>
+        <div class="timeline-event-desc">Valuation package shows 263,157 shares of Apollo Global Management held through SFLLC. Establishes bidirectional financial relationship.</div>
+      </div>
+      <div class="timeline-event">
+        <div class="timeline-event-date">February 2013</div>
+        <div class="timeline-event-title">Bryant Group Insurance Review Prepared</div>
+        <div class="timeline-event-desc">Confidential annual review of Black's insurance portfolio. This proprietary document later found in Epstein's DOJ files — provenance unresolved.</div>
+      </div>
+      <div class="timeline-event critical">
+        <div class="timeline-event-date">2017</div>
+        <div class="timeline-event-title">Final Documented Payment</div>
+        <div class="timeline-event-desc">Last confirmed transaction in the $158M series. Total across 14 transactions.</div>
+      </div>
+      <div class="timeline-event critical">
+        <div class="timeline-event-date">June 2023</div>
+        <div class="timeline-event-title">DANY Identifies "Potential Targets"</div>
+        <div class="timeline-event-desc">Manhattan DA's office identifies multiple individuals beyond Black under investigation. Identities fully redacted in EFTA release.</div>
+      </div>
+      <div class="timeline-event">
+        <div class="timeline-event-date">2023</div>
+        <div class="timeline-event-title">DANY Declines Prosecution</div>
+        <div class="timeline-event-desc">Despite 152-document evidence file, no charges brought. No formal declination memorandum identified.</div>
+      </div>
+      <div class="timeline-event">
+        <div class="timeline-event-date">2025–26</div>
+        <div class="timeline-event-title">EFTA Release — DS12 Published</div>
+        <div class="timeline-event-desc">Full DANY prosecution file released as Dataset 12. EFTA Investigation completes 90.1% review (137/152 documents).</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PROFILE FOOTER -->
+<div class="profile-footer">
+  <div>
+    <span>Entity #4 · Last updated Feb 10, 2026 (Session 18) · </span>
+    <a href="#">View edit history</a>
+  </div>
+  <div>
+    <span>Classification methodology: </span>
+    <a href="#">Tier Classification Key</a>
+    <span> · </span>
+    <a href="#">Editorial Standards</a>
+  </div>
+</div>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <div class="site-footer-logo">The Epstein <span>Record</span></div>
+  <p>Citizen investigation, not credentialed journalism · Presence in this database does not establish criminal conduct</p>
+</footer>
+
+<script>
+  // Tab switching (demo)
+  const tabs = document.querySelectorAll('.tab-item');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Staggered animation on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animation = 'fadeInUp 0.4s ease-out forwards';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.connection-card, .story-list-item, .case-file-list-item').forEach(el => {
+    el.style.opacity = '0';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

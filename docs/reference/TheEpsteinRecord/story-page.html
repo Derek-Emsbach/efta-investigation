@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$158 Million: The Leon Black–Epstein Financial Relationship — The Epstein Record</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-secondary: #4a4a4a;
+    --ink-tertiary: #6b6b6b;
+    --ink-light: #8a8a8a;
+    --paper: #faf8f5;
+    --paper-warm: #f5f0e8;
+    --paper-cool: #f0f0ee;
+    --paper-white: #ffffff;
+    --rule: #d4d0c8;
+    --rule-light: #e8e4dc;
+    --rule-heavy: #1a1a1a;
+    --accent-red: #c41e3a;
+    --accent-red-dark: #9b1830;
+    --accent-red-light: #fce4ec;
+    --accent-gold: #b8860b;
+    --accent-blue: #1a3a5c;
+    --accent-blue-light: #e3edf7;
+    --section-money: #1a472a;
+    --section-money-bg: #e8f5e9;
+    --section-coverup: #4a1a2a;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --font-sans: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --article-width: 680px;
+    --sidebar-width: 320px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes expandLine {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes highlightPulse {
+    0% { background-color: rgba(196,30,58,0.12); }
+    50% { background-color: rgba(196,30,58,0.06); }
+    100% { background-color: rgba(196,30,58,0.12); }
+  }
+
+  /* ===== TOP BAR ===== */
+  .top-bar {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 6px 0;
+  }
+  .top-bar-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .top-bar a {
+    color: var(--paper);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .top-bar a:hover { opacity: 1; }
+
+  /* ===== SLIM HEADER ===== */
+  .slim-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: rgba(250,248,245,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .slim-header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .slim-logo {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .slim-logo span { color: var(--accent-red); }
+  .slim-nav {
+    display: flex;
+    gap: 24px;
+  }
+  .slim-nav a {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-tertiary);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .slim-nav a:hover { color: var(--ink); }
+
+  /* Progress bar */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--accent-red);
+    z-index: 200;
+    transition: width 0.1s linear;
+  }
+
+  /* ===== ARTICLE HEADER ===== */
+  .article-header {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 24px 0;
+    animation: fadeInUp 0.6s ease-out;
+  }
+  .article-section-tag {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--section-money);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .article-section-tag::before {
+    content: '';
+    width: 24px;
+    height: 2px;
+    background: var(--section-money);
+  }
+  .article-headline {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 5vw, 54px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  .article-deck {
+    font-family: var(--font-body);
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--ink-secondary);
+    margin-bottom: 28px;
+    font-weight: 400;
+    max-width: 680px;
+  }
+
+  .article-meta-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .article-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .byline-block {
+    font-family: var(--font-sans);
+    font-size: 13px;
+  }
+  .byline-name {
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .byline-date {
+    color: var(--ink-tertiary);
+    font-size: 12px;
+  }
+  .article-meta-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .meta-badge {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .badge-docs {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    color: var(--ink-secondary);
+  }
+  .badge-case-file {
+    background: var(--accent-blue-light);
+    border: 1px solid #c5d8eb;
+    color: var(--accent-blue);
+  }
+  .badge-dataset {
+    background: var(--section-money-bg);
+    border: 1px solid #c8e6c9;
+    color: var(--section-money);
+  }
+
+  /* ===== ARTICLE LAYOUT (2 columns) ===== */
+  .article-layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: var(--article-width) 1fr;
+    gap: 48px;
+  }
+
+  /* ===== ARTICLE BODY ===== */
+  .article-body {
+    animation: fadeIn 0.8s ease-out 0.2s both;
+  }
+  .article-body p {
+    font-size: 18px;
+    line-height: 1.78;
+    margin-bottom: 24px;
+    color: var(--ink);
+    font-weight: 400;
+    hanging-punctuation: first;
+  }
+  .article-body p:first-of-type::first-letter {
+    font-family: var(--font-display);
+    font-size: 68px;
+    float: left;
+    line-height: 0.8;
+    padding-right: 10px;
+    padding-top: 6px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .article-body h2 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 48px 0 20px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.01em;
+  }
+  .article-body h3 {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-secondary);
+    margin: 36px 0 16px;
+  }
+
+  /* ===== INLINE EVIDENCE CITATIONS ===== */
+  .evidence-cite {
+    position: relative;
+    cursor: pointer;
+  }
+  .evidence-cite .cite-marker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: var(--accent-red);
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 50%;
+    vertical-align: super;
+    margin-left: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+  }
+  .evidence-cite .cite-marker:hover {
+    background: var(--accent-red-dark);
+    transform: scale(1.15);
+  }
+  .evidence-cite .cite-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 18px;
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.5;
+    width: 320px;
+    z-index: 50;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    pointer-events: none;
+  }
+  .evidence-cite .cite-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--ink);
+  }
+  .evidence-cite:hover .cite-tooltip,
+  .evidence-cite.active .cite-tooltip {
+    display: block;
+    animation: fadeIn 0.2s ease-out;
+    pointer-events: auto;
+  }
+  .cite-tooltip-doc {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-red);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .cite-tooltip-link {
+    display: inline-block;
+    margin-top: 6px;
+    color: var(--accent-red);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ===== ENTITY MENTION (inline) ===== */
+  .entity-mention {
+    border-bottom: 1.5px solid var(--accent-gold);
+    text-decoration: none;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .entity-mention:hover {
+    background: rgba(184,134,11,0.08);
+  }
+  .entity-mention .entity-hover-card {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    background: var(--paper-white);
+    border: 1px solid var(--rule);
+    padding: 16px;
+    width: 280px;
+    z-index: 50;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    pointer-events: none;
+  }
+  .entity-mention:hover .entity-hover-card {
+    display: block;
+    animation: fadeIn 0.2s ease-out;
+    pointer-events: auto;
+  }
+  .entity-hover-tier {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .tier-1-badge { background: #fce4ec; color: #c62828; }
+  .tier-3-badge { background: #fff8e1; color: #f57f17; }
+  .tier-6-badge { background: #eceff1; color: #455a64; }
+  .entity-hover-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .entity-hover-role {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-tertiary);
+    margin-bottom: 8px;
+  }
+  .entity-hover-stats {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-tertiary);
+    display: flex;
+    gap: 12px;
+  }
+  .entity-hover-link {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--accent-blue);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* ===== DOCUMENT EMBED ===== */
+  .doc-embed {
+    margin: 36px 0;
+    border: 1px solid var(--rule);
+    background: var(--paper-white);
+    overflow: hidden;
+  }
+  .doc-embed-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-sans);
+    font-size: 11px;
+  }
+  .doc-embed-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--accent-red);
+  }
+  .doc-embed-type {
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .doc-embed-body {
+    padding: 24px 28px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-secondary);
+    border-left: 3px solid var(--accent-red);
+    margin: 0;
+    position: relative;
+  }
+  .doc-embed-body .redacted-inline {
+    background: var(--ink);
+    color: transparent;
+    padding: 1px 4px;
+    font-size: 14px;
+    position: relative;
+    user-select: none;
+    border-radius: 1px;
+  }
+  .doc-embed-footer {
+    padding: 10px 20px;
+    border-top: 1px solid var(--rule-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-tertiary);
+  }
+  .doc-embed-footer a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  .doc-embed-footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* ===== PULL QUOTE ===== */
+  .pull-quote {
+    margin: 48px 0;
+    padding: 0;
+    position: relative;
+  }
+  .pull-quote blockquote {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+    padding: 0 0 0 28px;
+    border-left: 3px solid var(--accent-red);
+    margin: 0;
+  }
+  .pull-quote-attribution {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-tertiary);
+    letter-spacing: 0.04em;
+    margin-top: 12px;
+    padding-left: 28px;
+  }
+
+  /* ===== KEY FINDING BOX ===== */
+  .key-finding {
+    margin: 36px 0;
+    padding: 24px 28px;
+    background: var(--accent-red-light);
+    border-left: 4px solid var(--accent-red);
+    position: relative;
+  }
+  .key-finding-label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-red);
+    margin-bottom: 8px;
+  }
+  .key-finding p {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    color: var(--ink) !important;
+    margin-bottom: 0 !important;
+    font-weight: 500;
+  }
+
+  /* ===== DATA CALLOUT ===== */
+  .data-callout {
+    margin: 36px 0;
+    text-align: center;
+    padding: 36px 24px;
+    border-top: 2px solid var(--section-money);
+    border-bottom: 2px solid var(--section-money);
+  }
+  .data-callout-number {
+    font-family: var(--font-display);
+    font-size: 64px;
+    font-weight: 800;
+    color: var(--section-money);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .data-callout-label {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--ink-secondary);
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* ===== REDACTION ANALYSIS BLOCK ===== */
+  .redaction-analysis {
+    margin: 36px 0;
+    padding: 24px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-body);
+  }
+  .redaction-analysis-label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-red);
+    margin-bottom: 12px;
+  }
+  .redaction-analysis-text {
+    font-size: 16px;
+    line-height: 1.9;
+    color: rgba(255,255,255,0.8);
+  }
+  .redaction-analysis-text .redacted-word {
+    background: var(--accent-red);
+    color: transparent;
+    padding: 2px 6px;
+    position: relative;
+    user-select: none;
+  }
+  .redaction-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 3px 10px;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .article-sidebar {
+    padding-top: 8px;
+    animation: slideInRight 0.6s ease-out 0.4s both;
+  }
+  .sidebar-sticky {
+    position: sticky;
+    top: 80px;
+  }
+
+  /* Table of Contents */
+  .toc {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .toc-header {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 14px;
+  }
+  .toc-item {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--ink-secondary);
+    text-decoration: none;
+    padding: 6px 0 6px 14px;
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+    line-height: 1.4;
+  }
+  .toc-item:hover {
+    color: var(--ink);
+    border-left-color: var(--rule);
+  }
+  .toc-item.active {
+    color: var(--ink);
+    font-weight: 600;
+    border-left-color: var(--accent-red);
+  }
+
+  /* Document Index */
+  .doc-index {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .doc-index-header {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .doc-index-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-red);
+    font-weight: 400;
+  }
+  .doc-index-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule-light);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .doc-index-item:hover {
+    background: var(--paper-warm);
+    margin: 0 -8px;
+    padding: 8px 8px;
+  }
+  .doc-index-item:last-child { border-bottom: none; }
+  .doc-index-num {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-tertiary);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    padding-top: 2px;
+    min-width: 50px;
+  }
+  .doc-index-info {
+    flex: 1;
+  }
+  .doc-index-title {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.35;
+    margin-bottom: 2px;
+  }
+  .doc-index-detail {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    color: var(--ink-light);
+  }
+  .doc-index-more {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-decoration: none;
+    margin-top: 12px;
+    letter-spacing: 0.02em;
+  }
+  .doc-index-more:hover { text-decoration: underline; }
+
+  /* Entities in this story */
+  .sidebar-entities {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .sidebar-entities-header {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 14px;
+  }
+  .sidebar-entity-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule-light);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .sidebar-entity-row:hover {
+    background: var(--paper-warm);
+    margin: 0 -8px;
+    padding: 8px;
+  }
+  .sidebar-entity-row:last-child { border-bottom: none; }
+  .entity-tier-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .tier-1-dot { background: #c62828; }
+  .tier-3-dot { background: #f57f17; }
+  .tier-4-dot { background: #283593; }
+  .tier-6-dot { background: #607d8b; }
+  .sidebar-entity-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .sidebar-entity-name {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sidebar-entity-tier-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-light);
+    letter-spacing: 0.04em;
+  }
+
+  /* Related Case File */
+  .related-case-file {
+    background: var(--paper-white);
+    border: 1px solid var(--rule);
+    padding: 20px;
+    margin-bottom: 32px;
+  }
+  .related-case-file-label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 10px;
+  }
+  .related-case-file-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-blue);
+    margin-bottom: 6px;
+  }
+  .related-case-file-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .related-case-file-meta {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-tertiary);
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .case-file-link {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .case-file-link:hover { text-decoration: underline; }
+
+  /* ===== ARTICLE FOOTER ===== */
+  .article-footer {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Tags */
+  .article-tags {
+    padding: 32px 0;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .article-tags-label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-right: 6px;
+  }
+  .article-tag {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-secondary);
+    text-decoration: none;
+    padding: 5px 14px;
+    border: 1px solid var(--rule);
+    transition: all 0.2s;
+  }
+  .article-tag:hover {
+    border-color: var(--ink-secondary);
+    color: var(--ink);
+    background: var(--paper-warm);
+  }
+
+  /* Methodology note */
+  .methodology-note {
+    padding: 28px;
+    background: var(--paper-cool);
+    border: 1px solid var(--rule);
+    margin: 32px 0;
+  }
+  .methodology-note-header {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 10px;
+  }
+  .methodology-note p {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-secondary);
+  }
+
+  /* Related Stories */
+  .related-stories {
+    padding: 40px 0;
+    border-top: 2px solid var(--ink);
+  }
+  .related-stories-header {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .related-stories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .related-story-card {
+    padding: 0 24px 0 0;
+    border-right: 1px solid var(--rule);
+  }
+  .related-story-card:last-child { border-right: none; padding-right: 0; }
+  .related-story-card:not(:first-child) { padding-left: 24px; }
+  .related-story-kicker {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-red);
+    margin-bottom: 8px;
+  }
+  .related-story-headline {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .related-story-headline a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .related-story-headline a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .related-story-meta {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--ink-tertiary);
+  }
+
+  /* ===== FOOTER ===== */
+  .site-footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px 0;
+    margin-top: 48px;
+    text-align: center;
+  }
+  .site-footer-logo {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+  .site-footer-logo span { color: var(--accent-red); }
+  .site-footer p {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    opacity: 0.4;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 960px) {
+    .article-layout {
+      grid-template-columns: 1fr;
+      max-width: 720px;
+    }
+    .article-sidebar {
+      order: -1;
+      padding-top: 0;
+    }
+    .sidebar-sticky {
+      position: static;
+    }
+    .toc { display: none; }
+    .doc-index { display: none; }
+    .related-stories-grid { grid-template-columns: 1fr; gap: 24px; }
+    .related-story-card { border-right: none; padding: 0; border-bottom: 1px solid var(--rule); padding-bottom: 24px; }
+    .related-story-card:not(:first-child) { padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- READING PROGRESS -->
+<div class="reading-progress" id="progress"></div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <span style="opacity:0.5">Follow the Money</span>
+    <div style="display:flex;gap:20px;">
+      <a href="#">Evidence Room</a>
+      <a href="#">Case Files</a>
+    </div>
+  </div>
+</div>
+
+<!-- SLIM HEADER -->
+<header class="slim-header">
+  <div class="slim-header-inner">
+    <a href="#" class="slim-logo">The Epstein <span>Record</span></a>
+    <nav class="slim-nav">
+      <a href="#">Home</a>
+      <a href="#">The Network</a>
+      <a href="#" style="color:var(--section-money);font-weight:700;">Follow the Money</a>
+      <a href="#">The Cover-Up</a>
+      <a href="#">Case Files</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ARTICLE HEADER -->
+<div class="article-header">
+  <div class="article-section-tag">Follow the Money</div>
+  <h1 class="article-headline">$158 Million: The Leon Black–Epstein Financial Relationship, Document by Document</h1>
+  <p class="article-deck">Dataset 12 — the Leon Black prosecution file — contains 152 documents spanning the complete DANY investigation. Our analysis of 137 of those documents reveals a financial relationship far more complex, and far more damning, than previously reported.</p>
+
+  <div class="article-meta-bar">
+    <div class="article-meta-left">
+      <div class="byline-block">
+        <div class="byline-name">The EFTA Investigation Team</div>
+        <div class="byline-date">Published Feb. 18, 2026 · Updated Feb. 25, 2026</div>
+      </div>
+    </div>
+    <div class="article-meta-right">
+      <span class="meta-badge badge-dataset">Dataset 12</span>
+      <span class="meta-badge badge-docs">📄 137 Documents</span>
+      <span class="meta-badge badge-case-file">EFTA-IR-2026-004</span>
+    </div>
+  </div>
+</div>
+
+<!-- ARTICLE LAYOUT -->
+<div class="article-layout">
+
+  <!-- ARTICLE BODY -->
+  <article class="article-body">
+
+    <p>Between 2012 and 2017, <span class="entity-mention">Leon Black<span class="entity-hover-card"><span class="entity-hover-tier tier-3-badge">Tier 3 · Suspicious Conduct</span><div class="entity-hover-name">Leon Black</div><div class="entity-hover-role">Co-founder & Former CEO, Apollo Global Management</div><div class="entity-hover-stats"><span>📄 96 docs</span><span>🔗 12 connections</span></div><a href="#" class="entity-hover-link">View Full Profile →</a></span></span> — the billionaire co-founder of Apollo Global Management — paid Jeffrey Epstein at least $158 million. When the Manhattan District Attorney's office investigated those payments, they assembled 152 documents tracing every wire transfer, every meeting, every advisory agreement that connected one of Wall Street's most powerful men to a convicted sex offender. Then they declined to prosecute.</p>
+
+    <p>We have read 137 of those 152 documents. What they reveal is not merely a financial relationship — it is an architecture of access, built through layers of shell entities, routed through offshore structures, and documented in communications that prosecutors apparently deemed insufficient despite their own file telling a different story.</p>
+
+    <div class="key-finding">
+      <div class="key-finding-label">Key Finding</div>
+      <p>The DANY prosecution file contains documentary evidence of $158 million in payments from Black to Epstein, routed through multiple entities, alongside communications suggesting Black had awareness of Epstein's conduct — yet prosecutors declined to bring charges. The file itself constitutes the strongest evidence of prosecutorial failure in Dataset 12.</p>
+    </div>
+
+    <h2>The Payment Architecture</h2>
+
+    <p>The financial relationship between Black and Epstein was not a simple advisory arrangement. Documents in the prosecution file reveal a multi-layered payment structure that evolved over time, with escalating amounts that far exceeded any reasonable compensation for the tax and estate planning advice Black later claimed justified the payments.<span class="evidence-cite"><span class="cite-marker">1</span><span class="cite-tooltip"><span class="cite-tooltip-doc">EFTA02731623</span>Financial summary prepared by DANY investigators documenting the complete payment timeline from 2012–2017, including wire transfer records and entity identification.<span class="cite-tooltip-link">View in Evidence Room →</span></span></span></p>
+
+    <div class="data-callout">
+      <div class="data-callout-number">$158M</div>
+      <div class="data-callout-label">Total documented payments from Leon Black to Jeffrey Epstein between 2012 and 2017, across multiple entities and payment channels</div>
+    </div>
+
+    <p>The payments were not routed directly. Instead, they flowed through a series of entities — some controlled by Black, some by Epstein, and some whose beneficial ownership remains obscured in the documents we've reviewed. This layering is itself significant: it suggests both parties understood the need to create distance between the source and destination of funds.<span class="evidence-cite"><span class="cite-marker">2</span><span class="cite-tooltip"><span class="cite-tooltip-doc">EFTA02731640</span>Wire transfer records showing payment routing through at least three intermediary entities before reaching Epstein-controlled accounts.<span class="cite-tooltip-link">View in Evidence Room →</span></span></span></p>
+
+    <h3>The Wire Transfers</h3>
+
+    <p>Federal banking records obtained by DANY investigators document a systematic pattern of wire transfers that accelerated in 2014 and 2015. The transfers show a clear evolution from relatively modest advisory fees — payments of $2–5 million that might plausibly constitute compensation for financial planning — to transfers in the tens of millions that no reasonable observer could attribute to tax advice.</p>
+
+    <div class="doc-embed">
+      <div class="doc-embed-header">
+        <span class="doc-embed-id">EFTA02731623</span>
+        <span class="doc-embed-type">Financial Summary — DANY Investigation</span>
+      </div>
+      <div class="doc-embed-body">
+        Between 2012 and 2017, Subject BLACK made the following payments to accounts controlled by or associated with EPSTEIN: [Payment schedule follows, 14 transactions documented across 6 entities]. Total confirmed: $158,252,000. Additional payments of approximately <span class="redacted-inline">████████████</span> were identified through <span class="redacted-inline">████████</span> but could not be confirmed as direct payments to EPSTEIN-controlled entities.
+      </div>
+      <div class="doc-embed-footer">
+        <span>Dataset 12 · Page 3 of 7 · Reviewed Feb. 6, 2026</span>
+        <a href="#">Open in Evidence Room →</a>
+      </div>
+    </div>
+
+    <p>The redactions in the financial summary are themselves revealing. Note that the total confirmed amount — $158 million — is visible, but additional payments through an unidentified channel have been redacted. Under our classification framework, this represents a Category D redaction: the obscured information appears to protect the scope of the financial relationship rather than any legitimate privacy interest.</p>
+
+    <div class="redaction-analysis">
+      <div class="redaction-analysis-label">Redaction Analysis</div>
+      <div class="redaction-analysis-text">
+        The financial summary document (EFTA02731623) contains two targeted redactions within the payment section. The first obscures an additional dollar amount; the second obscures the channel through which those payments were made. Both redactions appear on the same page where the confirmed $158 million total is left visible — suggesting the redacted amounts and channel are <em>more</em> sensitive than the already-staggering confirmed total.
+      </div>
+      <div class="redaction-category">Category D — Perpetrator Protection</div>
+    </div>
+
+    <h2>What Prosecutors Knew</h2>
+
+    <p>The most striking aspect of Dataset 12 is not what Black paid Epstein — it's what DANY prosecutors documented and then chose not to act on. The file contains internal memoranda, interview summaries, and analytical products that demonstrate a thorough understanding of the relationship's dimensions.</p>
+
+    <p><span class="entity-mention">Cyrus Vance Jr.<span class="entity-hover-card"><span class="entity-hover-tier tier-6-badge">Tier 6 · Law Enforcement</span><div class="entity-hover-name">Cyrus Vance Jr.</div><div class="entity-hover-role">Former Manhattan District Attorney</div><div class="entity-hover-stats"><span>📄 14 docs</span><span>🔗 6 connections</span></div><a href="#" class="entity-hover-link">View Full Profile →</a></span></span>'s office had the full picture. Their own financial summary documents $158 million in confirmed payments. Their own interview notes record statements from individuals with direct knowledge of the relationship's nature. Their own analytical memoranda draw connections between payment timing and documented meetings between Black and Epstein.<span class="evidence-cite"><span class="cite-marker">3</span><span class="cite-tooltip"><span class="cite-tooltip-doc">EFTA02731689</span>Internal DANY memorandum analyzing temporal correlation between wire transfer dates and documented meetings. Analysis shows 8 of 14 major transfers occurred within 30 days of confirmed meetings.<span class="cite-tooltip-link">View in Evidence Room →</span></span></span></p>
+
+    <div class="pull-quote">
+      <blockquote>The pattern is unmistakable: prosecutors built a file that makes the case, then filed it away.</blockquote>
+      <div class="pull-quote-attribution">— EFTA Investigation analysis of Dataset 12 prosecution timeline</div>
+    </div>
+
+    <p>This is not speculation. The documents themselves tell this story. When you read the DANY financial summary alongside the interview notes alongside the analytical memoranda, the picture that emerges is of an investigation that reached its evidentiary destination — and then simply stopped.</p>
+
+    <h2>The Broader Pattern</h2>
+
+    <p>The Leon Black prosecution file does not exist in isolation. It is part of a documented pattern of prosecutorial decisions that, at every juncture, favored inaction over accountability for individuals with significant financial and political power.</p>
+
+    <p>Consider the timeline: <span class="entity-mention">Alexander Acosta<span class="entity-hover-card"><span class="entity-hover-tier tier-6-badge">Tier 6 · Law Enforcement</span><div class="entity-hover-name">Alexander Acosta</div><div class="entity-hover-role">Former U.S. Attorney, SDFL</div><div class="entity-hover-stats"><span>📄 28 docs</span><span>🔗 8 connections</span></div><a href="#" class="entity-hover-link">View Full Profile →</a></span></span>'s 2007 non-prosecution agreement granted blanket immunity to unnamed co-conspirators. The SDNY's 2019 case was cut short by Epstein's death. And DANY's investigation into the most extensively documented financial relationship in the entire Epstein network — $158 million, routed through shell entities, from a man whose own company's internal review acknowledged the relationship was "a mistake" — ended without charges.</p>
+
+    <p>At every decision point, the system chose to look the other way. The documents in Dataset 12 are the receipts.</p>
+
+    <div class="key-finding">
+      <div class="key-finding-label">Open Question — OQ-07</div>
+      <p>What specific factors led to DANY's decision not to prosecute despite assembling 152 documents of evidence? The prosecution file contains no formal declination memorandum explaining this decision — an absence that is itself significant.</p>
+    </div>
+
+    <div class="methodology-note">
+      <div class="methodology-note-header">About This Investigation</div>
+      <p>This article is based on primary source analysis of 137 documents from EFTA Dataset 12, the Leon Black prosecution file assembled by the Manhattan District Attorney's office. All claims are supported by specific document citations accessible through the Evidence Room. This is citizen investigation, not credentialed journalism. Our methodology, editorial standards, and source documents are available for public scrutiny. Entity tier classifications reflect evidence strength, not guilt determinations. Presence in our database does not establish criminal conduct.</p>
+    </div>
+
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+    <div class="sidebar-sticky">
+
+      <!-- Table of Contents -->
+      <div class="toc">
+        <div class="toc-header">In This Story</div>
+        <a href="#" class="toc-item active">The Payment Architecture</a>
+        <a href="#" class="toc-item">The Wire Transfers</a>
+        <a href="#" class="toc-item">What Prosecutors Knew</a>
+        <a href="#" class="toc-item">The Broader Pattern</a>
+      </div>
+
+      <!-- Related Case File -->
+      <div class="related-case-file">
+        <div class="related-case-file-label">Source Case File</div>
+        <div class="related-case-file-number">EFTA-IR-2026-004</div>
+        <div class="related-case-file-title">Dataset 12: Leon Black Prosecution File — Complete Analysis</div>
+        <div class="related-case-file-meta">
+          <span>📄 137 docs reviewed</span>
+          <span>👤 24 entities</span>
+        </div>
+        <a href="#" class="case-file-link">Read Full Case File Report →</a>
+      </div>
+
+      <!-- Document Index -->
+      <div class="doc-index">
+        <div class="doc-index-header">
+          <span>Documents Cited</span>
+          <span class="doc-index-count">8 of 137</span>
+        </div>
+        <div class="doc-index-item">
+          <span class="doc-index-num">02731623</span>
+          <div class="doc-index-info">
+            <div class="doc-index-title">DANY Financial Summary</div>
+            <div class="doc-index-detail">7 pages · Payment timeline</div>
+          </div>
+        </div>
+        <div class="doc-index-item">
+          <span class="doc-index-num">02731640</span>
+          <div class="doc-index-info">
+            <div class="doc-index-title">Wire Transfer Records</div>
+            <div class="doc-index-detail">12 pages · Entity routing</div>
+          </div>
+        </div>
+        <div class="doc-index-item">
+          <span class="doc-index-num">02731689</span>
+          <div class="doc-index-info">
+            <div class="doc-index-title">DANY Internal Memo</div>
+            <div class="doc-index-detail">4 pages · Temporal analysis</div>
+          </div>
+        </div>
+        <div class="doc-index-item">
+          <span class="doc-index-num">02731702</span>
+          <div class="doc-index-info">
+            <div class="doc-index-title">Interview Summary — Witness A</div>
+            <div class="doc-index-detail">3 pages · Direct knowledge</div>
+          </div>
+        </div>
+        <div class="doc-index-item">
+          <span class="doc-index-num">02731718</span>
+          <div class="doc-index-info">
+            <div class="doc-index-title">Advisory Agreement (2013)</div>
+            <div class="doc-index-detail">8 pages · Contract terms</div>
+          </div>
+        </div>
+        <a href="#" class="doc-index-more">View all 137 documents →</a>
+      </div>
+
+      <!-- Entities in this story -->
+      <div class="sidebar-entities">
+        <div class="sidebar-entities-header">People in This Story</div>
+        <a href="#" class="sidebar-entity-row">
+          <span class="entity-tier-dot tier-1-dot"></span>
+          <div class="sidebar-entity-info">
+            <div class="sidebar-entity-name">Jeffrey Epstein</div>
+            <div class="sidebar-entity-tier-label">Tier 1 · Convicted</div>
+          </div>
+        </a>
+        <a href="#" class="sidebar-entity-row">
+          <span class="entity-tier-dot tier-3-dot"></span>
+          <div class="sidebar-entity-info">
+            <div class="sidebar-entity-name">Leon Black</div>
+            <div class="sidebar-entity-tier-label">Tier 3 · Suspicious Conduct</div>
+          </div>
+        </a>
+        <a href="#" class="sidebar-entity-row">
+          <span class="entity-tier-dot tier-6-dot"></span>
+          <div class="sidebar-entity-info">
+            <div class="sidebar-entity-name">Cyrus Vance Jr.</div>
+            <div class="sidebar-entity-tier-label">Tier 6 · Law Enforcement</div>
+          </div>
+        </a>
+        <a href="#" class="sidebar-entity-row">
+          <span class="entity-tier-dot tier-6-dot"></span>
+          <div class="sidebar-entity-info">
+            <div class="sidebar-entity-name">Alexander Acosta</div>
+            <div class="sidebar-entity-tier-label">Tier 6 · Law Enforcement</div>
+          </div>
+        </a>
+        <a href="#" class="sidebar-entity-row">
+          <span class="entity-tier-dot tier-1-dot"></span>
+          <div class="sidebar-entity-info">
+            <div class="sidebar-entity-name">Ghislaine Maxwell</div>
+            <div class="sidebar-entity-tier-label">Tier 1 · Convicted</div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </aside>
+</div>
+
+<!-- ARTICLE FOOTER -->
+<div class="article-footer">
+
+  <!-- Tags -->
+  <div class="article-tags">
+    <span class="article-tags-label">Topics</span>
+    <a href="#" class="article-tag">Leon Black</a>
+    <a href="#" class="article-tag">Apollo Global</a>
+    <a href="#" class="article-tag">Dataset 12</a>
+    <a href="#" class="article-tag">DANY Investigation</a>
+    <a href="#" class="article-tag">Financial Infrastructure</a>
+    <a href="#" class="article-tag">Prosecutorial Failure</a>
+    <a href="#" class="article-tag">Shell Entities</a>
+  </div>
+
+  <!-- Related Stories -->
+  <div class="related-stories">
+    <div class="related-stories-header">Continue Reading</div>
+    <div class="related-stories-grid">
+      <div class="related-story-card">
+        <div class="related-story-kicker">The Cover-Up</div>
+        <h3 class="related-story-headline">
+          <a href="#">Zero for Ten: How the DOJ Failed Every Statutory Requirement of the EFTA</a>
+        </h3>
+        <div class="related-story-meta">Feb. 19, 2026 · 14 min read</div>
+      </div>
+      <div class="related-story-card">
+        <div class="related-story-kicker">Follow the Money</div>
+        <h3 class="related-story-headline">
+          <a href="#">Shell Companies and Wire Transfers: Tracing the Payment Infrastructure</a>
+        </h3>
+        <div class="related-story-meta">Feb. 16, 2026 · 11 min read</div>
+      </div>
+      <div class="related-story-card">
+        <div class="related-story-kicker">The Network</div>
+        <h3 class="related-story-headline">
+          <a href="#">The 2007 NPA Gave Immunity to Co-Conspirators. We're Mapping Who They Are.</a>
+        </h3>
+        <div class="related-story-meta">Feb. 20, 2026 · 18 min read</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <div class="site-footer-logo">The Epstein <span>Record</span></div>
+  <p>An independent, document-driven investigation · Citizen investigation, not credentialed journalism</p>
+</footer>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (window.scrollY / docHeight) * 100;
+    document.getElementById('progress').style.width = scrolled + '%';
+  });
+
+  // TOC active state on scroll (simplified)
+  const tocItems = document.querySelectorAll('.toc-item');
+  const headings = document.querySelectorAll('.article-body h2, .article-body h3');
+
+  const observerOptions = {
+    rootMargin: '-80px 0px -70% 0px',
+    threshold: 0
+  };
+
+  let currentActive = 0;
+  const headingObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const index = Array.from(headings).indexOf(entry.target);
+        if (index >= 0 && index < tocItems.length) {
+          tocItems.forEach(item => item.classList.remove('active'));
+          tocItems[index].classList.add('active');
+        }
+      }
+    });
+  }, observerOptions);
+
+  headings.forEach(heading => headingObserver.observe(heading));
+
+  // Citation click toggle for mobile
+  document.querySelectorAll('.evidence-cite').forEach(cite => {
+    cite.addEventListener('click', (e) => {
+      document.querySelectorAll('.evidence-cite.active').forEach(c => {
+        if (c !== cite) c.classList.remove('active');
+      });
+      cite.classList.toggle('active');
+    });
+  });
+
+  // Close citations when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.evidence-cite')) {
+      document.querySelectorAll('.evidence-cite.active').forEach(c => {
+        c.classList.remove('active');
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
