@@ -591,6 +591,38 @@ const STORIES: StoryDef[] = [
       { number: 11, bates_number: 'EFTA01266380', description: 'Original trust references Schedule A — never produced in any EFTA release', page_reference: 'Section 1.1' },
     ],
   },
+  {
+    slug: 'the-man-who-held-every-key',
+    title: 'The Man Who Held Every Key',
+    deck: 'Darren Indyke was Epstein\u2019s attorney, trustee, $5M beneficiary, debt cancellation recipient, amendment gatekeeper, and the man who told employees not to talk to police. Seven roles. One person. $8.25 million minimum.',
+    section: 'the-network',
+    file: 'the-man-who-held-every-key.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 8,
+    is_featured: false,
+    case_file_slug: 'indyke-conflicts-of-interest',
+    metadata: { source_thread: 'THREAD_04', version: '1.0' },
+    entities: [
+      { name: 'Darren Indyke', mention_count: 6, is_primary: true },
+      { name: 'Richard D. Kahn', mention_count: 3, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 2, is_primary: true },
+      { name: 'Jes Staley', mention_count: 1, is_primary: false },
+    ],
+    citations: [
+      { number: 1, bates_number: 'EFTA01266403', description: 'A&R — Indyke $5M cash bequest (Section 2.3.A.7)', page_reference: 'Section 2.3.A.7' },
+      { number: 2, bates_number: 'EFTA01266403', description: 'A&R — Trustee compensation $250K/year (Section 6.2)', page_reference: 'Section 6.2' },
+      { number: 3, bates_number: 'EFTA01266403', description: 'A&R — Blanket debt cancellation for Indyke, spouse Saipher, and entity Harlequin Dane LLC', page_reference: 'Section 2.3.A.24' },
+      { number: 4, bates_number: 'EFTA01266427', description: 'First Amendment — $3M to wife for NJ real estate, conditioned on marriage', page_reference: 'Section 2.3.A.24 (new)' },
+      { number: 5, bates_number: 'EFTA01266380', description: 'Original trust — amendment requires all trustees to sign', page_reference: 'Section 1.3.A' },
+      { number: 6, bates_number: 'EFTA01266427', description: 'First Amendment — amendment now requires delivery to only one trustee', page_reference: 'Section 1.3.A' },
+      { number: 7, bates_number: 'EFTA01266403', description: 'A&R — 18 investment powers + 12 administrative powers; majority rule', page_reference: 'Sections 6.1, 6.3-6.4' },
+      { number: 8, bates_number: 'EFTA01266403', description: 'A&R — Kahn parallel: debt cancellation for self, spouse Lisa Kahn, entity Coatue', page_reference: 'Section 2.3.A.25' },
+      { number: 9, bates_number: 'EFTA02731082', description: 'Prosecution memo — Kahn wired $250K to assistant after Miami Herald', page_reference: 'pp. 51-52' },
+      { number: 10, bates_number: 'EFTA02731082', description: 'Prosecution memo — Indyke told assistant not to talk to police', page_reference: 'p. 41' },
+      { number: 11, bates_number: 'EFTA01266427', description: 'First Amendment — Indyke as nominee holder of Lyn & Jojo LLC', page_reference: 'Section 2.3.A.12' },
+      { number: 12, bates_number: 'EFTA02731082', description: 'Prosecution memo — charging analysis entirely redacted (pp. 74-85)', page_reference: 'pp. 74-85' },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

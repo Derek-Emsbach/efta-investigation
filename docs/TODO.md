@@ -145,8 +145,7 @@
 - [x] Story 2: "The Case That Wasn't" (prosecutorial failure) — `docs/stories/the-case-that-wasnt.md`, section: the-cover-up, 20 citations, 6 entity links, linked to CF-2026-005
 - [x] Story 3: "The Trustee With No Exit" (Jes Staley) — `docs/stories/the-trustee-with-no-exit.md`, section: the-network, 14 citations, 6 entity links, linked to CF-2026-001
 - [x] Story 4: "The Heirs With the Most to Hide" (Dubin Architecture) — `docs/stories/the-heirs-with-the-most-to-hide.md`, section: follow-the-money, 11 citations, 9 entity links, linked to CF-2026-002
-- [ ] Story 4: "The Heirs With the Most to Hide" (Dubin architecture) — section: follow-the-money
-- [ ] Story 5: "The Man Who Held Every Key" (Indyke conflicts) — section: the-network
+- [x] Story 5: "The Man Who Held Every Key" (Indyke Conflicts) — `docs/stories/the-man-who-held-every-key.md`, section: the-network, 12 citations, 4 entity links, linked to CF-2026-004
 - [ ] Story 6: "The System" (master synthesis, write last) — section: the-operation
 
 ---
