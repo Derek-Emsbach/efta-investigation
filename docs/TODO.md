@@ -66,7 +66,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 6 phases complete + content seeded + homepage redesign (Phase 7). Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`, `/network`. Dashboard remains at `/dashboard/*`. 6 case files seeded from investigation threads (44 open questions, 34 entity links). Stories still need editorial content.
+> **Status:** All 7 phases complete + content seeded + first editorial story published. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`, `/network`. Dashboard remains at `/dashboard/*`. 6 case files seeded (44 open questions, 34 entity links). 1 story published ("The Golden Handcuffs", 18 citations, 8 entity links). 4 more stories planned.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -138,6 +138,15 @@
 - [x] Public network page (`/network`) — D3 force-directed graph adapted from dashboard, publication theme, slug-based navigation
 - [x] Recomposed homepage with new section order and open_questions query
 - [ ] Full cross-linking audit (entity mentions in stories → profile links, EFTA numbers → evidence room)
+
+### Phase 8: Editorial Stories
+- [x] Story seeding infrastructure in `seed-publication.ts` (StoryDef type, seedStories function, document/case-file UUID lookups)
+- [x] Story 1: "The Golden Handcuffs" (witness control) — `docs/stories/the-golden-handcuffs.md`, section: the-cover-up, 18 citations, 8 entity links, linked to CF-2026-003
+- [ ] Story 2: "The Case That Wasn't" (prosecutorial failure) — section: the-cover-up
+- [ ] Story 3: "The Trustee With No Exit" (Jes Staley) — section: the-network
+- [ ] Story 4: "The Heirs With the Most to Hide" (Dubin architecture) — section: follow-the-money
+- [ ] Story 5: "The Man Who Held Every Key" (Indyke conflicts) — section: the-network
+- [ ] Story 6: "The System" (master synthesis, write last) — section: the-operation
 
 ---
 

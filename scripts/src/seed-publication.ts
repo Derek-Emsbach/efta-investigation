@@ -1,10 +1,11 @@
 /**
- * Seed the publication tables with case files, open questions, and entity links.
+ * Seed the publication tables with case files, stories, and entity links.
  *
  * Reads investigation threads from docs/investigation/threads/ and inserts:
  * - 6 case_files (master brief + 5 threads)
  * - ~42 open_questions linked to case files
  * - ~35 case_file_entities links
+ * - N stories with citations and entity links
  *
  * Usage:
  *   pnpm --filter @efta/scripts seed:publication
@@ -16,8 +17,29 @@ import { supabase, rootDir } from './utils/supabase-admin.js'
 
 const DRY_RUN = process.argv.includes('--dry-run')
 const THREADS_DIR = resolve(rootDir, 'docs/investigation/threads')
+const STORIES_DIR = resolve(rootDir, 'docs/stories')
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+
+interface StoryDef {
+  slug: string
+  title: string
+  deck: string
+  section: 'the-network' | 'follow-the-money' | 'the-cover-up' | 'the-operation' | 'voices'
+  file: string
+  byline: string
+  reading_time_minutes: number
+  is_featured: boolean
+  case_file_slug: string | null
+  metadata: Record<string, unknown>
+  entities: { name: string; mention_count: number; is_primary: boolean }[]
+  citations: {
+    number: number
+    bates_number: string
+    description: string
+    page_reference: string
+  }[]
+}
 
 interface CaseFileDef {
   case_id: string
@@ -410,6 +432,53 @@ const CASE_FILES: CaseFileDef[] = [
   },
 ]
 
+// ─── Story Definitions ───────────────────────────────────────────────────────
+
+const STORIES: StoryDef[] = [
+  {
+    slug: 'the-golden-handcuffs',
+    title: 'The Golden Handcuffs',
+    deck: 'How the Epstein 2014 Trust turned employee-witnesses into paid accomplices to silence — and how the attorney who controlled their bequests told them not to talk to police.',
+    section: 'the-cover-up',
+    file: 'the-golden-handcuffs.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 8,
+    is_featured: true,
+    case_file_slug: 'witness-control-mechanisms',
+    metadata: { source_thread: 'THREAD_03', version: '1.0' },
+    entities: [
+      { name: 'Darren Indyke', mention_count: 7, is_primary: true },
+      { name: 'Richard D. Kahn', mention_count: 4, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 2, is_primary: true },
+      { name: 'Lesley Groff', mention_count: 2, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 1, is_primary: false },
+      { name: 'Lawrence Visoski', mention_count: 1, is_primary: false },
+      { name: 'Karyna Shuliak', mention_count: 1, is_primary: false },
+      { name: 'Jean-Luc Brunel', mention_count: 1, is_primary: false },
+    ],
+    citations: [
+      { number: 1, bates_number: 'EFTA01266427', description: 'First Amendment — Section 2.5 employment cliff provision', page_reference: 'p. 2' },
+      { number: 2, bates_number: 'EFTA01266427', description: 'Employment cliff forfeiture trigger for voluntary discontinuation or misconduct', page_reference: 'pp. 2-3' },
+      { number: 3, bates_number: 'EFTA01266427', description: 'Bequest A.36 — $200K conditional on two years of continued service', page_reference: 'p. 1' },
+      { number: 4, bates_number: 'EFTA01266427', description: 'Bequest A.37 — identical conditional bequest for female employee', page_reference: 'p. 1' },
+      { number: 5, bates_number: 'EFTA01266380', description: 'Original trust — Section 8.5 no-contest (in terrorem) clause', page_reference: '§8.5' },
+      { number: 6, bates_number: 'EFTA02731082', description: 'Prosecution memo — Indyke told assistant not to talk to police', page_reference: 'p. 41' },
+      { number: 7, bates_number: 'EFTA02731082', description: '$250,000 payment to assistant days after Miami Herald series', page_reference: 'pp. 51-52' },
+      { number: 8, bates_number: 'EFTA02731082', description: 'Evidence destruction — computers and contact directories', page_reference: 'pp. 40-41' },
+      { number: 9, bates_number: 'EFTA02731082', description: 'Alessi departure warning: "keep your mouth shut"', page_reference: 'p. 37' },
+      { number: 10, bates_number: 'EFTA02731082', description: 'Attorney coercion of minor victim — child custody threat', page_reference: 'p. 18' },
+      { number: 11, bates_number: 'EFTA01266380', description: 'Lesley Groff $1M bequest (A.10)', page_reference: 'A.10' },
+      { number: 12, bates_number: 'EFTA01266380', description: 'Named staff bequests $35K-$66K', page_reference: 'A.10-A.22' },
+      { number: 13, bates_number: 'EFTA01266403', description: 'Indyke/Kahn debt forgiveness added in Amendment and Restatement', page_reference: 'Article III' },
+      { number: 14, bates_number: 'EFTA01266380', description: 'Inner circle bequests $5M-$10M', page_reference: 'A.1-A.9' },
+      { number: 15, bates_number: 'EFTA02731082', description: '$100K wire to associate after negative articles', page_reference: 'p. 52' },
+      { number: 16, bates_number: 'EFTA02731082', description: 'Scheduling directory destroyed, never recovered (footnote 47)', page_reference: 'p. 49' },
+      { number: 17, bates_number: 'EFTA01266380', description: 'No employment cliff in November 2014 original trust', page_reference: 'Full document' },
+      { number: 18, bates_number: 'EFTA01266403', description: 'No employment cliff in May 2015 Amendment and Restatement', page_reference: 'Full document' },
+    ],
+  },
+]
+
 // ─── Content Extraction ───────────────────────────────────────────────────────
 
 function extractFindings(content: string, isMasterBrief: boolean): string {
@@ -482,14 +551,202 @@ async function lookupEntityUUIDs(
   return uuidMap
 }
 
+// ─── Document UUID Lookup ────────────────────────────────────────────────────
+
+async function lookupDocumentUUIDs(
+  batesNumbers: string[],
+): Promise<Map<string, string>> {
+  const uuidMap = new Map<string, string>()
+  const unique = [...new Set(batesNumbers)]
+
+  const { data, error } = await supabase
+    .from('documents')
+    .select('id, bates_number')
+    .in('bates_number', unique)
+
+  if (error) {
+    console.error('Failed to look up documents:', error.message)
+    return uuidMap
+  }
+
+  for (const doc of data ?? []) {
+    if (doc.bates_number) {
+      uuidMap.set(doc.bates_number, doc.id)
+    }
+  }
+
+  return uuidMap
+}
+
+// ─── Case File ID Lookup ─────────────────────────────────────────────────────
+
+async function lookupCaseFileId(slug: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from('case_files')
+    .select('id')
+    .eq('slug', slug)
+    .single()
+
+  if (error || !data) {
+    console.warn(`  Case file not found: ${slug}`)
+    return null
+  }
+
+  return data.id
+}
+
+// ─── Seed Stories ────────────────────────────────────────────────────────────
+
+async function seedStories(entityUUIDs: Map<string, string>) {
+  console.log('\n═══ Seeding Stories ═══\n')
+
+  // Collect all bates numbers for document lookup
+  const allBates = [
+    ...new Set(STORIES.flatMap((s) => s.citations.map((c) => c.bates_number))),
+  ]
+  console.log(`Looking up ${allBates.length} source documents...`)
+  const docUUIDs = await lookupDocumentUUIDs(allBates)
+  console.log(`  Found ${docUUIDs.size}/${allBates.length} documents\n`)
+
+  let totalStories = 0
+  let totalCitations = 0
+  let totalEntityLinks = 0
+
+  for (const story of STORIES) {
+    console.log(`── Story: ${story.title}`)
+
+    // Read markdown
+    const filePath = resolve(STORIES_DIR, story.file)
+    const bodyMarkdown = readFileSync(filePath, 'utf-8')
+    console.log(`   Content: ${bodyMarkdown.length} chars`)
+
+    // Look up case_file_id
+    const caseFileId = story.case_file_slug
+      ? await lookupCaseFileId(story.case_file_slug)
+      : null
+    if (story.case_file_slug) {
+      console.log(`   Case file: ${caseFileId ? 'linked' : 'NOT FOUND'}`)
+    }
+
+    if (DRY_RUN) {
+      console.log(`   [dry] Would upsert story: ${story.slug}`)
+      console.log(`   [dry] Would insert ${story.citations.length} citations`)
+      console.log(`   [dry] Would link ${story.entities.length} entities`)
+      totalStories++
+      totalCitations += story.citations.length
+      totalEntityLinks += story.entities.filter((e) => entityUUIDs.has(e.name)).length
+      console.log()
+      continue
+    }
+
+    // Upsert story (slug is UNIQUE)
+    const { data: storyRecord, error: storyError } = await supabase
+      .from('stories')
+      .upsert(
+        {
+          slug: story.slug,
+          title: story.title,
+          deck: story.deck,
+          section: story.section,
+          body_markdown: bodyMarkdown,
+          byline: story.byline,
+          reading_time_minutes: story.reading_time_minutes,
+          is_published: true,
+          is_featured: story.is_featured,
+          published_at: new Date().toISOString(),
+          case_file_id: caseFileId,
+          metadata: story.metadata,
+        },
+        { onConflict: 'slug' },
+      )
+      .select()
+      .single()
+
+    if (storyError) {
+      console.error(`   FAILED story: ${storyError.message}`)
+      continue
+    }
+    console.log(`   Story upserted (id: ${storyRecord.id})`)
+    totalStories++
+
+    // Delete + re-insert citations (same pattern as open_questions)
+    const { error: delCiteError } = await supabase
+      .from('story_citations')
+      .delete()
+      .eq('story_id', storyRecord.id)
+
+    if (delCiteError) {
+      console.error(`   WARNING — Failed to clear old citations: ${delCiteError.message}`)
+    }
+
+    const citationRecords = story.citations.map((c) => ({
+      story_id: storyRecord.id,
+      citation_number: c.number,
+      document_id: docUUIDs.get(c.bates_number) ?? null,
+      description: c.description,
+      bates_number: c.bates_number,
+      page_reference: c.page_reference,
+    }))
+
+    const { error: citeError } = await supabase
+      .from('story_citations')
+      .insert(citationRecords)
+
+    if (citeError) {
+      console.error(`   FAILED citations: ${citeError.message}`)
+    } else {
+      totalCitations += story.citations.length
+      console.log(`   ${story.citations.length} citations inserted`)
+    }
+
+    // Upsert entity links (UNIQUE(story_id, entity_id))
+    let linked = 0
+    for (const ent of story.entities) {
+      const entityId = entityUUIDs.get(ent.name)
+      if (!entityId) {
+        console.warn(`   SKIP entity link: "${ent.name}" (not found in DB)`)
+        continue
+      }
+
+      const { error: linkError } = await supabase
+        .from('story_entities')
+        .upsert(
+          {
+            story_id: storyRecord.id,
+            entity_id: entityId,
+            mention_count: ent.mention_count,
+            is_primary: ent.is_primary,
+          },
+          { onConflict: 'story_id,entity_id' },
+        )
+
+      if (linkError) {
+        console.error(`   FAILED link ${ent.name}: ${linkError.message}`)
+        continue
+      }
+      linked++
+      totalEntityLinks++
+    }
+    console.log(`   ${linked} entity links created`)
+    console.log()
+  }
+
+  console.log(
+    `Stories total: ${totalStories} stories, ${totalCitations} citations, ${totalEntityLinks} entity links`,
+  )
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function seedPublication() {
   console.log(DRY_RUN ? '--- DRY RUN — no writes ---\n' : '--- WRITING to database ---\n')
 
-  // 1. Collect all unique entity names and look up UUIDs
+  // 1. Collect all unique entity names from case files AND stories, then look up UUIDs
   const allEntityNames = [
-    ...new Set(CASE_FILES.flatMap((cf) => cf.entities.map((e) => e.name))),
+    ...new Set([
+      ...CASE_FILES.flatMap((cf) => cf.entities.map((e) => e.name)),
+      ...STORIES.flatMap((s) => s.entities.map((e) => e.name)),
+    ]),
   ]
   console.log(`Looking up ${allEntityNames.length} entities...`)
   const entityUUIDs = await lookupEntityUUIDs(allEntityNames)
@@ -626,8 +883,14 @@ async function seedPublication() {
 
   console.log('════════════════════════════════════════')
   console.log(
-    `Done: ${totalCFs} case files, ${totalOQs} open questions, ${totalLinks} entity links`,
+    `Case files: ${totalCFs} files, ${totalOQs} open questions, ${totalLinks} entity links`,
   )
+
+  // 3. Seed stories
+  await seedStories(entityUUIDs)
+
+  console.log('\n════════════════════════════════════════')
+  console.log('Publication seeding complete.')
   if (DRY_RUN) console.log('(dry run — nothing was written)')
 }
 
