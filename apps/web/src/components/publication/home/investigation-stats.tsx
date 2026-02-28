@@ -8,34 +8,49 @@ interface InvestigationStatsProps {
   }
 }
 
-function formatNumber(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
-  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`
-  return n.toLocaleString()
+interface StatDisplay {
+  prefix?: string
+  highlight: string
+  suffix?: string
+  label: string
+}
+
+function buildStats(stats: InvestigationStatsProps['stats']): StatDisplay[] {
+  const pagesMil = (stats.pages / 1_000_000).toFixed(1)
+  return [
+    { highlight: pagesMil, suffix: 'M', label: 'Pages Released' },
+    { highlight: String(stats.entities), suffix: '+', label: 'Persons Cataloged' },
+    { highlight: '0', suffix: '/10', label: 'DOJ Full Compliance' },
+    { highlight: '12', label: 'Datasets Under Review' },
+    { highlight: String(stats.documents > 1000 ? Math.round(stats.documents / 1000) + 'K' : stats.documents), label: 'Documents Analyzed' },
+  ]
 }
 
 export function InvestigationStats({ stats }: InvestigationStatsProps) {
-  return (
-    <div className="bg-[#1a1a1a] text-white">
-      <div className="mx-auto max-w-7xl px-6 py-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 text-center">
-          <StatItem value={formatNumber(stats.documents)} label="Documents Analyzed" />
-          <StatItem value={formatNumber(stats.pages)} label="Pages Reviewed" />
-          <StatItem value={String(stats.entities)} label="Entities Identified" />
-          <StatItem value={formatNumber(stats.connections)} label="Connections Mapped" />
-          <StatItem value={String(stats.openQuestions)} label="Open Questions" />
-        </div>
-      </div>
-    </div>
-  )
-}
+  const items = buildStats(stats)
 
-function StatItem({ value, label }: { value: string; label: string }) {
   return (
-    <div>
-      <div className="font-mono text-2xl font-bold text-white">{value}</div>
-      <div className="font-mono text-[9px] uppercase tracking-wider text-gray-400 mt-1">
-        {label}
+    <div className="bg-ink text-background">
+      <div className="mx-auto max-w-7xl px-6 py-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+          {items.map((item, i) => (
+            <div
+              key={item.label}
+              className={`text-center py-2 px-4 ${
+                i < items.length - 1 ? 'lg:border-r lg:border-white/10' : ''
+              }`}
+            >
+              <div className="font-display text-[32px] font-bold leading-none mb-1">
+                {item.prefix && <span>{item.prefix}</span>}
+                <span className="text-accent-red">{item.highlight}</span>
+                {item.suffix && <span>{item.suffix}</span>}
+              </div>
+              <div className="font-sans text-[10px] tracking-[0.12em] uppercase opacity-60">
+                {item.label}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

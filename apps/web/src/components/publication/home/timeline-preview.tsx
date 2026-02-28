@@ -79,13 +79,13 @@ export function TimelinePreview({ events }: TimelinePreviewProps) {
     <section className="py-10">
       {/* Section header */}
       <div className="flex items-center gap-4 mb-6">
-        <h2 className="font-[var(--font-sans)] text-[13px] font-bold uppercase tracking-[0.15em] whitespace-nowrap text-text-primary">
+        <h2 className="font-sans text-[13px] font-bold uppercase tracking-[0.15em] whitespace-nowrap text-text-primary">
           Timeline
         </h2>
         <div className="flex-1 h-px bg-border-default" />
         <Link
           href="/dashboard/timeline"
-          className="font-[var(--font-sans)] text-[11px] font-medium text-text-muted hover:text-text-primary whitespace-nowrap tracking-[0.04em] transition-colors"
+          className="font-sans text-[11px] font-medium text-text-muted hover:text-text-primary whitespace-nowrap tracking-[0.04em] transition-colors"
         >
           Full Interactive Timeline →
         </Link>
@@ -129,7 +129,7 @@ export function TimelinePreview({ events }: TimelinePreviewProps) {
               />
 
               {/* Year */}
-              <div className="font-[var(--font-sans)] text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted mb-1">
+              <div className="font-sans text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted mb-1">
                 {year}
               </div>
 

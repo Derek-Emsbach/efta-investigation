@@ -21,7 +21,7 @@ export function DossierCard({ entity }: DossierCardProps) {
   return (
     <div className="border border-border-default overflow-hidden animate-fade-in-up">
       {/* Dark header */}
-      <div className="bg-[#1a1a1a] px-5 py-3 flex items-center justify-between">
+      <div className="bg-ink px-5 py-3 flex items-center justify-between">
         <span className="font-mono text-xs font-bold text-white uppercase tracking-[0.2em]">
           Classified Dossier
         </span>

@@ -12,7 +12,7 @@ export function FinancialSummaryCard({ financialSummary }: FinancialSummaryCardP
   return (
     <div className="border border-border-default overflow-hidden">
       {/* Header */}
-      <div className="bg-[#1a1a1a] px-5 py-3">
+      <div className="bg-ink px-5 py-3">
         <span className="font-mono text-xs font-bold text-white uppercase tracking-[0.2em]">
           Financial Summary
         </span>

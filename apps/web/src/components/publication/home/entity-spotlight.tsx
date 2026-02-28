@@ -15,13 +15,22 @@ interface EntitySpotlightProps {
   entities: EntityPreview[]
 }
 
-const TIER_COLORS: Record<Tier, string> = {
-  1: 'var(--color-tier-1)',
-  2: 'var(--color-tier-2)',
-  3: 'var(--color-tier-3)',
-  4: 'var(--color-tier-4)',
-  5: 'var(--color-tier-5)',
-  6: 'var(--color-tier-6)',
+const TIER_LABELS: Record<number, string> = {
+  1: 'Convicted',
+  2: 'Immunized',
+  3: 'Circumstantial',
+  4: 'Associated',
+  5: 'Victim/Witness',
+  6: 'Peripheral',
+}
+
+const TIER_STYLES: Record<number, { bg: string; text: string }> = {
+  1: { bg: 'var(--color-tier-1-bg, #fce4ec)', text: 'var(--color-tier-1, #c62828)' },
+  2: { bg: 'var(--color-tier-2-bg, #fff3e0)', text: 'var(--color-tier-2, #e65100)' },
+  3: { bg: 'var(--color-tier-3-bg, #fff8e1)', text: 'var(--color-tier-3, #f57f17)' },
+  4: { bg: 'var(--color-tier-4-bg, #e8eaf6)', text: 'var(--color-tier-4, #283593)' },
+  5: { bg: 'var(--color-tier-5-bg, #f3e5f5)', text: 'var(--color-tier-5, #6a1b9a)' },
+  6: { bg: 'var(--color-tier-6-bg, #eceff1)', text: 'var(--color-tier-6, #455a64)' },
 }
 
 export function EntitySpotlight({ entities }: EntitySpotlightProps) {
@@ -29,44 +38,47 @@ export function EntitySpotlight({ entities }: EntitySpotlightProps) {
 
   return (
     <section className="py-10">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display text-2xl font-bold text-text-primary">
-          Entity Spotlight
+      <div className="flex items-center gap-4 mb-6">
+        <h2 className="font-sans text-[13px] font-bold uppercase tracking-[0.15em] whitespace-nowrap">
+          Entity Profiles
         </h2>
+        <div className="flex-1 h-px bg-border-default" />
         <Link
           href="/entities"
-          className="font-mono text-xs text-text-muted hover:text-accent-red transition-colors"
+          className="font-sans text-[11px] font-medium text-text-muted hover:text-text-primary whitespace-nowrap tracking-[0.04em] transition-colors"
         >
-          Browse all →
+          Browse All 97+ Profiles →
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {entities.map((ent) => {
-          const tierColor = ent.tier ? TIER_COLORS[ent.tier as Tier] ?? '#6b7280' : '#6b7280'
+          const tier = ent.tier ?? 6
+          const style = TIER_STYLES[tier] ?? TIER_STYLES[6]
+          const label = TIER_LABELS[tier] ?? 'Unknown'
           const hasProfile = ent.slug && ent.profile_published
 
           const card = (
-            <div className="border border-border-default p-4 hover:border-accent-gold/40 transition-colors group">
-              <div className="flex items-start gap-2">
-                <span
-                  className="w-2.5 h-2.5 mt-1 shrink-0"
-                  style={{ backgroundColor: tierColor }}
-                />
-                <div className="min-w-0">
-                  <div className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold transition-colors">
-                    {ent.name}
-                  </div>
-                  <div className="mt-0.5 font-mono text-[9px] text-text-muted uppercase tracking-wider">
-                    Tier {ent.tier}{ent.category ? ` · ${ent.category.replace(/_/g, ' ')}` : ''}
-                  </div>
-                  {ent.bio && (
-                    <p className="mt-1.5 font-body text-[11px] text-text-secondary line-clamp-2">
-                      {ent.bio}
-                    </p>
-                  )}
-                </div>
+            <div className="border border-border-default bg-white p-5 transition-all hover:border-text-secondary hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)] cursor-pointer">
+              <span
+                className="inline-block font-mono text-[9px] tracking-[0.1em] uppercase mb-2 px-2 py-0.5"
+                style={{ background: style.bg, color: style.text }}
+              >
+                Tier {tier} · {label}
+              </span>
+              <div className="font-display text-[17px] font-semibold mb-1">
+                {ent.name}
               </div>
+              {ent.category && (
+                <div className="font-sans text-xs text-text-muted mb-3">
+                  {ent.category.replace(/_/g, ' ')}
+                </div>
+              )}
+              {ent.bio && (
+                <p className="font-body text-sm text-text-secondary line-clamp-2">
+                  {ent.bio}
+                </p>
+              )}
             </div>
           )
 

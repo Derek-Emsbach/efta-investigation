@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export function FeaturedInvestigation() {
   return (
-    <section className="relative overflow-hidden bg-[#1a1a1a] text-[#faf8f5]" style={{ padding: '48px 0', margin: '40px 0 0' }}>
+    <section className="relative overflow-hidden bg-ink text-background py-12 mt-10">
       {/* Grid pattern overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -23,7 +23,7 @@ export function FeaturedInvestigation() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-red opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-red" />
               </span>
-              <span className="font-[var(--font-sans)] text-[11px] font-bold uppercase tracking-[0.15em] text-accent-red">
+              <span className="font-sans text-[11px] font-bold uppercase tracking-[0.15em] text-accent-red">
                 Interactive Investigation
               </span>
             </div>
@@ -39,9 +39,8 @@ export function FeaturedInvestigation() {
             </p>
 
             <Link
-              href="/evidence"
-              className="inline-flex items-center gap-2 font-[var(--font-sans)] text-xs font-semibold uppercase tracking-[0.1em] text-[#faf8f5] no-underline border border-white/30 hover:bg-white/10 hover:border-white/50 transition-all duration-300"
-              style={{ padding: '12px 24px' }}
+              href="/network"
+              className="inline-flex items-center gap-2 font-sans text-xs font-semibold uppercase tracking-[0.1em] text-background no-underline border border-white/30 hover:bg-white/10 hover:border-white/50 transition-all duration-300 px-6 py-3"
             >
               Explore the Network
               <span>→</span>
@@ -50,14 +49,7 @@ export function FeaturedInvestigation() {
 
           {/* Right: Network visualization placeholder */}
           <div className="relative">
-            <div
-              className="relative overflow-hidden"
-              style={{
-                aspectRatio: '4/3',
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
-              }}
-            >
+            <div className="relative overflow-hidden aspect-[4/3] bg-white/[0.03] border border-white/[0.08]">
               {/* Decorative network nodes */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative w-full h-full">

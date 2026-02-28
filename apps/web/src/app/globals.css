@@ -1,10 +1,39 @@
 @import "tailwindcss";
 
-@theme inline {
+/*
+ * THEME SYSTEM
+ * ─────────────────────────────────────────────────────────────────
+ * Uses @theme (NOT @theme inline) so CSS variables are emitted on :root.
+ * This enables runtime theme switching via [data-theme] selectors.
+ *
+ * With @theme inline, Tailwind hardcodes values into utilities (e.g.
+ * bg-background → background-color: #0A0E17). The [data-theme] overrides
+ * would have no effect because nothing references CSS variables.
+ *
+ * With @theme, Tailwind generates bg-background → background-color:
+ * var(--color-background), and [data-theme="publication"] can override
+ * --color-background to #faf8f5 for the publication theme.
+ *
+ * Semantic class usage:
+ *   bg-background   → page background (dark/cream/manila per theme)
+ *   bg-surface      → card/panel background
+ *   bg-elevated     → raised elements (inputs, dropdowns)
+ *   bg-ink          → intentionally dark sections (stats bar, featured)
+ *   text-text-primary / text-text-secondary / text-text-muted
+ *   border-border-default / border-border-light
+ *   font-display    → Playfair Display (headings)
+ *   font-body       → IBM Plex Sans (dashboard) / Source Serif 4 (publication)
+ *   font-sans       → DM Sans (UI labels, nav, meta text)
+ *   font-mono       → IBM Plex Mono (dashboard) / JetBrains Mono (evidence room)
+ *   text-accent-red / text-accent-gold → brand accents
+ * ─────────────────────────────────────────────────────────────────
+ */
+@theme {
   /* === Colors: Base === */
   --color-background: #0A0E17;
   --color-surface: #111827;
   --color-elevated: #1F2937;
+  --color-ink: #1a1a1a;
 
   /* === Colors: Borders === */
   --color-border-default: #374151;
@@ -59,6 +88,7 @@
   /* === Fonts === */
   --font-display: var(--font-playfair-display), "Playfair Display", Georgia, "Times New Roman", serif;
   --font-body: var(--font-ibm-plex-sans), "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-dm-sans), "DM Sans", -apple-system, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), "IBM Plex Mono", ui-monospace, "Courier New", monospace;
 
   /* === Animations === */

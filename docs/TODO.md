@@ -66,7 +66,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 6 phases complete + content seeded. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`. Dashboard remains at `/dashboard/*`. 6 case files seeded from investigation threads (44 open questions, 34 entity links). Stories still need editorial content.
+> **Status:** All 6 phases complete + content seeded + homepage redesign (Phase 7). Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`, `/network`. Dashboard remains at `/dashboard/*`. 6 case files seeded from investigation threads (44 open questions, 34 entity links). Stories still need editorial content.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -125,6 +125,18 @@
 - [x] Content seeding: 6 case files + 44 open questions + 34 entity links seeded from investigation threads
   - [x] Enhanced FindingsMarkdown component: markdown tables, `[SPECULATION_START/END]` blocks, HTML comment stripping, `<h4>` headings, multi-paragraph blockquotes, horizontal rules
   - [x] Unified renderer upgrade: FindingsMarkdown now uses `lib/markdown-renderer.tsx` (React nodes, no `dangerouslySetInnerHTML`). Auto-links entity names (word-boundary, longest-first) and EFTA Bates numbers in case file findings.
+### Phase 7: Homepage Redesign + Public Network Route
+- [x] Fix "Explore the Network" link → `/network` (was `/evidence`)
+- [x] Redesigned Masthead — "Record" in red, EFTA subtitle, date above title, double border
+- [x] Redesigned InvestigationStats — Playfair Display numbers, red-highlighted units, vertical dividers
+- [x] Redesigned EntitySpotlight — tier badge pills (e.g., TIER 1 · CONVICTED), white cards, hover shadow
+- [x] New HeroSection — newspaper-style lead story (2/3) + sidebar (latest findings + open questions)
+- [x] New FollowTheMoney section — $158M figure, 2/3+1/3 grid, green section color
+- [x] New CoverUpSection — redaction visual, 2-column grid, maroon section color
+- [x] Restructured PublicHeader — dark top bar (Investigation Active + utility links) + sticky centered nav with dividers
+- [x] Public network API (`/api/public/network`) — profile_published filter, post-filtered connections, rate limited
+- [x] Public network page (`/network`) — D3 force-directed graph adapted from dashboard, publication theme, slug-based navigation
+- [x] Recomposed homepage with new section order and open_questions query
 - [ ] Full cross-linking audit (entity mentions in stories → profile links, EFTA numbers → evidence room)
 
 ---

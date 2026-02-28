@@ -7,17 +7,16 @@ export function Masthead() {
   })
 
   return (
-    <div className="text-center py-8 border-b border-border-default">
-      <h1 className="font-display text-5xl sm:text-6xl lg:text-[72px] font-[900] text-text-primary tracking-tight leading-none">
-        The Epstein Record
-      </h1>
-      <div className="mt-3 flex items-center justify-center gap-4 font-mono text-[10px] text-text-muted uppercase tracking-wider">
-        <span>{today}</span>
-        <span className="text-border-default">|</span>
-        <span>EFTA Investigation</span>
-        <span className="text-border-default">|</span>
-        <span>Independent Analysis</span>
+    <div className="text-center pt-7 pb-4 border-b-[3px] border-double border-text-primary">
+      <div className="font-sans text-[11px] tracking-[0.12em] uppercase text-text-muted mb-3">
+        {today}
       </div>
+      <h1 className="font-display text-[clamp(36px,6vw,72px)] font-[900] text-text-primary tracking-[-0.02em] leading-none mb-1">
+        The Epstein <span className="text-accent-red">Record</span>
+      </h1>
+      <p className="font-sans text-[11px] tracking-[0.2em] uppercase text-text-muted mb-4">
+        An Independent Investigation of the EFTA Document Releases
+      </p>
     </div>
   )
 }

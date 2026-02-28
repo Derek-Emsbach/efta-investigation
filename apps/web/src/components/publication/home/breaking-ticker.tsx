@@ -18,7 +18,7 @@ export function BreakingNewsTicker() {
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
           <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
         </span>
-        <span className="font-[var(--font-sans)] text-[11px] font-bold uppercase tracking-[0.15em]">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-[0.15em]">
           Breaking
         </span>
         {/* Gradient fade on right edge */}
@@ -39,7 +39,7 @@ export function BreakingNewsTicker() {
         {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
           <span
             key={i}
-            className="whitespace-nowrap font-[var(--font-sans)] text-[13px] font-medium"
+            className="whitespace-nowrap font-sans text-[13px] font-medium"
             style={{ padding: '0 40px' }}
           >
             <span className="mr-3 text-[8px] opacity-60">◆</span>

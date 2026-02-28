@@ -122,7 +122,7 @@ function SectionHeader({
   return (
     <div className="flex items-center gap-4 mb-6 pt-10">
       <h2
-        className="font-[var(--font-sans)] text-[13px] font-bold uppercase tracking-[0.15em] whitespace-nowrap"
+        className="font-sans text-[13px] font-bold uppercase tracking-[0.15em] whitespace-nowrap"
         style={{ color }}
       >
         {label}
@@ -130,7 +130,7 @@ function SectionHeader({
       <div className="flex-1 h-px bg-border-default" />
       <Link
         href={href}
-        className="font-[var(--font-sans)] text-[11px] font-medium text-text-muted hover:text-text-primary whitespace-nowrap tracking-[0.04em] transition-colors"
+        className="font-sans text-[11px] font-medium text-text-muted hover:text-text-primary whitespace-nowrap tracking-[0.04em] transition-colors"
       >
         See All →
       </Link>
@@ -158,7 +158,7 @@ function StoryCard({
       {/* Kicker */}
       {story.section && (
         <div
-          className="font-[var(--font-sans)] text-[10px] font-semibold uppercase tracking-[0.12em] mb-2"
+          className="font-sans text-[10px] font-semibold uppercase tracking-[0.12em] mb-2"
           style={{ color: sectionColor }}
         >
           {SECTION_LABELS[story.section] ?? story.section}
@@ -178,7 +178,7 @@ function StoryCard({
       )}
 
       {/* Meta */}
-      <div className="flex items-center gap-2 font-[var(--font-sans)] text-[11px] text-text-muted">
+      <div className="flex items-center gap-2 font-sans text-[11px] text-text-muted">
         {story.published_at && (
           <span>
             {new Date(story.published_at).toLocaleDateString('en-US', {
