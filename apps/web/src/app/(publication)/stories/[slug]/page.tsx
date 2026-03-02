@@ -33,19 +33,20 @@ export async function generateMetadata({
     .single()
 
   if (!story) {
-    return { title: 'Story Not Found — The Epstein Record' }
+    return { title: 'Story Not Found — The Epstein Crimes' }
   }
 
   const description = story.deck ?? `${story.title} by ${story.byline}`
 
   return {
-    title: `${story.title} — The Epstein Record`,
+    title: `${story.title} — The Epstein Crimes`,
     description,
     openGraph: {
       title: story.title,
       description,
       type: 'article',
-      siteName: 'The Epstein Record',
+      siteName: 'The Epstein Crimes',
+      images: [`/api/og?title=${encodeURIComponent(story.title)}&type=story`],
     },
     twitter: {
       card: 'summary_large_image',

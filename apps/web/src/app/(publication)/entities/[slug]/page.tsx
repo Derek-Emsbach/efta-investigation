@@ -47,7 +47,7 @@ export async function generateMetadata({
     .single()
 
   if (!entity) {
-    return { title: 'Entity Not Found — The Epstein Record' }
+    return { title: 'Entity Not Found — The Epstein Crimes' }
   }
 
   const tierLabel = entity.tier
@@ -59,17 +59,18 @@ export async function generateMetadata({
     : `${entity.name} dossier — Tier ${entity.tier} (${tierLabel}). EFTA Investigation entity profile.`
 
   return {
-    title: `${entity.name} — The Epstein Record`,
+    title: `${entity.name} — The Epstein Crimes`,
     description,
     openGraph: {
-      title: `${entity.name} — The Epstein Record`,
+      title: `${entity.name} — The Epstein Crimes`,
       description,
       type: 'profile',
-      siteName: 'The Epstein Record',
+      siteName: 'The Epstein Crimes',
+      images: [`/api/og?title=${encodeURIComponent(entity.name)}&subtitle=${encodeURIComponent(`Tier ${entity.tier} — ${tierLabel}`)}&type=entity`],
     },
     twitter: {
       card: 'summary',
-      title: `${entity.name} — The Epstein Record`,
+      title: `${entity.name} — The Epstein Crimes`,
       description,
     },
   }

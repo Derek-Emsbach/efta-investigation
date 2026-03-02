@@ -3,15 +3,16 @@ import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 
 export const metadata: Metadata = {
-  title: 'Case Files — The Epstein Record',
+  title: 'Case Files — The Epstein Crimes',
   description:
     'Investigation reports compiled from systematic analysis of EFTA document releases.',
   openGraph: {
-    title: 'Case Files — The Epstein Record',
+    title: 'Case Files — The Epstein Crimes',
     description:
       'Investigation reports compiled from analysis of EFTA documents.',
     type: 'website',
-    siteName: 'The Epstein Record',
+    siteName: 'The Epstein Crimes',
+    images: ['/api/og?title=Case%20Files&subtitle=Investigation%20reports%20from%20EFTA%20document%20analysis&type=case-file'],
   },
 }
 

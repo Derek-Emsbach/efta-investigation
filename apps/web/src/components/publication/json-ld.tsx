@@ -22,7 +22,7 @@ export function ArticleJsonLd({
   section,
   slug,
 }: ArticleJsonLdProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteinrecord.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteincrimes.com'
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -37,7 +37,7 @@ export function ArticleJsonLd({
     ...(section && { articleSection: section }),
     publisher: {
       '@type': 'Organization',
-      name: 'The Epstein Record',
+      name: 'The Epstein Crimes',
       url: siteUrl,
     },
     mainEntityOfPage: {
@@ -61,7 +61,7 @@ interface PersonJsonLdProps {
 }
 
 export function PersonJsonLd({ name, description, slug }: PersonJsonLdProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteinrecord.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteincrimes.com'
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -83,7 +83,7 @@ export function PersonJsonLd({ name, description, slug }: PersonJsonLdProps) {
 }
 
 export function DatasetJsonLd() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteinrecord.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteincrimes.com'
 
   const jsonLd = {
     '@context': 'https://schema.org',

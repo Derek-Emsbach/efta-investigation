@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import { Masthead } from '@/components/publication/home/masthead'
-import { BreakingNewsTicker } from '@/components/publication/home/breaking-ticker'
+import { LatestFindingsTicker } from '@/components/publication/home/breaking-ticker'
 import { HeroSection } from '@/components/publication/home/hero-section'
 import { SectionStoryGrid } from '@/components/publication/home/section-story-grid'
 import { FeaturedInvestigation } from '@/components/publication/home/featured-investigation'
@@ -14,19 +14,20 @@ import { EntitySpotlight } from '@/components/publication/home/entity-spotlight'
 import { EvidenceRoomPromo } from '@/components/publication/home/evidence-room-promo'
 
 export const metadata: Metadata = {
-  title: 'The Epstein Record — Independent Investigation',
+  title: 'The Epstein Crimes — Independent Investigation',
   description:
     'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act. 12 DOJ dataset releases. 99 entities identified. The evidence speaks.',
   openGraph: {
-    title: 'The Epstein Record — Independent Investigation',
+    title: 'The Epstein Crimes — Independent Investigation',
     description:
       'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act.',
     type: 'website',
-    siteName: 'The Epstein Record',
+    siteName: 'The Epstein Crimes',
+    images: ['/api/og?title=Independent%20Investigation&type=home'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'The Epstein Record — Independent Investigation',
+    title: 'The Epstein Crimes — Independent Investigation',
     description:
       'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act.',
   },
@@ -41,7 +42,7 @@ const supabase = createClient(
 const DEDICATED_SECTIONS = ['follow-the-money', 'the-cover-up']
 
 export default async function HomePage() {
-  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult] =
+  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCountResult, openQuestionCountResult] =
     await Promise.all([
       supabase
         .from('stories')
@@ -82,6 +83,16 @@ export default async function HomePage() {
         .in('priority', ['critical', 'high'])
         .order('priority')
         .limit(3),
+
+      supabase
+        .from('entities')
+        .select('id', { count: 'exact', head: true })
+        .eq('profile_published', true),
+
+      supabase
+        .from('open_questions')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'open'),
     ])
 
   const stories = storiesResult.data ?? []
@@ -93,9 +104,9 @@ export default async function HomePage() {
   const stats = {
     documents: (docCountResult.data as number) ?? 1_370_000,
     pages: 2_770_000,
-    entities: 99,
+    entities: entityCountResult.count ?? 53,
     connections: 200,
-    openQuestions: 50,
+    openQuestions: openQuestionCountResult.count ?? 44,
   }
 
   // Split stories for dedicated sections
@@ -117,7 +128,7 @@ export default async function HomePage() {
       </div>
 
       {/* Breaking News Ticker (full-width) */}
-      <BreakingNewsTicker />
+      <LatestFindingsTicker />
 
       {/* Hero Section — lead story + sidebar */}
       <div className="mx-auto max-w-7xl px-6">

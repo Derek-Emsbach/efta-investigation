@@ -75,7 +75,7 @@ export function PublicHeader() {
 
             {/* Mobile: site name + hamburger */}
             <Link href="/" className="md:hidden font-display text-lg font-bold text-text-primary">
-              The Epstein Record
+              The Epstein Crimes
             </Link>
             <button
               onClick={() => setMenuOpen(!menuOpen)}

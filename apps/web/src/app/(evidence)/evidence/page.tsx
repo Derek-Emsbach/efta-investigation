@@ -4,17 +4,18 @@ import { StatsBar } from '@/components/evidence-room/stats-bar'
 import { DatasetJsonLd } from '@/components/publication/json-ld'
 
 export const metadata: Metadata = {
-  title: 'Evidence Room — The Epstein Record',
+  title: 'Evidence Room — The Epstein Crimes',
   description: 'Search 1.38 million documents from DOJ Epstein Files disclosures. Full-text search across the complete EFTA corpus.',
   openGraph: {
-    title: 'Evidence Room — The Epstein Record',
+    title: 'Evidence Room — The Epstein Crimes',
     description: 'Search 1.38 million documents from DOJ Epstein Files disclosures. Full-text search across the complete EFTA corpus.',
     type: 'website',
-    siteName: 'The Epstein Record',
+    siteName: 'The Epstein Crimes',
+    images: ['/api/og?title=Evidence%20Room&subtitle=Search%201.38%20million%20EFTA%20documents&type=evidence'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Evidence Room — The Epstein Record',
+    title: 'Evidence Room — The Epstein Crimes',
     description: 'Search 1.38 million documents from DOJ Epstein Files disclosures.',
   },
 }

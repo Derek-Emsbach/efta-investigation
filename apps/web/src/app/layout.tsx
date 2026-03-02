@@ -7,6 +7,8 @@ import {
   DM_Sans,
   JetBrains_Mono,
 } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { SettingsProvider } from "@/lib/settings-provider";
 import "./globals.css";
@@ -56,14 +58,20 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EFTA Investigation Platform",
-  description: "Systematic analysis of DOJ Epstein Files disclosures",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://theepsteincrimes.com",
+  ),
+  title: "The Epstein Crimes",
+  description:
+    "Independent investigation into 1.38 million DOJ documents released under the Epstein Files Transparency Act.",
   openGraph: {
-    title: "EFTA Investigation Platform",
-    description: "Systematic analysis of DOJ Epstein Files disclosures",
+    title: "The Epstein Crimes",
+    description:
+      "Independent investigation into 1.38 million DOJ documents released under the Epstein Files Transparency Act.",
     type: "website",
-    siteName: "EFTA Investigation Platform",
+    siteName: "The Epstein Crimes",
   },
+  alternates: { canonical: "./" },
 };
 
 export default function RootLayout({
@@ -89,6 +97,8 @@ export default function RootLayout({
         <ThemeProvider>
           <SettingsProvider>{children}</SettingsProvider>
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

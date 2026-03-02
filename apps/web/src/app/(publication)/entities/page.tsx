@@ -5,15 +5,16 @@ import type { Tier } from '@efta/shared'
 import { TIER_CONFIG } from '@efta/shared'
 
 export const metadata: Metadata = {
-  title: 'Entities — The Epstein Record',
+  title: 'Entities — The Epstein Crimes',
   description:
     'Individuals and organizations identified across 1.38 million EFTA documents, classified by evidence strength.',
   openGraph: {
-    title: 'Entities — The Epstein Record',
+    title: 'Entities — The Epstein Crimes',
     description:
       'Individuals and organizations identified in the Epstein files, classified by evidence strength.',
     type: 'website',
-    siteName: 'The Epstein Record',
+    siteName: 'The Epstein Crimes',
+    images: ['/api/og?title=Entities&subtitle=Individuals%20and%20organizations%20across%20six%20evidence%20tiers&type=entity'],
   },
 }
 

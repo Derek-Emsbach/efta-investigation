@@ -1,15 +1,17 @@
 'use client'
 
 const TICKER_ITEMS = [
-  'Dataset 9 analysis reveals unreported DANY-SDNY email chain showing inter-agency coordination failures',
-  'New documents show DOJ redacted names of individuals identified in authenticated victim journals',
-  'Investigation identifies three processing pipelines used in EFTA document production — forensic implications under review',
+  '6 investigative stories published across five investigation threads',
+  '4 EFTA documents forensically analyzed — complete trust chain documented',
+  '44 open questions filed across 6 case reports — accountability gaps identified',
+  '53 entities cataloged across six evidence tiers — every claim sourced to primary documents',
+  'Interactive network map: every documented connection now searchable',
 ]
 
-export function BreakingNewsTicker() {
+export function LatestFindingsTicker() {
   return (
     <div className="relative overflow-hidden bg-accent-red text-white" style={{ padding: '10px 0' }}>
-      {/* "Breaking" label — fixed left */}
+      {/* "Latest Findings" label — fixed left */}
       <div
         className="absolute left-0 top-0 bottom-0 z-[2] flex items-center gap-2 px-4"
         style={{ background: 'var(--color-accent-red-dark, #9b1830)' }}
@@ -19,7 +21,7 @@ export function BreakingNewsTicker() {
           <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
         </span>
         <span className="font-sans text-[11px] font-bold uppercase tracking-[0.15em]">
-          Breaking
+          Latest Findings
         </span>
         {/* Gradient fade on right edge */}
         <div
@@ -33,7 +35,7 @@ export function BreakingNewsTicker() {
       {/* Scrolling ticker track */}
       <div
         className="flex animate-ticker-scroll"
-        style={{ paddingLeft: '140px' }}
+        style={{ paddingLeft: '180px' }}
       >
         {/* Render items twice for seamless loop */}
         {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (

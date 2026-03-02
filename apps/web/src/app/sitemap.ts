@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteinrecord.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteincrimes.com'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -56,6 +56,45 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${SITE_URL}/disclaimer`,
+      changeFrequency: 'monthly',
+      priority: 0.2,
+    },
+    {
+      url: `${SITE_URL}/network`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/stories`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/entities`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/case-files`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/support`,
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
+      url: `${SITE_URL}/terms`,
+      changeFrequency: 'monthly',
+      priority: 0.2,
+    },
+    {
+      url: `${SITE_URL}/privacy`,
       changeFrequency: 'monthly',
       priority: 0.2,
     },

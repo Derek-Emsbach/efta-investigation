@@ -4,12 +4,33 @@ export function PublicFooter() {
   return (
     <footer className="border-t border-border-default bg-text-primary text-surface">
       <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
+          {/* Cyclops Digital branding */}
+          <div>
+            <div className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-accent-gold mb-3">
+              Cyclops Digital
+            </div>
+            <p className="text-xs text-text-muted leading-relaxed mb-3">
+              A Cyclops Digital investigation. Built to expose what the documents reveal.
+            </p>
+            <a
+              href="https://cyclops-digital.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-accent-gold hover:text-accent-gold/80 transition-colors"
+            >
+              cyclops-digital.com
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M3.5 8.5l5-5M4 3.5h5v5" />
+              </svg>
+            </a>
+          </div>
+
           {/* About */}
           <div>
             <h3 className="font-display text-sm font-semibold mb-3">About</h3>
             <p className="text-xs text-text-muted leading-relaxed">
-              The Epstein Record is a systematic investigation of DOJ disclosures
+              The Epstein Crimes is a systematic investigation of DOJ disclosures
               released under the Epstein Files Transparency Act.
             </p>
           </div>
@@ -31,6 +52,7 @@ export function PublicFooter() {
             <ul className="space-y-1.5 text-xs text-text-muted">
               <li><Link href="/about" className="hover:text-surface transition-colors">Methodology</Link></li>
               <li><Link href="/about" className="hover:text-surface transition-colors">About This Project</Link></li>
+              <li><Link href="/support" className="hover:text-surface transition-colors">Support / Donate</Link></li>
             </ul>
           </div>
 

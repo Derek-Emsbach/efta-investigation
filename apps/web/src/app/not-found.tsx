@@ -9,7 +9,7 @@ export default function NotFound() {
       <div className="text-center max-w-lg">
         {/* Publication header */}
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.25em] text-accent-red">
-          The Epstein Record
+          The Epstein Crimes
         </p>
 
         {/* 404 */}
