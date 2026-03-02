@@ -62,7 +62,7 @@
 
 ---
 
-## The Epstein Record — Public Publication Build
+## The Epstein Crimes — Public Publication Build
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
@@ -149,6 +149,25 @@
 - [x] Story 6: "The System" (master synthesis) — `docs/stories/the-system.md`, section: the-operation, 9 citations, 10 entity links, linked to CF-2026-000
 
 **Phase 8 COMPLETE** — 6 stories, 84 total citations, 43 total entity links across 4 sections
+
+### Phase 9: Rebrand + SEO + Donation Model
+- [x] Site-wide rename: "The Epstein Record" → "The Epstein Crimes" (30+ occurrences across all runtime source files)
+- [x] URL fallbacks updated: `theepsteinrecord.com` → `theepsteincrimes.com` (sitemap, robots, JSON-LD)
+- [x] Ticker: "Breaking" → "Latest Findings" with 5 factual investigation milestones
+- [x] Cyclops Digital branding: footer column with logo placeholder + cyclops-digital.com link
+- [x] Donate bar: reusable `<DonateBar />` component (top compact + bottom prominent variants)
+- [x] Support page: `/support` — mission statement, what donations fund, Cyclops Digital attribution
+- [x] Evidence room: minimal footer with Cyclops Digital attribution + donate bar
+- [x] Featured story swap: "The System" as homepage lead (DB update)
+- [x] Live stats: entity and open question counts from DB (replaced hardcoded 99/50)
+- [x] `metadataBase`: `new URL('https://theepsteincrimes.com')` — auto-resolves relative OG URLs
+- [x] Vercel Analytics + Speed Insights: zero-config, privacy-friendly
+- [x] Dynamic OG image route: `/api/og?title=...&subtitle=...&type=...` — 1200x630 newspaper-style
+- [x] OG images added to all public pages (homepage, entities, stories, case files, evidence, network)
+- [x] Network page split: server wrapper (metadata) + client component (D3 graph)
+- [x] Sitemap expansion: 7 new routes (network, stories, entities, case-files, support, terms, privacy)
+
+**Phase 9 COMPLETE** — site rebranded, donation model, Cyclops Digital branding, full SEO suite
 
 ---
 

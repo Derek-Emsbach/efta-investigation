@@ -35,7 +35,7 @@ efta-investigation/
       src/
         app/                      # App Router
           (publication)/          # Public pages (warm paper theme, no auth)
-            page.tsx              # Homepage (theepsteinrecord.com)
+            page.tsx              # Homepage (theepsteincrimes.com)
             entities/[slug]/      # Public entity dossier profiles
             stories/[slug]/       # Editorial story articles
             case-files/[slug]/    # Manila-themed case file reports
