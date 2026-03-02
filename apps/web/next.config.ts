@@ -1,4 +1,10 @@
 import type { NextConfig } from "next";
+import bundleAnalyzer from "@next/bundle-analyzer";
+import { withSentryConfig } from "@sentry/nextjs";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@efta/shared"],
@@ -51,4 +57,13 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(withBundleAnalyzer(nextConfig), {
+  // Suppress source map upload warnings when no auth token is set
+  silent: !process.env.SENTRY_AUTH_TOKEN,
+  // Only upload source maps when auth token is available
+  sourcemaps: {
+    disable: !process.env.SENTRY_AUTH_TOKEN,
+  },
+  // Disable Sentry telemetry
+  telemetry: false,
+});

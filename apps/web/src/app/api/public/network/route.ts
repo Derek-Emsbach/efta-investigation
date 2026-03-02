@@ -46,7 +46,9 @@ export async function GET(request: NextRequest) {
 
     const nodes = entitiesResult.data.filter((e) => connectedIds.has(e.id))
 
-    return NextResponse.json({ nodes, edges })
+    return NextResponse.json({ nodes, edges }, {
+      headers: { 'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' },
+    })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })

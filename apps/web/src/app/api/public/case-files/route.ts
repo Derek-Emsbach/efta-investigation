@@ -22,7 +22,9 @@ export async function GET(request: NextRequest) {
       throw new Error(`Failed to fetch case files: ${error.message}`)
     }
 
-    return NextResponse.json({ caseFiles: caseFiles ?? [] })
+    return NextResponse.json({ caseFiles: caseFiles ?? [] }, {
+      headers: { 'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=1200' },
+    })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })

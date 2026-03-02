@@ -13,6 +13,7 @@ import { StorySidebar } from '@/components/publication/story/story-sidebar'
 import { ReadingProgress } from '@/components/publication/story/reading-progress'
 import { ArticleJsonLd } from '@/components/publication/json-ld'
 import { renderMarkdown } from '@/lib/markdown-renderer'
+import { PrintButton } from '@/components/ui/print-button'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -134,18 +135,21 @@ export default async function StoryPage({
       <ReadingProgress />
 
       <article className="mx-auto max-w-7xl px-6 py-10">
-        {/* Breadcrumb */}
-        <nav className="mb-8 font-mono text-xs text-text-muted">
-          <a href="/" className="hover:text-text-secondary transition-colors">
-            Home
-          </a>
-          <span className="mx-2">/</span>
-          <a href="/stories" className="hover:text-text-secondary transition-colors">
-            Stories
-          </a>
-          <span className="mx-2">/</span>
-          <span className="text-text-secondary">{typedStory.title}</span>
-        </nav>
+        {/* Breadcrumb + print */}
+        <div className="mb-8 flex items-center justify-between">
+          <nav className="font-mono text-xs text-text-muted">
+            <a href="/" className="hover:text-text-secondary transition-colors">
+              Home
+            </a>
+            <span className="mx-2">/</span>
+            <a href="/stories" className="hover:text-text-secondary transition-colors">
+              Stories
+            </a>
+            <span className="mx-2">/</span>
+            <span className="text-text-secondary">{typedStory.title}</span>
+          </nav>
+          <PrintButton />
+        </div>
 
         {/* 2-column: article + sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12">

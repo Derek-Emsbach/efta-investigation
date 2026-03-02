@@ -15,8 +15,12 @@ export async function GET(request: NextRequest) {
   if (rateLimited) return rateLimited
 
   try {
+    const cacheHeaders = {
+      'Cache-Control': 'public, max-age=0, s-maxage=120, stale-while-revalidate=300',
+    }
+
     if (homepageCache && homepageCache.expiry > Date.now()) {
-      return NextResponse.json(homepageCache.data)
+      return NextResponse.json(homepageCache.data, { headers: cacheHeaders })
     }
 
     const [storiesResult, caseFilesResult, entitiesResult, statsResult] =
@@ -66,7 +70,7 @@ export async function GET(request: NextRequest) {
 
     homepageCache = { data, expiry: Date.now() + 2 * 60 * 1000 }
 
-    return NextResponse.json(data)
+    return NextResponse.json(data, { headers: cacheHeaders })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })

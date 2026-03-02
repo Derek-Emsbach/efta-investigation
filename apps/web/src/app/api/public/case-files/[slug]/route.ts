@@ -48,6 +48,8 @@ export async function GET(
       caseFile,
       entities: entitiesResult.data ?? [],
       questions: questionsResult.data ?? [],
+    }, {
+      headers: { 'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=1200' },
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'

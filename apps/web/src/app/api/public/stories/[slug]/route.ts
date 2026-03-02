@@ -55,6 +55,8 @@ export async function GET(
       entities: entitiesResult.data ?? [],
       citations: citationsResult.data ?? [],
       caseFile: caseFileResult.data,
+    }, {
+      headers: { 'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=1200' },
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'

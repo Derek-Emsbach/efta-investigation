@@ -52,7 +52,10 @@ export async function GET(request: NextRequest) {
     const cached = cache.get(cacheKey)
     if (cached) {
       return NextResponse.json(cached.data, {
-        headers: { 'X-Cache': 'HIT' },
+        headers: {
+          'X-Cache': 'HIT',
+          'Cache-Control': 'public, max-age=0, s-maxage=60, stale-while-revalidate=120',
+        },
       })
     }
 
@@ -112,7 +115,10 @@ export async function GET(request: NextRequest) {
     cache.set(cacheKey, { data: response, expiry: Date.now() + CACHE_TTL })
 
     return NextResponse.json(response, {
-      headers: { 'X-Cache': 'MISS' },
+      headers: {
+        'X-Cache': 'MISS',
+        'Cache-Control': 'public, max-age=0, s-maxage=60, stale-while-revalidate=120',
+      },
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'

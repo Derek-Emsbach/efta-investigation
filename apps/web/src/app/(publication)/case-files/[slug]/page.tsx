@@ -12,6 +12,7 @@ import { FindingsMarkdown } from '@/components/publication/case-file/findings-ma
 import { EntityRoster } from '@/components/publication/case-file/entity-roster'
 import { OpenQuestions } from '@/components/publication/case-file/open-questions'
 import { ReportSidebar } from '@/components/publication/case-file/report-sidebar'
+import { PrintButton } from '@/components/ui/print-button'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -94,18 +95,21 @@ export default async function CaseFilePage({
 
   return (
     <div className="mx-auto max-w-[1100px] px-6 py-10">
-      {/* Breadcrumb */}
-      <nav className="mb-6 font-mono text-xs text-text-muted">
-        <a href="/" className="hover:text-text-secondary transition-colors">
-          Home
-        </a>
-        <span className="mx-2">/</span>
-        <a href="/case-files" className="hover:text-text-secondary transition-colors">
-          Case Files
-        </a>
-        <span className="mx-2">/</span>
-        <span className="text-text-secondary">{typedCaseFile.case_id}</span>
-      </nav>
+      {/* Breadcrumb + print */}
+      <div className="mb-6 flex items-center justify-between">
+        <nav className="font-mono text-xs text-text-muted">
+          <a href="/" className="hover:text-text-secondary transition-colors">
+            Home
+          </a>
+          <span className="mx-2">/</span>
+          <a href="/case-files" className="hover:text-text-secondary transition-colors">
+            Case Files
+          </a>
+          <span className="mx-2">/</span>
+          <span className="text-text-secondary">{typedCaseFile.case_id}</span>
+        </nav>
+        <PrintButton />
+      </div>
 
       {/* Cover */}
       <CaseFileCover caseFile={typedCaseFile} />

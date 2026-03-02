@@ -133,6 +133,8 @@ export async function GET(
       evidence: evidenceResult.data ?? [],
       stories,
       caseFiles,
+    }, {
+      headers: { 'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' },
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'

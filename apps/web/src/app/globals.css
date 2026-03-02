@@ -413,3 +413,133 @@ input:-webkit-autofill:focus {
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
+
+/* === Print Styles === */
+@media print {
+  /* Force white background, black text for all themes */
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Remove all decorative backgrounds */
+  * {
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Kill animations and transitions */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* — Hide navigation & chrome — */
+  aside { display: none !important; }
+  nav[aria-label="Breadcrumb"] { display: block !important; }
+  nav:not([aria-label="Breadcrumb"]):not([aria-label="Legal"]) { display: none !important; }
+
+  /* Hide mobile-only elements, overlays, fixed UI */
+  button[aria-label="Open navigation"],
+  button[aria-label="Toggle navigation menu"],
+  button[aria-label="Close navigation"] { display: none !important; }
+  .fixed { display: none !important; }
+  [class*="backdrop-blur"] { display: none !important; }
+
+  /* Hide interactive controls (useless in print) */
+  button[aria-label*="theme" i],
+  button[aria-label*="toggle" i] { display: none !important; }
+
+  /* Hide donate bars and CTAs */
+  [data-component="donate-bar"] { display: none !important; }
+
+  /* Hide search interfaces and filters */
+  input[type="search"],
+  input[type="text"] { display: none !important; }
+
+  /* Hide reading progress bar */
+  [data-component="reading-progress"] { display: none !important; }
+
+  /* — Layout adjustments — */
+  main, main#main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Remove sticky positioning (breaks page breaks) */
+  header, [class*="sticky"] {
+    position: static !important;
+  }
+
+  /* — Typography for print — */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  p, li, blockquote {
+    color: #1a1a1a !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  blockquote {
+    border-left: 2px solid #666 !important;
+    padding-left: 1em !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  /* Show link URLs after link text (publication pages) */
+  [data-theme="publication"] a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #555;
+    word-break: break-all;
+  }
+
+  /* But not for internal navigation links */
+  [data-theme="publication"] nav a[href]::after,
+  [data-theme="publication"] a[href^="/"]::after,
+  [data-theme="publication"] a[href^="#"]::after {
+    content: none;
+  }
+
+  /* — Page break rules — */
+  img, svg, figure, table, pre, blockquote {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* — Backgrounds to keep (tier badges, severity indicators) — */
+  [class*="tier-badge"],
+  [class*="severity"] {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* — Footer: show disclaimer, hide chrome — */
+  footer {
+    margin-left: 0 !important;
+    border-top: 1px solid #ccc !important;
+  }
+
+  /* — Print-specific button to hide itself — */
+  [data-print-hide] {
+    display: none !important;
+  }
+}

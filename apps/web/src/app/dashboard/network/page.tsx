@@ -555,6 +555,54 @@ export default function NetworkPage() {
     }
   }, [filteredData, dimensions, router, highlightedNodeId, pathResult, pathFrom, pathTo])
 
+  // --- Export helpers ---
+
+  const exportSvg = useCallback(() => {
+    const svg = svgRef.current
+    if (!svg) return
+    const serializer = new XMLSerializer()
+    const source = serializer.serializeToString(svg)
+    const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'network-graph.svg'
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [])
+
+  const exportPng = useCallback(() => {
+    const svg = svgRef.current
+    if (!svg) return
+    const serializer = new XMLSerializer()
+    const source = serializer.serializeToString(svg)
+    const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = dimensions.width * 2  // 2x for retina
+      canvas.height = dimensions.height * 2
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      ctx.scale(2, 2)
+      ctx.fillStyle = '#0A0E17'
+      ctx.fillRect(0, 0, dimensions.width, dimensions.height)
+      ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height)
+      canvas.toBlob((pngBlob) => {
+        if (!pngBlob) return
+        const pngUrl = URL.createObjectURL(pngBlob)
+        const a = document.createElement('a')
+        a.href = pngUrl
+        a.download = 'network-graph.png'
+        a.click()
+        URL.revokeObjectURL(pngUrl)
+      }, 'image/png')
+      URL.revokeObjectURL(url)
+    }
+    img.src = url
+  }, [dimensions])
+
   return (
     <MainContent>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
@@ -654,6 +702,30 @@ export default function NetworkPage() {
             </svg>
             Find Path
             {pathResult && <span className="w-1.5 h-1.5 rounded-full bg-success" />}
+          </button>
+
+          {/* Export SVG */}
+          <button
+            onClick={exportSvg}
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm bg-elevated border border-border-default text-text-muted hover:text-text-secondary transition-colors"
+            title="Export as SVG"
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            SVG
+          </button>
+
+          {/* Export PNG */}
+          <button
+            onClick={exportPng}
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm bg-elevated border border-border-default text-text-muted hover:text-text-secondary transition-colors"
+            title="Export as PNG"
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            PNG
           </button>
 
           {/* Filter toggle */}

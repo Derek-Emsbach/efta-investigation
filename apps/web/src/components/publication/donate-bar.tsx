@@ -7,7 +7,7 @@ interface DonateBarProps {
 export function DonateBar({ variant }: DonateBarProps) {
   if (variant === 'top') {
     return (
-      <div className="bg-ink text-background">
+      <div data-component="donate-bar" className="bg-ink text-background">
         <div className="mx-auto max-w-7xl px-6 py-2 flex items-center justify-between">
           <p className="font-sans text-[11px] tracking-[0.04em] text-background/80">
             This investigation is free and open to everyone.
@@ -24,7 +24,7 @@ export function DonateBar({ variant }: DonateBarProps) {
   }
 
   return (
-    <section className="border-t border-border-default bg-elevated/30">
+    <section data-component="donate-bar" className="border-t border-border-default bg-elevated/30">
       <div className="mx-auto max-w-7xl px-6 py-10 text-center">
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-accent-gold mb-3">
           Support Independent Investigation

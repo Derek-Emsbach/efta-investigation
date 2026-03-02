@@ -15,8 +15,12 @@ export async function GET(request: NextRequest) {
   if (rateLimited) return rateLimited
 
   try {
+    const cacheHeaders = {
+      'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=1200',
+    }
+
     if (statsCache && statsCache.expiry > Date.now()) {
-      return NextResponse.json(statsCache.data)
+      return NextResponse.json(statsCache.data, { headers: cacheHeaders })
     }
 
     // Use estimated count for performance on 1.37M row table
@@ -45,7 +49,7 @@ export async function GET(request: NextRequest) {
 
     statsCache = { data: stats, expiry: Date.now() + 10 * 60 * 1000 }
 
-    return NextResponse.json(stats)
+    return NextResponse.json(stats, { headers: cacheHeaders })
   } catch (error) {
     // Return fallback stats on error
     return NextResponse.json({

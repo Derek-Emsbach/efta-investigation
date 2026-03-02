@@ -27,6 +27,7 @@ import { StoriesSection } from '@/components/publication/entity/stories-section'
 import { CaseFilesSection } from '@/components/publication/entity/case-files-section'
 import { PersonJsonLd } from '@/components/publication/json-ld'
 import { ProfileTabsWrapper } from './profile-tabs-wrapper'
+import { PrintButton } from '@/components/ui/print-button'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -183,18 +184,21 @@ export default async function EntityProfilePage({
       slug={slug}
     />
     <div className="mx-auto max-w-7xl px-6 py-12">
-      {/* Breadcrumb */}
-      <nav className="mb-8 font-mono text-xs text-text-muted">
-        <a href="/" className="hover:text-text-secondary transition-colors">
-          Home
-        </a>
-        <span className="mx-2">/</span>
-        <a href="/entities" className="hover:text-text-secondary transition-colors">
-          Entities
-        </a>
-        <span className="mx-2">/</span>
-        <span className="text-text-secondary">{typedEntity.name}</span>
-      </nav>
+      {/* Breadcrumb + print */}
+      <div className="mb-8 flex items-center justify-between">
+        <nav className="font-mono text-xs text-text-muted">
+          <a href="/" className="hover:text-text-secondary transition-colors">
+            Home
+          </a>
+          <span className="mx-2">/</span>
+          <a href="/entities" className="hover:text-text-secondary transition-colors">
+            Entities
+          </a>
+          <span className="mx-2">/</span>
+          <span className="text-text-secondary">{typedEntity.name}</span>
+        </nav>
+        <PrintButton />
+      </div>
 
       {/* 2-column layout: main + sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10">
