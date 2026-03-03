@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import NetworkClient from './network-client'
+import NetworkLoader from './network-loader'
 
 export const metadata: Metadata = {
   title: 'Network Map — The Epstein Crimes',
@@ -16,5 +16,5 @@ export const metadata: Metadata = {
 }
 
 export default function NetworkPage() {
-  return <NetworkClient />
+  return <NetworkLoader />
 }

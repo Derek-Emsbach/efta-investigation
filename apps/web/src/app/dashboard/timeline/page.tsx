@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
+import { toPng } from 'html-to-image'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search-input'
@@ -107,6 +108,7 @@ function groupByMonth(events: TimelineEvent[]): { label: string; events: Timelin
 // -------------------------------------------------------------------
 
 export default function TimelinePage() {
+  const timelineRef = useRef<HTMLDivElement>(null)
   const [search, setSearch] = useState('')
   const [filters, setFilters] = useState<Record<string, string | string[]>>({
     event_type: '',
@@ -191,11 +193,55 @@ export default function TimelinePage() {
 
   const groups = groupByMonth(data)
 
+  const exportPng = useCallback(async () => {
+    const el = timelineRef.current
+    if (!el) return
+    try {
+      const dataUrl = await toPng(el, {
+        backgroundColor: '#0A0E17',
+        pixelRatio: 2,
+      })
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = 'timeline.png'
+      a.click()
+    } catch {
+      // Silent fail
+    }
+  }, [])
+
   return (
     <MainContent>
       <PageHeader
         title="Timeline"
         subtitle="Chronological events across the investigation"
+        actions={
+          <div className="flex items-center gap-2">
+            <button
+              onClick={exportPng}
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm bg-elevated border border-border-default text-text-muted hover:text-text-secondary transition-colors"
+              title="Download as PNG"
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              PNG
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm bg-elevated border border-border-default text-text-muted hover:text-text-secondary transition-colors"
+              title="Print / Save as PDF"
+              data-print-hide
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+                <rect x="6" y="14" width="12" height="8" />
+              </svg>
+              PDF
+            </button>
+          </div>
+        }
       />
 
       {/* Filters */}
@@ -314,7 +360,7 @@ export default function TimelinePage() {
 
       {/* Timeline */}
       {!isLoading && data.length > 0 && (
-        <div className="space-y-10">
+        <div ref={timelineRef} className="space-y-10">
           {groups.map((group) => (
             <div key={group.label}>
               {/* Month-year header */}

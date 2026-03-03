@@ -4,7 +4,9 @@ import { StatCard } from '@/components/ui/stat-card'
 import { TierBadge } from '@/components/ui/tier-badge'
 import { SeverityMarker } from '@/components/ui/severity-marker'
 import { PipelineStatus } from '@/components/dashboard/pipeline-status'
+import { WorkerHealth } from '@/components/dashboard/worker-health'
 import { ActionItems } from '@/components/dashboard/action-items'
+import { AnalysisInsights } from '@/components/dashboard/analysis-insights'
 import { RedactionIntel } from '@/components/dashboard/redaction-intel'
 import { TIER_CONFIG, SEVERITY_CONFIG } from '@efta/shared'
 import type { Tier, Severity, Dataset, DatasetStatus, Entity, Document, Event } from '@efta/shared'
@@ -305,8 +307,9 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* ── H3: Pipeline Status Bar ──────────────────────────────── */}
+      {/* ── H3: Pipeline + Worker Health ─────────────────────────── */}
       <PipelineStatus />
+      <WorkerHealth />
 
       {/* ── Row: Alerts + Recent Timeline ────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -365,6 +368,14 @@ export default async function DashboardPage() {
           </div>
         </section>
       </div>
+
+      {/* ── Analysis Insights ─────────────────────────────────────── */}
+      <section>
+        <h3 className="font-display text-lg font-semibold text-text-primary mb-3">
+          Analysis Insights
+        </h3>
+        <AnalysisInsights />
+      </section>
 
       {/* ── Row: Key Entities + Redaction Intel ───────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

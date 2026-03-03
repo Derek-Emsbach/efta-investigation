@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { VerificationBadge } from '@/components/ui/verification-badge'
 import type { VerificationStatus } from '@efta/shared'
 
@@ -72,11 +73,13 @@ export function WikipediaSection({ entityId }: WikipediaSectionProps) {
         {/* Thumbnail */}
         {source.thumbnail_url && (
           <div className="shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={source.thumbnail_url}
               alt={source.title ?? 'Wikipedia thumbnail'}
+              width={80}
+              height={80}
               className="w-20 h-20 rounded-lg object-cover border border-border-default"
+              unoptimized={!source.thumbnail_url.includes('wikimedia.org')}
             />
           </div>
         )}

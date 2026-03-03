@@ -24,6 +24,7 @@
 - [x] Legal infrastructure: footer with disclaimer, /disclaimer, /terms, /privacy pages
 - [x] Skip-to-content link for keyboard accessibility
 - [x] Breadcrumb navigation on entity and document detail pages
+- [x] Dashboard network page rewrite — fixed SVG overflow blocking sidebar, theme-aware background, PageHeader, dual-view toggle (D3 graph + sortable table with TierBadge and entity links)
 - [x] robots.txt (was disallow-all for private tool; now dynamic via robots.ts — allows public pages, blocks /dashboard/)
 - [x] aria-current on active nav links, aria-hidden on decorative icons
 - [x] Copyright notice (© Cyclops Digital LLC) in sidebar + footer
@@ -36,32 +37,32 @@
 - [x] Edge caching — `Cache-Control` headers on all 10 public API routes (`s-maxage` + `stale-while-revalidate` for Vercel CDN)
 - [x] Lazy loading — publication pages are Server Components (no client JS); PDF viewer already dynamic-imported; no further wins
 - [x] Bundle analysis — `@next/bundle-analyzer` installed, `pnpm --filter web analyze` script added
-- [ ] Image optimization (Next.js Image component, R2 transforms) — deferred, images served via API routes
-- [ ] Further code splitting — D3 is the heaviest client dep (~250KB); only loaded on network pages
+- [x] Image optimization — Next.js `<Image>` for entity profile pictures + Wikipedia thumbnails (`remotePatterns` for `upload.wikimedia.org`). R2 images left as `<img>` (served via API routes).
+- [x] D3 code splitting — `next/dynamic` with `ssr: false` on both dashboard + public network pages. Client component wrappers for Next.js 16 Server Component constraint.
 
 ### 5.3 Export & Reporting
 - [x] Export entity profile as PDF — `PrintButton` component + print stylesheet (`window.print()` → Save as PDF)
 - [x] Export network graph as SVG/PNG — zero-dependency SVG serialization + canvas rasterization on dashboard network page
 - [x] Print-friendly stylesheets — `@media print` rules in globals.css (hides nav/sidebar/donate/search, white bg, serif typography, page break rules, external link URLs shown)
 - [x] Print button on entity, story, and case-file pages
-- [ ] Export timeline as PNG/SVG — needs SVG serialization treatment similar to network graph
-- [ ] Export evidence package per entity (zip with docs + summary) — needs jszip + R2 assembly route
+- [x] Export timeline as PNG — `html-to-image` `toPng()` capture + PDF via `window.print()`. Export buttons in PageHeader actions slot.
+- [x] Export evidence package per entity — JSZip assembly route at `/api/entities/[id]/evidence-package` (summary.txt + up to 20 PDFs from R2). Download button on entity detail page.
 
 ### 5.4 Monitoring
 - [x] Error tracking — Sentry `@sentry/nextjs` v10 integrated (client/server/edge configs, global error boundary, instrumentation.ts). Dormant until `NEXT_PUBLIC_SENTRY_DSN` env var is set.
 - [x] Basic analytics — Vercel Analytics + Speed Insights (zero-config, privacy-friendly)
 - [x] Database monitoring via Supabase dashboard
-- [ ] Worker health checks — Python-side work, separate from frontend
+- [x] Worker health checks — `/api/worker/health` infers status (healthy/degraded/offline/idle) from `processing_queue` timestamps + `WorkerHealth` dashboard component with status dot, throughput, fail rate, currently processing indicator. Polls every 15s.
 
 ### 5.5 Automated Analysis Reports
-- [ ] Nightly cron job (Supabase Edge Function or worker) that generates:
-  - [ ] **Missing connections report:** Entities that co-occur in 3+ documents but have no connection record
-  - [ ] **Under-investigated entities:** Tier 3+ entities with fewer than 3 source documents
-  - [ ] **Redaction inconsistencies:** Same entity redacted in one document but visible in another
-  - [ ] **Timeline gaps:** Date ranges with known entity activity but no events logged
-  - [ ] **Stale reviews:** Documents in `needs_review` status for more than 7 days
-- [ ] Reports surface on admin dashboard as notification cards
-- [ ] Click any finding → relevant entity/document/search
+- [x] On-demand analysis API at `/api/admin/analysis` (2-min cache) running 5 data quality queries:
+  - [x] **Missing connections:** Entity co-occurrence analysis (3+ shared docs, no connection record) with fallback from RPC to in-memory computation
+  - [x] **Under-investigated entities:** Tier 1-3 entities with <3 linked documents
+  - [x] **Redaction inconsistencies:** Documents with both Category A (victim) and Category D (perpetrator) redactions
+  - [x] **Timeline gaps:** Entities with multi-year event spans but <3 events, or Tier 1-2 with only 1 event
+  - [x] **Stale reviews:** Documents in `needs_review` >7 days with days-stale calculation
+- [x] `AnalysisInsights` dashboard component — expandable cards by severity (critical/warning/info), click items → relevant entity/document page
+- [x] Integrated on dashboard home page in new "Analysis Insights" section
 
 ---
 

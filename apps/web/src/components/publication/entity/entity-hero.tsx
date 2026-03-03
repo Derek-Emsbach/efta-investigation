@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { Entity, Tier } from '@efta/shared'
 import { TierBadgePub } from './tier-badge-pub'
 
@@ -30,12 +31,14 @@ export function EntityHero({
       <div className="flex items-start gap-5">
         {/* Avatar */}
         {entity.profile_image_url ? (
-          <div className="w-20 h-20 border border-border-default overflow-hidden shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+          <div className="w-20 h-20 border border-border-default overflow-hidden shrink-0 relative">
+            <Image
               src={entity.profile_image_url}
               alt={entity.name}
-              className="w-full h-full object-cover"
+              fill
+              sizes="80px"
+              className="object-cover"
+              unoptimized={!entity.profile_image_url.includes('wikimedia.org')}
             />
           </div>
         ) : (

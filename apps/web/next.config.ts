@@ -9,6 +9,15 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   transpilePackages: ["@efta/shared"],
 
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
+    ],
+  },
+
   async redirects() {
     return [
       // Dashboard-only paths — permanent redirects from old URLs
