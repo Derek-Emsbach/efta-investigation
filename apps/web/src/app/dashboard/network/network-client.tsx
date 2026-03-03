@@ -1275,7 +1275,7 @@ export default function NetworkClient() {
         <>
           <div
             ref={containerRef}
-            className="bg-surface border border-border-default rounded-lg overflow-hidden relative"
+            className="bg-surface border border-border-default rounded-lg overflow-hidden relative min-h-[600px]"
           >
             <svg
               ref={svgRef}

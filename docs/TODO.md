@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/evidence`, `/network`. Dashboard remains at `/dashboard/*`. 6 case files seeded (44 open questions, 34 entity links). 6 stories published (84 citations, 43 entity links) across 4 sections.
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 6 stories (84 citations, 43 entity links).
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -172,6 +172,17 @@
 - [x] Sitemap expansion: 7 new routes (network, stories, entities, case-files, support, terms, privacy)
 
 **Phase 9 COMPLETE** — site rebranded, donation model, Cyclops Digital branding, full SEO suite
+
+### Phase 10: Evidence Room Expansion
+- [x] Fix network graph rendering bug — `min-h-[600px]` on container div so ResizeObserver fires
+- [x] Evidence Room inner layout — client component with horizontal tab bar (Search, Entities, Network, Timeline) at `(evidence)/evidence/layout.tsx`, active tab highlighted via `usePathname()`
+- [x] Entity directory — `/evidence/entities` — entity table with tier/type/search filters, fetches from `/api/public/entities`
+- [x] Entity detail — `/evidence/entities/[slug]` — data-focused profile (connections table, documents table, timeline, stories & case files), links back to publication dossier
+- [x] Network graph — `/evidence/network` — full D3 force graph with tier/relationship/strength filters, search, BFS path finder, using public API (`/api/public/network`), entity clicks navigate to `/evidence/entities/[slug]`
+- [x] Public timeline API — `/api/public/timeline` — rate-limited, 5-min cache, entity slug filter, privacy-filtered (published entities only), cache-control headers
+- [x] Timeline page — `/evidence/timeline` — chronological events grouped by month-year, event type/date/search filters, entity chips link to evidence room profiles
+
+**Phase 10 COMPLETE** — Evidence Room expanded from search-only to full research workspace with 4 integrated views
 
 ---
 

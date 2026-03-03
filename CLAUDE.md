@@ -40,7 +40,11 @@ efta-investigation/
             stories/[slug]/       # Editorial story articles
             case-files/[slug]/    # Manila-themed case file reports
           (evidence)/             # Public evidence room (dark theme, no auth)
-            evidence/             # Search interface for 1.37M documents
+            evidence/             # Tabbed workspace (inner layout with Search/Entities/Network/Timeline tabs)
+              entities/           # Entity directory (filterable table)
+              entities/[slug]/    # Entity evidence profile (connections, docs, timeline, stories)
+              network/            # D3 network graph (public API, path finder)
+              timeline/           # Chronological event timeline (public API)
           (legal)/                # Legal pages (minimal layout)
             about/ disclaimer/ terms/ privacy/
           dashboard/              # Auth-protected dashboard (existing dark theme)
@@ -203,6 +207,8 @@ All public API routes live at `/api/public/*` and share these patterns:
 | `/api/public/evidence/search` | GET | Full-text search (60/min rate limit) |
 | `/api/public/evidence/stats` | GET | Corpus aggregate counts |
 | `/api/public/homepage` | GET | Aggregated homepage data |
+| `/api/public/timeline` | GET | Public timeline events with published entity links |
+| `/api/public/network` | GET | Network graph nodes/edges (published entities) |
 
 ## AI Assistants
 
