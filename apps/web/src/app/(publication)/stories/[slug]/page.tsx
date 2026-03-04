@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
+import Image from 'next/image'
 import type {
   Story,
   StoryEntity,
@@ -155,6 +156,27 @@ export default async function StoryPage({
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12">
           {/* Article */}
           <div>
+            {typedStory.hero_image_url && (
+              <div className="mb-6">
+                <div className="relative w-full overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                  <Image
+                    src={typedStory.hero_image_url}
+                    alt={typedStory.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 700px"
+                    className="object-cover"
+                    priority
+                    unoptimized={!typedStory.hero_image_url.includes('wikimedia.org')}
+                  />
+                </div>
+                {typedStory.hero_image_caption && (
+                  <p className="font-sans text-xs text-text-muted mt-2 pt-2 border-t border-border-default">
+                    {typedStory.hero_image_caption}
+                  </p>
+                )}
+              </div>
+            )}
+
             <StoryHero story={typedStory} citationCount={citations.length} />
 
             {/* Body */}

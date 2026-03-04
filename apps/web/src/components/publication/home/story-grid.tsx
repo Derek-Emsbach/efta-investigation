@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface StoryPreview {
   id: string
@@ -10,6 +11,7 @@ interface StoryPreview {
   reading_time_minutes: number | null
   is_featured: boolean
   published_at: string | null
+  hero_image_url?: string | null
 }
 
 interface StoryGridProps {
@@ -46,6 +48,18 @@ export function StoryGrid({ stories }: StoryGridProps) {
           href={`/stories/${featured.slug}`}
           className="group border border-border-default p-6 hover:border-accent-gold/40 transition-colors"
         >
+          {featured.hero_image_url && (
+            <div className="relative w-full overflow-hidden mb-4 -mt-1" style={{ aspectRatio: '16/9' }}>
+              <Image
+                src={featured.hero_image_url}
+                alt={featured.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                className="object-cover"
+                unoptimized={!featured.hero_image_url.includes('wikimedia.org')}
+              />
+            </div>
+          )}
           {featured.section && (
             <div className="flex items-center gap-2 mb-3">
               <span

@@ -19,45 +19,29 @@ const nextConfig: NextConfig = {
   },
 
   async redirects() {
+    // Paths that are dashboard-only — redirect bare URLs to /dashboard/*
+    // NOTE: /network is NOT here because (publication)/network is a public page
+    const dashboardOnlyPaths = [
+      '/upload',
+      '/processing',
+      '/review',
+      '/assistant',
+      '/admin',
+      '/settings',
+      '/forensics',
+      '/hierarchy',
+      '/datasets',
+      '/photos',
+      '/investigations',
+      '/locations',
+    ]
     return [
-      // Dashboard-only paths — permanent redirects from old URLs
-      ...[
-        '/upload',
-        '/processing',
-        '/review',
-        '/assistant',
-        '/admin',
-        '/settings',
-        '/forensics',
-        '/hierarchy',
-        '/datasets',
-        '/photos',
-        '/network',
-        '/investigations',
-        '/locations',
-        '/search',
-      ].map((path) => ({
+      ...dashboardOnlyPaths.map((path) => ({
         source: `${path}/:path*`,
         destination: `/dashboard${path}/:path*`,
         permanent: true,
       })),
-      // Also redirect the bare paths (without trailing subpaths)
-      ...[
-        '/upload',
-        '/processing',
-        '/review',
-        '/assistant',
-        '/admin',
-        '/settings',
-        '/forensics',
-        '/hierarchy',
-        '/datasets',
-        '/photos',
-        '/network',
-        '/investigations',
-        '/locations',
-        '/search',
-      ].map((path) => ({
+      ...dashboardOnlyPaths.map((path) => ({
         source: path,
         destination: `/dashboard${path}`,
         permanent: true,

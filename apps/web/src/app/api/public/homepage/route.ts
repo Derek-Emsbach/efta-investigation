@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
         // Latest published stories
         supabase
           .from('stories')
-          .select('id, slug, title, deck, section, byline, reading_time_minutes, is_featured, published_at')
+          .select('id, slug, title, deck, section, byline, reading_time_minutes, is_featured, published_at, hero_image_url')
           .eq('is_published', true)
           .order('published_at', { ascending: false })
           .limit(10),
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         // Top entities by tier (for spotlight)
         supabase
           .from('entities')
-          .select('id, name, slug, tier, category, bio, profile_published')
+          .select('id, name, slug, tier, category, bio, profile_published, profile_image_url')
           .eq('profile_published', true)
           .in('tier', [1, 2])
           .order('tier', { ascending: true })

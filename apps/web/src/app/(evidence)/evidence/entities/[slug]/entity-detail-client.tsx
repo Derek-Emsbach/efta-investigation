@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { TierBadge } from '@/components/ui/tier-badge'
 import type { Tier } from '@efta/shared'
@@ -23,6 +24,7 @@ interface EntityData {
   key_roles: string[] | null
   first_appearance: string | null
   last_known_activity: string | null
+  profile_image_url: string | null
 }
 
 interface ConnectionRecord {
@@ -212,10 +214,29 @@ export function EntityDetailClient({ slug }: { slug: string }) {
         {/* Entity header */}
         <div className="bg-surface border border-border-default rounded-lg p-6 mb-6">
           <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="font-display text-2xl font-bold text-text-primary">
-                {entity.name}
-              </h1>
+            <div className="flex items-start gap-4">
+              {entity.profile_image_url ? (
+                <div className="w-16 h-16 border border-border-default overflow-hidden shrink-0 relative rounded-sm">
+                  <Image
+                    src={entity.profile_image_url}
+                    alt={entity.name}
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                    unoptimized={!entity.profile_image_url.includes('wikimedia.org')}
+                  />
+                </div>
+              ) : (
+                <div className="w-16 h-16 bg-elevated border border-border-default flex items-center justify-center shrink-0 rounded-sm">
+                  <span className="font-mono text-lg text-text-muted">
+                    {entity.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('')}
+                  </span>
+                </div>
+              )}
+              <div>
+                <h1 className="font-display text-2xl font-bold text-text-primary">
+                  {entity.name}
+                </h1>
               <div className="flex flex-wrap items-center gap-3 mt-2">
                 <span className="text-xs font-mono text-text-muted uppercase tracking-wider">
                   {formatLabel(entity.entity_type)}
@@ -235,6 +256,7 @@ export function EntityDetailClient({ slug }: { slug: string }) {
                     {formatLabel(entity.status)}
                   </span>
                 )}
+              </div>
               </div>
             </div>
 

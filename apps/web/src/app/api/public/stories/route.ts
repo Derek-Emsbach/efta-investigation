@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('stories')
-      .select('id, slug, title, deck, section, byline, reading_time_minutes, is_featured, published_at')
+      .select('id, slug, title, deck, section, byline, reading_time_minutes, is_featured, published_at, hero_image_url')
       .eq('is_published', true)
       .order('published_at', { ascending: false })
 

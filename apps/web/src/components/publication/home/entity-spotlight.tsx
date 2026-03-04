@@ -1,5 +1,5 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import type { Tier } from '@efta/shared'
 
 interface EntityPreview {
   id: string
@@ -9,10 +9,19 @@ interface EntityPreview {
   category: string | null
   bio: string | null
   profile_published: boolean
+  profile_image_url: string | null
 }
 
 interface EntitySpotlightProps {
   entities: EntityPreview[]
+}
+
+function getInitials(name: string): string {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w.charAt(0).toUpperCase())
+    .join('')
 }
 
 const TIER_LABELS: Record<number, string> = {
@@ -60,17 +69,39 @@ export function EntitySpotlight({ entities }: EntitySpotlightProps) {
 
           const card = (
             <div className="border border-border-default bg-white p-5 transition-all hover:border-text-secondary hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)] cursor-pointer">
-              <span
-                className="inline-block font-mono text-[9px] tracking-[0.1em] uppercase mb-2 px-2 py-0.5"
-                style={{ background: style.bg, color: style.text }}
-              >
-                Tier {tier} · {label}
-              </span>
-              <div className="font-display text-[17px] font-semibold mb-1">
-                {ent.name}
+              <div className="flex items-start gap-3 mb-3">
+                {ent.profile_image_url ? (
+                  <div className="w-12 h-12 border border-border-default overflow-hidden shrink-0 relative">
+                    <Image
+                      src={ent.profile_image_url}
+                      alt={ent.name}
+                      fill
+                      sizes="48px"
+                      className="object-cover"
+                      unoptimized={!ent.profile_image_url.includes('wikimedia.org')}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 bg-elevated border border-border-default flex items-center justify-center shrink-0">
+                    <span className="font-display text-sm font-bold text-text-muted">
+                      {getInitials(ent.name)}
+                    </span>
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <span
+                    className="inline-block font-mono text-[9px] tracking-[0.1em] uppercase mb-1 px-2 py-0.5"
+                    style={{ background: style.bg, color: style.text }}
+                  >
+                    Tier {tier} · {label}
+                  </span>
+                  <div className="font-display text-[17px] font-semibold leading-tight">
+                    {ent.name}
+                  </div>
+                </div>
               </div>
               {ent.category && (
-                <div className="font-sans text-xs text-text-muted mb-3">
+                <div className="font-sans text-xs text-text-muted mb-2">
                   {ent.category.replace(/_/g, ' ')}
                 </div>
               )}

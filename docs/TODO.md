@@ -184,6 +184,19 @@
 
 **Phase 10 COMPLETE** — Evidence Room expanded from search-only to full research workspace with 4 integrated views
 
+### Phase 11: Image Support
+- [x] Entity profile photos — seed script (`scripts/src/seed-entity-photos.ts`) populates `profile_image_url` from Wikimedia Commons for ~30 published entities (people only; orgs/properties keep initials fallback)
+- [x] Entity photo components — 48x48 thumbnails in EntitySpotlight, 28x28 in evidence room entity directory/detail, `profile_image_url` added to all entity API queries
+- [x] Story hero image schema — migration 017 adds `hero_image_url` + `hero_image_caption` to `stories` table
+- [x] Story type updated — `hero_image_url` and `hero_image_caption` added to `Story` interface in `@efta/shared`
+- [x] Story hero image rendering — hero images on story detail page (16:9, priority load, caption), homepage HeroSection, StoryGrid, SectionStoryGrid, FollowTheMoney, CoverUpSection, stories list page
+- [x] Public document image API — `/api/public/images/[id]/file` + `/api/public/images/[id]/thumbnail` (R2 proxy, 24hr browser cache, 7-day CDN cache, rate-limited)
+- [x] 6 story hero images seeded from Wikimedia Commons (Palm Beach aerial, Power of Attorney doc, Deutsche Bank HQ, Les Wexner, Alexander Acosta, DOJ seal)
+- [x] Image optimization fix — `unoptimized={!url.includes('wikimedia.org')}` pattern across all 7 story image components (lets Next.js optimize Wikimedia URLs)
+- [x] next.config.ts already has `upload.wikimedia.org` in `remotePatterns`
+
+**Phase 11 COMPLETE** — Real images throughout public site: entity profile photos, story hero images, public document image API
+
 ---
 
 ## Future Phases (Backlog)

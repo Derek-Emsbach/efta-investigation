@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface StoryPreview {
   id: string
@@ -9,6 +10,7 @@ interface StoryPreview {
   byline: string
   reading_time_minutes: number | null
   published_at: string | null
+  hero_image_url?: string | null
 }
 
 interface SectionStoryGridProps {
@@ -155,6 +157,20 @@ function StoryCard({
       } border-b md:border-b-0 border-border-default last:border-b-0`}
       style={{ padding: '24px' }}
     >
+      {/* Thumbnail */}
+      {story.hero_image_url && (
+        <div className="relative w-full overflow-hidden mb-3" style={{ aspectRatio: '16/9' }}>
+          <Image
+            src={story.hero_image_url}
+            alt={story.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover"
+            unoptimized={!story.hero_image_url.includes('wikimedia.org')}
+          />
+        </div>
+      )}
+
       {/* Kicker */}
       {story.section && (
         <div

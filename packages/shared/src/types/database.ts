@@ -521,6 +521,8 @@ export interface Story {
   is_featured: boolean
   published_at: string | null
   case_file_id: string | null
+  hero_image_url: string | null
+  hero_image_caption: string | null
   metadata: Record<string, unknown>
   created_at: string
   updated_at: string

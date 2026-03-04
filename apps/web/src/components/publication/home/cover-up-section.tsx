@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface StoryPreview {
   id: string
@@ -9,6 +10,7 @@ interface StoryPreview {
   byline: string
   reading_time_minutes: number | null
   published_at: string | null
+  hero_image_url?: string | null
 }
 
 interface CoverUpSectionProps {
@@ -115,6 +117,19 @@ export function CoverUpSection({ stories }: CoverUpSectionProps) {
 
         {/* Right: second story */}
         <article className="p-6">
+          {right?.hero_image_url && (
+            <div className="relative w-full overflow-hidden mb-4" style={{ aspectRatio: '16/9' }}>
+              <Image
+                src={right.hero_image_url}
+                alt={right.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                unoptimized={!right.hero_image_url.includes('wikimedia.org')}
+              />
+            </div>
+          )}
+
           <div
             className="font-sans text-[10px] font-semibold tracking-[0.12em] uppercase mb-2"
             style={{ color: 'var(--color-section-coverup, #4a1a2a)' }}

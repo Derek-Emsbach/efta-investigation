@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { TierBadge } from '@/components/ui/tier-badge'
 import type { Tier } from '@efta/shared'
@@ -16,6 +17,7 @@ interface PublicEntity {
   status: string | null
   aliases: string[] | null
   datasets_appeared: number[] | null
+  profile_image_url: string | null
 }
 
 const TIER_FILTERS = [1, 2, 3, 4, 5, 6] as const
@@ -184,13 +186,33 @@ export function EntityDirectoryClient() {
                   href={`/evidence/entities/${entity.slug}`}
                   className="grid grid-cols-[1fr_100px_100px_120px] gap-4 px-4 py-3 hover:bg-elevated/30 transition-colors group items-center"
                 >
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-text-primary truncate group-hover:text-critical transition-colors">
-                      {entity.name}
-                    </p>
-                    {entity.bio && (
-                      <p className="text-xs text-text-muted truncate mt-0.5">{entity.bio}</p>
+                  <div className="flex items-center gap-3 min-w-0">
+                    {entity.profile_image_url ? (
+                      <div className="w-7 h-7 border border-border-default overflow-hidden shrink-0 relative rounded-sm">
+                        <Image
+                          src={entity.profile_image_url}
+                          alt=""
+                          fill
+                          sizes="28px"
+                          className="object-cover"
+                          unoptimized={!entity.profile_image_url.includes('wikimedia.org')}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-7 h-7 bg-elevated border border-border-default flex items-center justify-center shrink-0 rounded-sm">
+                        <span className="font-mono text-[9px] text-text-muted">
+                          {entity.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('')}
+                        </span>
+                      </div>
                     )}
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-text-primary truncate group-hover:text-critical transition-colors">
+                        {entity.name}
+                      </p>
+                      {entity.bio && (
+                        <p className="text-xs text-text-muted truncate mt-0.5">{entity.bio}</p>
+                      )}
+                    </div>
                   </div>
                   <span className="text-xs text-text-secondary font-mono">
                     {formatLabel(entity.entity_type)}

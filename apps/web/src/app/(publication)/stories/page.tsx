@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 
 export const metadata: Metadata = {
@@ -41,7 +42,7 @@ export default async function StoriesPage() {
   const { data: stories } = await supabase
     .from('stories')
     .select(
-      'id, slug, title, deck, section, byline, reading_time_minutes, published_at',
+      'id, slug, title, deck, section, byline, reading_time_minutes, published_at, hero_image_url',
     )
     .eq('is_published', true)
     .order('published_at', { ascending: false })
@@ -146,6 +147,7 @@ function StoryCard({
     byline: string
     reading_time_minutes: number | null
     published_at: string | null
+    hero_image_url?: string | null
   }
 }) {
   const sectionColor = story.section
@@ -157,6 +159,18 @@ function StoryCard({
       href={`/stories/${story.slug}`}
       className="block bg-background p-6 hover:bg-elevated/50 transition-colors group"
     >
+      {story.hero_image_url && (
+        <div className="relative w-full overflow-hidden mb-3" style={{ aspectRatio: '16/9' }}>
+          <Image
+            src={story.hero_image_url}
+            alt={story.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover"
+            unoptimized={!story.hero_image_url.includes('wikimedia.org')}
+          />
+        </div>
+      )}
       {story.section && sectionColor && (
         <div className="flex items-center gap-1.5 mb-2">
           <span

@@ -11,7 +11,8 @@
     "import:connections": "tsx src/import-connections.ts",
     "seed": "tsx src/seed-dataset.ts",
     "seed:publication": "tsx src/seed-publication.ts",
-    "update:efta01266427": "tsx src/update-efta01266427.ts"
+    "update:efta01266427": "tsx src/update-efta01266427.ts",
+    "seed:entity-photos": "tsx src/seed-entity-photos.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2",

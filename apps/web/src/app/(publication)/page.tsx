@@ -46,7 +46,7 @@ export default async function HomePage() {
     await Promise.all([
       supabase
         .from('stories')
-        .select('id, slug, title, deck, section, byline, reading_time_minutes, is_featured, published_at')
+        .select('id, slug, title, deck, section, byline, reading_time_minutes, is_featured, published_at, hero_image_url')
         .eq('is_published', true)
         .order('published_at', { ascending: false })
         .limit(30),
@@ -60,7 +60,7 @@ export default async function HomePage() {
 
       supabase
         .from('entities')
-        .select('id, name, slug, tier, category, bio, profile_published')
+        .select('id, name, slug, tier, category, bio, profile_published, profile_image_url')
         .eq('profile_published', true)
         .in('tier', [1, 2, 3, 4])
         .order('tier', { ascending: true })

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface StoryPreview {
   id: string
@@ -9,6 +10,7 @@ interface StoryPreview {
   byline: string
   reading_time_minutes: number | null
   published_at: string | null
+  hero_image_url?: string | null
 }
 
 interface OpenQuestion {
@@ -97,35 +99,56 @@ export function HeroSection({ leadStory, sidebarStories, openQuestions }: HeroSe
             </p>
           )}
 
-          {/* Redaction visual — compact */}
+          {/* Hero image or redaction visual fallback */}
           <div className="mb-5">
-            <div
-              className="relative w-full overflow-hidden"
-              style={{
-                aspectRatio: '21/9',
-                background: 'linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 50%, #2c2c2c 100%)',
-              }}
-            >
-              {/* CLASSIFIED watermark */}
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-[15deg] font-mono text-sm tracking-[0.3em] text-white/[0.08] border border-white/[0.06] px-6 py-2 whitespace-nowrap pointer-events-none"
-              >
-                CLASSIFIED DOCUMENT
-              </div>
-              {/* Redaction bars */}
-              <div className="absolute top-[20%] left-[10%] right-[10%]">
-                <div className="h-3 bg-white/[0.04] mb-1.5 w-[85%] rounded-sm" />
-                <div className="h-3 bg-accent-red/[0.15] mb-1.5 w-[60%] rounded-sm" />
-                <div className="h-3 bg-white/[0.04] mb-1.5 w-[92%] rounded-sm" />
-                <div className="h-3 bg-accent-red/[0.15] mb-1.5 w-[45%] rounded-sm" />
-                <div className="h-3 bg-white/[0.04] w-[78%] rounded-sm" />
-              </div>
-            </div>
-            <div className="font-sans text-xs text-text-muted mt-2 pt-2 border-t border-border-default">
-              <strong className="text-text-secondary">Redaction pattern analysis:</strong>{' '}
-              Across reviewed documents from Dataset 12, names of powerful individuals were systematically
-              redacted while victim identifying details remained visible. Source: EFTA Investigation forensic analysis.
-            </div>
+            {hasLead && leadStory.hero_image_url ? (
+              <>
+                <div className="relative w-full overflow-hidden" style={{ aspectRatio: '21/9' }}>
+                  <Image
+                    src={leadStory.hero_image_url}
+                    alt={leadStory.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 65vw"
+                    className="object-cover"
+                    priority
+                    unoptimized={!leadStory.hero_image_url.includes('wikimedia.org')}
+                  />
+                </div>
+                <div className="font-sans text-xs text-text-muted mt-2 pt-2 border-t border-border-default">
+                  Source document image from the EFTA corpus.
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className="relative w-full overflow-hidden"
+                  style={{
+                    aspectRatio: '21/9',
+                    background: 'linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 50%, #2c2c2c 100%)',
+                  }}
+                >
+                  {/* CLASSIFIED watermark */}
+                  <div
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-[15deg] font-mono text-sm tracking-[0.3em] text-white/[0.08] border border-white/[0.06] px-6 py-2 whitespace-nowrap pointer-events-none"
+                  >
+                    CLASSIFIED DOCUMENT
+                  </div>
+                  {/* Redaction bars */}
+                  <div className="absolute top-[20%] left-[10%] right-[10%]">
+                    <div className="h-3 bg-white/[0.04] mb-1.5 w-[85%] rounded-sm" />
+                    <div className="h-3 bg-accent-red/[0.15] mb-1.5 w-[60%] rounded-sm" />
+                    <div className="h-3 bg-white/[0.04] mb-1.5 w-[92%] rounded-sm" />
+                    <div className="h-3 bg-accent-red/[0.15] mb-1.5 w-[45%] rounded-sm" />
+                    <div className="h-3 bg-white/[0.04] w-[78%] rounded-sm" />
+                  </div>
+                </div>
+                <div className="font-sans text-xs text-text-muted mt-2 pt-2 border-t border-border-default">
+                  <strong className="text-text-secondary">Redaction pattern analysis:</strong>{' '}
+                  Across reviewed documents from Dataset 12, names of powerful individuals were systematically
+                  redacted while victim identifying details remained visible. Source: EFTA Investigation forensic analysis.
+                </div>
+              </>
+            )}
           </div>
 
           {/* Meta */}

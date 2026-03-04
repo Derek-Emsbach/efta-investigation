@@ -82,7 +82,8 @@ async function handleOffsetMode(
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? String(DEFAULT_LIMIT), 10) || DEFAULT_LIMIT))
   const { sort, ascending } = parseSortParams(searchParams)
 
-  let query = supabase.from('documents').select(SELECT_COLUMNS, { count: 'exact' })
+  // No count: 'exact' — avoids full table scan on 1.37M rows
+  let query = supabase.from('documents').select(SELECT_COLUMNS)
   query = applyFilters(query, searchParams)
   query = query.order(sort, { ascending })
 
@@ -90,15 +91,21 @@ async function handleOffsetMode(
   const rangeEnd = page * limit - 1
   query = query.range(rangeStart, rangeEnd)
 
-  const { data, error, count } = await query
+  // Run data fetch + estimated count in parallel
+  const [dataResult, countResult] = await Promise.all([
+    query,
+    supabase.rpc('estimated_document_count'),
+  ])
 
-  if (error) {
-    throw new Error(`Failed to fetch documents: ${error.message}`)
+  if (dataResult.error) {
+    throw new Error(`Failed to fetch documents: ${dataResult.error.message}`)
   }
 
+  const estimatedTotal = typeof countResult.data === 'number' ? countResult.data : 0
+
   return NextResponse.json({
-    data: data as Document[],
-    count: count ?? 0,
+    data: dataResult.data as Document[],
+    count: estimatedTotal,
     page,
     limit,
   })

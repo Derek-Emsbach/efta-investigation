@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface StoryPreview {
   id: string
@@ -9,6 +10,7 @@ interface StoryPreview {
   byline: string
   reading_time_minutes: number | null
   published_at: string | null
+  hero_image_url?: string | null
 }
 
 interface FollowTheMoneyProps {
@@ -54,6 +56,19 @@ export function FollowTheMoney({ stories }: FollowTheMoneyProps) {
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] border-t border-b border-border-default">
         {/* Main story */}
         <article className="py-6 lg:pr-6 lg:border-r border-border-default">
+          {lead?.hero_image_url && (
+            <div className="relative w-full overflow-hidden mb-4" style={{ aspectRatio: '16/9' }}>
+              <Image
+                src={lead.hero_image_url}
+                alt={lead.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                className="object-cover"
+                unoptimized={!lead.hero_image_url.includes('wikimedia.org')}
+              />
+            </div>
+          )}
+
           <div
             className="font-sans text-[10px] font-semibold tracking-[0.12em] uppercase mb-2"
             style={{ color: 'var(--color-section-money, #1a472a)' }}

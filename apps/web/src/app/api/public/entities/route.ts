@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   try {
     const { data: entities, error } = await supabase
       .from('entities')
-      .select('id, name, slug, entity_type, tier, category, bio, status, aliases, datasets_appeared, profile_published')
+      .select('id, name, slug, entity_type, tier, category, bio, status, aliases, datasets_appeared, profile_published, profile_image_url')
       .eq('profile_published', true)
       .order('tier', { ascending: true })
       .order('name')
