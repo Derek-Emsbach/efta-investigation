@@ -2,6 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import type { SubscriptionTier } from '@efta/shared'
+import { getRankAbbreviation } from '@/lib/access-control'
+
+interface AuthState {
+  displayName: string | null
+  subscriptionTier: SubscriptionTier | null
+  rank: string | null
+}
 
 const SECTION_NAV = [
   { label: 'Home', href: '/' },
@@ -20,7 +28,7 @@ const UTILITY_NAV = [
   { label: 'Evidence Room', href: '/evidence' },
 ]
 
-export function PublicHeader() {
+export function PublicHeader({ authState }: { authState: AuthState | null }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -46,6 +54,41 @@ export function PublicHeader() {
                   {item.label}
                 </Link>
               ))}
+              {/* Auth controls */}
+              <div className="h-3 w-px bg-background/20" />
+              {authState ? (
+                <div className="flex items-center gap-3">
+                  {authState.subscriptionTier === 'investigator' && authState.rank && (
+                    <span className="rounded bg-accent-gold/20 px-1.5 py-0.5 font-sans text-[10px] font-bold tracking-widest uppercase text-accent-gold">
+                      {getRankAbbreviation(authState.rank)}
+                    </span>
+                  )}
+                  <span className="font-sans text-[11px] text-background/80">
+                    {authState.displayName ?? 'Account'}
+                  </span>
+                  <Link
+                    href={authState.subscriptionTier === 'investigator' ? '/investigate' : '/account'}
+                    className="font-sans text-[11px] tracking-[0.05em] uppercase text-background/70 hover:text-background transition-opacity"
+                  >
+                    {authState.subscriptionTier === 'investigator' ? 'Workspace' : 'Account'}
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <Link
+                    href="/login"
+                    className="font-sans text-[11px] tracking-[0.05em] uppercase text-background/70 hover:text-background transition-opacity"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="rounded bg-accent-red px-2.5 py-1 font-sans text-[11px] font-semibold tracking-[0.05em] uppercase text-white hover:bg-accent-red/90 transition-colors"
+                  >
+                    Join
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -121,6 +164,36 @@ export function PublicHeader() {
                     {item.label}
                   </Link>
                 ))}
+                <div className="border-t border-border-default mt-2 pt-2 flex items-center gap-3">
+                  {authState ? (
+                    <>
+                      <Link
+                        href={authState.subscriptionTier === 'investigator' ? '/investigate' : '/account'}
+                        onClick={() => setMenuOpen(false)}
+                        className="font-sans text-xs font-semibold text-text-primary"
+                      >
+                        {authState.displayName ?? 'Account'} →
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/login"
+                        onClick={() => setMenuOpen(false)}
+                        className="font-sans text-xs text-text-secondary hover:text-text-primary transition-colors"
+                      >
+                        Sign In
+                      </Link>
+                      <Link
+                        href="/signup"
+                        onClick={() => setMenuOpen(false)}
+                        className="rounded bg-accent-red px-2.5 py-1 font-sans text-xs font-semibold text-white hover:bg-accent-red/90 transition-colors"
+                      >
+                        Join →
+                      </Link>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>

@@ -1,0 +1,308 @@
+"use client";
+
+import { useState, type FormEvent, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import type { SubscriptionTier } from "@efta/shared";
+
+type Step = "pick-tier" | "form";
+
+const TIER_INFO = {
+  subscriber: {
+    label: "Subscriber",
+    badge: "READER",
+    tagline: "Follow the investigation",
+    features: [
+      "Comment on stories and case files",
+      "Like and boost articles",
+      "Flag potential inaccuracies for review",
+      "Public reader profile",
+    ],
+    color: "border-border-default",
+    badgeColor: "bg-surface text-text-secondary",
+  },
+  investigator: {
+    label: "Investigator",
+    badge: "JR. DETECTIVE",
+    tagline: "Join the investigation",
+    features: [
+      "Everything in Subscriber, plus:",
+      "AI detective with 10 queries/day",
+      "Personal case notes workspace",
+      "Submit findings and case files for review",
+      "Earn XP and detective ranks",
+    ],
+    color: "border-accent-gold",
+    badgeColor: "bg-accent-gold/10 text-accent-gold",
+  },
+} as const;
+
+function SignupContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const upgrade = searchParams.get("upgrade") === "true";
+
+  const [step, setStep] = useState<Step>(upgrade ? "form" : "pick-tier");
+  const [tier, setTier] = useState<SubscriptionTier>("subscriber");
+  const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+
+  function selectTier(t: SubscriptionTier) {
+    setTier(t);
+    setStep("form");
+  }
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+
+    if (displayName.trim().length < 2) {
+      setError("Display name must be at least 2 characters.");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
+    setLoading(true);
+    const supabase = createClient();
+
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: displayName.trim(),
+          subscription_tier: tier,
+        },
+      },
+    });
+
+    if (signUpError) {
+      setError(signUpError.message);
+      setLoading(false);
+      return;
+    }
+
+    setDone(true);
+  }
+
+  if (done) {
+    return (
+      <div data-theme="publication" className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="w-full max-w-md text-center">
+          <div className="rounded border border-border-default bg-surface p-10">
+            <div className="mb-4 text-4xl">✉️</div>
+            <h1 className="font-display text-2xl font-bold text-text-primary">
+              Check your email
+            </h1>
+            <p className="mt-3 text-text-secondary">
+              We&apos;ve sent a confirmation link to <strong>{email}</strong>.
+              Click it to activate your account, then come back to sign in.
+            </p>
+            <Link
+              href="/login"
+              className="mt-6 inline-block rounded bg-accent-red px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-red/90 transition-colors"
+            >
+              Go to Sign In
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div data-theme="publication" className="min-h-screen bg-background px-4 py-12">
+      <div className="mx-auto max-w-2xl">
+        {/* Site name */}
+        <div className="mb-8 text-center">
+          <Link href="/" className="font-display text-xl font-bold text-text-primary hover:text-accent-red transition-colors">
+            The Epstein Crimes
+          </Link>
+          <p className="mt-1 text-sm text-text-muted">
+            Citizen investigation platform
+          </p>
+        </div>
+
+        {step === "pick-tier" ? (
+          <>
+            <h1 className="mb-2 text-center font-display text-3xl font-bold text-text-primary">
+              Choose your role
+            </h1>
+            <p className="mb-8 text-center text-text-secondary">
+              Both accounts are free. Pick the level of involvement you want.
+            </p>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {(["subscriber", "investigator"] as const).map((t) => {
+                const info = TIER_INFO[t];
+                return (
+                  <button
+                    key={t}
+                    onClick={() => selectTier(t)}
+                    className={`group relative rounded-lg border-2 ${info.color} bg-surface p-6 text-left transition-all hover:shadow-md hover:-translate-y-0.5`}
+                  >
+                    <span
+                      className={`mb-3 inline-block rounded px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase ${info.badgeColor}`}
+                    >
+                      {info.badge}
+                    </span>
+                    <h2 className="mb-1 font-display text-xl font-bold text-text-primary">
+                      {info.label}
+                    </h2>
+                    <p className="mb-4 text-sm text-text-muted">{info.tagline}</p>
+                    <ul className="space-y-1.5">
+                      {info.features.map((f) => (
+                        <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
+                          <span className="mt-0.5 text-accent-red">✓</span>
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-5 rounded bg-text-primary/5 px-4 py-2 text-center text-sm font-semibold text-text-primary group-hover:bg-accent-red group-hover:text-white transition-colors">
+                      Join as {info.label} →
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <p className="mt-6 text-center text-sm text-text-muted">
+              Already have an account?{" "}
+              <Link href="/login" className="text-accent-red hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </>
+        ) : (
+          <div className="mx-auto max-w-md">
+            <div className="mb-2 flex items-center gap-3">
+              <button
+                onClick={() => setStep("pick-tier")}
+                className="text-xs text-text-muted hover:text-text-secondary transition-colors"
+              >
+                ← Back
+              </button>
+              <span
+                className={`rounded px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase ${TIER_INFO[tier].badgeColor}`}
+              >
+                {TIER_INFO[tier].badge}
+              </span>
+            </div>
+
+            <div className="rounded-lg border border-border-default bg-surface p-8">
+              <h1 className="mb-6 font-display text-2xl font-bold text-text-primary">
+                Create your account
+              </h1>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="displayName"
+                    className="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted"
+                  >
+                    Display Name
+                  </label>
+                  <input
+                    id="displayName"
+                    type="text"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    required
+                    minLength={2}
+                    maxLength={40}
+                    placeholder="Your public name"
+                    className="w-full rounded border border-border-default bg-background px-4 py-2.5 text-text-primary placeholder:text-text-muted/50 focus:border-accent-red focus:outline-none focus:ring-2 focus:ring-accent-red/20"
+                  />
+                  <p className="mt-1 text-[11px] text-text-muted">
+                    This is shown publicly on your comments and profile.
+                  </p>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    className="w-full rounded border border-border-default bg-background px-4 py-2.5 text-text-primary placeholder:text-text-muted/50 focus:border-accent-red focus:outline-none focus:ring-2 focus:ring-accent-red/20"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted"
+                  >
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    autoComplete="new-password"
+                    placeholder="At least 8 characters"
+                    className="w-full rounded border border-border-default bg-background px-4 py-2.5 text-text-primary placeholder:text-text-muted/50 focus:border-accent-red focus:outline-none focus:ring-2 focus:ring-accent-red/20"
+                  />
+                </div>
+
+                {error && (
+                  <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded bg-accent-red px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-red/90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {loading ? "Creating account..." : `Create ${TIER_INFO[tier].label} Account`}
+                </button>
+              </form>
+
+              <p className="mt-5 text-center text-xs text-text-muted">
+                Already have an account?{" "}
+                <Link href="/login" className="text-accent-red hover:underline">
+                  Sign in
+                </Link>
+              </p>
+            </div>
+          </div>
+        )}
+
+        <p className="mt-8 text-center text-[10px] text-text-muted/60">
+          &copy; {new Date().getFullYear()} Cyclops Digital LLC · All persons referenced
+          are presumed innocent unless convicted in a court of law.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><div className="text-text-muted text-sm">Loading…</div></div>}>
+      <SignupContent />
+    </Suspense>
+  );
+}

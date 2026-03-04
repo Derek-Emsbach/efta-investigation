@@ -59,6 +59,23 @@ export type SuspectDbStatus = 'not_in_db' | 'pending_promotion' | 'in_db'
 
 export type UserRole = 'admin' | 'viewer'
 
+export type SubscriptionTier = 'subscriber' | 'investigator'
+
+export type InvestigatorRank =
+  | 'Junior Detective'
+  | 'Detective'
+  | 'Detective Sergeant'
+  | 'Detective Lieutenant'
+  | 'Detective Captain'
+  | 'Chief Inspector'
+
+export type XpEventType =
+  | 'case_file_approved'
+  | 'finding_approved'
+  | 'comment_helpful'
+  | 'first_approval_bonus'
+  | 'manual_award'
+
 export type DatasetStatus = 'not_started' | 'in_progress' | 'completed'
 export type DatasetPriority = 'critical' | 'high' | 'medium' | 'low'
 export type InvestigationStatus = 'active' | 'completed' | 'pending'
@@ -481,8 +498,36 @@ export interface Profile {
   email: string | null
   display_name: string | null
   role: UserRole
+  subscription_tier: SubscriptionTier | null
+  avatar_url: string | null
+  bio_short: string | null
+  is_public: boolean
   created_at: string
   updated_at: string
+}
+
+export interface InvestigatorStats {
+  user_id: string
+  xp_total: number
+  current_rank: InvestigatorRank
+  ai_queries_used_today: number
+  ai_queries_reset_date: string
+  ai_queries_daily_limit: number
+  submissions_count: number
+  approved_submissions_count: number
+  first_approval_bonus_granted: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface XpTransaction {
+  id: string
+  user_id: string
+  event_type: XpEventType
+  xp_amount: number
+  reference_id: string | null
+  notes: string | null
+  created_at: string
 }
 
 export interface NotificationAlert {

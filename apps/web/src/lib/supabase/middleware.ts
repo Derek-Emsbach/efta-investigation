@@ -8,6 +8,8 @@ const ADMIN_PATHS = [
   '/dashboard/assistant',
   '/dashboard/admin',
   '/dashboard/settings',
+  '/dashboard/submissions',
+  '/dashboard/moderation',
 ]
 
 export async function updateSession(request: NextRequest) {
@@ -40,21 +42,41 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
-  // Only /dashboard/* requires authentication — everything else is public
-  if (!user && pathname.startsWith('/dashboard')) {
+  // /dashboard/* and /account/* require authentication
+  const requiresAuth =
+    pathname.startsWith('/dashboard') || pathname.startsWith('/account')
+
+  if (!user && requiresAuth) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
+    url.searchParams.set('from', pathname)
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from /login to dashboard
-  if (user && pathname.startsWith('/login')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
+  // /investigate/* requires authentication + a subscription_tier
+  if (pathname.startsWith('/investigate')) {
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      url.searchParams.set('from', pathname)
+      return NextResponse.redirect(url)
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('subscription_tier')
+      .eq('id', user.id)
+      .single()
+
+    if (!profile?.subscription_tier) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/signup'
+      url.searchParams.set('upgrade', 'true')
+      return NextResponse.redirect(url)
+    }
   }
 
-  // Admin route guard: redirect viewers away from admin-only dashboard paths
+  // Admin route guard: redirect non-admins away from admin-only dashboard paths
   if (user && ADMIN_PATHS.some((p) => pathname.startsWith(p))) {
     const { data: profile } = await supabase
       .from('profiles')
