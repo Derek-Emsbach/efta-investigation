@@ -1,5 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { TIER_CONFIG } from '@efta/shared'
+import type { Tier } from '@efta/shared'
 
 interface EntityPreview {
   id: string
@@ -24,24 +26,6 @@ function getInitials(name: string): string {
     .join('')
 }
 
-const TIER_LABELS: Record<number, string> = {
-  1: 'Convicted',
-  2: 'Immunized',
-  3: 'Circumstantial',
-  4: 'Associated',
-  5: 'Victim/Witness',
-  6: 'Peripheral',
-}
-
-const TIER_STYLES: Record<number, { bg: string; text: string }> = {
-  1: { bg: 'var(--color-tier-1-bg, #fce4ec)', text: 'var(--color-tier-1, #c62828)' },
-  2: { bg: 'var(--color-tier-2-bg, #fff3e0)', text: 'var(--color-tier-2, #e65100)' },
-  3: { bg: 'var(--color-tier-3-bg, #fff8e1)', text: 'var(--color-tier-3, #f57f17)' },
-  4: { bg: 'var(--color-tier-4-bg, #e8eaf6)', text: 'var(--color-tier-4, #283593)' },
-  5: { bg: 'var(--color-tier-5-bg, #f3e5f5)', text: 'var(--color-tier-5, #6a1b9a)' },
-  6: { bg: 'var(--color-tier-6-bg, #eceff1)', text: 'var(--color-tier-6, #455a64)' },
-}
-
 export function EntitySpotlight({ entities }: EntitySpotlightProps) {
   if (entities.length === 0) return null
 
@@ -62,9 +46,8 @@ export function EntitySpotlight({ entities }: EntitySpotlightProps) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {entities.map((ent) => {
-          const tier = ent.tier ?? 6
-          const style = TIER_STYLES[tier] ?? TIER_STYLES[6]
-          const label = TIER_LABELS[tier] ?? 'Unknown'
+          const tier = (ent.tier ?? 6) as Tier
+          const config = TIER_CONFIG[tier]
           const hasProfile = ent.slug && ent.profile_published
 
           const card = (
@@ -91,9 +74,9 @@ export function EntitySpotlight({ entities }: EntitySpotlightProps) {
                 <div className="min-w-0 flex-1">
                   <span
                     className="inline-block font-mono text-[9px] tracking-[0.1em] uppercase mb-1 px-2 py-0.5"
-                    style={{ background: style.bg, color: style.text }}
+                    style={{ background: `${config.color}15`, color: config.color }}
                   >
-                    Tier {tier} · {label}
+                    Tier {tier} · {config.shortLabel}
                   </span>
                   <div className="font-display text-[17px] font-semibold leading-tight">
                     {ent.name}
