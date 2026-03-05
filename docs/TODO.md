@@ -218,14 +218,51 @@
 - [x] VACUUM ANALYZE documents
 - [x] Verify DB size stays under 8 GB in Supabase dashboard (3.61 GB / 8 GB = 45%)
 
-### Public Access & User Signup
-> Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase C + F)
-- [ ] Update middleware — define PROTECTED_PATHS, allow anonymous browsing on public pages
-- [ ] Update dashboard layout — anonymous-friendly (no admin section, "Sign In" button)
-- [ ] Update sidebar — conditionally show admin links based on user role
-- [ ] Access control utility (`lib/access-control.ts`) — canViewPDF, canUseDetective, canUpload
-- [ ] Signup page (`/signup`) — email/password, email verification, Turnstile bot prevention
-- [ ] Password reset page (`/reset-password`) — uses Supabase built-in flow
+### Community Platform (Subscriber + Investigator Tiers)
+> Full plan: `.claude/plans/iterative-dreaming-hoare.md`
+
+**Phase 1: Foundation — COMPLETE**
+- [x] Migration 018: extend profiles (subscription_tier, avatar_url, bio_short), investigator_stats + xp_transactions tables, XP trigger chain, compute_rank() function
+- [x] New shared types: SubscriptionTier, InvestigatorRank, XpEventType, InvestigatorStats, XpTransaction
+- [x] middleware.ts: /investigate/* gated by subscription_tier, ?from= redirect param, /dashboard/submissions + /dashboard/moderation added to ADMIN_PATHS
+- [x] require-investigator.ts API guard + access-control.ts permission helpers
+- [x] signup/page.tsx: two-step tier picker (Subscriber vs Investigator)
+- [x] reset-password/page.tsx: Supabase password reset flow
+- [x] account/page.tsx: settings (display name, bio, XP progress, sign out, delete)
+- [x] api/account/profile (GET/PATCH) and api/account (DELETE)
+- [x] PublicHeader: Sign In/Join buttons (anon), rank badge + Workspace link (investigator)
+- [x] (publication)/layout.tsx: async server component passes auth state to PublicHeader
+
+**⚠️ Before deploying Phase 1:** Run migration 018 in Supabase SQL Editor
+
+**Phase 2: Subscriber Social Features (next)**
+- [ ] Migration 019: comments + reactions + inaccuracy_flags tables
+- [ ] CommentSection component (fetch thread, render, pagination)
+- [ ] CommentItem + CommentForm + ReactionBar + AuthGatePrompt components
+- [ ] Drop CommentSection into /stories/[slug], /case-files/[slug], /entities/[slug]
+- [ ] API: GET /api/public/comments, POST /api/comments, POST /api/reactions, POST /api/flags
+- [ ] Admin moderation queue (flagged comments + inaccuracy flags)
+
+**Phase 3: Investigator Workspace /investigate**
+- [ ] Migration 020: investigator_notes + user_submissions tables + XP-on-approve trigger
+- [ ] (investigate)/layout.tsx + tab bar (Dashboard, Notes, Detective, Submit, Ranks)
+- [ ] /investigate/notes — personal markdown notes with entity linker
+- [ ] /investigate/detective — quota-gated AI (extract runConversation from admin assistant)
+- [ ] /investigate/submit — submission form + status tracking
+- [ ] /investigate/ranks — public leaderboard
+- [ ] API: /api/investigate/* routes
+
+**Phase 4: Admin Moderation + Submission Review**
+- [ ] /dashboard/submissions + /dashboard/moderation pages
+- [ ] Admin tabs: Overview | Users | Submissions | Moderation on /dashboard/admin
+- [ ] API: /api/admin/submissions, /api/admin/moderation, /api/admin/investigators, /api/admin/xp
+
+**Phase 5: Polish + Public Profiles**
+- [ ] Migration 021: email notifications prefs, is_community_banned, notes FTS
+- [ ] /investigators/[display_name] — public investigator profile page
+- [ ] Rate limiting: comments (30/min per user), investigate_ai (5/min)
+
+### Legacy Public Access items (superseded by community plan above)
 - [ ] OAuth sign-in (Google) — enable in Supabase dashboard + Google Cloud Console
 - [ ] Update login page — add "Create Account", "Forgot Password" links, OAuth buttons
 - [ ] Account settings page — display name, change password, delete account (GDPR)
