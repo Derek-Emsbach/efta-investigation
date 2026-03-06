@@ -1,6 +1,7 @@
 import { PublicHeader } from '@/components/publication/public-header'
 import { PublicFooter } from '@/components/publication/public-footer'
 import { DonateBar } from '@/components/publication/donate-bar'
+import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
 import { createClient } from '@/lib/supabase/server'
 import type { SubscriptionTier } from '@efta/shared'
 
@@ -47,6 +48,7 @@ export default async function PublicationLayout({
       <PublicHeader authState={authState} />
       <main>{children}</main>
       <DonateBar variant="bottom" />
+      <CyclopsPromo variant="footer-banner" />
       <PublicFooter />
     </div>
   )

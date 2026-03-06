@@ -12,6 +12,9 @@ import { CaseFilesPreview } from '@/components/publication/home/case-files-previ
 import { TimelinePreview } from '@/components/publication/home/timeline-preview'
 import { EntitySpotlight } from '@/components/publication/home/entity-spotlight'
 import { EvidenceRoomPromo } from '@/components/publication/home/evidence-room-promo'
+import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
+import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
+import { SourceAttributionBar } from '@/components/publication/promo/source-attribution-bar'
 
 export const metadata: Metadata = {
   title: 'The Epstein Crimes — Independent Investigation',
@@ -174,6 +177,9 @@ export default async function HomePage() {
       {/* Featured Investigation (full-width dark section) */}
       <FeaturedInvestigation />
 
+      {/* Source attribution promo (full-width) */}
+      <SourceAdSlot variant="inline-banner" seed="homepage-featured" />
+
       {/* Follow the Money — dedicated section (always visible) */}
       <div className="mx-auto max-w-7xl px-6">
         <FollowTheMoney stories={moneyStories} />
@@ -202,7 +208,12 @@ export default async function HomePage() {
 
         {/* Divider */}
         <div className="border-b border-border-default" />
+      </div>
 
+      {/* Cyclops Digital promo (full-width) */}
+      <CyclopsPromo variant="inline" />
+
+      <div className="mx-auto max-w-7xl px-6">
         {/* Timeline */}
         <TimelinePreview events={events} />
 
@@ -211,6 +222,14 @@ export default async function HomePage() {
 
         {/* Entity spotlight */}
         <EntitySpotlight entities={entities} />
+
+        {/* Divider */}
+        <div className="border-b border-border-default" />
+
+        {/* Source attribution bar */}
+        <div className="py-4">
+          <SourceAttributionBar />
+        </div>
 
         {/* Divider */}
         <div className="border-b border-border-default" />

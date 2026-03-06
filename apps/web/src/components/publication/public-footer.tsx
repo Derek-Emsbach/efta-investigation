@@ -7,8 +7,16 @@ export function PublicFooter() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
           {/* Cyclops Digital branding */}
           <div>
-            <div className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-accent-gold mb-3">
-              Cyclops Digital
+            <div className="flex items-center gap-2 mb-3">
+              {/* Eye logo mark */}
+              <svg viewBox="0 0 40 40" fill="none" className="w-6 h-6 text-accent-gold" aria-hidden="true">
+                <ellipse cx="20" cy="20" rx="18" ry="12" stroke="currentColor" strokeWidth="1.5" />
+                <circle cx="20" cy="20" r="8" stroke="currentColor" strokeWidth="1.5" />
+                <circle cx="20" cy="20" r="3.5" fill="currentColor" />
+              </svg>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-accent-gold">
+                Cyclops Digital
+              </span>
             </div>
             <p className="text-xs text-text-muted leading-relaxed mb-3">
               A Cyclops Digital investigation. Built to expose what the documents reveal.
@@ -19,7 +27,7 @@ export function PublicFooter() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs text-accent-gold hover:text-accent-gold/80 transition-colors"
             >
-              cyclops-digital.com
+              Get a Free Quote
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M3.5 8.5l5-5M4 3.5h5v5" />
               </svg>

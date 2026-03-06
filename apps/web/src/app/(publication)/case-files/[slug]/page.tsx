@@ -13,6 +13,8 @@ import { EntityRoster } from '@/components/publication/case-file/entity-roster'
 import { OpenQuestions } from '@/components/publication/case-file/open-questions'
 import { ReportSidebar } from '@/components/publication/case-file/report-sidebar'
 import { PrintButton } from '@/components/ui/print-button'
+import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
+import { SourceAttributionBar } from '@/components/publication/promo/source-attribution-bar'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -171,15 +173,19 @@ export default async function CaseFilePage({
               </p>
             </div>
           </div>
+
+          {/* Source attribution */}
+          <SourceAttributionBar />
         </div>
 
         {/* Sidebar */}
-        <aside className="lg:sticky lg:top-16 lg:self-start order-first lg:order-last">
+        <aside className="space-y-6 lg:sticky lg:top-16 lg:self-start order-first lg:order-last">
           <ReportSidebar
             caseFile={typedCaseFile}
             entities={entities}
             questionCount={questions.length}
           />
+          <SourceAdSlot variant="sidebar" seed={`casefile-${slug}`} />
         </aside>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { EvidenceHeader } from '@/components/evidence-room/evidence-header'
 import { DonateBar } from '@/components/publication/donate-bar'
+import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
 
 export default function EvidenceLayout({
   children,
@@ -11,6 +12,7 @@ export default function EvidenceLayout({
       <EvidenceHeader />
       <main>{children}</main>
       <DonateBar variant="bottom" />
+      <CyclopsPromo variant="footer-banner" />
       <footer className="border-t border-border-default py-4">
         <div className="mx-auto max-w-7xl px-6 flex items-center justify-between text-xs text-text-muted">
           <span>

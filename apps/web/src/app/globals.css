@@ -99,6 +99,9 @@
   --animate-slide-in-right: slide-in-right 0.3s ease-out;
   --animate-stamp-in: stamp-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --animate-ticker-scroll: ticker-scroll 30s linear infinite;
+  --animate-gold-shimmer: shimmer 3s linear infinite;
+  --animate-subtle-pulse: subtle-pulse 3s ease-in-out infinite;
+  --animate-border-glow: border-glow 3s ease-in-out infinite;
 }
 
 /* === Publication Theme (warm paper) === */
@@ -291,6 +294,24 @@
   }
 }
 
+@keyframes subtle-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes border-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(184, 134, 11, 0);
+  }
+  50% {
+    box-shadow: 0 0 12px 3px rgba(184, 134, 11, 0.12);
+  }
+}
+
 /* === Base Styles === */
 body {
   background-color: var(--color-background);
@@ -453,8 +474,11 @@ input:-webkit-autofill:focus {
   button[aria-label*="theme" i],
   button[aria-label*="toggle" i] { display: none !important; }
 
-  /* Hide donate bars and CTAs */
+  /* Hide donate bars, promos, and CTAs */
   [data-component="donate-bar"] { display: none !important; }
+  [data-component="cyclops-promo"] { display: none !important; }
+  [data-component="source-ad"] { display: none !important; }
+  [data-component="source-attribution-bar"] { display: none !important; }
 
   /* Hide search interfaces and filters */
   input[type="search"],

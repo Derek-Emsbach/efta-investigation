@@ -28,6 +28,8 @@ import { CaseFilesSection } from '@/components/publication/entity/case-files-sec
 import { PersonJsonLd } from '@/components/publication/json-ld'
 import { ProfileTabsWrapper } from './profile-tabs-wrapper'
 import { PrintButton } from '@/components/ui/print-button'
+import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
+import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -231,6 +233,8 @@ export default async function EntityProfilePage({
         {/* Sidebar */}
         <aside className="space-y-6 lg:sticky lg:top-20 lg:self-start">
           <DossierCard entity={typedEntity} />
+          <SourceAdSlot variant="sidebar" seed={`entity-${slug}`} />
+          <CyclopsPromo variant="sidebar" />
         </aside>
       </div>
     </div>

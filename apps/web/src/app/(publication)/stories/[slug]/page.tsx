@@ -15,6 +15,9 @@ import { ReadingProgress } from '@/components/publication/story/reading-progress
 import { ArticleJsonLd } from '@/components/publication/json-ld'
 import { renderMarkdown } from '@/lib/markdown-renderer'
 import { PrintButton } from '@/components/ui/print-button'
+import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
+import { SourceAttributionBar } from '@/components/publication/promo/source-attribution-bar'
+import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -184,6 +187,11 @@ export default async function StoryPage({
               {bodyNodes}
             </div>
 
+            {/* Cyclops Digital promo */}
+            <div className="mt-10">
+              <CyclopsPromo variant="inline" />
+            </div>
+
             {/* Methodology note */}
             <div className="mt-12 pt-6 border-t border-border-default">
               <div className="font-body text-[11px] text-text-muted leading-relaxed">
@@ -195,14 +203,20 @@ export default async function StoryPage({
                 </p>
               </div>
             </div>
+
+            {/* Source attribution */}
+            <SourceAttributionBar />
           </div>
 
           {/* Sidebar */}
-          <StorySidebar
-            entities={entities}
-            citations={citations}
-            caseFile={caseFileResult.data as { slug: string; case_id: string; title: string } | null}
-          />
+          <div className="space-y-6">
+            <StorySidebar
+              entities={entities}
+              citations={citations}
+              caseFile={caseFileResult.data as { slug: string; case_id: string; title: string } | null}
+            />
+            <SourceAdSlot variant="sidebar" seed={`story-${slug}`} />
+          </div>
         </div>
       </article>
     </>
