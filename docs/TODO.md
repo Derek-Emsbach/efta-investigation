@@ -351,6 +351,18 @@
 - [x] `corpus_search`: added `efta_number` filter param for within-document FTS searches
 - [x] Dynamic SQL builder for `corpus_search` — handles all 4 filter combinations (dataset × efta_number)
 
+### Corpus v5.0/v5.1 Integration
+- [x] Download script (`services/efta-mcp-server/data/download.sh`) — fetches v5.0 corpus + v5.1 research databases from GitHub releases
+- [x] `sqlite.ts` — 4 new lazy-init singletons: concordance, alteration, image analysis, handwriting
+- [x] DS12 range updated in `corpus.ts`: max 2731785 → 2858497 (23 new expansion docs)
+- [x] `concordance.ts` — 3 tools: `concordance_lookup`, `concordance_search`, `concordance_email_threads` (DOJ production metadata, 1.38M docs)
+- [x] `alterations.ts` — 2 tools: `alteration_lookup`, `alteration_search` (212K document change units, anomaly flags)
+- [x] `image-analysis.ts` — 2 tools: `image_analysis_lookup`, `image_analysis_search` (92K images, Qwen2-VL descriptions, FTS5)
+- [x] `handwriting.ts` — 2 tools: `handwriting_lookup`, `handwriting_search` (54 pages, 14 MCC inmate witnesses)
+- [x] All 9 new tools registered in `index.ts` — MCP server now has 67 tools total
+- [ ] Download databases and verify (`cd services/efta-mcp-server/data && ./download.sh`)
+- [ ] Deploy updated MCP server
+
 ### Investigation Analysis Reports
 - [x] EFTA02731082 deep read — all 86 pages read in 9 sequential chunk calls, zero truncation
 - [x] `docs/investigation/EFTA02731082_Analysis.md` — 12-section analysis report (overview, victim accounts, named subjects, evidence inventory, legal analysis, charging decision, key quotes, redaction analysis, entity register, cross-references, open questions, database updates)

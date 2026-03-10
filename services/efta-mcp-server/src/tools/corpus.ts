@@ -18,7 +18,7 @@ const DATASET_RANGES: Array<{ ds: number; min: number; max: number }> = [
   { ds: 9, min: 176564, max: 1243099 },
   { ds: 10, min: 1243100, max: 1524192 },
   { ds: 11, min: 1524193, max: 2640992 },
-  { ds: 12, min: 2640993, max: 2731785 },
+  { ds: 12, min: 2640993, max: 2858497 },
 ];
 
 function datasetFromEftaNumber(num: number): number | null {

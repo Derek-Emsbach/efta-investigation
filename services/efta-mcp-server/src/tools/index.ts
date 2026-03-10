@@ -11,6 +11,10 @@ import { registerUtilityTools } from './utility.js';
 import { registerCorpusTools } from './corpus.js';
 import { registerPublicEventTools } from './public-events.js';
 import { registerExternalTools } from './external.js';
+import { registerConcordanceTools } from './concordance.js';
+import { registerAlterationTools } from './alterations.js';
+import { registerImageAnalysisTools } from './image-analysis.js';
+import { registerHandwritingTools } from './handwriting.js';
 
 export function registerTools(server: McpServer) {
   registerEntityTools(server);
@@ -25,4 +29,8 @@ export function registerTools(server: McpServer) {
   registerCorpusTools(server);
   registerPublicEventTools(server);
   registerExternalTools(server);
+  registerConcordanceTools(server);
+  registerAlterationTools(server);
+  registerImageAnalysisTools(server);
+  registerHandwritingTools(server);
 }

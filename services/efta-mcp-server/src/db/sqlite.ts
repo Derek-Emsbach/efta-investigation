@@ -11,6 +11,10 @@ const __dirname = dirname(__filename);
 
 let _corpus: Database.Database | null = null;
 let _redaction: Database.Database | null = null;
+let _concordance: Database.Database | null = null;
+let _alteration: Database.Database | null = null;
+let _imageAnalysis: Database.Database | null = null;
+let _handwriting: Database.Database | null = null;
 let _initAttempted = false;
 
 function dataDir(): string {
@@ -38,6 +42,10 @@ function initDatabases(): void {
   const dir = dataDir();
   _corpus = openReadOnly(join(dir, 'full_text_corpus.db'), 'Full text corpus');
   _redaction = openReadOnly(join(dir, 'redaction_analysis_v2.db'), 'Redaction analysis');
+  _concordance = openReadOnly(join(dir, 'concordance_complete.db'), 'Concordance (DOJ metadata)');
+  _alteration = openReadOnly(join(dir, 'alteration_results.db'), 'Alteration results');
+  _imageAnalysis = openReadOnly(join(dir, 'image_analysis.db'), 'Image analysis');
+  _handwriting = openReadOnly(join(dir, 'handwriting_transcriptions.db'), 'Handwriting transcriptions');
 }
 
 export function getCorpusDb(): Database.Database | null {
@@ -48,4 +56,24 @@ export function getCorpusDb(): Database.Database | null {
 export function getRedactionDb(): Database.Database | null {
   initDatabases();
   return _redaction;
+}
+
+export function getConcordanceDb(): Database.Database | null {
+  initDatabases();
+  return _concordance;
+}
+
+export function getAlterationDb(): Database.Database | null {
+  initDatabases();
+  return _alteration;
+}
+
+export function getImageAnalysisDb(): Database.Database | null {
+  initDatabases();
+  return _imageAnalysis;
+}
+
+export function getHandwritingDb(): Database.Database | null {
+  initDatabases();
+  return _handwriting;
 }
