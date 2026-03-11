@@ -49,10 +49,23 @@ export default function Footer() {
             About
           </Link>
         </nav>
-        <p className="text-[11px] text-text-muted">
-          &copy; {new Date().getFullYear()} Cyclops Digital LLC. All rights
-          reserved.
-        </p>
+        <a
+          href="https://cyclops-digital.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+        >
+          <img
+            src="/images/cyclops-digital/CyclopsDigitalLogoOnly.svg"
+            alt="Cyclops Digital"
+            width={14}
+            height={14}
+            className="shrink-0"
+          />
+          <span className="text-[11px] text-text-muted">
+            &copy; {new Date().getFullYear()} Cyclops Digital LLC. All rights reserved.
+          </span>
+        </a>
       </div>
     </footer>
   );

@@ -149,9 +149,22 @@ function LoginForm() {
         </div>
 
         {/* Copyright */}
-        <p className="mt-6 text-center text-[10px] text-text-muted/50">
-          &copy; {new Date().getFullYear()} Cyclops Digital LLC
-        </p>
+        <a
+          href="https://cyclops-digital.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 flex items-center justify-center gap-1.5 hover:opacity-80 transition-opacity"
+        >
+          <img
+            src="/images/cyclops-digital/CyclopsDigitalLogoOnly.svg"
+            alt="Cyclops Digital"
+            width={14}
+            height={14}
+          />
+          <span className="text-[10px] text-text-muted/50">
+            &copy; {new Date().getFullYear()} Cyclops Digital LLC
+          </span>
+        </a>
       </div>
     </div>
   );

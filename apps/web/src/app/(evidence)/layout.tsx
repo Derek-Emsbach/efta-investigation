@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { EvidenceHeader } from '@/components/evidence-room/evidence-header'
 import { DonateBar } from '@/components/publication/donate-bar'
 import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
@@ -15,17 +16,20 @@ export default function EvidenceLayout({
       <CyclopsPromo variant="footer-banner" />
       <footer className="border-t border-border-default py-4">
         <div className="mx-auto max-w-7xl px-6 flex items-center justify-between text-xs text-text-muted">
-          <span>
-            Built by{' '}
-            <a
-              href="https://cyclops-digital.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-text-secondary hover:text-text-primary transition-colors"
-            >
-              Cyclops Digital
-            </a>
-          </span>
+          <a
+            href="https://cyclops-digital.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity"
+          >
+            <Image
+              src="/images/cyclops-digital/CyclopsDigitalHorizontalLight.svg"
+              alt="Built by Cyclops Digital"
+              width={120}
+              height={24}
+              className="h-5 w-auto"
+            />
+          </a>
           <a href="/" className="hover:text-text-secondary transition-colors">
             Back to The Epstein Crimes
           </a>

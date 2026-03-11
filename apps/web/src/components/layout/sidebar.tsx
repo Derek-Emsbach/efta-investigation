@@ -178,9 +178,23 @@ export default function Sidebar({ userEmail, userRole }: SidebarProps) {
                 <ThemeToggle />
               </div>
             </div>
-            <p className="mt-3 text-[10px] text-text-muted px-2">
-              &copy; {new Date().getFullYear()} Cyclops Digital LLC
-            </p>
+            <a
+              href="https://cyclops-digital.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 flex items-center gap-1.5 px-2 hover:opacity-80 transition-opacity"
+            >
+              <img
+                src="/images/cyclops-digital/CyclopsDigitalLogoOnly.svg"
+                alt="Cyclops Digital"
+                width={14}
+                height={14}
+                className="shrink-0"
+              />
+              <span className="text-[10px] text-text-muted">
+                &copy; {new Date().getFullYear()} Cyclops Digital LLC
+              </span>
+            </a>
           </>
         )}
       </div>

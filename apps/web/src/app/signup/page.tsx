@@ -290,9 +290,24 @@ function SignupContent() {
           </div>
         )}
 
-        <p className="mt-8 text-center text-[10px] text-text-muted/60">
-          &copy; {new Date().getFullYear()} Cyclops Digital LLC · All persons referenced
-          are presumed innocent unless convicted in a court of law.
+        <a
+          href="https://cyclops-digital.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 flex items-center justify-center gap-1.5 hover:opacity-80 transition-opacity"
+        >
+          <img
+            src="/images/cyclops-digital/CyclopsDigitalLogoOnly.svg"
+            alt="Cyclops Digital"
+            width={14}
+            height={14}
+          />
+          <span className="text-[10px] text-text-muted/60">
+            &copy; {new Date().getFullYear()} Cyclops Digital LLC
+          </span>
+        </a>
+        <p className="mt-1 text-center text-[10px] text-text-muted/60">
+          All persons referenced are presumed innocent unless convicted in a court of law.
         </p>
       </div>
     </div>

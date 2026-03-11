@@ -1,7 +1,77 @@
 'use client'
 
+import Image from 'next/image'
+import { useRef, useEffect, useState } from 'react'
+
 interface CyclopsPromoProps {
   variant: 'inline' | 'sidebar' | 'footer-banner'
+}
+
+/** Detects whether the component lives inside a dark theme (evidence-room or dashboard). */
+function useIsDarkTheme() {
+  const ref = useRef<HTMLSpanElement>(null)
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current?.closest('[data-theme]')
+    const theme = el?.getAttribute('data-theme')
+    setIsDark(theme === 'evidence-room' || !theme)
+  }, [])
+
+  return { ref, isDark }
+}
+
+function CyclopsHorizontalLogo({ height, className }: { height: number; className?: string }) {
+  const { ref, isDark } = useIsDarkTheme()
+  const src = isDark
+    ? '/images/cyclops-digital/CyclopsDigitalHorizontalLight.svg'
+    : '/images/cyclops-digital/CyclopsDigitalHorizontalDark.svg'
+
+  return (
+    <span ref={ref} className={className}>
+      <Image
+        src={src}
+        alt="Cyclops Digital"
+        width={height * 3.5}
+        height={height}
+        className="h-auto"
+        style={{ height, width: 'auto' }}
+      />
+    </span>
+  )
+}
+
+function CyclopsVerticalLogo({ height, className }: { height: number; className?: string }) {
+  const { ref, isDark } = useIsDarkTheme()
+  const src = isDark
+    ? '/images/cyclops-digital/CyclopsDigitalVerticalLight.svg'
+    : '/images/cyclops-digital/CyclopsDigitalVerticalDark.svg'
+
+  return (
+    <span ref={ref} className={className}>
+      <Image
+        src={src}
+        alt="Cyclops Digital"
+        width={height * 0.8}
+        height={height}
+        className="h-auto"
+        style={{ height, width: 'auto' }}
+      />
+    </span>
+  )
+}
+
+function CyclopsIconLogo({ size, className }: { size: number; className?: string }) {
+  return (
+    <Image
+      src="/images/cyclops-digital/CyclopsDigitalLogoOnly.svg"
+      alt="Cyclops Digital"
+      width={size}
+      height={size}
+      className={className}
+      style={{ width: size, height: size }}
+    />
+  )
 }
 
 export function CyclopsPromo({ variant }: CyclopsPromoProps) {
@@ -9,16 +79,12 @@ export function CyclopsPromo({ variant }: CyclopsPromoProps) {
     return (
       <div data-component="cyclops-promo" className="border-t border-border-default bg-surface">
         <div className="mx-auto max-w-7xl px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <CyclopsLogoMark className="w-8 h-8 text-accent-gold shrink-0" />
-            <div>
-              <p className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-text-primary">
-                Built by Cyclops Digital
-              </p>
-              <p className="font-body text-xs text-text-secondary mt-0.5">
-                Custom platforms, AI tools &amp; data-driven applications.
-              </p>
-            </div>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <CyclopsHorizontalLogo height={32} className="shrink-0" />
+            <p className="font-body text-sm text-text-secondary">
+              <span className="font-semibold text-text-primary">Custom platforms, AI tools &amp; data-driven apps.</span>{' '}
+              Let&apos;s build something powerful together.
+            </p>
           </div>
           <a
             href="https://cyclops-digital.com"
@@ -50,14 +116,7 @@ export function CyclopsPromo({ variant }: CyclopsPromoProps) {
         />
 
         <div className="relative space-y-3">
-          <CyclopsLogoMark className="w-7 h-7 text-accent-gold" />
-
-          <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.15em] text-accent-gold">
-            Built by
-          </p>
-          <p className="font-display text-base font-bold text-text-primary leading-tight">
-            Cyclops Digital
-          </p>
+          <CyclopsVerticalLogo height={100} />
 
           <p className="font-body text-xs text-text-secondary leading-relaxed">
             Get help building custom solutions for your business or projects.
@@ -96,23 +155,20 @@ export function CyclopsPromo({ variant }: CyclopsPromoProps) {
         {/* Logo + branding */}
         <div className="flex items-center gap-4 shrink-0">
           <div className="animate-border-glow rounded-full p-3 border border-accent-gold/30">
-            <CyclopsLogoMark className="w-10 h-10 text-accent-gold" />
+            <CyclopsIconLogo size={40} />
           </div>
           <div className="hidden md:block">
-            <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.2em] text-accent-gold">
-              Built by
-            </p>
-            <p className="font-display text-xl font-bold text-text-primary">
-              Cyclops Digital
-            </p>
+            <CyclopsHorizontalLogo height={36} />
           </div>
+        </div>
+
+        {/* Mobile: show horizontal logo */}
+        <div className="md:hidden">
+          <CyclopsHorizontalLogo height={28} />
         </div>
 
         {/* Copy */}
         <div className="flex-1 text-center md:text-left">
-          <p className="md:hidden font-display text-lg font-bold text-text-primary mb-1">
-            Cyclops Digital
-          </p>
           <p className="font-body text-sm text-text-secondary leading-relaxed max-w-md">
             Get help building custom platforms, AI-powered tools, and data-driven
             applications for your business or projects.
@@ -130,43 +186,5 @@ export function CyclopsPromo({ variant }: CyclopsPromoProps) {
         </a>
       </div>
     </section>
-  )
-}
-
-/**
- * Minimal cyclops eye logo mark (SVG).
- * Placeholder until the user provides their Canva-exported logo.
- */
-function CyclopsLogoMark({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-label="Cyclops Digital"
-    >
-      {/* Outer eye shape */}
-      <ellipse
-        cx="20"
-        cy="20"
-        rx="18"
-        ry="12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      {/* Iris */}
-      <circle
-        cx="20"
-        cy="20"
-        r="8"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      {/* Pupil */}
-      <circle cx="20" cy="20" r="3.5" fill="currentColor" />
-      {/* Highlight */}
-      <circle cx="22" cy="18" r="1.5" fill="var(--color-surface, #ffffff)" opacity="0.8" />
-    </svg>
   )
 }
