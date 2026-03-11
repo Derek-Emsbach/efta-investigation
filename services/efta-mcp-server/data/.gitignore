@@ -1,0 +1,4 @@
+# Downloaded corpus databases (multi-GB, not for git)
+*.db
+*.db.gz
+*.db.gz.part_*
