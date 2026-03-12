@@ -17,9 +17,11 @@ export interface GalleryImage extends DocumentImage {
 interface ImageGalleryProps {
   images: GalleryImage[]
   loading?: boolean
+  urlPrefix?: string
+  readOnly?: boolean
 }
 
-export default function ImageGallery({ images, loading }: ImageGalleryProps) {
+export default function ImageGallery({ images, loading, urlPrefix = '/api/images', readOnly = false }: ImageGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   if (loading) {
@@ -71,7 +73,7 @@ export default function ImageGallery({ images, loading }: ImageGalleryProps) {
             <div className="relative aspect-square bg-background overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`/api/images/${img.id}/thumbnail`}
+                src={`${urlPrefix}/${img.id}/thumbnail`}
                 alt={img.caption ?? `Image from page ${img.page_number + 1}`}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
@@ -143,6 +145,8 @@ export default function ImageGallery({ images, loading }: ImageGalleryProps) {
           images={images}
           initialIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
+          urlPrefix={urlPrefix}
+          readOnly={readOnly}
         />
       )}
     </>
