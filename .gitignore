@@ -7,6 +7,9 @@ node_modules/
 .env.local
 .env.*.local
 
+# Script checkpoints
+.batch-images-checkpoint.json
+
 # Next.js
 .next/
 out/
