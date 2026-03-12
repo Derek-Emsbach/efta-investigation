@@ -8,6 +8,7 @@ import type {
   EntityConnection,
   EvidenceItem,
   Document,
+  DocumentImage,
   Event,
   Story,
   StoryEntity,
@@ -109,6 +110,7 @@ export default async function EntityProfilePage({
     evidenceResult,
     storiesResult,
     caseFilesResult,
+    photosResult,
   ] = await Promise.all([
     supabase
       .from('entity_documents')
@@ -145,6 +147,12 @@ export default async function EntityProfilePage({
       .from('case_file_entities')
       .select('*, case_file:case_files(id, slug, case_id, title, status, summary, completion_percentage, is_published)')
       .eq('entity_id', entityId),
+
+    // Photos: images tagged with this entity via image_entities junction
+    supabase
+      .from('image_entities')
+      .select('*, image:document_images(id, document_id, page_number, image_index, r2_key, thumbnail_r2_key, width, height, format, image_type, tags, caption, is_redacted, metadata, created_at, file_size_bytes)')
+      .eq('entity_id', entityId),
   ])
 
   // Merge connections
@@ -172,6 +180,11 @@ export default async function EntityProfilePage({
   const caseFiles = ((caseFilesResult.data ?? []) as (CaseFileEntity & { case_file: CaseFile })[]).filter(
     (cfe) => cfe.case_file?.is_published === true
   )
+
+  // Extract photos from image_entities join
+  const photos = (photosResult.data ?? [])
+    .map((ie: Record<string, unknown>) => ie.image)
+    .filter(Boolean) as DocumentImage[]
 
   const typedEntity = entity as Entity
   const hasFinancialData =
@@ -227,6 +240,7 @@ export default async function EntityProfilePage({
             events={events}
             stories={stories}
             caseFiles={caseFiles}
+            photos={photos}
           />
         </div>
 

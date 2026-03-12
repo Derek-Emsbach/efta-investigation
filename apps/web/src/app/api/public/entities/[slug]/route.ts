@@ -54,6 +54,7 @@ export async function GET(
       evidenceResult,
       storiesResult,
       caseFilesResult,
+      photosResult,
     ] = await Promise.all([
       // Documents linked to this entity
       supabase
@@ -97,6 +98,12 @@ export async function GET(
         .from('case_file_entities')
         .select('*, case_file:case_files(id, slug, case_id, title, status, summary, completion_percentage, is_published)')
         .eq('entity_id', entityId),
+
+      // Photos: images tagged with this entity via image_entities junction
+      supabase
+        .from('image_entities')
+        .select('*, image:document_images(id, document_id, page_number, image_index, r2_key, thumbnail_r2_key, width, height, format, image_type, tags, caption, is_redacted, metadata, created_at, file_size_bytes)')
+        .eq('entity_id', entityId),
     ])
 
     // Merge connections from both directions
@@ -125,6 +132,11 @@ export async function GET(
       return cf?.is_published === true
     })
 
+    // Extract photos from image_entities join
+    const photos = (photosResult.data ?? [])
+      .map((ie: Record<string, unknown>) => ie.image)
+      .filter(Boolean)
+
     return NextResponse.json({
       entity: entity as Entity,
       documents: documentsResult.data ?? [],
@@ -133,6 +145,7 @@ export async function GET(
       evidence: evidenceResult.data ?? [],
       stories,
       caseFiles,
+      photos,
     }, {
       headers: { 'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' },
     })

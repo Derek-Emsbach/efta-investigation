@@ -209,6 +209,8 @@ interface ImageLightboxProps {
   images: GalleryImage[]
   initialIndex: number
   onClose: () => void
+  urlPrefix?: string
+  readOnly?: boolean
 }
 
 function formatBytes(bytes: number | null): string {
@@ -218,7 +220,7 @@ function formatBytes(bytes: number | null): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-export default function ImageLightbox({ images, initialIndex, onClose }: ImageLightboxProps) {
+export default function ImageLightbox({ images, initialIndex, onClose, urlPrefix = '/api/images', readOnly = false }: ImageLightboxProps) {
   const [index, setIndex] = useState(initialIndex)
   const [loaded, setLoaded] = useState(false)
 
@@ -330,7 +332,7 @@ export default function ImageLightbox({ images, initialIndex, onClose }: ImageLi
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             key={img.id}
-            src={`/api/images/${img.id}/file`}
+            src={`${urlPrefix}/${img.id}/file`}
             alt={img.caption ?? `Evidence image from page ${img.page_number + 1}`}
             className={`max-w-full max-h-[85vh] object-contain rounded transition-opacity duration-300 ${
               loaded ? 'opacity-100' : 'opacity-0'
@@ -350,7 +352,9 @@ export default function ImageLightbox({ images, initialIndex, onClose }: ImageLi
                 Source Document
               </h4>
               <Link
-                href={`/dashboard/documents/${img.documents.id}`}
+                href={readOnly && img.documents.bates_number
+                  ? `/evidence/documents/${img.documents.bates_number}`
+                  : `/dashboard/documents/${img.documents.id}`}
                 className="font-mono text-sm text-info hover:text-info/80 transition-colors"
               >
                 {img.documents.bates_number ?? 'View Document'}
@@ -435,11 +439,11 @@ export default function ImageLightbox({ images, initialIndex, onClose }: ImageLi
             </div>
           )}
 
-          {/* Linked entities */}
-          <LinkedEntitiesSection imageId={img.id} />
+          {/* Linked entities (admin only) */}
+          {!readOnly && <LinkedEntitiesSection imageId={img.id} />}
 
-          {/* Linked locations */}
-          <LinkedLocationsSection imageId={img.id} />
+          {/* Linked locations (admin only) */}
+          {!readOnly && <LinkedLocationsSection imageId={img.id} />}
 
           {/* Metadata extras */}
           {img.metadata && Object.keys(img.metadata).length > 0 && (

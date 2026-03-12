@@ -96,6 +96,25 @@ interface CaseFileRecord {
   }
 }
 
+interface PhotoRecord {
+  id: string
+  document_id: string
+  page_number: number
+  image_index: number
+  r2_key: string
+  thumbnail_r2_key: string | null
+  width: number | null
+  height: number | null
+  format: string | null
+  image_type: string
+  tags: string[]
+  caption: string | null
+  is_redacted: boolean
+  metadata: Record<string, unknown>
+  created_at: string
+  file_size_bytes: number | null
+}
+
 interface ApiResponse {
   entity: EntityData
   documents: DocumentRecord[]
@@ -103,9 +122,10 @@ interface ApiResponse {
   connections: ConnectionRecord[]
   stories: StoryRecord[]
   caseFiles: CaseFileRecord[]
+  photos: PhotoRecord[]
 }
 
-type Tab = 'connections' | 'documents' | 'timeline' | 'stories'
+type Tab = 'connections' | 'documents' | 'timeline' | 'stories' | 'photos'
 
 // -------------------------------------------------------------------
 // Helpers
@@ -190,13 +210,14 @@ export function EntityDetailClient({ slug }: { slug: string }) {
     )
   }
 
-  const { entity, connections, documents, events, stories, caseFiles } = data
+  const { entity, connections, documents, events, stories, caseFiles, photos } = data
 
   const tabs: { key: Tab; label: string; count: number }[] = [
     { key: 'connections', label: 'Connections', count: connections.length },
     { key: 'documents', label: 'Documents', count: documents.length },
     { key: 'timeline', label: 'Timeline', count: events.length },
     { key: 'stories', label: 'Stories & Cases', count: stories.length + caseFiles.length },
+    ...(photos.length > 0 ? [{ key: 'photos' as Tab, label: 'Photos', count: photos.length }] : []),
   ]
 
   return (
@@ -339,6 +360,9 @@ export function EntityDetailClient({ slug }: { slug: string }) {
         )}
         {activeTab === 'stories' && (
           <StoriesTab stories={stories} caseFiles={caseFiles} />
+        )}
+        {activeTab === 'photos' && (
+          <PhotosTab photos={photos} />
         )}
       </div>
     </div>
@@ -569,6 +593,175 @@ function StoriesTab({ stories, caseFiles }: { stories: StoryRecord[]; caseFiles:
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function PhotosTab({ photos }: { photos: PhotoRecord[] }) {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+
+  if (photos.length === 0) {
+    return <EmptyTab message="No photos tagged for this entity" />
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        {photos.map((img, idx) => (
+          <button
+            key={img.id}
+            onClick={() => setLightboxIndex(idx)}
+            className="group relative flex flex-col rounded border border-border-default bg-surface overflow-hidden hover:border-critical/30 transition-all duration-200 text-left"
+          >
+            <div className="relative aspect-square bg-background overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/api/public/images/${img.id}/thumbnail`}
+                alt={img.caption ?? `Page ${img.page_number + 1}`}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                <svg
+                  className="w-5 h-5 text-text-primary"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  <line x1="11" y1="8" x2="11" y2="14" />
+                  <line x1="8" y1="11" x2="14" y2="11" />
+                </svg>
+              </div>
+              {img.is_redacted && (
+                <span className="absolute top-1.5 right-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded bg-critical/90 text-white uppercase tracking-wider">
+                  Redacted
+                </span>
+              )}
+              {img.image_type && img.image_type !== 'embedded' && img.image_type !== 'unknown' && (
+                <span className="absolute top-1.5 left-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded bg-surface/80 text-text-secondary capitalize backdrop-blur-sm">
+                  {img.image_type}
+                </span>
+              )}
+            </div>
+            <div className="px-2 py-1.5 border-t border-border-default">
+              {img.caption ? (
+                <p className="text-[11px] text-text-secondary line-clamp-1">{img.caption}</p>
+              ) : (
+                <p className="text-[10px] font-mono text-text-muted">
+                  p.{img.page_number + 1}
+                  {img.width && img.height && (
+                    <span className="ml-1.5 opacity-60">
+                      {img.width}&times;{img.height}
+                    </span>
+                  )}
+                </p>
+              )}
+            </div>
+            {img.tags.length > 0 && (
+              <div className="px-2 pb-1.5 flex flex-wrap gap-1">
+                {img.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[9px] font-medium px-1 py-0.5 rounded bg-neon-cyan/10 text-neon-cyan"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {lightboxIndex !== null && (
+        <PhotoLightbox
+          photos={photos}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
+    </>
+  )
+}
+
+function PhotoLightbox({ photos, initialIndex, onClose }: { photos: PhotoRecord[]; initialIndex: number; onClose: () => void }) {
+  const [index, setIndex] = useState(initialIndex)
+  const [loaded, setLoaded] = useState(false)
+
+  const img = photos[index]
+  const hasPrev = index > 0
+  const hasNext = index < photos.length - 1
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowRight' && hasNext) { setLoaded(false); setIndex((i) => i + 1) }
+      if (e.key === 'ArrowLeft' && hasPrev) { setLoaded(false); setIndex((i) => i - 1) }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [onClose, hasNext, hasPrev])
+
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [])
+
+  if (!img) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true">
+      <div className="absolute inset-0 bg-background/95 backdrop-blur-sm" onClick={onClose} />
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+        aria-label="Close"
+      >
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 font-mono text-xs text-text-muted bg-elevated/80 border border-border-default px-3 py-1.5 rounded-full">
+        {index + 1} / {photos.length}
+      </div>
+      {hasPrev && (
+        <button
+          onClick={() => { setLoaded(false); setIndex((i) => i - 1) }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+          aria-label="Previous"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>
+        </button>
+      )}
+      {hasNext && (
+        <button
+          onClick={() => { setLoaded(false); setIndex((i) => i + 1) }}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+          aria-label="Next"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 6 15 12 9 18" /></svg>
+        </button>
+      )}
+      <div className="relative max-w-[85vw] max-h-[85vh] flex items-center justify-center">
+        {!loaded && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-text-muted border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          key={img.id}
+          src={`/api/public/images/${img.id}/file`}
+          alt={img.caption ?? `Evidence image from page ${img.page_number + 1}`}
+          className={`max-w-full max-h-[85vh] object-contain rounded transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setLoaded(true)}
+        />
+      </div>
     </div>
   )
 }

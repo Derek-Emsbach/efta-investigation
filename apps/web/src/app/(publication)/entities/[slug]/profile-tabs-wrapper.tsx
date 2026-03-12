@@ -6,6 +6,7 @@ import type {
   EntityConnection,
   EvidenceItem,
   Document,
+  DocumentImage,
   Event,
   Entity,
   Story,
@@ -20,6 +21,7 @@ import { DocumentsTable } from '@/components/publication/entity/documents-table'
 import { EntityTimeline } from '@/components/publication/entity/entity-timeline'
 import { StoriesSection } from '@/components/publication/entity/stories-section'
 import { CaseFilesSection } from '@/components/publication/entity/case-files-section'
+import { EntityPhotosGrid } from '@/components/publication/entity/entity-photos-grid'
 
 interface ProfileTabsWrapperProps {
   evidence: EvidenceItem[]
@@ -28,6 +30,7 @@ interface ProfileTabsWrapperProps {
   events: (EntityEvent & { event: Event })[]
   stories: (StoryEntity & { story: Story })[]
   caseFiles: (CaseFileEntity & { case_file: CaseFile })[]
+  photos: DocumentImage[]
 }
 
 export function ProfileTabsWrapper({
@@ -37,6 +40,7 @@ export function ProfileTabsWrapper({
   events,
   stories,
   caseFiles,
+  photos,
 }: ProfileTabsWrapperProps) {
   const tabs = [
     { id: 'evidence', label: 'Evidence', count: evidence.length },
@@ -45,6 +49,7 @@ export function ProfileTabsWrapper({
     { id: 'timeline', label: 'Timeline', count: events.length },
     { id: 'stories', label: 'Stories', count: stories.length },
     { id: 'case-files', label: 'Case Files', count: caseFiles.length },
+    ...(photos.length > 0 ? [{ id: 'photos', label: 'Photos', count: photos.length }] : []),
   ]
 
   return (
@@ -56,6 +61,7 @@ export function ProfileTabsWrapper({
         timeline: <EntityTimeline events={events} />,
         stories: <StoriesSection stories={stories} />,
         'case-files': <CaseFilesSection caseFiles={caseFiles} />,
+        ...(photos.length > 0 ? { photos: <EntityPhotosGrid photos={photos} urlPrefix="/api/public/images" /> } : {}),
       }}
     </ProfileTabs>
   )
