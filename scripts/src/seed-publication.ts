@@ -31,6 +31,7 @@ interface StoryDef {
   reading_time_minutes: number
   is_featured: boolean
   case_file_slug: string | null
+  published_at: string
   metadata: Record<string, unknown>
   entities: { name: string; mention_count: number; is_primary: boolean }[]
   citations: {
@@ -445,6 +446,7 @@ const STORIES: StoryDef[] = [
     reading_time_minutes: 8,
     is_featured: true,
     case_file_slug: 'witness-control-mechanisms',
+    published_at: '2026-02-28T00:00:00Z',
     metadata: { source_thread: 'THREAD_03', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 7, is_primary: true },
@@ -487,6 +489,7 @@ const STORIES: StoryDef[] = [
     reading_time_minutes: 7,
     is_featured: false,
     case_file_slug: 'prosecutorial-failure',
+    published_at: '2026-02-28T00:00:00Z',
     metadata: { source_thread: 'THREAD_05', version: '1.0' },
     entities: [
       { name: 'Leon Black', mention_count: 4, is_primary: true },
@@ -529,6 +532,7 @@ const STORIES: StoryDef[] = [
     reading_time_minutes: 8,
     is_featured: false,
     case_file_slug: 'staley-trustee-banker',
+    published_at: '2026-02-28T00:00:00Z',
     metadata: { source_thread: 'THREAD_01', version: '1.0' },
     entities: [
       { name: 'Jes Staley', mention_count: 5, is_primary: true },
@@ -565,6 +569,7 @@ const STORIES: StoryDef[] = [
     reading_time_minutes: 8,
     is_featured: false,
     case_file_slug: 'dubin-architecture',
+    published_at: '2026-02-28T00:00:00Z',
     metadata: { source_thread: 'THREAD_02', version: '1.0' },
     entities: [
       { name: 'Glenn Dubin', mention_count: 4, is_primary: true },
@@ -601,6 +606,7 @@ const STORIES: StoryDef[] = [
     reading_time_minutes: 8,
     is_featured: false,
     case_file_slug: 'indyke-conflicts-of-interest',
+    published_at: '2026-02-28T00:00:00Z',
     metadata: { source_thread: 'THREAD_04', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 6, is_primary: true },
@@ -633,6 +639,7 @@ const STORIES: StoryDef[] = [
     reading_time_minutes: 9,
     is_featured: false,
     case_file_slug: 'master-intelligence-brief',
+    published_at: '2026-02-28T00:00:00Z',
     metadata: { source_thread: 'MASTER_BRIEF', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 4, is_primary: true },
@@ -669,6 +676,7 @@ const STORIES: StoryDef[] = [
     reading_time_minutes: 7,
     is_featured: false,
     case_file_slug: null,
+    published_at: '2026-03-12T00:00:00Z',
     metadata: { source_analysis: 'docs/investigation/LESLEY_GROFF_Analysis.md' },
     entities: [
       { name: 'Lesley Groff', mention_count: 18, is_primary: true },
@@ -875,7 +883,7 @@ async function seedStories(entityUUIDs: Map<string, string>) {
           reading_time_minutes: story.reading_time_minutes,
           is_published: true,
           is_featured: story.is_featured,
-          published_at: new Date().toISOString(),
+          published_at: story.published_at,
           case_file_id: caseFileId,
           metadata: story.metadata,
         },

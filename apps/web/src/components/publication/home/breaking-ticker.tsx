@@ -1,11 +1,12 @@
 'use client'
 
 const TICKER_ITEMS = [
-  '6 investigative stories published across five investigation threads',
-  '4 EFTA documents forensically analyzed — complete trust chain documented',
-  '44 open questions filed across 6 case reports — accountability gaps identified',
-  '53 entities cataloged across six evidence tiers — every claim sourced to primary documents',
-  'Interactive network map: every documented connection now searchable',
+  'Lesley Groff identified as Epstein\'s primary scheduler for 18 years — charging analysis entirely redacted',
+  'Bill Richardson\'s Zorro Ranch connections confirmed through pilot testimony and campaign finance records',
+  'Cape Town 2002: Clinton, Spacey, and Tucker present during victim recruitment — identities resolved from corpus',
+  'Evidence against Leon Black: $158M in payments, forensic journals, multiple victims — AUSA wrote nothing up',
+  '7 investigative stories published — 103 citations sourced to primary EFTA documents',
+  '153,000+ documents analyzed in Lesley Groff corpus sweep across Datasets 9-11',
 ]
 
 export function LatestFindingsTicker() {

@@ -61,18 +61,28 @@ export function StoryHero({ story, citationCount }: StoryHeroProps) {
       {/* Meta bar */}
       <div className="mt-6 flex items-center gap-4 flex-wrap font-body text-sm text-text-muted">
         <span>By {story.byline}</span>
-        {story.published_at && (
-          <>
-            <span className="text-border-default">|</span>
-            <span>
-              {new Date(story.published_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
-          </>
-        )}
+        {story.published_at && (() => {
+          const published = new Date(story.published_at)
+          const updated = story.updated_at ? new Date(story.updated_at) : null
+          const showUpdated = updated && (updated.getTime() - published.getTime()) > 86_400_000
+          const dateOpts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
+          return (
+            <>
+              <span className="text-border-default">|</span>
+              <span>
+                {published.toLocaleDateString('en-US', dateOpts)}
+              </span>
+              {showUpdated && (
+                <>
+                  <span className="text-border-default">|</span>
+                  <span className="text-text-muted">
+                    Updated {updated.toLocaleDateString('en-US', dateOpts)}
+                  </span>
+                </>
+              )}
+            </>
+          )
+        })()}
         {story.reading_time_minutes && (
           <>
             <span className="text-border-default">|</span>

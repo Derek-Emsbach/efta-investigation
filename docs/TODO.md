@@ -309,6 +309,25 @@
 - [ ] Anomaly detection (unusual redaction patterns, timeline gaps)
 - [ ] Suggested connections based on co-occurrence analysis
 
+### Public Document Viewer (Hybrid Access)
+> Documents clickable throughout the site. Public metadata + text excerpts; PDF viewer requires auth.
+- [ ] Public document detail page — `/evidence/documents/[bates]` showing metadata, entity links, events, severity, dataset, text excerpts (no auth)
+- [ ] Auth-gated PDF viewer — "Sign in to view full document" on detail page; auth users get PDF viewer (reuse `components/review/pdf-viewer.tsx`) with R2 signed URLs
+- [ ] Update Bates auto-links — change markdown renderer from `/evidence?q={BATES}` to `/evidence/documents/{BATES}`
+- [ ] Public document API — `/api/public/documents/[bates]` returning metadata + entity links + events
+
+### Corpus-Level Search
+> Extend evidence room search beyond Supabase FTS to the full 1.38M-document SQLite corpus.
+- [ ] Corpus search API — `/api/public/evidence/corpus-search` querying SQLite FTS5 (via MCP or direct connection)
+- [ ] Dual search mode — toggle in evidence room between "Database" (Supabase FTS) and "Full Corpus" (SQLite FTS5)
+- [ ] Search result enrichment — corpus results matching Supabase documents show entity links + metadata
+
+### Entity Profile Media Expansion
+> Expand entity profiles beyond avatar-only images to full media galleries.
+- [ ] Entity profile media section — photos gallery tab on publication + evidence room profiles (wire `document_images` to entity profiles)
+- [ ] Entity profile video embeds — YouTube/external video links in entity metadata
+- [ ] Source more profile pictures — expand beyond Wikimedia Commons (court photos, mugshots, official photos)
+
 ### Additional Data Sources
 - [ ] Giuffre v. Maxwell court records import
 - [ ] House Oversight materials import
