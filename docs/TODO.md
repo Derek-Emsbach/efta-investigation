@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 6 stories (84 citations, 43 entity links).
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 8 stories (125 citations, 52 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -327,16 +327,16 @@
 
 ### Entity Profile Media Expansion
 > Expand entity profiles beyond avatar-only images to full media galleries.
-- [ ] Entity profile media section — photos gallery tab on publication + evidence room profiles (wire `document_images` → `image_entities` to entity pages)
-- [ ] Entity profile video embeds — add `video_links` JSONB field to entities table, YouTube/external embed component on profiles
+- [x] Entity profile media section — photos gallery tab on publication + evidence room profiles (wire `document_images` → `image_entities` to entity pages). Photos tab only shown when photos > 0. EntityPhotosGrid component with lightbox. ImageLightbox gains `urlPrefix` + `readOnly` props.
+- [x] Entity profile video embeds — migration 019 adds `video_links` JSONB field to entities table. VideoEmbeds component with YouTube privacy-enhanced embed (youtube-nocookie.com) + external video fallback. Videos tab on both profiles. VideoLink type in @efta/shared.
 - [ ] Source more profile pictures — expand beyond Wikimedia Commons (court photos, mugshots, official government photos, AP/Getty editorial)
 
 ### Batch Document Image Extraction
 > The PyMuPDF image extraction pipeline (Stage 1.5) is fully built but has only run on individually-processed documents. Need a batch job to extract images from all ~1.37M PDFs in R2.
-- [ ] Batch extraction script — iterate all documents with `r2_key`, download PDF, run `stages/images.py` extraction, upload to R2 + upsert `document_images`. Run on Railway as one-time job.
-- [ ] Progress tracking — log processed/skipped/errored counts, resume from last processed document_id on restart
+- [x] Batch extraction script — `scripts/batch-extract-images.py` iterates all documents with R2 key, runs `stages/images.py` extraction, uploads to R2 + upserts `document_images`. JSON checkpoint for resume, --skip-existing, --dry-run, --max-docs, --batch-size flags.
+- [x] Progress tracking — checkpoint file with processed/skipped/errored counts, resume from last document_id, periodic progress logging with rate calculation.
 - [ ] Auto-classification pass — after extraction, classify `image_type` (photo vs graphic vs signature vs map) using Qwen2-VL or similar (currently defaults to 'embedded')
-- [ ] Public image gallery — expose curated/tagged images on publication site (currently dashboard-only at `/dashboard/photos`)
+- [x] Public image gallery — `/evidence/images` page with type/tag filters, pagination, public API at `/api/public/images`. ImageGallery component gains `urlPrefix` + `readOnly` props. "Images" tab added to evidence room layout.
 
 ### Additional Data Sources
 - [ ] Giuffre v. Maxwell court records import
