@@ -104,6 +104,8 @@ efta-investigation/
       threads/                    # 6 investigation thread reports
       sources/                    # Deep-read case files (EFTA*/Analysis.md)
       data/                       # Reference data (ENTITIES.md, TIMELINE.md)
+    stories/                      # Story markdown files (6 published + growing)
+    STORY_QUEUE.md                # Story backlog, workflow, quality checklist
 ```
 
 ## Critical Rules
@@ -150,7 +152,8 @@ efta-investigation/
 After completing any task (feature, fix, or refactor):
 1. **Update `docs/TODO.md`** — check off completed items, add new items discovered during work, update the phase status summary if significant progress was made.
 2. **Update memory** — if the work revealed stable patterns, gotchas, or architectural decisions worth remembering, update the auto memory files. Memory is split into topic files: `MEMORY.md` (index), `technical-notes.md`, `investigation-tracker.md`, `completed-work.md`, `session-log.md`. Only record things that are confirmed and likely to stay relevant across sessions.
-3. **Context checkpoint** — when approaching ~90% context compaction (system will warn), proactively:
+3. **Write a story (if applicable)** — if the session produced publishable investigation findings, write a story for The Epstein Crimes following the 7-step workflow and quality checklist in `docs/STORY_QUEUE.md`. Update the queue (move from "Ready to Write" → "Published").
+4. **Context checkpoint** — when approaching ~90% context compaction (system will warn), proactively:
    - Update `docs/TODO.md` with any completed or discovered items
    - Update memory files with new patterns, gotchas, or investigation findings from the session
    - Update `CLAUDE.md` if any structural changes were made (new routes, tables, tools)
@@ -169,6 +172,7 @@ Before building any feature, read the relevant reference doc:
 | `docs/reference/DESIGN_SYSTEM.md` | Colors, typography, components | Any UI work |
 | `docs/reference/ENTITY_TIERS.md` | 6-tier classification system | Entity features |
 | `docs/reference/REDACTION_FRAMEWORK.md` | A-D redaction categories | Redaction features |
+| `docs/STORY_QUEUE.md` | Story backlog, workflow, quality checklist | Writing stories |
 | `docs/reference/PROCESSING_PIPELINE.md` | Document ingestion pipeline | Worker/processing features |
 | `docs/reference/WORKFLOW.md` | How data flows: 3 workflows, auto-approve rules, session checklist | Any data import/update work |
 | `docs/reference/LOCATION_INTELLIGENCE.md` | Location tracking, entity sightings, day-view timeline, co-location queries | Timeline, location, sighting features |

@@ -197,6 +197,18 @@
 
 **Phase 11 COMPLETE** — Real images throughout public site: entity profile photos, story hero images, public document image API
 
+### Story Pipeline (Ongoing)
+
+> Stories are written as a natural extension of investigation sessions. See `docs/STORY_QUEUE.md` for the full workflow, quality checklist, and continuation prompt template.
+
+- [x] Create `docs/STORY_QUEUE.md` — backlog tracking with workflow + checklist
+- [x] Update CLAUDE.md session checklist with story step
+- [x] Story 7: "The Scheduler" (Lesley Groff) — section: the-network — 1,299 words, 19 citations, 5 entity links. Seeded 2026-03-12.
+- [ ] Story 8: "The Billion-Dollar Blind Eye" (Leon Black) — section: follow-the-money
+- [ ] Story 9: "The Recruitment Trip" (Cape Town) — section: the-operation
+- [ ] Story 10: "The Last Night" (MCC death) — section: the-cover-up
+- [ ] Story 11: "The Governor's Ranch" (Bill Richardson) — section: the-network
+
 ---
 
 ## Future Phases (Backlog)
