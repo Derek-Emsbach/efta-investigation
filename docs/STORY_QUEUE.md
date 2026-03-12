@@ -17,6 +17,7 @@
 | 6 | the-system | The System | the-operation | MASTER_BRIEF | 2026-02 |
 | 7 | the-scheduler | The Scheduler | the-network | LESLEY_GROFF_Analysis.md | 2026-03 |
 | 8 | the-billion-dollar-blind-eye | The Billion-Dollar Blind Eye | follow-the-money | LEON_BLACK/Analysis.md | 2026-03 |
+| 9 | the-recruitment-trip | The Recruitment Trip | the-operation | DS12_EXPANSION (Cape Town) | 2026-03 |
 
 ## Ready to Write
 
@@ -24,7 +25,7 @@
 |-----|-----------------|---------|-----------------|-----------|
 | ~~1~~ | ~~The Scheduler~~ | ~~the-network~~ | ~~LESLEY_GROFF_Analysis.md~~ | **PUBLISHED** (Story 7, 2026-03-12) |
 | ~~2~~ | ~~The Billion-Dollar Blind Eye~~ | ~~follow-the-money~~ | ~~LEON_BLACK/Analysis.md~~ | **PUBLISHED** (Story 8, 2026-03-12) |
-| 3 | The Recruitment Trip | the-operation | DS12_EXPANSION (Cape Town) | Clinton/Spacey/Tucker present during victim recruitment in Sept 2002 |
+| ~~3~~ | ~~The Recruitment Trip~~ | ~~the-operation~~ | ~~DS12_EXPANSION (Cape Town)~~ | **PUBLISHED** (Story 9, 2026-03-12) |
 | 4 | The Last Night | the-cover-up | DS12_EXPANSION (MCC) | Minute-by-minute MCC failure — not conspiracy, just institutional negligence |
 | 5 | The Governor's Ranch | the-network | Richardson investigation | Pilot testimony, campaign money, Richardson died uninvestigated in 2023 |
 

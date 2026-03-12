@@ -769,6 +769,168 @@ const STORIES: StoryDef[] = [
       { number: 22, bates_number: 'EFTA02731577', description: 'Black hired Brad Edwards (victims\' rights attorney) — conflict of interest', page_reference: 'Full document' },
     ],
   },
+  // ─── Story 9: The Recruitment Trip (Cape Town) ──────────────────────────────
+  {
+    slug: 'the-recruitment-trip',
+    title: 'The Recruitment Trip',
+    deck: 'In September 2002, Jeffrey Epstein flew Bill Clinton, Kevin Spacey, and Chris Tucker to Cape Town on his Boeing 727. At a restaurant, a 20-year-old South African was told he was "the King of America." His scheduler arranged her visa from New York. The abuse began on arrival in the United States.',
+    section: 'the-operation' as const,
+    file: 'the-recruitment-trip.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 8,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-12T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Cape_Town_TblMtn.jpg/1280px-Cape_Town_TblMtn.jpg',
+    hero_image_caption:
+      'Table Mountain and the Cape Town waterfront, South Africa — where Jeffrey Epstein recruited a 20-year-old aspiring model in September 2002, during a trip that also carried Bill Clinton, Kevin Spacey, and Chris Tucker on his Boeing 727.',
+    metadata: {
+      source_analysis: 'docs/investigation/DS12_EXPANSION_Analysis.md',
+    },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 12, is_primary: true },
+      { name: 'Bill Clinton', mention_count: 6, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 4, is_primary: true },
+      { name: 'Lesley Groff', mention_count: 3, is_primary: true },
+      { name: 'Les Wexner', mention_count: 2, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette civil complaint — Cape Town restaurant scene, Epstein described as "the King of America"',
+        page_reference: 'Complaint ¶¶17-19',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — Epstein claimed to own modeling agency, invoked Wexner/Victoria\'s Secret',
+        page_reference: 'Complaint ¶¶21-22',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — Epstein called her mother to assure safety',
+        page_reference: 'Complaint ¶24',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — trafficking sequence: 66th St apartment, Virgin Islands, multi-location abuse 2002-2004',
+        page_reference: 'Complaint ¶¶25-35',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01661603',
+        description:
+          'New York Magazine "Jeffrey Epstein: International Moneyman of Mystery" — Boeing 727 Africa tour described',
+        page_reference: 'Full article',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01661603',
+        description:
+          'NY Magazine — names Clinton, Spacey, Tucker; "soaking up the love from Cape Town to Lagos"',
+        page_reference: 'Full article',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — former official gave speech next day, police escort tied to his security detail',
+        page_reference: 'Complaint ¶20',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — modeling agency recruitment pattern documented across multiple victims',
+        page_reference: 'pp. 28, 37',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — Lesley Groff arranged U.S. visa, passport, and airline tickets from New York',
+        page_reference: 'Complaint ¶23',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — Virgin Islands: co-conspirator directed massage, sexual abuse began immediately',
+        page_reference: 'Complaint ¶¶28-30',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — Paris with Maxwell: forced nude photography, witnessed other young victims',
+        page_reference: 'Complaint ¶¶30-32',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA02731941',
+        description:
+          'Annie Farmer civil case (19-cv-10475) — Maxwell named as defendant for normalizing sexual contact',
+        page_reference: 'Case filing',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — Zorro Ranch 2004: "another important government official," "serve drinks to scientist friends"',
+        page_reference: 'Complaint ¶50',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01247021',
+        description:
+          'Pilot Larry Morrison deposition — saw Governor Bill Richardson arrive at Zorro Ranch for dinner',
+        page_reference: 'pp. 167-169',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA02732243',
+        description:
+          'Consolidated discovery conference — estate possessed 700K+ documents, produced 3 (one clawed back)',
+        page_reference: 'Full transcript',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA02732143',
+        description:
+          'Boies Schiller opposition brief — "estate has taken the position of attempting to prove Epstein\'s innocence"',
+        page_reference: 'Full document',
+      },
+      {
+        number: 17,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — 2016 Epstein email asking if she knew another victim by name',
+        page_reference: 'Complaint ¶52',
+      },
+      {
+        number: 18,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint — June 2019 Epstein email requesting nude photographs (2 months before death)',
+        page_reference: 'Complaint ¶53',
+      },
+      {
+        number: 19,
+        bates_number: 'EFTA02731941',
+        description:
+          'Case filing: Juliette v. Indyke & Kahn, 1:19-cv-10479-ALC-DCF, filed November 14, 2019',
+        page_reference: 'Cover page',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────
