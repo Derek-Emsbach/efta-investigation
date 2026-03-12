@@ -41,6 +41,19 @@ export const SOURCE_CONFIGS: SourceConfig[] = [
     ctaLabel: 'Explore the Archive',
     logoAlt: 'Jmail Archive',
   },
+  {
+    id: 'rhowardstone',
+    name: 'Epstein Research Data',
+    shortName: 'rhowardstone',
+    tagline: 'Open-source research databases for the Epstein corpus',
+    description:
+      'Community-built SQLite research databases covering concordance metadata, document alterations, image analysis, and handwriting records across 1.4M EFTA documents.',
+    url: 'https://github.com/rhowardstone/Epstein-research-data',
+    accentColor: '#16a34a',
+    accentColorLight: '#dcfce7',
+    ctaLabel: 'View on GitHub',
+    logoAlt: 'rhowardstone/Epstein-research-data on GitHub',
+  },
 ]
 
 /** Look up a single source by ID */

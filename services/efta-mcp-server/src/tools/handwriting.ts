@@ -77,7 +77,7 @@ export function registerHandwritingTools(server: McpServer) {
         'that may not exist in any typed form — critical for corroborating or contradicting official narratives.',
       inputSchema: {
         query: z.string().describe('Search term (name, location, case number, or transcript keyword)'),
-        field: z.enum(['subject', 'location', 'case_number', 'transcript', 'all'])
+        field: z.enum(['all', 'subject', 'location', 'case_number', 'transcript'])
           .default('all')
           .describe('Which field to search'),
         limit: z.number().min(1).max(50).default(20).describe('Max results'),
@@ -105,7 +105,7 @@ export function registerHandwritingTools(server: McpServer) {
           const q = `%${query}%`;
           params.push(q, q, q, q, limit);
         } else {
-          const col = field === 'all' ? 'transcript' : field;
+          const col = field;
           sql = `
             SELECT efta_number, page_number, document_type, case_number,
                    subject, subject_role, interview_date, location,

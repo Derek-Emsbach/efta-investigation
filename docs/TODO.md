@@ -360,8 +360,8 @@
 - [x] `image-analysis.ts` — 2 tools: `image_analysis_lookup`, `image_analysis_search` (92K images, Qwen2-VL descriptions, FTS5)
 - [x] `handwriting.ts` — 2 tools: `handwriting_lookup`, `handwriting_search` (54 pages, 14 MCC inmate witnesses)
 - [x] All 9 new tools registered in `index.ts` — MCP server now has 67 tools total
-- [ ] Download databases and verify (`cd services/efta-mcp-server/data && ./download.sh`)
-- [ ] Deploy updated MCP server
+- [x] Download databases and verify — v5.0 corpus assembled (1,397,821 docs, max EFTA02858497), all 4 research DBs live
+- [x] Deploy updated MCP server — running locally via .mcp.json, 67 tools connected to Claude Code
 
 ### Investigation Analysis Reports
 - [x] EFTA02731082 deep read — all 86 pages read in 9 sequential chunk calls, zero truncation
@@ -373,3 +373,8 @@
 - [x] `docs/investigation/EFTA01266403_Database_Updates_Prompt.md` — structured DB update spec: 5 new entities (Mitchell, Celina Dubin, Eva Andersson-Dubin, Shuliak, Kahn), 12 entity-doc links, 2 events, 9 connections, 11 suspect watchlist additions
 - [x] EFTA01266403 database updates — 5 new entities (Mitchell T6, Celina Dubin T4, Eva Andersson-Dubin T4, Shuliak T4, Kahn T6), 3 entity updates (Dubin/Indyke/Staley evidence_summary merged), 11 entity-doc links, 2 events, 9 connections (incl. 2 `family_of`), 11 suspects added to watchlist
 - [x] EFTA01266380 + EFTA01266427 deep read — 3-way trust comparison complete. Staley confirmed as original trustee (Nov 2014). Combined analysis at `docs/investigation/EFTA01266380_Analysis.md`. Raw text for 01266427 extracted. Trust chain: 01266380 (original) → 01266403 (A&R May 2015) → 01266427 (1st amendment).
+- [x] DS12 expansion deep read — 7 documents across MCC death investigation + Juliette civil case. Analysis at `docs/investigation/DS12_EXPANSION_Analysis.md`. Key findings: (1) Noel/Thomas bribery definitively ruled out by FBI; DVR failure predated Aug 9; 4AM supervisor never charged; (2) "Juliette" (South African victim, 2002–2004) recruited in Cape Town by Epstein traveling with **redacted former high U.S. Government official + actor + comedian**; Leslie Groff named; Maxwell named in parallel case 19-cv-10475; Indyke/Kahn defendants in 4 simultaneous civil suits.
+- [x] DS12 Cape Town identities resolved — Cross-ref `EFTA01661603` (NY Mag Oct 2002) confirms: "former high U.S. Government official" = **Bill Clinton**, "famous actor" = **Kevin Spacey**, "well-known comedian" = **Chris Tucker**. All three named explicitly on same Africa Boeing 727 tour; Cape Town confirmed as stop. DB updated: Cape Town event retitled, 5 missing events created, Kevin Spacey + Chris Tucker added to watchlist, Annie Farmer created as T5 entity, Lesley Groff linked to Cape Town event, EFTA01661603 updated with full metadata.
+- [x] DB cleanup — "Leslie Groff" suspect (`cd70a66f`) near-duplicate hard-deleted March 11, 2026. Canonical entity: Lesley Groff T2 (`bee557a4`).
+- [x] **RESOLVED (March 11, 2026):** Identity of unnamed government official at Zorro Ranch 2004 (¶50 EFTA02731941) = **Bill Richardson**, Governor of New Mexico 2003–2011. Evidence: pilot Larry Morrison testimony (HOUSE_OVERSIGHT_010566) + $100K+ campaign contributions via Zorro Trust + Deputy CoS scheduling emails + the word "another" in ¶50 confirming a different person from Cape Town official (Clinton). Entity created T3 (`fbf16d66`), linked to event `18ae3209-b9c5-4386-8a52-1aa627e9a757`.
+- [x] Deep read Morrison deposition (EFTA01247021, pp. 167–169) — verbatim Richardson testimony extracted and logged in DS12_EXPANSION_Analysis.md. Morrison saw Richardson at Ranch Central being escorted to main house for dinner with Epstein. Document updated in DB. Larry Eugene Morrison added to suspect watchlist (`e4ee5ea3`). Note: Morrison is Epstein's personal pilot, distinct from Lawrence Visoski (chief pilot, already T6 entity).

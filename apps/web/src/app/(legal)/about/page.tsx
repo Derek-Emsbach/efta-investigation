@@ -225,6 +225,23 @@ export default function AboutPage() {
               and other outlets that have contributed to public understanding of
               this case.
             </li>
+            <li>
+              <strong className="text-text-primary">Research Databases</strong>{" "}
+              &mdash; Community-built SQLite databases by{" "}
+              <a
+                href="https://github.com/rhowardstone/Epstein-research-data"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-text-primary transition-colors"
+              >
+                rhowardstone
+              </a>{" "}
+              covering DOJ concordance metadata (1.38M docs), document
+              alteration records (212K change units), image analysis (92K
+              images), and handwriting analysis (54 pages, 14 MCC inmate
+              witnesses). These databases power the research tools used in this
+              investigation.
+            </li>
           </ul>
         </section>
 
