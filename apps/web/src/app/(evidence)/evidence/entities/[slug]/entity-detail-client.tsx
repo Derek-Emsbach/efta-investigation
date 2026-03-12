@@ -25,6 +25,7 @@ interface EntityData {
   first_appearance: string | null
   last_known_activity: string | null
   profile_image_url: string | null
+  video_links: { url: string; title: string; source?: string; date?: string }[] | null
 }
 
 interface ConnectionRecord {
@@ -125,7 +126,7 @@ interface ApiResponse {
   photos: PhotoRecord[]
 }
 
-type Tab = 'connections' | 'documents' | 'timeline' | 'stories' | 'photos'
+type Tab = 'connections' | 'documents' | 'timeline' | 'stories' | 'photos' | 'videos'
 
 // -------------------------------------------------------------------
 // Helpers
@@ -211,6 +212,7 @@ export function EntityDetailClient({ slug }: { slug: string }) {
   }
 
   const { entity, connections, documents, events, stories, caseFiles, photos } = data
+  const videos = entity.video_links ?? []
 
   const tabs: { key: Tab; label: string; count: number }[] = [
     { key: 'connections', label: 'Connections', count: connections.length },
@@ -218,6 +220,7 @@ export function EntityDetailClient({ slug }: { slug: string }) {
     { key: 'timeline', label: 'Timeline', count: events.length },
     { key: 'stories', label: 'Stories & Cases', count: stories.length + caseFiles.length },
     ...(photos.length > 0 ? [{ key: 'photos' as Tab, label: 'Photos', count: photos.length }] : []),
+    ...(videos.length > 0 ? [{ key: 'videos' as Tab, label: 'Videos', count: videos.length }] : []),
   ]
 
   return (
@@ -363,6 +366,9 @@ export function EntityDetailClient({ slug }: { slug: string }) {
         )}
         {activeTab === 'photos' && (
           <PhotosTab photos={photos} />
+        )}
+        {activeTab === 'videos' && (
+          <VideosTab videos={videos} />
         )}
       </div>
     </div>
@@ -762,6 +768,68 @@ function PhotoLightbox({ photos, initialIndex, onClose }: { photos: PhotoRecord[
           onLoad={() => setLoaded(true)}
         />
       </div>
+    </div>
+  )
+}
+
+function VideosTab({ videos }: { videos: { url: string; title: string; source?: string; date?: string }[] }) {
+  if (videos.length === 0) {
+    return <EmptyTab message="No videos linked" />
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {videos.map((video, idx) => {
+        const ytMatch = video.url.match(
+          /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+        )
+        const ytId = ytMatch?.[1]
+
+        return (
+          <div
+            key={`${video.url}-${idx}`}
+            className="rounded border border-border-default bg-surface overflow-hidden"
+          >
+            {ytId ? (
+              <div className="relative aspect-video">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${ytId}`}
+                  title={video.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                  loading="lazy"
+                />
+              </div>
+            ) : (
+              <a
+                href={video.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center aspect-video bg-elevated hover:bg-elevated/80 transition-colors"
+              >
+                <div className="text-center">
+                  <svg className="w-10 h-10 text-text-muted mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                  <span className="text-xs text-text-muted font-mono">Open External Video</span>
+                </div>
+              </a>
+            )}
+            <div className="px-3 py-2 border-t border-border-default">
+              <p className="text-sm text-text-primary font-medium line-clamp-2">{video.title}</p>
+              <div className="flex items-center gap-2 mt-1">
+                {video.source && (
+                  <span className="text-[10px] font-mono text-text-muted">{video.source}</span>
+                )}
+                {video.date && (
+                  <span className="text-[10px] font-mono text-text-muted">{formatDate(video.date)}</span>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

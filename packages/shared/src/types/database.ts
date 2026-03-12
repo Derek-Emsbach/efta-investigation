@@ -119,6 +119,13 @@ export interface Investigation {
   updated_at: string
 }
 
+export interface VideoLink {
+  url: string
+  title: string
+  source?: string
+  date?: string
+}
+
 export interface Entity {
   id: string
   name: string
@@ -135,6 +142,7 @@ export interface Entity {
   datasets_appeared: number[]
   financial_summary: Record<string, unknown>
   profile_published: boolean
+  video_links: VideoLink[]
   metadata: Record<string, unknown>
   created_at: string
   updated_at: string

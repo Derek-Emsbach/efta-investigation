@@ -55,6 +55,7 @@ CREATE TABLE entities (
   profile_image_url TEXT,
   is_public BOOLEAN DEFAULT false, -- victim privacy control
   datasets_appeared INTEGER[] DEFAULT '{}', -- which datasets this entity appears in
+  video_links JSONB DEFAULT '[]', -- [{url, title, source, date}]
   metadata JSONB DEFAULT '{}',
   search_vector TSVECTOR,
   created_at TIMESTAMPTZ DEFAULT now(),

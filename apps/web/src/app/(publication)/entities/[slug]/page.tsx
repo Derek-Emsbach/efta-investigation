@@ -9,6 +9,7 @@ import type {
   EvidenceItem,
   Document,
   DocumentImage,
+  VideoLink,
   Event,
   Story,
   StoryEntity,
@@ -241,6 +242,7 @@ export default async function EntityProfilePage({
             stories={stories}
             caseFiles={caseFiles}
             photos={photos}
+            videos={(typedEntity.video_links ?? []) as VideoLink[]}
           />
         </div>
 

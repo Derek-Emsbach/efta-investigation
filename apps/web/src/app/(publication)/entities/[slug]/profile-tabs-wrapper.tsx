@@ -7,6 +7,7 @@ import type {
   EvidenceItem,
   Document,
   DocumentImage,
+  VideoLink,
   Event,
   Entity,
   Story,
@@ -22,6 +23,7 @@ import { EntityTimeline } from '@/components/publication/entity/entity-timeline'
 import { StoriesSection } from '@/components/publication/entity/stories-section'
 import { CaseFilesSection } from '@/components/publication/entity/case-files-section'
 import { EntityPhotosGrid } from '@/components/publication/entity/entity-photos-grid'
+import { VideoEmbeds } from '@/components/publication/entity/video-embeds'
 
 interface ProfileTabsWrapperProps {
   evidence: EvidenceItem[]
@@ -31,6 +33,7 @@ interface ProfileTabsWrapperProps {
   stories: (StoryEntity & { story: Story })[]
   caseFiles: (CaseFileEntity & { case_file: CaseFile })[]
   photos: DocumentImage[]
+  videos: VideoLink[]
 }
 
 export function ProfileTabsWrapper({
@@ -41,6 +44,7 @@ export function ProfileTabsWrapper({
   stories,
   caseFiles,
   photos,
+  videos,
 }: ProfileTabsWrapperProps) {
   const tabs = [
     { id: 'evidence', label: 'Evidence', count: evidence.length },
@@ -50,6 +54,7 @@ export function ProfileTabsWrapper({
     { id: 'stories', label: 'Stories', count: stories.length },
     { id: 'case-files', label: 'Case Files', count: caseFiles.length },
     ...(photos.length > 0 ? [{ id: 'photos', label: 'Photos', count: photos.length }] : []),
+    ...(videos.length > 0 ? [{ id: 'videos', label: 'Videos', count: videos.length }] : []),
   ]
 
   return (
@@ -62,6 +67,7 @@ export function ProfileTabsWrapper({
         stories: <StoriesSection stories={stories} />,
         'case-files': <CaseFilesSection caseFiles={caseFiles} />,
         ...(photos.length > 0 ? { photos: <EntityPhotosGrid photos={photos} urlPrefix="/api/public/images" /> } : {}),
+        ...(videos.length > 0 ? { videos: <VideoEmbeds videos={videos} /> } : {}),
       }}
     </ProfileTabs>
   )
