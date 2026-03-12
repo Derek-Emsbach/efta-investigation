@@ -32,6 +32,8 @@ interface StoryDef {
   is_featured: boolean
   case_file_slug: string | null
   published_at: string
+  hero_image_url: string | null
+  hero_image_caption: string | null
   metadata: Record<string, unknown>
   entities: { name: string; mention_count: number; is_primary: boolean }[]
   citations: {
@@ -447,6 +449,8 @@ const STORIES: StoryDef[] = [
     is_featured: true,
     case_file_slug: 'witness-control-mechanisms',
     published_at: '2026-02-28T00:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
     metadata: { source_thread: 'THREAD_03', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 7, is_primary: true },
@@ -490,6 +494,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'prosecutorial-failure',
     published_at: '2026-02-28T00:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
     metadata: { source_thread: 'THREAD_05', version: '1.0' },
     entities: [
       { name: 'Leon Black', mention_count: 4, is_primary: true },
@@ -533,6 +539,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'staley-trustee-banker',
     published_at: '2026-02-28T00:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
     metadata: { source_thread: 'THREAD_01', version: '1.0' },
     entities: [
       { name: 'Jes Staley', mention_count: 5, is_primary: true },
@@ -570,6 +578,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'dubin-architecture',
     published_at: '2026-02-28T00:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
     metadata: { source_thread: 'THREAD_02', version: '1.0' },
     entities: [
       { name: 'Glenn Dubin', mention_count: 4, is_primary: true },
@@ -607,6 +617,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'indyke-conflicts-of-interest',
     published_at: '2026-02-28T00:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
     metadata: { source_thread: 'THREAD_04', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 6, is_primary: true },
@@ -640,6 +652,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'master-intelligence-brief',
     published_at: '2026-02-28T00:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
     metadata: { source_thread: 'MASTER_BRIEF', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 4, is_primary: true },
@@ -677,6 +691,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: null,
     published_at: '2026-03-12T00:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
     metadata: { source_analysis: 'docs/investigation/LESLEY_GROFF_Analysis.md' },
     entities: [
       { name: 'Lesley Groff', mention_count: 18, is_primary: true },
@@ -705,6 +721,52 @@ const STORIES: StoryDef[] = [
       { number: 17, bates_number: 'EFTA01682023', description: 'Formal proffer agreement — "THIS IS NOT A COOPERATION AGREEMENT," continuation dates', page_reference: 'pp. 1-2' },
       { number: 18, bates_number: 'EFTA02731082', description: 'Prosecution memo — Section D (Groff charging analysis) entirely redacted, Category C protection', page_reference: 'pp. 75-85' },
       { number: 19, bates_number: 'EFTA00498087', description: 'Groff email April 2019 — "Jeffrey says he won\'t be in NY those dates! It\'s hard to keep up"', page_reference: 'Full document' },
+    ],
+  },
+  // ─── Story 8: The Billion-Dollar Blind Eye (Leon Black) ───────────────────
+  {
+    slug: 'the-billion-dollar-blind-eye',
+    title: 'The Billion-Dollar Blind Eye',
+    deck: 'Three victims. Forensic journals. Bank records. A $62.5 million settlement. A $158 million relationship with Epstein. And an AUSA who admitted: "I did not write anything up on Leon Black."',
+    section: 'follow-the-money' as const,
+    file: 'the-billion-dollar-blind-eye.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: 'prosecutorial-failure',
+    published_at: '2026-03-12T00:00:00Z',
+    hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG',
+    hero_image_caption: 'The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — home of the Southern District of New York, which declined to charge Leon Black despite three years of accumulating evidence.',
+    metadata: { source_analysis: 'docs/investigation/sources/LEON_BLACK/Analysis.md' },
+    entities: [
+      { name: 'Leon Black', mention_count: 16, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 6, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 4, is_primary: true },
+      { name: 'Jes Staley', mention_count: 0, is_primary: false },
+    ],
+    citations: [
+      { number: 1, bates_number: 'EFTA02731699', description: 'FBI 302 / AUSA interview logistics — first and only victim interview at 290 Broadway', page_reference: 'Full document' },
+      { number: 2, bates_number: 'EFTA02731526', description: 'Bank statements: $15K-$167K wire payments from Leon J. Black, J. Black Trust, E Trust', page_reference: 'Full document' },
+      { number: 3, bates_number: 'EFTA02731576', description: 'Victim text to Black: "You sexually harassed me, sex trafficked me, raped me"', page_reference: 'Full document' },
+      { number: 4, bates_number: 'EFTA02731578', description: 'SDNY internal: "I\'m not inclined to open based on the other victim, for a variety of reasons"', page_reference: 'Full document' },
+      { number: 5, bates_number: 'EFTA02731684', description: 'First contact: Christensen reaches SDNY AUSA about Leon Black', page_reference: 'Full document' },
+      { number: 6, bates_number: 'EFTA02731699', description: 'FBI agent: "Once you\'re ready to set up an interview, let me know"', page_reference: 'Full document' },
+      { number: 7, bates_number: 'EFTA02731771', description: 'AUSA admission: "I did not write anything up on Leon Black"', page_reference: 'Full document' },
+      { number: 8, bates_number: 'EFTA02731729', description: 'Second victim: identical biting violence — "almost a perfect match"', page_reference: 'Full document' },
+      { number: 9, bates_number: 'EFTA02731618', description: '"So it doesn\'t seem like we are just rebuffing the victim" — optics-driven delay', page_reference: 'Full document' },
+      { number: 10, bates_number: 'EFTA02731023', description: 'Senate Finance Committee letter: $158M payments, no contract, trust scheme, $1B+ tax avoidance', page_reference: 'Full document (13 pages)' },
+      { number: 11, bates_number: 'EFTA02731593', description: 'DANY-SDNY correspondence: new CW trafficked by Maxwell and Epstein; SDNY "not likely to open"', page_reference: 'Full document' },
+      { number: 12, bates_number: 'EFTA02731488', description: 'DANY memo: minor victim (16), sex toys, rectal bleeding, denied medical care, "being 10"', page_reference: 'Full document' },
+      { number: 13, bates_number: 'EFTA02731662', description: 'Medical records: OB-GYN 2011 and 2019 documenting sexual assault injuries', page_reference: 'Full document' },
+      { number: 14, bates_number: 'EFTA02731486', description: 'Supervisor: "[AUSA] looked at it but determined it was not viable (and I agreed)"', page_reference: 'Full document' },
+      { number: 15, bates_number: 'EFTA02731484', description: 'Christensen: "$62.5M to USVI... one lawyer represents ten women... outrageous"', page_reference: 'Full document' },
+      { number: 16, bates_number: 'EFTA02731660', description: 'CRU formal decline: "no evidence of overlap with Maxwell... doesn\'t intend to open"', page_reference: 'Full document' },
+      { number: 17, bates_number: 'EFTA02731632', description: '"Agree with DTC" (Decline to Charge)', page_reference: 'Full document' },
+      { number: 18, bates_number: 'EFTA02731724', description: 'Victim testimony before Judge Rakoff + forensic journal authentication (gel pen, no fabrication)', page_reference: 'Full document' },
+      { number: 19, bates_number: 'EFTA02731633', description: 'Christensen marks request as "urgent" — July 2024', page_reference: 'Full document' },
+      { number: 20, bates_number: 'EFTA02731765', description: 'SDNY to DANY: "Sorry, I have been on trial"', page_reference: 'Full document' },
+      { number: 21, bates_number: 'EFTA02731525', description: 'Black text to victim after learning of her statements — "how damaging they would be to me"', page_reference: 'Full document' },
+      { number: 22, bates_number: 'EFTA02731577', description: 'Black hired Brad Edwards (victims\' rights attorney) — conflict of interest', page_reference: 'Full document' },
     ],
   },
 ]
@@ -885,6 +947,8 @@ async function seedStories(entityUUIDs: Map<string, string>) {
           is_featured: story.is_featured,
           published_at: story.published_at,
           case_file_id: caseFileId,
+          hero_image_url: story.hero_image_url,
+          hero_image_caption: story.hero_image_caption,
           metadata: story.metadata,
         },
         { onConflict: 'slug' },

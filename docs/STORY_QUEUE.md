@@ -16,13 +16,14 @@
 | 5 | the-man-who-held-every-key | The Man Who Held Every Key | the-network | THREAD_04 | 2026-02 |
 | 6 | the-system | The System | the-operation | MASTER_BRIEF | 2026-02 |
 | 7 | the-scheduler | The Scheduler | the-network | LESLEY_GROFF_Analysis.md | 2026-03 |
+| 8 | the-billion-dollar-blind-eye | The Billion-Dollar Blind Eye | follow-the-money | LEON_BLACK/Analysis.md | 2026-03 |
 
 ## Ready to Write
 
 | Pri | Suggested Title | Section | Source Material | Key Angle |
 |-----|-----------------|---------|-----------------|-----------|
 | ~~1~~ | ~~The Scheduler~~ | ~~the-network~~ | ~~LESLEY_GROFF_Analysis.md~~ | **PUBLISHED** (Story 7, 2026-03-12) |
-| 2 | The Billion-Dollar Blind Eye | follow-the-money | LEON_BLACK_CASE.md | $158M in payments, 3+ victims, forensic journals, "I did not write anything up on Leon Black" |
+| ~~2~~ | ~~The Billion-Dollar Blind Eye~~ | ~~follow-the-money~~ | ~~LEON_BLACK/Analysis.md~~ | **PUBLISHED** (Story 8, 2026-03-12) |
 | 3 | The Recruitment Trip | the-operation | DS12_EXPANSION (Cape Town) | Clinton/Spacey/Tucker present during victim recruitment in Sept 2002 |
 | 4 | The Last Night | the-cover-up | DS12_EXPANSION (MCC) | Minute-by-minute MCC failure — not conspiracy, just institutional negligence |
 | 5 | The Governor's Ranch | the-network | Richardson investigation | Pilot testimony, campaign money, Richardson died uninvestigated in 2023 |
@@ -84,6 +85,14 @@ From "analysis doc exists" → "story live on site" in 7 steps:
 - [ ] Uses `> [!finding]` for analytical conclusions
 - [ ] Uses `> [!data:value]` for highlighted statistics (where applicable)
 - [ ] Closing zooms out to systemic implications
+
+### Images (required for Story 7+)
+- [ ] Hero image: `hero_image_url` set in StoryDef (Wikimedia Commons preferred)
+- [ ] 2-4 inline images using `![caption](url)` syntax in markdown
+- [ ] Images are contextual — people, places, or documents mentioned in the story
+- [ ] Image sources: Wikimedia Commons (CC/public domain), government photos, court exhibits
+- [ ] Captions are descriptive and factual (not decorative)
+- [ ] Images placed between sections (after `---` dividers) for visual pacing
 
 ### Metadata
 - [ ] 1500-2500 words (7-10 minute read)
