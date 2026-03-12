@@ -204,7 +204,7 @@
 - [x] Create `docs/STORY_QUEUE.md` — backlog tracking with workflow + checklist
 - [x] Update CLAUDE.md session checklist with story step
 - [x] Story 7: "The Scheduler" (Lesley Groff) — section: the-network — 1,299 words, 19 citations, 5 entity links. Seeded 2026-03-12.
-- [ ] Story 8: "The Billion-Dollar Blind Eye" (Leon Black) — section: follow-the-money
+- [x] Story 8: "The Billion-Dollar Blind Eye" (Leon Black) — section: follow-the-money — ~2,000 words, 22 citations, 4 entity links, 3 inline images + hero image. First story with inline `![caption](url)` images. Seeded 2026-03-12.
 - [ ] Story 9: "The Recruitment Trip" (Cape Town) — section: the-operation
 - [ ] Story 10: "The Last Night" (MCC death) — section: the-cover-up
 - [ ] Story 11: "The Governor's Ranch" (Bill Richardson) — section: the-network
@@ -311,22 +311,32 @@
 
 ### Public Document Viewer (Hybrid Access)
 > Documents clickable throughout the site. Public metadata + text excerpts; PDF viewer requires auth.
-- [ ] Public document detail page — `/evidence/documents/[bates]` showing metadata, entity links, events, severity, dataset, text excerpts (no auth)
-- [ ] Auth-gated PDF viewer — "Sign in to view full document" on detail page; auth users get PDF viewer (reuse `components/review/pdf-viewer.tsx`) with R2 signed URLs
-- [ ] Update Bates auto-links — change markdown renderer from `/evidence?q={BATES}` to `/evidence/documents/{BATES}`
-- [ ] Public document API — `/api/public/documents/[bates]` returning metadata + entity links + events
+- [x] Public document detail page — `/evidence/documents/[bates]` showing metadata, entity links, events, severity, dataset, text excerpts (no auth)
+- [x] Auth-gated PDF viewer — "Sign in to view full document" on detail page; auth users link to dashboard viewer, anon users see sign-in prompt
+- [x] Update Bates auto-links — change markdown renderer from `/evidence?q={BATES}` to `/evidence/documents/{BATES}`
+- [x] Public document API — `/api/public/documents/[bates]` returning metadata + entity links + events
+- [x] Search result cards link to document detail pages
+- [x] Entity evidence profile document Bates numbers link to detail pages
 
 ### Corpus-Level Search
-> Extend evidence room search beyond Supabase FTS to the full 1.38M-document SQLite corpus.
+> Extend evidence room search beyond Supabase FTS to the full 1.38M-document SQLite corpus. Currently only available locally via MCP server (port 3001). Future: host on Railway for public access.
 - [ ] Corpus search API — `/api/public/evidence/corpus-search` querying SQLite FTS5 (via MCP or direct connection)
 - [ ] Dual search mode — toggle in evidence room between "Database" (Supabase FTS) and "Full Corpus" (SQLite FTS5)
 - [ ] Search result enrichment — corpus results matching Supabase documents show entity links + metadata
+- [ ] Railway deployment — host SQLite corpus + search API on Railway for production access (revisit when ready)
 
 ### Entity Profile Media Expansion
 > Expand entity profiles beyond avatar-only images to full media galleries.
-- [ ] Entity profile media section — photos gallery tab on publication + evidence room profiles (wire `document_images` to entity profiles)
-- [ ] Entity profile video embeds — YouTube/external video links in entity metadata
-- [ ] Source more profile pictures — expand beyond Wikimedia Commons (court photos, mugshots, official photos)
+- [ ] Entity profile media section — photos gallery tab on publication + evidence room profiles (wire `document_images` → `image_entities` to entity pages)
+- [ ] Entity profile video embeds — add `video_links` JSONB field to entities table, YouTube/external embed component on profiles
+- [ ] Source more profile pictures — expand beyond Wikimedia Commons (court photos, mugshots, official government photos, AP/Getty editorial)
+
+### Batch Document Image Extraction
+> The PyMuPDF image extraction pipeline (Stage 1.5) is fully built but has only run on individually-processed documents. Need a batch job to extract images from all ~1.37M PDFs in R2.
+- [ ] Batch extraction script — iterate all documents with `r2_key`, download PDF, run `stages/images.py` extraction, upload to R2 + upsert `document_images`. Run on Railway as one-time job.
+- [ ] Progress tracking — log processed/skipped/errored counts, resume from last processed document_id on restart
+- [ ] Auto-classification pass — after extraction, classify `image_type` (photo vs graphic vs signature vs map) using Qwen2-VL or similar (currently defaults to 'embedded')
+- [ ] Public image gallery — expose curated/tagged images on publication site (currently dashboard-only at `/dashboard/photos`)
 
 ### Additional Data Sources
 - [ ] Giuffre v. Maxwell court records import
@@ -410,3 +420,4 @@
 - [x] **RESOLVED (March 11, 2026):** Identity of unnamed government official at Zorro Ranch 2004 (¶50 EFTA02731941) = **Bill Richardson**, Governor of New Mexico 2003–2011. Evidence: pilot Larry Morrison testimony (HOUSE_OVERSIGHT_010566) + $100K+ campaign contributions via Zorro Trust + Deputy CoS scheduling emails + the word "another" in ¶50 confirming a different person from Cape Town official (Clinton). Entity created T3 (`fbf16d66`), linked to event `18ae3209-b9c5-4386-8a52-1aa627e9a757`.
 - [x] Deep read Morrison deposition (EFTA01247021, pp. 167–169) — verbatim Richardson testimony extracted and logged in DS12_EXPANSION_Analysis.md. Morrison saw Richardson at Ranch Central being escorted to main house for dinner with Epstein. Document updated in DB. Larry Eugene Morrison added to suspect watchlist (`e4ee5ea3`). Note: Morrison is Epstein's personal pilot, distinct from Lawrence Visoski (chief pilot, already T6 entity).
 - [x] **Lesley Groff deep dive (March 12, 2026)** — Full corpus sweep (153K docs / 168K pages), 12+ key documents deep-read including EFTA02731082 (prosecution memo), EFTA01682023 (proffer agreement), EFTA01681865 (Deutsche Bank), EFTA01649143 (case summary), EFTA01653331 (arrest briefing), EFTA02731039 (prosecution memo), EFTA01656152 (FBI presentation), EFTA01654108 (FinCEN alert), EFTA01424842 (bank signers), EFTA02737678 (Boies Schiller letter). Analysis at `docs/investigation/LESLEY_GROFF_Analysis.md` (318 lines, 12 sections). DB updates: entity record enriched (bio, evidence_summary, aliases), 3 connections (Groff↔Epstein, Groff↔Indyke, Groff↔Maxwell), 10 document links, 5 timeline events (NPA immunity 2007, reverse proffer 2019-07-18, Fifth Amendment 2019-08-07, FinCEN alerts 2019-08-27, formal proffer 2021-07-23). Key findings: (1) Section D of prosecution memo (Groff charging analysis) entirely redacted — Category C institutional protection; (2) $410K+ in wire transfers from Deutsche Bank 2016-2018; (3) dual employment (Epstein assistant + Indyke law firm); (4) post-death investigation "focused on Ghislaine Maxwell, [redacted], and Lesley Groff"; (5) no concordance custodian — all docs produced under Epstein designation.
+- [x] **Leon Black deep dive (March 12, 2026)** — Full corpus sweep (9,149 docs / 10,869 pages across 7 datasets). 25+ DS12 prosecution chain documents deep-read. Analysis at `docs/investigation/sources/LEON_BLACK/Analysis.md` (~400 lines, 11 sections). DB updates: entity enriched (bio, evidence_summary, aliases), 15 key documents linked, 6 documents enriched, 5 timeline events, Melanie Spinella added to suspect watchlist. Key analytical framework: "The Two-Track Failure" — SDNY never formally opened case, DANY couldn't get federal cooperation. Key findings: (1) 6-phase prosecution decision chain April 2021 → Jan 2026 = zero charges; (2) AUSA admission "I did not write anything up on Leon Black"; (3) $158M total payments, $62.5M USVI settlement, step-up-basis trust scheme; (4) 3+ victims with corroborating accounts including identical signature violence; (5) forensic journal authentication (gel pen, no fabrication); (6) witness intimidation (Black contacted victim, hired victims' attorney Brad Edwards).

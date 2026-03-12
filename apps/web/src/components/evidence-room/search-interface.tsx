@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import Link from 'next/link'
 
 interface SearchResult {
   id: string
@@ -220,7 +221,7 @@ function ResultCard({ doc, query }: { doc: SearchResult; query: string }) {
   const typeColor = doc.document_type ? TYPE_COLORS[doc.document_type] ?? '#6b7585' : '#6b7585'
   const sevColor = doc.severity ? SEVERITY_COLORS[doc.severity] ?? '#6b7585' : '#6b7585'
 
-  return (
+  const content = (
     <div className="py-4 hover:bg-surface/50 transition-colors">
       {/* Top row: Bates + badges */}
       <div className="flex items-center gap-2 flex-wrap mb-1.5">
@@ -275,6 +276,16 @@ function ResultCard({ doc, query }: { doc: SearchResult; query: string }) {
       </div>
     </div>
   )
+
+  if (doc.bates_number) {
+    return (
+      <Link href={`/evidence/documents/${doc.bates_number}`} className="block">
+        {content}
+      </Link>
+    )
+  }
+
+  return content
 }
 
 function highlightTerms(text: string, query: string): string {

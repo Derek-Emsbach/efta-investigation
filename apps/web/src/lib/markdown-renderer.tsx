@@ -267,6 +267,28 @@ function renderBlock(
     )
   }
 
+  // Image: ![caption](url)
+  const imgMatch = block.match(/^!\[([^\]]*)\]\(([^)]+)\)$/)
+  if (imgMatch) {
+    const caption = imgMatch[1]
+    const url = imgMatch[2]
+    return (
+      <figure key={key} className="my-8">
+        <img
+          src={url}
+          alt={caption || ''}
+          className="w-full max-h-[500px] object-cover"
+          loading="lazy"
+        />
+        {caption && (
+          <figcaption className="mt-2 font-body text-xs text-text-muted italic text-center">
+            {caption}
+          </figcaption>
+        )}
+      </figure>
+    )
+  }
+
   // Document embed: {{doc:EFTA...}}
   const docMatch = block.match(/^\{\{doc:(EFTA\d+)\}\}$/)
   if (docMatch) {
@@ -286,7 +308,7 @@ function renderBlock(
         </div>
         <div className="px-4 py-3">
           <a
-            href={`/evidence?q=${bates}`}
+            href={`/evidence/documents/${bates}`}
             className="font-mono text-xs text-neon-blue hover:underline"
           >
             View in Evidence Room →
@@ -549,7 +571,7 @@ function renderInline(text: string, ctx: InternalContext): ReactNode[] {
       parts.push(
         <a
           key={`efta-${keyIdx++}`}
-          href={`/evidence?q=${bates}`}
+          href={`/evidence/documents/${bates}`}
           className="font-mono text-sm text-accent-red hover:underline"
         >
           {bates}

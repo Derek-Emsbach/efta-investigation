@@ -213,6 +213,7 @@ All public API routes live at `/api/public/*` and share these patterns:
 | `/api/public/homepage` | GET | Aggregated homepage data |
 | `/api/public/timeline` | GET | Public timeline events with published entity links |
 | `/api/public/network` | GET | Network graph nodes/edges (published entities) |
+| `/api/public/documents/[bates]` | GET | Document detail by Bates number (metadata, entities, events, images, citations, redaction summary) |
 | `/api/public/images/[id]/file` | GET | Proxy full-size document image from R2 |
 | `/api/public/images/[id]/thumbnail` | GET | Proxy thumbnail document image from R2 |
 

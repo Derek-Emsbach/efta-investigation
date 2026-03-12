@@ -425,9 +425,13 @@ function DocumentsTab({ documents }: { documents: DocumentRecord[] }) {
           const d = doc.document
           return (
             <div key={doc.id} className="grid grid-cols-[140px_1fr_100px_100px_80px] gap-4 px-4 py-3 items-center">
-              <span className="text-xs font-mono text-neon-cyan truncate">
-                {d.bates_number ?? '—'}
-              </span>
+              {d.bates_number ? (
+                <Link href={`/evidence/documents/${d.bates_number}`} className="text-xs font-mono text-neon-cyan truncate hover:underline">
+                  {d.bates_number}
+                </Link>
+              ) : (
+                <span className="text-xs font-mono text-neon-cyan truncate">—</span>
+              )}
               <span className="text-sm text-text-primary truncate">
                 {d.title ?? 'Untitled document'}
               </span>

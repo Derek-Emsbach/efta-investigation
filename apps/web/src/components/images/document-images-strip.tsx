@@ -7,9 +7,10 @@ import type { GalleryImage } from './image-gallery'
 
 interface DocumentImagesStripProps {
   images: DocumentImage[]
+  urlPrefix?: string
 }
 
-export default function DocumentImagesStrip({ images }: DocumentImagesStripProps) {
+export default function DocumentImagesStrip({ images, urlPrefix = '/api/images' }: DocumentImagesStripProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   // Convert DocumentImage[] to GalleryImage[] (no document join needed here)
@@ -27,7 +28,7 @@ export default function DocumentImagesStrip({ images }: DocumentImagesStripProps
             <div className="relative aspect-square bg-background overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`/api/images/${img.id}/thumbnail`}
+                src={`${urlPrefix}/${img.id}/thumbnail`}
                 alt={img.caption ?? `Page ${img.page_number + 1}, image ${img.image_index + 1}`}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
