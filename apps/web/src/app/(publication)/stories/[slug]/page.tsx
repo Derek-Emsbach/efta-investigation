@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import type {
   Story,
+  StorySection,
   StoryEntity,
   StoryCitation,
   Entity,
@@ -18,6 +19,7 @@ import { PrintButton } from '@/components/ui/print-button'
 import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
 import { SourceAttributionBar } from '@/components/publication/promo/source-attribution-bar'
 import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
+import { RelatedStories } from '@/components/publication/story/related-stories'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -105,6 +107,87 @@ export default async function StoryPage({
 
   const entities = (entitiesResult.data ?? []) as (StoryEntity & { entity: Entity })[]
   const citations = (citationsResult.data ?? []) as (StoryCitation & { document: Document | null })[]
+
+  // Find related stories: prioritize shared entities, fall back to same section
+  type RelatedStoryRow = {
+    slug: string
+    title: string
+    deck: string | null
+    section: StorySection | null
+    published_at: string | null
+    hero_image_url: string | null
+    reading_time_minutes: number | null
+    is_published?: boolean
+    shared_entity_count?: number
+  }
+
+  const entityIds = entities.map((e) => e.entity_id)
+  const relatedByEntity = entityIds.length > 0
+    ? await supabase
+        .from('story_entities')
+        .select('story_id, story:stories(slug, title, deck, section, published_at, hero_image_url, reading_time_minutes, is_published)')
+        .in('entity_id', entityIds)
+        .neq('story_id', typedStory.id)
+    : { data: [] }
+
+  // Deduplicate and rank by shared entity count
+  const storyScores = new Map<string, { story: RelatedStoryRow; count: number }>()
+  for (const row of relatedByEntity.data ?? []) {
+    const s = row.story as unknown as RelatedStoryRow | null
+    if (!s || !s.is_published) continue
+    const existing = storyScores.get(s.slug)
+    if (existing) {
+      existing.count++
+    } else {
+      storyScores.set(s.slug, { story: s, count: 1 })
+    }
+  }
+
+  const relatedStories: RelatedStoryRow[] = [...storyScores.entries()]
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 3)
+    .map(([, v]) => ({ ...v.story, shared_entity_count: v.count }))
+
+  // If fewer than 3, backfill with same-section stories
+  if (relatedStories.length < 3 && typedStory.section) {
+    const existingSlugs = new Set(relatedStories.map((s) => s.slug))
+    existingSlugs.add(slug)
+    const { data: sectionStories } = await supabase
+      .from('stories')
+      .select('slug, title, deck, section, published_at, hero_image_url, reading_time_minutes')
+      .eq('section', typedStory.section)
+      .eq('is_published', true)
+      .neq('slug', slug)
+      .order('published_at', { ascending: false })
+      .limit(3)
+    for (const s of (sectionStories ?? []) as RelatedStoryRow[]) {
+      if (relatedStories.length >= 3) break
+      if (!existingSlugs.has(s.slug)) {
+        relatedStories.push({ ...s, shared_entity_count: 0 })
+        existingSlugs.add(s.slug)
+      }
+    }
+  }
+
+  // Final backfill: any recent stories
+  if (relatedStories.length < 3) {
+    const existingSlugs = new Set(relatedStories.map((s) => s.slug))
+    existingSlugs.add(slug)
+    const { data: recentStories } = await supabase
+      .from('stories')
+      .select('slug, title, deck, section, published_at, hero_image_url, reading_time_minutes')
+      .eq('is_published', true)
+      .neq('slug', slug)
+      .order('published_at', { ascending: false })
+      .limit(6)
+    for (const s of (recentStories ?? []) as RelatedStoryRow[]) {
+      if (relatedStories.length >= 3) break
+      if (!existingSlugs.has(s.slug)) {
+        relatedStories.push({ ...s, shared_entity_count: 0 })
+        existingSlugs.add(s.slug)
+      }
+    }
+  }
 
   // Build render context for the markdown renderer
   const renderContext = {
@@ -207,6 +290,9 @@ export default async function StoryPage({
                 </p>
               </div>
             </div>
+
+            {/* Related stories */}
+            <RelatedStories stories={relatedStories} />
 
             {/* Source attribution */}
             <SourceAttributionBar />
