@@ -8,6 +8,8 @@ This is what the documents show.
 
 ---
 
+![Little Saint James Island in the U.S. Virgin Islands — the private island at the center of Epstein's trafficking operation, one of four properties controlled by the trust](https://upload.wikimedia.org/wikipedia/commons/3/3f/Little_St_James_Island_%289123420726%29.jpg)
+
 ## The Five Parts
 
 ### I. The Trustee Who Signed Three Times
@@ -53,6 +55,8 @@ These five components were not parallel. They were connected through three struc
 **Third: the Dubin family connected inheritance to exposure.** The family that stood to receive $250 million from the estate included a member documented in the same prosecution memo for criminal conduct. The successor trustee — next in line to control the witness control mechanisms — was married to the man with Tier 1 evidence exposure. Whether this alignment was engineered by Epstein or emerged from a personal relationship, it created a structural condition in which the Dubins could not challenge the estate without scrutinizing the conduct that generated it.[CITE:3][CITE:4]
 
 ---
+
+![The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where the prosecution memo documented five subjects for potential charges but the charging analysis remains 98% redacted](https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG)
 
 ## Evidence Without Consequence
 

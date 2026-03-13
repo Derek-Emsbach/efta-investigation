@@ -8,6 +8,8 @@ No resignation document has been found in 1.38 million EFTA documents.[CITE:1]
 
 ---
 
+![Barclays Bank PLC world headquarters in Canary Wharf, London — where Jes Staley served as CEO while his name remained on Epstein's trust documents](https://upload.wikimedia.org/wikipedia/commons/8/8d/Barclays_Bank_PLC_world_headquarters.JPG)
+
 ## The Banker
 
 Before the trust, there was the banking relationship. {{entity:jes-staley}}'s connection to {{entity:jeffrey-epstein}} began around 2000, when Staley headed JPMorgan's private banking division. Epstein maintained approximately $99 million across three entity accounts at the bank.[CITE:4]
@@ -63,6 +65,8 @@ They found no independent corroboration beyond the JPMorgan timeline evidence �
 > The rape allegation against {{entity:jes-staley}} appears in the SDNY prosecution memo, four variants of the FBI PROMINENT NAMES briefing, a prosecution timeline document, the USVI civil complaint, and the DANY assessment. JPMorgan produced communications corroborating the timeline. The allegation was documented by prosecutors, briefed to FBI units, assessed by DANY as credible — and never charged.
 
 ---
+
+![The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where SDNY prosecutors documented Staley's rape of a victim during a directed massage](https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG)
 
 ## Three Signatures
 

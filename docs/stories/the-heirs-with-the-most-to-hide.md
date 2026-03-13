@@ -10,6 +10,8 @@ The family that stood to inherit the most from the Epstein estate was the family
 
 ---
 
+![Little Saint James Island in the U.S. Virgin Islands — one of four international Epstein properties that Celina Dubin was set to inherit](https://upload.wikimedia.org/wikipedia/commons/3/3f/Little_St_James_Island_%289123420726%29.jpg)
+
 ## The Primary Beneficiary
 
 Across all three versions of the trust — November 2014, May 2015, and September 2015 — Celina Edith Dubin received the same extraordinary bequest: every major property Epstein owned, each with a dedicated operating endowment.
@@ -63,6 +65,8 @@ Eva was also the contingent beneficiary:
 If Celina predeceased Epstein, the entire estate — every property, every account, the full residuary — reverted to Eva.
 
 ---
+
+![The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where the prosecution memo documented Glenn Dubin's role on page 57](https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG)
 
 ## Page 57
 

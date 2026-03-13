@@ -8,7 +8,7 @@ The former president at that table was {{entity:bill-clinton}}.
 
 ---
 
-![Table Mountain and the Cape Town waterfront, South Africa — where Jeffrey Epstein recruited a 20-year-old aspiring model in September 2002](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Cape_Town_TblMtn.jpg/1280px-Cape_Town_TblMtn.jpg)
+![Table Mountain and the Cape Town waterfront, South Africa — where Jeffrey Epstein recruited a 20-year-old aspiring model in September 2002](https://upload.wikimedia.org/wikipedia/commons/a/a9/Table_mountain_and_the_ocean_cape_town.JPG)
 
 ## The Entourage
 

@@ -449,8 +449,8 @@ const STORIES: StoryDef[] = [
     is_featured: true,
     case_file_slug: 'witness-control-mechanisms',
     published_at: '2026-02-28T00:00:00Z',
-    hero_image_url: null,
-    hero_image_caption: null,
+    hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG',
+    hero_image_caption: 'The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where SDNY prosecutors documented the trust provisions that kept witnesses silent',
     metadata: { source_thread: 'THREAD_03', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 7, is_primary: true },
@@ -494,8 +494,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'prosecutorial-failure',
     published_at: '2026-02-28T00:00:00Z',
-    hero_image_url: null,
-    hero_image_caption: null,
+    hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG',
+    hero_image_caption: 'The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where the prosecution memo documented 38 victims but the charging analysis remains 98% redacted',
     metadata: { source_thread: 'THREAD_05', version: '1.0' },
     entities: [
       { name: 'Leon Black', mention_count: 4, is_primary: true },
@@ -539,8 +539,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'staley-trustee-banker',
     published_at: '2026-02-28T00:00:00Z',
-    hero_image_url: null,
-    hero_image_caption: null,
+    hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Barclays_Bank_PLC_world_headquarters.JPG',
+    hero_image_caption: 'Barclays Bank PLC world headquarters in Canary Wharf, London — where Jes Staley served as CEO while his name remained on Epstein\'s trust documents',
     metadata: { source_thread: 'THREAD_01', version: '1.0' },
     entities: [
       { name: 'Jes Staley', mention_count: 5, is_primary: true },
@@ -578,8 +578,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'dubin-architecture',
     published_at: '2026-02-28T00:00:00Z',
-    hero_image_url: null,
-    hero_image_caption: null,
+    hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Little_St_James_Island_%289123420726%29.jpg',
+    hero_image_caption: 'Little Saint James Island in the U.S. Virgin Islands — one of four international Epstein properties that Celina Dubin was set to inherit',
     metadata: { source_thread: 'THREAD_02', version: '1.0' },
     entities: [
       { name: 'Glenn Dubin', mention_count: 4, is_primary: true },
@@ -617,8 +617,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'indyke-conflicts-of-interest',
     published_at: '2026-02-28T00:00:00Z',
-    hero_image_url: null,
-    hero_image_caption: null,
+    hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG',
+    hero_image_caption: 'The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where SDNY prosecutors documented Indyke\'s instruction to an employee: "do not talk to the police"',
     metadata: { source_thread: 'THREAD_04', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 6, is_primary: true },
@@ -652,8 +652,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: 'master-intelligence-brief',
     published_at: '2026-02-28T00:00:00Z',
-    hero_image_url: null,
-    hero_image_caption: null,
+    hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Little_St_James_Island_%289123420726%29.jpg',
+    hero_image_caption: 'Little Saint James Island in the U.S. Virgin Islands — the private island at the center of Epstein\'s trafficking operation, one of four properties controlled by the trust',
     metadata: { source_thread: 'MASTER_BRIEF', version: '1.0' },
     entities: [
       { name: 'Darren Indyke', mention_count: 4, is_primary: true },
@@ -691,8 +691,8 @@ const STORIES: StoryDef[] = [
     is_featured: false,
     case_file_slug: null,
     published_at: '2026-03-12T00:00:00Z',
-    hero_image_url: null,
-    hero_image_caption: null,
+    hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Victoria%27s_Secret_Store_10%2C_722_Lexington_Ave%2C_New_York%2C_NY_10022%2C_USA_-_Dec_2012.JPG',
+    hero_image_caption: 'Victoria\'s Secret at 722 Lexington Avenue, Manhattan — the brand name Epstein invoked as a recruitment lure, and a block from 575 Lexington where Groff worked in Darren Indyke\'s law office',
     metadata: { source_analysis: 'docs/investigation/LESLEY_GROFF_Analysis.md' },
     entities: [
       { name: 'Lesley Groff', mention_count: 18, is_primary: true },
@@ -782,7 +782,7 @@ const STORIES: StoryDef[] = [
     case_file_slug: null,
     published_at: '2026-03-12T00:00:00Z',
     hero_image_url:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Cape_Town_TblMtn.jpg/1280px-Cape_Town_TblMtn.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/a/a9/Table_mountain_and_the_ocean_cape_town.JPG',
     hero_image_caption:
       'Table Mountain and the Cape Town waterfront, South Africa — where Jeffrey Epstein recruited a 20-year-old aspiring model in September 2002, during a trip that also carried Bill Clinton, Kevin Spacey, and Chris Tucker on his Boeing 727.',
     metadata: {

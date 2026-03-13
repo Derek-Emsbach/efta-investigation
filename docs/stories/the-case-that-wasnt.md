@@ -8,6 +8,8 @@ What the prosecutors recommended doing about any of this is hidden. The charging
 
 ---
 
+![The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where the Southern District of New York prepared the 86-page prosecution memo that documented 38 victims](https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG)
+
 ## The Memo
 
 The prosecution memo (EFTA02731082) is the single most comprehensive document in the EFTA corpus. It was prepared for U.S. Attorney Geoffrey Berman and laid out, in methodical detail, what the government knew about Epstein's operation and who was involved.
@@ -52,6 +54,8 @@ The redaction is justified under deliberative process privilege and grand jury s
 Maxwell was arrested on July 2, 2020. She was convicted on December 29, 2021, on five of six counts. No other individual documented in the prosecution memo was ever charged.[CITE:1]
 
 ---
+
+![Ghislaine Maxwell in 2007 — the only person named in the SDNY prosecution memo to be arrested and convicted](https://upload.wikimedia.org/wikipedia/commons/4/4a/Ghislaine_Maxwell_2007.jpg)
 
 ## The Leon Black Investigation
 

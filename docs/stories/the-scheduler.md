@@ -11,6 +11,8 @@ Groff was never charged.
 
 ---
 
+![Victoria's Secret at 722 Lexington Avenue, Manhattan — the brand name Epstein invoked as a recruitment lure, and a block from 575 Lexington where Groff worked in Darren Indyke's law office](https://upload.wikimedia.org/wikipedia/commons/8/82/Victoria%27s_Secret_Store_10%2C_722_Lexington_Ave%2C_New_York%2C_NY_10022%2C_USA_-_Dec_2012.JPG)
+
 ## What the Victims Described
 
 The prosecution record is unambiguous about Groff's role. Victim after victim identified "Leslie" as the woman who called to schedule their appointments with Epstein.
@@ -48,6 +50,8 @@ But SDNY took a different position. The Southern District of New York argued tha
 The immunity shield had a crack. SDNY could have charged her. They chose not to.
 
 ---
+
+![The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where SDNY prosecutors concluded Groff's denials "would not be credible" but never charged her](https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG)
 
 ## The Indyke Office
 

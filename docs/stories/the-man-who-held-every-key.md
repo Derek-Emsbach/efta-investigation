@@ -6,6 +6,8 @@ Seven roles. One person. A minimum of $8.25 million in documented financial bene
 
 ---
 
+![The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where SDNY prosecutors documented Indyke's instruction to an employee: "do not talk to the police"](https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG)
+
 ## The Accumulation
 
 The conflicts did not appear all at once. They escalated with each version of the trust, growing more expansive and more entangled from November 2014 through September 2015.
@@ -47,6 +49,8 @@ One trustee. That was Indyke — the attorney with daily access to Epstein, the 
 > The amendment power change rendered the other trustees' oversight role ceremonial for trust modifications. They retained administrative powers, but the instrument itself could be rewritten around them. Indyke — already the largest individual beneficiary, the personal attorney, and the debt cancellation recipient — became the sole gatekeeper controlling whether the trust could be changed. The person with the most to gain from the trust's structure was the only person who had to approve changes to it.
 
 ---
+
+![The Metropolitan Correctional Center in Lower Manhattan — Epstein's death here on August 10, 2019 triggered the trust provisions that made Indyke the sole gatekeeper](https://upload.wikimedia.org/wikipedia/commons/0/0c/Metropolitan_Correctional_Center.jpg)
 
 ## The Financial Web
 

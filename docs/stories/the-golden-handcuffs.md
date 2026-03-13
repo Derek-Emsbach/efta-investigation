@@ -6,6 +6,8 @@ His name was {{entity:darren-indyke}}. He was Epstein's personal lawyer, the tru
 
 ---
 
+![The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — where SDNY prosecutors documented the trust's witness control provisions in their December 2019 prosecution memo](https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG)
+
 ## The Architecture of Silence
 
 The witness control provisions were not present from the beginning. The original trust, executed on November 18, 2014, contained no employment restrictions on employee-beneficiaries.[CITE:17] Neither did the Amendment and Restatement signed on May 1, 2015.[CITE:18] The bequests in those early versions were unconditional: work for Epstein, get paid after he died.
@@ -66,6 +68,8 @@ This convergence of roles made Indyke the mechanism through which structural con
 The person saying this was not a colleague offering friendly advice. He was the attorney who represented the employer, the trustee who controlled the bequest, and a man with $8 million riding on the outcome. When {{entity:darren-indyke}} told an employee not to talk to police, the financial weight of the entire trust stood behind the instruction.
 
 ---
+
+![The Metropolitan Correctional Center in Lower Manhattan — where Jeffrey Epstein died on August 10, 2019, triggering the trust's employment cliff provisions](https://upload.wikimedia.org/wikipedia/commons/0/0c/Metropolitan_Correctional_Center.jpg)
 
 ## The Wire
 
