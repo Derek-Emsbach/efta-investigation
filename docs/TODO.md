@@ -206,6 +206,9 @@
 - [x] Story 7: "The Scheduler" (Lesley Groff) — section: the-network — 1,299 words, 19 citations, 5 entity links. Seeded 2026-03-12.
 - [x] Story 8: "The Billion-Dollar Blind Eye" (Leon Black) — section: follow-the-money — ~2,000 words, 22 citations, 4 entity links, 3 inline images + hero image. First story with inline `![caption](url)` images. Seeded 2026-03-12.
 - [x] Story 9: "The Recruitment Trip" (Cape Town) — section: the-operation — ~1,500 words, 19 citations, 5 entity links, 3 inline images + hero image. Seeded 2026-03-12.
+- [x] Image retrofit — all 9 stories now have hero images + 2-3 inline images each. Broken Cape Town URL fixed.
+- [x] Editorial attribution — Derek Emsbach as named editor across masthead, story bylines, footer, about page. AI-Assisted badge on stories.
+- [x] Related Stories — "Continue Reading" section on every story page (3 related articles, matched by shared entities → section → recency)
 - [ ] Story 10: "The Last Night" (MCC death) — section: the-cover-up
 - [ ] Story 11: "The Governor's Ranch" (Bill Richardson) — section: the-network
 
