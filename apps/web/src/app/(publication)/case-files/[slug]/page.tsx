@@ -171,6 +171,10 @@ export default async function CaseFilePage({
                 Entity tier classifications reflect evidence strength, not guilt.
                 See methodology notes for analytical framework and limitations.
               </p>
+              <p className="mt-2">
+                Research and analysis assisted by Claude AI (Anthropic). All reports
+                are reviewed, fact-checked, and edited by Derek Emsbach.
+              </p>
             </div>
           </div>
 

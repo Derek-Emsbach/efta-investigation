@@ -76,7 +76,8 @@ export function PublicFooter() {
 
         <div className="mt-10 border-t border-border-default pt-6 text-center text-xs text-text-muted">
           <p>
-            All documents are publicly released government records. Analysis and presentation by Cyclops Digital LLC.
+            All documents are publicly released government records. Research assisted by Claude AI (Anthropic).
+            Edited by Derek Emsbach. Built by Cyclops Digital LLC.
           </p>
           <p className="mt-1">
             Presence in this database does not imply guilt. All individuals are presumed innocent unless proven guilty in a court of law.

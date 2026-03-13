@@ -201,6 +201,10 @@ export default async function StoryPage({
                   identified by Bates number. Entity tier classifications reflect evidence
                   strength, not legal determinations.
                 </p>
+                <p className="mt-2">
+                  Research and initial drafting assisted by Claude AI (Anthropic). All articles
+                  are reviewed, fact-checked, and edited by Derek Emsbach.
+                </p>
               </div>
             </div>
 

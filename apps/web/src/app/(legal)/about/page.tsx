@@ -298,6 +298,11 @@ export default function AboutPage() {
             Team &amp; Credits
           </h2>
           <p>
+            <strong className="text-text-primary">Derek Emsbach</strong>, Editor
+            — responsible for editorial direction, fact-checking, and final
+            review of all published content.
+          </p>
+          <p className="mt-3">
             This platform was designed and built by{" "}
             <strong className="text-text-primary">Cyclops Digital LLC</strong>{" "}
             as a research tool for investigative journalists, researchers, and
@@ -305,12 +310,39 @@ export default function AboutPage() {
           </p>
           <p className="mt-3">
             Built with Next.js, React, Tailwind CSS, Supabase, Cloudflare R2,
-            Python, and Claude AI.
+            and Python.
           </p>
           <p className="mt-3 text-text-muted">
             Special thanks to the survivors who made their stories public, the
             investigative journalists who refused to look away, and the
             legislators who passed the EFTA to force transparency.
+          </p>
+        </section>
+
+        {/* AI Transparency */}
+        <section>
+          <h2 className="mb-3 font-display text-xl font-semibold text-text-primary">
+            AI Transparency
+          </h2>
+          <p>
+            This publication uses{" "}
+            <strong className="text-text-primary">Claude AI</strong> (Anthropic)
+            to assist with document analysis, research synthesis, and initial
+            article drafting. Claude processes the EFTA corpus — analyzing
+            document content, identifying entity connections, and generating
+            draft narratives from primary source material.
+          </p>
+          <p className="mt-3">
+            Every article is reviewed, fact-checked, and edited by the named
+            editor before publication. Every factual claim is traced to a
+            specific EFTA document identified by Bates number. The AI assists
+            with research and drafting; editorial judgment and accountability
+            rest with the human editor.
+          </p>
+          <p className="mt-3 text-text-muted">
+            We believe transparency about AI involvement is essential to
+            maintaining reader trust. Articles are marked with an
+            &ldquo;AI-Assisted&rdquo; indicator in their metadata.
           </p>
         </section>
       </div>

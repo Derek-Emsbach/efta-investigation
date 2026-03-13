@@ -61,6 +61,8 @@ export function StoryHero({ story, citationCount }: StoryHeroProps) {
       {/* Meta bar */}
       <div className="mt-6 flex items-center gap-4 flex-wrap font-body text-sm text-text-muted">
         <span>By {story.byline}</span>
+        <span className="text-border-default">·</span>
+        <span>Edited by Derek Emsbach</span>
         {story.published_at && (() => {
           const published = new Date(story.published_at)
           const updated = story.updated_at ? new Date(story.updated_at) : null
@@ -89,6 +91,14 @@ export function StoryHero({ story, citationCount }: StoryHeroProps) {
             <span>{story.reading_time_minutes} min read</span>
           </>
         )}
+        <span className="text-border-default">|</span>
+        <span
+          className="inline-flex items-center gap-1 font-mono text-[11px] text-text-muted"
+          title="Research and drafting assisted by Claude AI. All facts verified against primary source documents."
+        >
+          <span className="text-accent-gold text-xs">✦</span>
+          AI-Assisted
+        </span>
         {citationCount > 0 && (
           <>
             <span className="text-border-default">|</span>
