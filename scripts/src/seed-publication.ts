@@ -1097,6 +1097,66 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  // ─── Story 12: The Last Night (MCC death) ──────────────────────────────────
+  {
+    slug: 'the-last-night',
+    title: 'The Last Night',
+    deck: 'Two officers slept while browsing furniture websites. Five mandatory counts were falsified. The cameras on Epstein\'s tier were already broken. His cellmate had been removed that morning. Then the charges were dropped.',
+    section: 'the-cover-up' as const,
+    file: 'the-last-night.md',
+    byline: 'Derek Emsbach',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-14T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/4/46/MCC_New_York_jeh.JPG',
+    hero_image_caption:
+      'The Metropolitan Correctional Center at 150 Park Row in Lower Manhattan. The federal detention facility where Jeffrey Epstein died on August 10, 2019 was permanently closed in 2021.',
+    metadata: { source_analysis: 'docs/investigation/DS12_EXPANSION_Analysis.md' },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 8, is_primary: true },
+      { name: 'Darren Indyke', mention_count: 2, is_primary: false },
+      { name: 'Richard Kahn', mention_count: 1, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02731790',
+        description:
+          'Prosecution slide deck, US v. Noel & Thomas — complete MCC timeline, false count slips, video evidence, DVR failure, cellmate removal, 75+ falsified round entries',
+        page_reference: 'Full document',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02731812',
+        description:
+          'Grand jury transcript, Session 1 — FBI agent testimony on video surveillance, bribery investigation (no evidence), financial records review, unprecedented 5 missed counts',
+        page_reference: 'Full document',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02731852',
+        description:
+          'Grand jury transcript, Session 2 — Epstein\'s last will signed Aug 8, 2019 naming Indyke and Kahn as executors of $577M+ estate; 6-count indictment voted',
+        page_reference: 'Full document',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02732243',
+        description:
+          'Consolidated discovery conference transcript — estate possessed 700K+ documents, produced only 3 (one clawed back); 4 parallel civil cases',
+        page_reference: 'Full transcript',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA02732143',
+        description:
+          'Boies Schiller opposition brief — "estate has taken the position of attempting to prove Epstein\'s innocence"; documents discovery obstruction',
+        page_reference: 'Full document',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

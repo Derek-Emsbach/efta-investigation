@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 11 stories (160 citations, 67 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 31 published entities fully enriched (1 thin, 20 medium, 10 rich).
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 12 stories (165 citations, 69 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 31 published entities fully enriched (1 thin, 20 medium, 10 rich).
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -211,7 +211,7 @@
 - [x] Related Stories — "Continue Reading" section on every story page (3 related articles, matched by shared entities → section → recency)
 - [x] Story 10: "Three Million Pages of Nothing" (DOJ scanning analysis) — section: the-cover-up — ~1,800 words, 6 citations, 1 entity link, 2 inline images + hero image. Systematic sampling of all 12 datasets confirms 100% hybrid scans at 96 DPI. Seeded 2026-03-14.
 - [x] Story 11: "The Washington List" (D.C. journal cluster) — section: the-network — ~2,000 words, 10 citations, 9 entity links, 4 inline images + hero image. Kimsey/Case/Leonsis/Snyder AOL cluster pattern. Seeded 2026-03-14.
-- [ ] Story 12: "The Last Night" (MCC death) — section: the-cover-up
+- [x] Story 12: "The Last Night" (MCC death) — section: the-cover-up — ~2,000 words, 5 citations, 2 entity links, 2 inline images + hero image. Minute-by-minute MCC timeline from prosecution slide deck + grand jury transcripts. Seeded 2026-03-14.
 - [ ] Story 13: "The Governor's Ranch" (Bill Richardson) — section: the-network
 
 ---
