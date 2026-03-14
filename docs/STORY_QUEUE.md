@@ -18,6 +18,7 @@
 | 7 | the-scheduler | The Scheduler | the-network | LESLEY_GROFF_Analysis.md | 2026-03 |
 | 8 | the-billion-dollar-blind-eye | The Billion-Dollar Blind Eye | follow-the-money | LEON_BLACK/Analysis.md | 2026-03 |
 | 9 | the-recruitment-trip | The Recruitment Trip | the-operation | DS12_EXPANSION (Cape Town) | 2026-03 |
+| 10 | three-million-pages-of-nothing | Three Million Pages of Nothing | the-cover-up | scan-analysis-report.json | 2026-03 |
 
 ## Ready to Write
 
@@ -26,7 +27,7 @@
 | ~~1~~ | ~~The Scheduler~~ | ~~the-network~~ | ~~LESLEY_GROFF_Analysis.md~~ | **PUBLISHED** (Story 7, 2026-03-12) |
 | ~~2~~ | ~~The Billion-Dollar Blind Eye~~ | ~~follow-the-money~~ | ~~LEON_BLACK/Analysis.md~~ | **PUBLISHED** (Story 8, 2026-03-12) |
 | ~~3~~ | ~~The Recruitment Trip~~ | ~~the-operation~~ | ~~DS12_EXPANSION (Cape Town)~~ | **PUBLISHED** (Story 9, 2026-03-12) |
-| 4 | Three Million Pages of Nothing | the-cover-up | scan-analysis-report.json | DOJ printed & scanned all born-digital docs at 96 DPI, destroying metadata — sampling confirms 100% hybrid across all 12 datasets |
+| ~~4~~ | ~~Three Million Pages of Nothing~~ | ~~the-cover-up~~ | ~~scan-analysis-report.json~~ | **PUBLISHED** (Story 10, 2026-03-14) |
 | 5 | The Last Night | the-cover-up | DS12_EXPANSION (MCC) | Minute-by-minute MCC failure — not conspiracy, just institutional negligence |
 | 6 | The Governor's Ranch | the-network | Richardson investigation | Pilot testimony, campaign money, Richardson died uninvestigated in 2023 |
 
@@ -34,7 +35,6 @@
 
 | Topic | Gap | Next Step |
 |-------|-----|-----------|
-| Three Million Pages of Nothing | Sampling done (100% hybrid confirmed), need specific doc examples for citations | Select compelling born-digital→scanned examples from DS1 for opening hook |
 | Deutsche Bank compliance | Need full deep read of EFTA01681865 (52 pages) | Corpus sweep for DB compliance docs |
 | NPA co-conspirators (Kellen, Ross) | Only Groff deeply analyzed | Deep dives on remaining 3 named co-conspirators |
 | Financial shell companies | Jeepers Inc, other entities not fully mapped | Corporate entity corpus sweep |

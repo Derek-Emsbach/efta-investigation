@@ -931,6 +931,71 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  // ─── Story 10: Three Million Pages of Nothing (DOJ scanning analysis) ──────
+  {
+    slug: 'three-million-pages-of-nothing',
+    title: 'Three Million Pages of Nothing',
+    deck: 'The DOJ released the Epstein files as required by law — every page printed, scanned at 96 DPI, and run through OCR. A systematic analysis across all 12 datasets confirms: the original metadata, text fidelity, and digital forensic value have been destroyed.',
+    section: 'the-cover-up' as const,
+    file: 'three-million-pages-of-nothing.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-14T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/c/c8/Department_of_Justice%2C_Washington%2C_D.C._2012.JPG',
+    hero_image_caption:
+      'The Robert F. Kennedy Department of Justice Building in Washington, D.C. — headquarters of the agency that printed, scanned, and OCR\'d 3.5 million pages of born-digital evidence before releasing them under the EFTA.',
+    metadata: { source_analysis: 'scripts/scan-analysis-report.json' },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 5, is_primary: true },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA00858973',
+        description:
+          'Email from Jeffrey Epstein (jeevacation@gmail.com) re: Scientific American editor — born-digital email scanned at 96 DPI, OCR reads @ as ®',
+        page_reference: 'Full document',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02006778',
+        description:
+          'Email from jeevacation@gmail.com — OCR garbles address to "mUeevacation©gmail.com," demonstrating systematic OCR degradation',
+        page_reference: 'Full document',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA00005091',
+        description:
+          'Dataset 2 document — 100 pages, 42MB file size (42,601,905 bytes), demonstrating extreme file size bloat from scanning',
+        page_reference: 'Full document (100 pages)',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA00000205',
+        description:
+          'Dataset 1 sample — 1-page hybrid scan, OCR text layer contains only the Bates stamp (1 word), 448KB for a single page',
+        page_reference: 'Full document',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01360906',
+        description:
+          'Deutsche Bank internal email (KYC case assignment) — born-digital email with Salesforce URL, scanned at 816×1056, OCR brackets misread',
+        page_reference: 'Full document',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA02666792',
+        description:
+          'Dataset 12 sample — email from Brad Karp (Paul Weiss) to jeevacation@gmail.com, scanned at 816×1073 (different resolution batch than DS3-9)',
+        page_reference: 'Full document',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────
