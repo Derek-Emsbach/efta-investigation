@@ -20,6 +20,7 @@ import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
 import { SourceAttributionBar } from '@/components/publication/promo/source-attribution-bar'
 import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
 import { RelatedStories } from '@/components/publication/story/related-stories'
+import { ShareButtons } from '@/components/publication/story/share-buttons'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -264,6 +265,11 @@ export default async function StoryPage({
             )}
 
             <StoryHero story={typedStory} citationCount={citations.length} />
+
+            {/* Share bar */}
+            <div className="mb-8 -mt-4">
+              <ShareButtons title={typedStory.title} slug={slug} />
+            </div>
 
             {/* Body */}
             <div className="story-body">
