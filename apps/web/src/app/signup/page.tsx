@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent, Suspense } from "react";
+import { useState, useCallback, type FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { Turnstile } from "@/components/ui/turnstile";
 import type { SubscriptionTier } from "@efta/shared";
 
 type Step = "pick-tier" | "form";
@@ -51,6 +52,11 @@ function SignupContent() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
 
   function selectTier(t: SubscriptionTier) {
     setTier(t);
@@ -69,8 +75,32 @@ function SignupContent() {
       setError("Password must be at least 8 characters.");
       return;
     }
+    if (!turnstileToken) {
+      setError("Please complete the captcha verification.");
+      return;
+    }
 
     setLoading(true);
+
+    // Verify captcha + enforce auth rate limit server-side
+    try {
+      const captchaRes = await fetch("/api/auth/verify-captcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      if (!captchaRes.ok) {
+        const captchaData = await captchaRes.json();
+        setError(captchaData.error || "Verification failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      setError("Verification failed. Please try again.");
+      setLoading(false);
+      return;
+    }
+
     const supabase = createClient();
 
     const { error: signUpError } = await supabase.auth.signUp({
@@ -265,6 +295,8 @@ function SignupContent() {
                   />
                 </div>
 
+                <Turnstile onVerify={handleTurnstileVerify} />
+
                 {error && (
                   <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
                     {error}
@@ -273,7 +305,7 @@ function SignupContent() {
 
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !turnstileToken}
                   className="w-full rounded bg-accent-red px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-red/90 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? "Creating account..." : `Create ${TIER_INFO[tier].label} Account`}

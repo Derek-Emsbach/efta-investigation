@@ -290,14 +290,14 @@
 
 ### Security Hardening
 > Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase E)
-- [ ] Rate limiting — Upstash Redis + `@upstash/ratelimit` (free tier: 10K/day)
-- [ ] API rate limit: 60 req/min per IP, AI rate limit: 10 req/min per user, auth: 5 attempts/min
-- [ ] Email verification — enable "Confirm email" in Supabase Auth settings
-- [ ] Bot prevention — Cloudflare Turnstile (free) on signup + login
-- [ ] Security headers — X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+- [x] Rate limiting — in-memory sliding window: 120/min general, 60/min search, 30/min comments, 5/min auth
+- [x] Security headers — X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy, Permissions-Policy, HSTS, X-XSS-Protection (in `next.config.ts`)
+- [x] Bot prevention — Cloudflare Turnstile on signup + login with graceful dev bypass (`components/ui/turnstile.tsx`, `lib/turnstile.ts`, `/api/auth/verify-captcha`)
+- [x] Error monitoring — Sentry `@sentry/nextjs` v10 (dormant until `NEXT_PUBLIC_SENTRY_DSN` set)
+- [ ] Email verification — enable "Confirm email" in Supabase Auth dashboard settings (manual step)
 - [ ] Anthropic API spend cap — set monthly budget in Anthropic Console ($50/mo initially)
-- [ ] Error monitoring — Sentry (free tier: 5K events/mo)
 - [ ] Vercel Attack Challenge Mode — keep off normally, enable during active attacks
+- [ ] Upstash Redis upgrade — replace in-memory rate limiting with distributed Redis (needed at scale)
 
 ### Monetization (Stripe + Pro Tier)
 > Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase D)

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent, Suspense } from "react";
+import { useState, useCallback, type FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { Turnstile } from "@/components/ui/turnstile";
 
 function LoginForm() {
   const router = useRouter();
@@ -13,11 +14,41 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+
+    if (!turnstileToken) {
+      setError("Please complete the captcha verification.");
+      return;
+    }
+
     setLoading(true);
+
+    // Verify captcha + enforce auth rate limit server-side
+    try {
+      const captchaRes = await fetch("/api/auth/verify-captcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      if (!captchaRes.ok) {
+        const captchaData = await captchaRes.json();
+        setError(captchaData.error || "Verification failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      setError("Verification failed. Please try again.");
+      setLoading(false);
+      return;
+    }
 
     const supabase = createClient();
 
@@ -122,6 +153,8 @@ function LoginForm() {
               />
             </div>
 
+            <Turnstile onVerify={handleTurnstileVerify} />
+
             {/* Error message */}
             {error && (
               <div className="rounded border border-critical/30 bg-critical/10 px-3 py-2 text-sm text-critical">
@@ -131,7 +164,7 @@ function LoginForm() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !turnstileToken}
               className="w-full rounded bg-critical px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-critical/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? "Signing in..." : "Sign In"}
