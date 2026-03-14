@@ -62,25 +62,34 @@ def save_checkpoint(data: dict):
         json.dump(data, f, indent=2)
 
 
-def get_documents_with_r2_key(supabase, last_id: str | None, batch_size: int) -> list:
+def get_all_entity_linked_docs(supabase) -> list:
     """
-    Fetch documents that have an R2 key (file_url) and haven't been processed
-    for images yet. Orders by ID for deterministic resume.
+    Fetch all entity-linked documents with file_url in one go.
+    entity_documents is small (~few hundred rows), so this won't timeout.
+    Returns deduplicated list of document dicts.
     """
-    # Get documents with file_url (R2 key), ordered by ID
-    query = (
-        supabase.table("documents")
-        .select("id, bates_number, file_url, page_count")
-        .not_.is_("file_url", "null")
-        .order("id")
-        .limit(batch_size)
-    )
+    # Step 1: Get all unique document_ids from entity_documents
+    r = supabase.table("entity_documents").select("document_id").limit(1000).execute()
+    doc_ids = list({row["document_id"] for row in (r.data or [])})
+    if not doc_ids:
+        return []
 
-    if last_id:
-        query = query.gt("id", last_id)
+    # Step 2: Fetch those documents by ID (batched to avoid URL length limits)
+    all_docs = []
+    for i in range(0, len(doc_ids), 50):
+        batch_ids = doc_ids[i:i + 50]
+        r2 = (
+            supabase.table("documents")
+            .select("id, bates_number, file_url, page_count")
+            .in_("id", batch_ids)
+            .not_.is_("file_url", "null")
+            .execute()
+        )
+        all_docs.extend(r2.data or [])
 
-    result = query.execute()
-    return result.data or []
+    # Sort by ID for deterministic ordering
+    all_docs.sort(key=lambda d: d["id"])
+    return all_docs
 
 
 def get_already_processed_ids(supabase, doc_ids: list[str]) -> set[str]:
@@ -88,15 +97,44 @@ def get_already_processed_ids(supabase, doc_ids: list[str]) -> set[str]:
     if not doc_ids:
         return set()
 
-    result = (
-        supabase.table("document_images")
-        .select("document_id")
-        .in_("document_id", doc_ids)
-        .limit(len(doc_ids))
-        .execute()
-    )
+    done = set()
+    # Batch to avoid URL length limits on .in_() queries
+    for i in range(0, len(doc_ids), 30):
+        batch = doc_ids[i:i + 30]
+        result = (
+            supabase.table("document_images")
+            .select("document_id")
+            .in_("document_id", batch)
+            .limit(len(batch))
+            .execute()
+        )
+        done.update(r["document_id"] for r in (result.data or []))
+    return done
 
-    return {r["document_id"] for r in (result.data or [])}
+
+def url_to_r2_key(file_url: str) -> str:
+    """
+    Convert a full R2 URL to just the key.
+    e.g. 'https://....r2.cloudflarestorage.com/efta-documents/documents/EFTA02713979.pdf'
+         -> 'documents/EFTA02713979.pdf'
+    """
+    # Split on bucket name
+    marker = "/efta-documents/"
+    idx = file_url.find(marker)
+    if idx >= 0:
+        return file_url[idx + len(marker):]
+    # Fallback: if it's already a key (no http), return as-is
+    if not file_url.startswith("http"):
+        return file_url
+    # Last resort: take everything after the last .com/
+    parts = file_url.split(".com/", 1)
+    if len(parts) == 2:
+        # Remove bucket prefix if present
+        rest = parts[1]
+        if rest.startswith("efta-documents/"):
+            return rest[len("efta-documents/"):]
+        return rest
+    return file_url
 
 
 def process_document(document_id: str, r2_key: str, dry_run: bool = False) -> dict:
@@ -116,145 +154,79 @@ def process_document(document_id: str, r2_key: str, dry_run: bool = False) -> di
 
 def main():
     parser = argparse.ArgumentParser(description="Batch extract images from EFTA documents")
-    parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE,
-                        help=f"Documents per batch (default: {DEFAULT_BATCH_SIZE})")
     parser.add_argument("--max-docs", type=int, default=0,
                         help="Maximum total documents to process (0 = unlimited)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Log what would be processed without actually extracting")
-    parser.add_argument("--reset", action="store_true",
-                        help="Reset checkpoint and start from the beginning")
     parser.add_argument("--skip-existing", action="store_true", default=True,
                         help="Skip documents that already have images (default: true)")
     parser.add_argument("--no-skip-existing", dest="skip_existing", action="store_false",
                         help="Re-process documents even if they already have images")
     args = parser.parse_args()
 
-    # Load or reset checkpoint
-    if args.reset:
-        checkpoint = {}
-        if CHECKPOINT_FILE.exists():
-            CHECKPOINT_FILE.unlink()
-        print("[RESET] Checkpoint cleared")
-    else:
-        checkpoint = load_checkpoint()
-
-    last_id = checkpoint.get("last_id")
-    total_processed = checkpoint.get("total_processed", 0)
-    total_skipped = checkpoint.get("total_skipped", 0)
-    total_errored = checkpoint.get("total_errored", 0)
-    total_images = checkpoint.get("total_images", 0)
-
-    if last_id:
-        print(f"[RESUME] Resuming from document {last_id}")
-        print(f"  Previously: {total_processed} processed, {total_skipped} skipped, {total_errored} errored, {total_images} images")
-
     supabase = get_supabase()
+
+    # Fetch all entity-linked docs with R2 keys in one shot
+    print("Fetching entity-linked documents with R2 keys...")
+    docs = get_all_entity_linked_docs(supabase)
+
+    if args.max_docs > 0:
+        docs = docs[:args.max_docs]
+
+    # Check which already have images
+    if args.skip_existing and docs:
+        doc_ids = [d["id"] for d in docs]
+        already_done = get_already_processed_ids(supabase, doc_ids)
+    else:
+        already_done = set()
+
+    to_process = [d for d in docs if d["id"] not in already_done]
 
     print(f"\n{'=' * 60}")
     print(f"  EFTA Batch Image Extraction")
     print(f"  Started: {datetime.now().isoformat()}")
-    print(f"  Batch size: {args.batch_size}")
-    print(f"  Max docs: {'unlimited' if args.max_docs == 0 else args.max_docs}")
+    print(f"  Total entity-linked docs with R2: {len(docs)}")
+    print(f"  Already extracted (skipping): {len(already_done)}")
+    print(f"  To process: {len(to_process)}")
     print(f"  Dry run: {args.dry_run}")
-    print(f"  Skip existing: {args.skip_existing}")
     print(f"{'=' * 60}\n")
 
-    session_processed = 0
-    session_errored = 0
-    session_images = 0
+    processed = 0
+    errored = 0
+    total_images = 0
     start_time = time.time()
 
-    while True:
-        # Check max docs limit
-        if args.max_docs > 0 and session_processed >= args.max_docs:
-            print(f"\n[LIMIT] Reached max-docs limit ({args.max_docs})")
-            break
+    for doc in to_process:
+        doc_id = doc["id"]
+        r2_key = url_to_r2_key(doc["file_url"])
+        bates = doc.get("bates_number", "?")
+        pages = doc.get("page_count") or "?"
 
-        # Fetch next batch
-        remaining = args.max_docs - session_processed if args.max_docs > 0 else args.batch_size
-        batch_size = min(args.batch_size, remaining) if args.max_docs > 0 else args.batch_size
-        docs = get_documents_with_r2_key(supabase, last_id, batch_size)
+        result = process_document(doc_id, r2_key, dry_run=args.dry_run)
 
-        if not docs:
-            print("\n[DONE] No more documents to process")
-            break
+        if args.dry_run:
+            print(f"  [DRY] {bates} ({pages}pp) — r2_key={r2_key}")
+        elif result.get("success"):
+            extracted = result.get("images_extracted", 0)
+            total_images += extracted
+            processed += 1
 
-        # Check which already have images
-        if args.skip_existing:
-            doc_ids = [d["id"] for d in docs]
-            already_done = get_already_processed_ids(supabase, doc_ids)
+            scans = result.get("images_skipped_scan", 0)
+            found = result.get("images_found", 0)
+            print(f"  [{processed}/{len(to_process)}] {bates} ({pages}pp): "
+                  f"{extracted} extracted, {found} found, {scans} scans skipped")
         else:
-            already_done = set()
-
-        for doc in docs:
-            doc_id = doc["id"]
-            r2_key = doc["file_url"]
-            bates = doc.get("bates_number", "?")
-
-            # Skip if already processed
-            if doc_id in already_done:
-                total_skipped += 1
-                last_id = doc_id
-                continue
-
-            # Process
-            result = process_document(doc_id, r2_key, dry_run=args.dry_run)
-
-            if args.dry_run:
-                print(f"  [DRY] {bates} ({doc_id[:8]}...) — r2_key={r2_key}")
-            elif result.get("success"):
-                extracted = result.get("images_extracted", 0)
-                total_images += extracted
-                session_images += extracted
-                total_processed += 1
-                session_processed += 1
-
-                if session_processed % LOG_INTERVAL == 0:
-                    elapsed = time.time() - start_time
-                    rate = session_processed / elapsed if elapsed > 0 else 0
-                    print(f"  [{session_processed}] {bates}: {extracted} images "
-                          f"({result.get('images_found', 0)} found, "
-                          f"{result.get('images_skipped_scan', 0)} scans, "
-                          f"{result.get('images_skipped_small', 0)} small) "
-                          f"— {rate:.1f} docs/sec")
-            else:
-                total_errored += 1
-                session_errored += 1
-                print(f"  [ERR] {bates} ({doc_id[:8]}...): {result.get('error', 'unknown')}")
-
-            last_id = doc_id
-
-            # Save checkpoint periodically
-            if (total_processed + total_skipped) % (args.batch_size * 2) == 0:
-                save_checkpoint({
-                    "last_id": last_id,
-                    "total_processed": total_processed,
-                    "total_skipped": total_skipped,
-                    "total_errored": total_errored,
-                    "total_images": total_images,
-                    "updated_at": datetime.now().isoformat(),
-                })
-
-    # Final checkpoint
-    save_checkpoint({
-        "last_id": last_id,
-        "total_processed": total_processed,
-        "total_skipped": total_skipped,
-        "total_errored": total_errored,
-        "total_images": total_images,
-        "updated_at": datetime.now().isoformat(),
-        "completed": True,
-    })
+            errored += 1
+            print(f"  [ERR] {bates}: {result.get('error', 'unknown')}")
 
     elapsed = time.time() - start_time
     print(f"\n{'=' * 60}")
     print(f"  Batch Complete")
     print(f"  Elapsed: {elapsed:.1f}s")
-    print(f"  Session: {session_processed} processed, {total_skipped} skipped, {session_errored} errored")
-    print(f"  Session images: {session_images}")
-    print(f"  Lifetime: {total_processed} processed, {total_images} total images")
-    print(f"  Rate: {session_processed / elapsed:.1f} docs/sec" if elapsed > 0 else "")
+    print(f"  Processed: {processed}, Errored: {errored}, Skipped: {len(already_done)}")
+    print(f"  Images extracted: {total_images}")
+    if elapsed > 0 and processed > 0:
+        print(f"  Rate: {processed / elapsed:.1f} docs/sec")
     print(f"{'=' * 60}")
 
 
