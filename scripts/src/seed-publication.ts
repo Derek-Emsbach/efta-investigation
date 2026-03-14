@@ -1520,6 +1520,131 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  {
+    slug: 'the-conveyor-belt',
+    title: 'The Conveyor Belt',
+    deck: 'In 1988, CBS 60 Minutes exposed Jean-Luc Brunel as a serial predator in the modeling industry. Sixteen years later, Jeffrey Epstein wired him $1 million to start MC2 Model Management — a modeling agency his own business partner confirmed to the FBI was a "transport agency of underage girls." Brunel operated for thirty-two years after the first public exposure. He was finally arrested — by French police, not American ones — in December 2020. He was found dead in his prison cell two months later.',
+    section: 'the-operation' as const,
+    file: 'the-conveyor-belt.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 11,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-14T12:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Flatiron_Building_crop.jpg/800px-Flatiron_Building_crop.jpg',
+    hero_image_caption:
+      'The Flatiron District in Manhattan — MC2 Model Management operated at 6 West 14th Street, a few blocks south, where Brunel ran the modeling agency Epstein capitalized with a $1 million wire transfer.',
+    metadata: {
+      source_analysis: 'docs/investigation/sources/BRUNEL/Analysis.md',
+    },
+    entities: [
+      { name: 'Jean-Luc Brunel', mention_count: 28, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 22, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 3, is_primary: false },
+      { name: 'Lesley Groff', mention_count: 2, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA01480954',
+        description:
+          'Jezebel/JPMorgan due diligence report — 60 Minutes investigation: "nearly two dozen models" assaulted; Bonnouvrier: "drugs and silent rape"; Casablancas: "should be behind bars"; $1M founding of MC2',
+        page_reference: 'Full document (2 pages)',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01733832',
+        description:
+          'Epstein libel claims document — confirms $1M wire to Brunel offshore account; racketeering complaint about MC2; MC2 at 6 W 14th St, Brunel 85%, Fuller 15%',
+        page_reference: 'pp. 1-5',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02810334',
+        description:
+          'JPMorgan lawsuit expert report — JPMorgan DDR: "unknown if money was secret investment or payment for services as a procurer"; "racketeering that involved luring in minor children for sexual play for money"',
+        page_reference: 'pp. 60-62',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01590181',
+        description:
+          'JPMorgan funds transfer request — $25,000 wire from "Jeffrey E Epstein" to "MC2 Model Management" at TD Bank, dated November 16, 2012',
+        page_reference: 'Full document (3 pages)',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01657299',
+        description:
+          'FBI internal email chain — Cordero confirms MC2 trafficking (11 points): "transport agency of underage girls"; "principal supplier"; "principal business is to transport underage girls for sexual pleasure"',
+        page_reference: 'Full document (6 pages)',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA00173806',
+        description:
+          'FBI victim interview — pipeline: nightclub recruitment → Epstein massage → Brunel modeling interview → island transport; Epstein "became rough and forceful"; career threats',
+        page_reference: 'Full document (2 pages)',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — victim visa sponsored by Brunel agency while not working; Epstein "paid Brunel $1 million to keep her in the country"; Brunel brought ~15-year-old to Virgin Islands',
+        page_reference: 'pp. 47-48',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA00079597',
+        description:
+          'French MLAT request — Paris investigation charges; 3+ victim testimonies (drugging, rape through Karin Models); Avenue Foch search: photos, videos, 4500 Brunel emails, CD-ROM with 62 names',
+        page_reference: 'Full document (7 pages)',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01746651',
+        description:
+          'Email chain (Fuller → Kahn → Epstein) — "Jean Luc no longer wants to sponsor [her] in light of recent circumstances" (March 2015)',
+        page_reference: 'Full document (2 pages)',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01731290',
+        description:
+          'Grand Jury Presentation outline — Operation Leap Year: 19 Jane Does, 22+ counts; evidence organized by flights, calls, meetings',
+        page_reference: 'Full document (17 pages)',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01653331',
+        description:
+          'SDNY arrest briefing (July 3, 2019) — Brunel named as 1 of 4 immediate approach targets; "recruited minors for sexual activity with Epstein, and himself participated"',
+        page_reference: 'Full document (5 pages)',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Brunel attorney: "not willing to meet with us for a proffer and would invoke his Fifth Amendment privilege" (Aug-Sept 2019)',
+        page_reference: 'pp. 63-65',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA00079596',
+        description:
+          'DOJ MLAT referral — Brunel arrested in Paris, French request forwarded to SDNY; DOJ attaché in Paris mentions during Maxwell bail discussions',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA00174043',
+        description:
+          'FBI/AFP intelligence — Brunel found dead in Prison de la Santé, Feb 19, 2022; lawyers: "not guided by guilt but a profound sense of injustice"; Giuffre: "ends another chapter"',
+        page_reference: 'pp. 1-3',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

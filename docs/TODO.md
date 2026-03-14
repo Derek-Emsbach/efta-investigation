@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 15 stories (204 citations, 87 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 32 published entities fully enriched.
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 16 stories (218 citations, 91 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 32 published entities fully enriched.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -215,6 +215,7 @@
 - [x] Story 13: "The Governor's Ranch" (Bill Richardson) — section: the-network — ~2,000 words, 10 citations, 6 entity links, 3 inline images + hero image. Pilot Morrison deposition, Zorro Trust campaign money, Groff/Hartley scheduling, Juliette ¶50 convergence. Richardson entity enriched to T3 published with bio, evidence summary, photo, 4 events, 2 new connections. Seeded 2026-03-14.
 - [x] Story 14: "Normal for This Client" (Deutsche Bank) — section: follow-the-money — ~2,200 words, 16 citations, 6 entity links, 2 inline images + hero image. Full investigation: corpus sweep (200+ docs), deep read EFTA01681865 (52 pages) + 7 supporting docs, analysis at `docs/investigation/sources/DEUTSCHE_BANK/Analysis.md`. 5 new entities (Paul Morris, Tazia Smith, Stewart Oldfield, Harry Beller, Erica Kellerhals), 7 timeline events (2013-2020), 3 connections, 8 suspect watchlist entries. Seeded 2026-03-14.
 - [x] Story 15: "The Four Names" (NPA co-conspirators) — section: the-cover-up — ~2,400 words, 13 citations, 6 entity links, 2 inline images + hero image. Full investigation: corpus sweep (Kellen, Marcinkova, Ross), 10+ documents deep-read, analysis at `docs/investigation/sources/NPA_CO_CONSPIRATORS/Analysis.md`. 3 suspects promoted to T2 entities, 6 connections, 4 events, 23 entity-document links. Seeded 2026-03-14.
+- [x] Story 16: "The Conveyor Belt" (Jean-Luc Brunel / MC2 modeling pipeline) — section: the-operation — ~2,200 words, 14 citations, 4 entity links, 3 inline images + hero image. Full investigation: corpus sweep (19+ documents deep-read), analysis at `docs/investigation/sources/BRUNEL/Analysis.md`. Entity enriched, 2 new entities (Jeffrey Fuller T4, Sergio Cordero T4), 3 new connections + 2 updated, 8 timeline events. Seeded 2026-03-14.
 
 ---
 
@@ -437,3 +438,51 @@
 - [x] **Document linkage (March 14, 2026)** — 57,704 new `entity_documents` links created via `scripts/link-entity-documents.mjs`. Script searches SQLite FTS5 corpus for entity name + aliases, cross-references Supabase, creates links with `role_in_document: 'mentioned'`. Before: 2,019 links (6 entities at 0). After: 59,732 links (1 at 0 — Gerd). Cap: 5,000 per entity, skip entities with 500+ existing links. Every T1 entity now has hundreds to thousands of linked source documents.
 - [x] **NPA co-conspirators deep dive (March 14, 2026)** — Full corpus sweep for Sarah Kellen, Nadia Marcinkova, Adriana Ross. 10+ key documents deep-read including EFTA01186070 (CVRA motion — exact NPA immunity language), EFTA01245817 (FBI 302 — Kellen scheduling protocol), EFTA00081180 (Edwards v. Epstein — Marcinkova "live-in sex slave," target letter evasion), EFTA01699906 (FBI briefing — Ross evidence destruction), EFTA00585893 (Harley Davidson gift to Peter Marcinkova, Slovakia). Analysis at `docs/investigation/sources/NPA_CO_CONSPIRATORS/Analysis.md`. DB updates: 3 suspects promoted to T2 entities (Kellen, Marcinkova, Ross), 6 connections, 4 events, 15 entity-event links, 23 entity-document links, 6 document metadata updates. Story 15 "The Four Names" published — 13 citations, 6 entity links. Key finding: NPA's "including but not limited to" language created open-ended immunity class; the four named women performed identical functions to Maxwell (convicted, 20 years) but were never charged.
 - [x] **Leon Black deep dive (March 12, 2026)** — Full corpus sweep (9,149 docs / 10,869 pages across 7 datasets). 25+ DS12 prosecution chain documents deep-read. Analysis at `docs/investigation/sources/LEON_BLACK/Analysis.md` (~400 lines, 11 sections). DB updates: entity enriched (bio, evidence_summary, aliases), 15 key documents linked, 6 documents enriched, 5 timeline events, Melanie Spinella added to suspect watchlist. Key analytical framework: "The Two-Track Failure" — SDNY never formally opened case, DANY couldn't get federal cooperation. Key findings: (1) 6-phase prosecution decision chain April 2021 → Jan 2026 = zero charges; (2) AUSA admission "I did not write anything up on Leon Black"; (3) $158M total payments, $62.5M USVI settlement, step-up-basis trust scheme; (4) 3+ victims with corroborating accounts including identical signature violence; (5) forensic journal authentication (gel pen, no fabrication); (6) witness intimidation (Black contacted victim, hired victims' attorney Brad Edwards).
+
+---
+
+## Database Audit — March 14, 2026
+
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 16 stories (218 citations), 6 case files, 178 events, 110 connections, 59,866 entity-document links.
+
+### Document Linkage Fix — RESOLVED
+- [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
+- [x] Jim Kimsey (1), Ted Leonsis (2), Steve Case (22), Dan Snyder (38) — verified low counts are accurate. Minimal corpus presence confirmed via FTS5. Involvement documented through specific documents (flight logs, journals), not broad mentions.
+
+### Entity Bios (HIGH PRIORITY — all 32 published entities missing bios)
+- [ ] Write bios for T1 entities (17): Jeffrey Epstein, Ghislaine Maxwell, Alan Dershowitz, Bill Clinton, Dan Snyder, George Mitchell, Glenn Dubin, Harvey Weinstein, Jean-Luc Brunel, Jes Staley, Jim Kimsey, Larry Summers, Leon Black, Marvin Minsky, Prince Andrew, Steve Case, Ted Leonsis
+- [ ] Write bios for T2 entity: Lesley Groff
+- [ ] Write bios for T3 entity: Bill Richardson
+- [ ] Write bios for T4 entities (13): Apollo Global, Barnaby Mars, Celina Dubin, Dr. Chen, Eva Andersson-Dubin, Gerd, Karyna Shuliak, KKR, Les Wexner, Mark Epstein, Oaktree Capital, The Blackstone Group, The Carlyle Group
+
+### Entity Photos (6 T1 entities missing)
+- [ ] Source photos: Dan Snyder, Glenn Dubin, Jean-Luc Brunel, Jim Kimsey, Larry Summers, Leon Black
+- [ ] Source photo: Lesley Groff (T2)
+
+### Publish T2 Entities (3 unpublished NPA co-conspirators)
+- [ ] Publish Sarah Kellen — T2, already enriched with connections/events/doc links
+- [ ] Publish Nadia Marcinkova — T2, already enriched
+- [ ] Publish Adriana Ross — T2, already enriched
+
+### Story Coverage Gaps
+- [ ] **Prince Andrew story** — T1, 0 stories, 9 events, 4 connections. Cape Town, flight logs, victim testimony. Would strengthen `the-operation` section (currently weakest with only 2 stories)
+- [ ] **George Mitchell story** — T1, 0 stories, 5 events, 3 connections. Scheduling evidence, Zorro Ranch connections
+- [ ] **Harvey Weinstein story** — T1, 0 stories, 6 events, 2 connections. Cross-pollination between Epstein and Weinstein networks
+
+### Connection Network Gaps
+- [ ] Enrich connections for under-connected T1 entities: Dershowitz (3), Summers (3), Minsky (2), Weinstein (2)
+- [ ] Add connections for T4 entities with only 1 connection: Dr. Chen, Gerd, KKR, Oaktree, Blackstone, Carlyle
+
+### T4 Corporate Entity Triage
+- [ ] Evaluate T4 corporate entities (Apollo, KKR, Oaktree, Blackstone, Carlyle) — enrich with events/docs/stories or demote to unpublished. Currently thin shells with no events, no docs, no stories
+
+### T4 Entity Events (10 published entities with 0 events)
+- [ ] Add events for: Barnaby Mars, Celina Edith Dubin, Dr. Chen, Eva Andersson-Dubin, Gerd, Karyna Shuliak, KKR, Oaktree Capital, The Blackstone Group, The Carlyle Group
+
+### Story Section Balance
+- [ ] `the-operation` needs more stories (currently 2, vs 5 each for cover-up and network, 3 for follow-the-money)
+- [ ] Consider: recruitment mechanics, Cape Town trip, Caribbean island operations, massage protocol, scheduling systems
+
+### Unpublished Entity Pipeline (86 entities)
+- [ ] Review 21 unpublished T3 entities for publishing readiness
+- [ ] Review 61 T6 entities — many are financial/peripheral from Leon Black case; consider bulk cleanup vs selective publishing
