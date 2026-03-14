@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 8 stories (125 citations, 52 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`.
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 10 stories (150 citations, 58 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -209,8 +209,9 @@
 - [x] Image retrofit — all 9 stories now have hero images + 2-3 inline images each. Broken Cape Town URL fixed.
 - [x] Editorial attribution — Derek Emsbach as named editor across masthead, story bylines, footer, about page. AI-Assisted badge on stories.
 - [x] Related Stories — "Continue Reading" section on every story page (3 related articles, matched by shared entities → section → recency)
-- [ ] Story 10: "The Last Night" (MCC death) — section: the-cover-up
-- [ ] Story 11: "The Governor's Ranch" (Bill Richardson) — section: the-network
+- [x] Story 10: "Three Million Pages of Nothing" (DOJ scanning analysis) — section: the-cover-up — ~1,800 words, 6 citations, 1 entity link, 2 inline images + hero image. Systematic sampling of all 12 datasets confirms 100% hybrid scans at 96 DPI. Seeded 2026-03-14.
+- [ ] Story 11: "The Last Night" (MCC death) — section: the-cover-up
+- [ ] Story 12: "The Governor's Ranch" (Bill Richardson) — section: the-network
 
 ---
 

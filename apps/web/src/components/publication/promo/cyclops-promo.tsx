@@ -152,19 +152,9 @@ export function CyclopsPromo({ variant }: CyclopsPromoProps) {
       />
 
       <div className="relative mx-auto max-w-7xl px-6 py-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
-        {/* Logo + branding */}
-        <div className="flex items-center gap-4 shrink-0">
-          <div className="animate-border-glow rounded-full p-3 border border-accent-gold/30">
-            <CyclopsIconLogo size={40} />
-          </div>
-          <div className="hidden md:block">
-            <CyclopsHorizontalLogo height={36} />
-          </div>
-        </div>
-
-        {/* Mobile: show horizontal logo */}
-        <div className="md:hidden">
-          <CyclopsHorizontalLogo height={28} />
+        {/* Logo */}
+        <div className="shrink-0">
+          <CyclopsHorizontalLogo height={36} />
         </div>
 
         {/* Copy */}
