@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 12 stories (165 citations, 69 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 31 published entities fully enriched (1 thin, 20 medium, 10 rich).
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 13 stories (175 citations, 75 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 32 published entities fully enriched.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -212,7 +212,7 @@
 - [x] Story 10: "Three Million Pages of Nothing" (DOJ scanning analysis) — section: the-cover-up — ~1,800 words, 6 citations, 1 entity link, 2 inline images + hero image. Systematic sampling of all 12 datasets confirms 100% hybrid scans at 96 DPI. Seeded 2026-03-14.
 - [x] Story 11: "The Washington List" (D.C. journal cluster) — section: the-network — ~2,000 words, 10 citations, 9 entity links, 4 inline images + hero image. Kimsey/Case/Leonsis/Snyder AOL cluster pattern. Seeded 2026-03-14.
 - [x] Story 12: "The Last Night" (MCC death) — section: the-cover-up — ~2,000 words, 5 citations, 2 entity links, 2 inline images + hero image. Minute-by-minute MCC timeline from prosecution slide deck + grand jury transcripts. Seeded 2026-03-14.
-- [ ] Story 13: "The Governor's Ranch" (Bill Richardson) — section: the-network
+- [x] Story 13: "The Governor's Ranch" (Bill Richardson) — section: the-network — ~2,000 words, 10 citations, 6 entity links, 3 inline images + hero image. Pilot Morrison deposition, Zorro Trust campaign money, Groff/Hartley scheduling, Juliette ¶50 convergence. Richardson entity enriched to T3 published with bio, evidence summary, photo, 4 events, 2 new connections. Seeded 2026-03-14.
 
 ---
 
@@ -328,10 +328,10 @@
 - [x] Entity evidence profile document Bates numbers link to detail pages
 
 ### Corpus-Level Search
-> Extend evidence room search beyond Supabase FTS to the full 1.38M-document SQLite corpus. Currently only available locally via MCP server (port 3001). Future: host on Railway for public access.
-- [ ] Corpus search API — `/api/public/evidence/corpus-search` querying SQLite FTS5 (via MCP or direct connection)
-- [ ] Dual search mode — toggle in evidence room between "Database" (Supabase FTS) and "Full Corpus" (SQLite FTS5)
-- [ ] Search result enrichment — corpus results matching Supabase documents show entity links + metadata
+> Extend evidence room search beyond Supabase FTS to the full 1.38M-document SQLite corpus. Local dev uses direct SQLite via `better-sqlite3`. Production: host on Railway (future).
+- [x] Corpus search API — `/api/public/evidence/corpus-search` with direct SQLite FTS5 queries, Supabase enrichment, 5-min cache, 60/min rate limit
+- [x] Dual search mode — toggle in evidence room between "Database" (Supabase FTS) and "Full Corpus" (SQLite FTS5) with mode-specific filters
+- [x] Search result enrichment — corpus results matching Supabase documents show entity links, type/severity badges, metadata
 - [ ] Railway deployment — host SQLite corpus + search API on Railway for production access (revisit when ready)
 
 ### Entity Profile Media Expansion

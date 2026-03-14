@@ -8,6 +8,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@efta/shared"],
+  serverExternalPackages: ["better-sqlite3"],
 
   images: {
     remotePatterns: [
