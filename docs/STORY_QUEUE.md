@@ -21,6 +21,8 @@
 | 10 | three-million-pages-of-nothing | Three Million Pages of Nothing | the-cover-up | scan-analysis-report.json | 2026-03 |
 | 11 | the-washington-list | The Washington List | the-network | Entity enrichment (D.C. cluster) | 2026-03 |
 | 12 | the-last-night | The Last Night | the-cover-up | DS12_EXPANSION (MCC) | 2026-03 |
+| 13 | the-governors-ranch | The Governor's Ranch | the-network | DS12_EXPANSION (Richardson) | 2026-03 |
+| 14 | normal-for-this-client | Normal for This Client | follow-the-money | DEUTSCHE_BANK/Analysis.md | 2026-03 |
 
 ## Ready to Write
 
@@ -32,13 +34,13 @@
 | ~~4~~ | ~~Three Million Pages of Nothing~~ | ~~the-cover-up~~ | ~~scan-analysis-report.json~~ | **PUBLISHED** (Story 10, 2026-03-14) |
 | ~~5~~ | ~~The Washington List~~ | ~~the-network~~ | ~~Entity enrichment (D.C. cluster)~~ | **PUBLISHED** (Story 11, 2026-03-14) |
 | ~~6~~ | ~~The Last Night~~ | ~~the-cover-up~~ | ~~DS12_EXPANSION (MCC)~~ | **PUBLISHED** (Story 12, 2026-03-14) |
-| 7 | The Governor's Ranch | the-network | Richardson investigation | Pilot testimony, campaign money, Richardson died uninvestigated in 2023 |
+| ~~7~~ | ~~The Governor's Ranch~~ | ~~the-network~~ | ~~Richardson investigation~~ | **PUBLISHED** (Story 13, 2026-03-14) |
 
 ## Needs More Investigation
 
 | Topic | Gap | Next Step |
 |-------|-----|-----------|
-| Deutsche Bank compliance | Need full deep read of EFTA01681865 (52 pages) | Corpus sweep for DB compliance docs |
+| ~~Deutsche Bank compliance~~ | ~~Need full deep read of EFTA01681865 (52 pages)~~ | **PUBLISHED** (Story 14, 2026-03-14) |
 | NPA co-conspirators (Kellen, Ross) | Only Groff deeply analyzed | Deep dives on remaining 3 named co-conspirators |
 | Financial shell companies | Jeepers Inc, other entities not fully mapped | Corporate entity corpus sweep |
 | Jean-Luc Brunel / modeling pipeline | Entity exists but no deep document analysis | Corpus sweep for Brunel recruitment docs |

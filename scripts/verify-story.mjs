@@ -4,7 +4,7 @@ const envFile = readFileSync(new URL('../apps/web/.env.local', import.meta.url),
 const env = Object.fromEntries(envFile.split('\n').filter(l => l && !l.startsWith('#')).map(l => { const i = l.indexOf('='); return i > 0 ? [l.substring(0, i).trim(), l.substring(i + 1).trim()] : null; }).filter(Boolean));
 const sb = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
-const { data: story } = await sb.from('stories').select('id, title, slug, section, deck, reading_time_minutes, hero_image_url, published_at, is_published').eq('slug', 'the-washington-list').single();
+const { data: story } = await sb.from('stories').select('id, title, slug, section, deck, reading_time_minutes, hero_image_url, published_at, is_published').eq('slug', 'the-governors-ranch').single();
 console.log('=== Story ===');
 console.log(story);
 

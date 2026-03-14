@@ -5,7 +5,7 @@ const TICKER_ITEMS = [
   'Bill Richardson\'s Zorro Ranch connections confirmed through pilot testimony and campaign finance records',
   'Cape Town 2002: Clinton, Spacey, and Tucker present during victim recruitment — identities resolved from corpus',
   'Evidence against Leon Black: $158M in payments, forensic journals, multiple victims — AUSA wrote nothing up',
-  '7 investigative stories published — 103 citations sourced to primary EFTA documents',
+  '14 investigative stories published — 190+ citations sourced to primary EFTA documents',
   '153,000+ documents analyzed in Lesley Groff corpus sweep across Datasets 9-11',
 ]
 

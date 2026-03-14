@@ -16,5 +16,8 @@
       "esbuild",
       "sharp"
     ]
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.8.0"
   }
 }

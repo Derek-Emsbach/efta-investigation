@@ -1157,6 +1157,247 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  // ─── Story 13: The Governor's Ranch (Bill Richardson) ─────────────────────────
+  {
+    slug: 'the-governors-ranch',
+    title: "The Governor's Ranch",
+    deck: "A pilot testified under oath that he saw Bill Richardson at Epstein's Zorro Ranch. Campaign records show $100K+ flowing through a shell entity named after the ranch. The governor's own staff coordinated visits through Epstein's scheduler. Richardson died in 2023 — never investigated.",
+    section: 'the-network' as const,
+    file: 'the-governors-ranch.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-14T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Santa_Fe_County_New_Mexico_landscape.jpg/1280px-Santa_Fe_County_New_Mexico_landscape.jpg',
+    hero_image_caption:
+      "The New Mexico landscape near Stanley — where Jeffrey Epstein's 10,000-acre Zorro Ranch hosted political figures including Governor Bill Richardson, documented by sworn pilot testimony and campaign finance records.",
+    metadata: { source_analysis: 'docs/investigation/DS12_EXPANSION_Analysis.md' },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 12, is_primary: true },
+      { name: 'Bill Richardson', mention_count: 10, is_primary: true },
+      { name: 'Lesley Groff', mention_count: 3, is_primary: true },
+      { name: 'Bill Clinton', mention_count: 2, is_primary: false },
+      { name: 'Ghislaine Maxwell', mention_count: 1, is_primary: false },
+      { name: 'Les Wexner', mention_count: 1, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA01247021',
+        description:
+          "Larry Morrison sworn deposition — pilot testifies seeing Richardson at Ranch Central being escorted to main house for dinner with Epstein, 'well before' February 2007",
+        page_reference: 'Deposition pp. 167-169',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02731941',
+        description:
+          'Public record — Bill Richardson dies August 28, 2023, at age 75 in Massachusetts; never investigated for Epstein connection',
+        page_reference: 'Public record',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02731941',
+        description:
+          'Public record — Richardson political career: Governor 2003-2011, UN Ambassador, Energy Secretary, 2008 presidential candidate, Commerce Secretary nominee (withdrawn Jan 2009)',
+        page_reference: 'Public record',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01296884',
+        description:
+          "Campaign finance records — Epstein donated $100K+ to Richardson campaigns via Zorro Trust, a shell entity named after the ranch",
+        page_reference: 'Full document',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01713378',
+        description:
+          'Additional campaign contribution records — Zorro Trust donations to Richardson, corporate vehicle obscuring personal connection',
+        page_reference: 'Full document',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette civil complaint — estate executors Darren Indyke and Richard Kahn named as defendants in four simultaneous civil cases; same attorneys who managed Zorro Trust',
+        page_reference: 'Complaint header',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02033176',
+        description:
+          "Lesley Groff scheduling emails — ongoing coordination with Richardson's governor's office for Zorro Ranch visits",
+        page_reference: 'Full document',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA02407935',
+        description:
+          "August 2010 email from Janis Hartley (Richardson Deputy CoS) coordinating ranch visits — after Epstein's 2008 conviction and sex offender registration",
+        page_reference: 'Full document',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA02731941',
+        description:
+          'Juliette complaint ¶50 — describes meeting "another important government official" at Zorro Ranch in 2004; "another" distinguishes from Cape Town official (Clinton)',
+        page_reference: 'Complaint ¶50',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — 2007 NPA blanket immunity provision covering unnamed "potential co-conspirators"',
+        page_reference: 'Legal framework section',
+      },
+    ],
+  },
+  // ─── Story 14: Normal for This Client (Deutsche Bank) ────────────────────────
+  {
+    slug: 'normal-for-this-client',
+    title: 'Normal for This Client',
+    deck: 'Deutsche Bank opened 76 accounts for a convicted sex offender, processed millions in payments to "ostensible foreign models" and co-conspirators, watched his attorney structure cash withdrawals — and when compliance flagged a wire to a Russian woman, the analyst wrote: "Once this type of activity is normal for this client it is not deemed suspicious."',
+    section: 'follow-the-money' as const,
+    file: 'normal-for-this-client.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 11,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-14T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/4/4b/Deutsche_Bank_Wall_Street.jpg',
+    hero_image_caption:
+      "Deutsche Bank's Wall Street headquarters in Lower Manhattan — where the Epstein relationship was managed from 2013 to 2018, generating an estimated $8-20 million in revenue before a $150 million regulatory penalty.",
+    metadata: {
+      source_analysis:
+        'docs/investigation/sources/DEUTSCHE_BANK/Analysis.md',
+    },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 18, is_primary: true },
+      { name: 'Darren Indyke', mention_count: 8, is_primary: true },
+      { name: 'Lesley Groff', mention_count: 3, is_primary: false },
+      { name: 'Ghislaine Maxwell', mention_count: 2, is_primary: false },
+      { name: 'Richard D. Kahn', mention_count: 3, is_primary: false },
+      { name: 'Alan Dershowitz', mention_count: 1, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA00151495',
+        description:
+          'NYDFS Consent Order — monitoring team member: "Once this type of activity is normal for this client it is not deemed suspicious"',
+        page_reference: 'p. 12',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01681865',
+        description:
+          'Deutsche Bank Presentation to SDNY — 76 accounts, 30+ shell entities, "ostensible foreign models" payments, full financial infrastructure mapped across 19 exhibits',
+        page_reference: 'Exhibits A-S (52 pages)',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01656556',
+        description:
+          'FinCEN SAR — Indyke tells teller he wants to "avoid all the paperwork and going over his cash limit"',
+        page_reference: 'Full document',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA00151495',
+        description:
+          'NYDFS Consent Order — onboarding memo: "charged with soliciting an underage prostitution in 2007," 13 months served, 17 civil settlements',
+        page_reference: 'pp. 4-5',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA00151495',
+        description:
+          'NYDFS Consent Order — Paul Morris projection: "estimated flows of $100-300 [million]... w/ revenue of $2-4 million annually"',
+        page_reference: 'p. 3',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA00151495',
+        description:
+          'NYDFS Consent Order — EXECUTIVE-1 approval email: "Neither suggest [it] requires rep risk and we can move ahead"',
+        page_reference: 'p. 4',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA00151495',
+        description:
+          'NYDFS Consent Order — cascading compliance failures: conditions never communicated, monitoring reduced to internet age-checks, reference letters during offboarding',
+        page_reference: 'pp. 6-18',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01681865',
+        description:
+          'Deutsche Bank Presentation — Exhibit M: $6.37M+ co-conspirator legal expenses ($5.5M Link & Rockenbach for Groff, $87K+ Haddon Morgan for Maxwell)',
+        page_reference: 'Exhibit M',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01681865',
+        description:
+          'Deutsche Bank Presentation — Exhibit R: tuition payments to 20+ schools ($98K The New School, $34K Institut Villa Pierrefeu, $42K+ Glion Institute)',
+        page_reference: 'Exhibit R',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01681865',
+        description:
+          'Deutsche Bank Presentation — Exhibit P: high-profile payments ($2.08M Joichi Ito, $269K Chomsky, $200K de Jongh, $100K Dershowitz, $250K Larsen)',
+        page_reference: 'Exhibit P',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01681865',
+        description:
+          'Deutsche Bank Presentation — Exhibit J: $800K+ cash withdrawals, monthly $7,500 pattern, $108K single visit',
+        page_reference: 'Exhibit J',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA01418996',
+        description:
+          'Dmitri Saks EDD on Southern Financial LLC — "40 underage girls had come forward," 17 settlements, recommends High Risk + ARRC escalation',
+        page_reference: 'Full document',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA00151495',
+        description:
+          'NYDFS Consent Order — EXECUTIVE-1 and Morris home visit: "asked about the veracity of recent allegations and appeared to be satisfied"',
+        page_reference: 'p. 7',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01356506',
+        description:
+          'Elizabeth Ford (Head of Compliance Americas) email — three conditions for continuing the Epstein relationship',
+        page_reference: 'Full document',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA01422803',
+        description:
+          'Internal DB emails Oct 2018 — offboarding decision after Miami Herald series, Oldfield reference letters: "unaware of any problems"',
+        page_reference: 'Full document',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA00161594',
+        description:
+          'NYDFS press release — "$150 million penalty... first enforcement action by a regulator against a financial institution for dealings with Jeffrey Epstein"',
+        page_reference: 'Full document',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

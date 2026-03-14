@@ -20,9 +20,9 @@ const REDACTION_DESCRIPTIONS: Record<string, string> = {
 const STATS = [
   { value: "~3.5M", label: "Pages Released", accent: true },
   { value: "1.37M+", label: "Documents Indexed", accent: false },
-  { value: "53", label: "Entities Profiled", accent: false },
-  { value: "8", label: "Stories Published", accent: false },
-  { value: "125+", label: "Source Citations", accent: false },
+  { value: "115+", label: "Entities Tracked", accent: false },
+  { value: "14", label: "Stories Published", accent: false },
+  { value: "190+", label: "Source Citations", accent: false },
   { value: "44", label: "Open Questions", accent: false },
 ]
 
@@ -31,7 +31,7 @@ const PUBLICATIONS = [
     title: "Investigative Stories",
     description:
       "Long-form reporting organized into four sections: The Cover-Up, The Network, Follow the Money, and The Operation. Each story is built on primary source documents with numbered citations you can verify.",
-    stat: "8 published, 125+ citations",
+    stat: "14 published, 190+ citations",
     href: "/stories",
   },
   {
@@ -44,8 +44,8 @@ const PUBLICATIONS = [
   {
     title: "Entity Profiles",
     description:
-      "Detailed dossiers on individuals connected to the Epstein network, classified by evidence strength — not guilt. Each profile links to source documents, known connections, and timeline events.",
-    stat: "53 profiled across tiers 1–4",
+      "Detailed dossiers on individuals and organizations connected to the Epstein network, classified by evidence strength — not guilt. Each profile links to source documents, known connections, and timeline events.",
+    stat: "32 published, 115+ tracked",
     href: "/entities",
   },
   {
