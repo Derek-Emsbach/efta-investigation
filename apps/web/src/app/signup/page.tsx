@@ -111,6 +111,7 @@ function SignupContent() {
           display_name: displayName.trim(),
           subscription_tier: tier,
         },
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/account`,
       },
     });
 

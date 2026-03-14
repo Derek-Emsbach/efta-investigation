@@ -285,8 +285,9 @@
 
 ### Legacy Public Access items (superseded by community plan above)
 - [ ] OAuth sign-in (Google) — enable in Supabase dashboard + Google Cloud Console
-- [ ] Update login page — add "Create Account", "Forgot Password" links, OAuth buttons
-- [ ] Account settings page — display name, change password, delete account (GDPR)
+- [x] Update login page — "Create Account" + "Forgot Password" links
+- [x] Account settings page — display name, bio, password change, tier display, upgrade prompt, GDPR delete
+- [x] Auth callback route — `/auth/callback` handles email confirmation + password reset PKCE flow
 - [ ] Gate API routes: public GET routes remove auth check, write routes keep auth + role check
 - [ ] Content tiers: anon (browse only), free (full text), pro (PDF + AI), admin (upload/review)
 
@@ -296,8 +297,10 @@
 - [x] Security headers — X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy, Permissions-Policy, HSTS, X-XSS-Protection (in `next.config.ts`)
 - [x] Bot prevention — Cloudflare Turnstile on signup + login with graceful dev bypass (`components/ui/turnstile.tsx`, `lib/turnstile.ts`, `/api/auth/verify-captcha`)
 - [x] Error monitoring — Sentry `@sentry/nextjs` v10 (dormant until `NEXT_PUBLIC_SENTRY_DSN` set)
-- [ ] Email verification — enable "Confirm email" in Supabase Auth dashboard settings (manual step)
-- [ ] Anthropic API spend cap — set monthly budget in Anthropic Console ($50/mo initially)
+- [x] Email verification — "Confirm email" enabled in Supabase Auth dashboard
+- [x] Anthropic API spend cap — monthly budget set in Anthropic Console
+- [x] Custom domain — `theepsteincrimes.com` live (Cloudflare DNS → Vercel, Supabase redirect URLs updated)
+- [x] RLS fix — `doj_accountability` table RLS enabled (migration 021)
 - [ ] Vercel Attack Challenge Mode — keep off normally, enable during active attacks
 - [ ] Upstash Redis upgrade — replace in-memory rate limiting with distributed Redis (needed at scale)
 
