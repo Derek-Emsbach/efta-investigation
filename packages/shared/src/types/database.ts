@@ -666,3 +666,78 @@ export interface DocumentWithRelations extends Document {
   evidence: EvidenceItem[]
   events: (EventDocument & { event: Event })[]
 }
+
+// ============================================================
+// COMMUNITY PHASE 2: COMMENTS, REACTIONS, FLAGS
+// ============================================================
+
+export type CommentContentType = 'story' | 'case_file' | 'entity'
+export type CommentReactionType = 'helpful' | 'insightful' | 'disagree'
+export type CommentFlagReason = 'spam' | 'harassment' | 'misinformation' | 'off_topic' | 'other'
+export type InaccuracyFlagStatus = 'pending' | 'under_review' | 'resolved' | 'dismissed'
+
+export interface Comment {
+  id: string
+  content_type: CommentContentType
+  content_id: string
+  parent_id: string | null
+  author_id: string
+  body: string
+  is_hidden: boolean
+  is_deleted: boolean
+  flag_count: number
+  created_at: string
+  updated_at: string
+}
+
+export interface CommentReaction {
+  id: string
+  comment_id: string
+  user_id: string
+  reaction_type: CommentReactionType
+  created_at: string
+}
+
+export interface CommentFlag {
+  id: string
+  comment_id: string
+  user_id: string
+  reason: CommentFlagReason
+  description: string | null
+  created_at: string
+}
+
+export interface InaccuracyFlag {
+  id: string
+  content_type: CommentContentType
+  content_id: string
+  user_id: string
+  excerpt: string | null
+  description: string
+  status: InaccuracyFlagStatus
+  reviewer_id: string | null
+  reviewer_notes: string | null
+  resolved_at: string | null
+  created_at: string
+}
+
+export interface CommentAuthor {
+  id: string
+  display_name: string | null
+  avatar_url: string | null
+  subscription_tier: SubscriptionTier | null
+  current_rank: string | null
+}
+
+export interface CommentReactionCounts {
+  helpful: number
+  insightful: number
+  disagree: number
+}
+
+export interface CommentWithAuthor extends Comment {
+  author: CommentAuthor
+  reactions: CommentReactionCounts
+  user_reactions: CommentReactionType[]
+  replies: CommentWithAuthor[]
+}

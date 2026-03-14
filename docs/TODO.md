@@ -250,16 +250,20 @@
 
 **⚠️ Before deploying Phase 1:** Run migration 018 in Supabase SQL Editor
 
-**Phase 2: Subscriber Social Features (next)**
-- [ ] Migration 019: comments + reactions + inaccuracy_flags tables
-- [ ] CommentSection component (fetch thread, render, pagination)
-- [ ] CommentItem + CommentForm + ReactionBar + AuthGatePrompt components
-- [ ] Drop CommentSection into /stories/[slug], /case-files/[slug], /entities/[slug]
-- [ ] API: GET /api/public/comments, POST /api/comments, POST /api/reactions, POST /api/flags
-- [ ] Admin moderation queue (flagged comments + inaccuracy flags)
+**Phase 2: Subscriber Social Features — COMPLETE**
+- [x] Migration 020: comments + comment_reactions + comment_flags + inaccuracy_flags tables (polymorphic content_type/content_id, auto-hide trigger at 3 flags, RLS policies)
+- [x] Shared types: CommentContentType, CommentReactionType, CommentFlagReason, InaccuracyFlagStatus, Comment, CommentReaction, CommentFlag, InaccuracyFlag, CommentWithAuthor
+- [x] Rate limit tier: `comments` (30 req/min)
+- [x] CommentSection server component + CommentThread client component (pagination, auth-aware)
+- [x] CommentItem + CommentForm + ReactionBar + AuthGatePrompt + FlagModal components
+- [x] Drop CommentSection into /stories/[slug], /case-files/[slug], /entities/[slug]
+- [x] API: GET /api/public/comments, POST /api/comments, PATCH /api/comments/[id], POST /api/reactions (with XP), POST /api/flags
+- [x] Admin moderation queue at /dashboard/moderation (flagged comments + inaccuracy reports, two-tab layout)
+
+**⚠️ Before deploying Phase 2:** Run migration 020 in Supabase SQL Editor
 
 **Phase 3: Investigator Workspace /investigate**
-- [ ] Migration 020: investigator_notes + user_submissions tables + XP-on-approve trigger
+- [ ] Migration 021: investigator_notes + user_submissions tables + XP-on-approve trigger
 - [ ] (investigate)/layout.tsx + tab bar (Dashboard, Notes, Detective, Submit, Ranks)
 - [ ] /investigate/notes — personal markdown notes with entity linker
 - [ ] /investigate/detective — quota-gated AI (extract runConversation from admin assistant)

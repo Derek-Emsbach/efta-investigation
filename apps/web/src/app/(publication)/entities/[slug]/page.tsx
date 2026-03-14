@@ -32,6 +32,7 @@ import { ProfileTabsWrapper } from './profile-tabs-wrapper'
 import { PrintButton } from '@/components/ui/print-button'
 import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
 import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
+import { CommentSection } from '@/components/publication/comments/comment-section'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -243,6 +244,13 @@ export default async function EntityProfilePage({
             caseFiles={caseFiles}
             photos={photos}
             videos={(typedEntity.video_links ?? []) as VideoLink[]}
+          />
+
+          {/* Comments */}
+          <CommentSection
+            contentType="entity"
+            contentId={typedEntity.id}
+            currentPath={`/entities/${slug}`}
           />
         </div>
 

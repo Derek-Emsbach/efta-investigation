@@ -2,9 +2,10 @@
  * Simple in-memory rate limiter for public API routes.
  * Uses a sliding window counter per IP address.
  *
- * Two tiers:
+ * Three tiers:
  * - General (entities, stories, case files, homepage): 120 req/min
  * - Evidence search (heavier queries against 1.37M rows): 60 req/min
+ * - Comments (create, react, flag): 30 req/min
  */
 
 interface RateLimitEntry {
@@ -15,11 +16,13 @@ interface RateLimitEntry {
 const stores: Record<string, Map<string, RateLimitEntry>> = {
   general: new Map(),
   search: new Map(),
+  comments: new Map(),
 }
 
 const LIMITS = {
   general: { max: 120, windowMs: 60_000 },
   search: { max: 60, windowMs: 60_000 },
+  comments: { max: 30, windowMs: 60_000 },
 }
 
 // Clean up expired entries every 5 minutes
@@ -36,7 +39,7 @@ setInterval(() => {
 
 export function rateLimit(
   ip: string,
-  tier: 'general' | 'search' = 'general',
+  tier: 'general' | 'search' | 'comments' = 'general',
 ): { success: boolean; remaining: number; resetAt: number } {
   const store = stores[tier]
   const config = LIMITS[tier]
@@ -65,7 +68,7 @@ export function rateLimit(
  */
 export function checkRateLimit(
   request: Request,
-  tier: 'general' | 'search' = 'general',
+  tier: 'general' | 'search' | 'comments' = 'general',
 ): Response | null {
   // Get IP from Vercel headers, fall back to x-forwarded-for
   const ip =

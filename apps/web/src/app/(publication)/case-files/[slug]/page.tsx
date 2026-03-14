@@ -15,6 +15,7 @@ import { ReportSidebar } from '@/components/publication/case-file/report-sidebar
 import { PrintButton } from '@/components/ui/print-button'
 import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
 import { SourceAttributionBar } from '@/components/publication/promo/source-attribution-bar'
+import { CommentSection } from '@/components/publication/comments/comment-section'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -180,6 +181,13 @@ export default async function CaseFilePage({
 
           {/* Source attribution */}
           <SourceAttributionBar />
+
+          {/* Comments */}
+          <CommentSection
+            contentType="case_file"
+            contentId={typedCaseFile.id}
+            currentPath={`/case-files/${slug}`}
+          />
         </div>
 
         {/* Sidebar */}

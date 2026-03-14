@@ -21,6 +21,7 @@ import { SourceAttributionBar } from '@/components/publication/promo/source-attr
 import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
 import { RelatedStories } from '@/components/publication/story/related-stories'
 import { ShareButtons } from '@/components/publication/story/share-buttons'
+import { CommentSection } from '@/components/publication/comments/comment-section'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -302,6 +303,13 @@ export default async function StoryPage({
 
             {/* Source attribution */}
             <SourceAttributionBar />
+
+            {/* Comments */}
+            <CommentSection
+              contentType="story"
+              contentId={typedStory.id}
+              currentPath={`/stories/${slug}`}
+            />
           </div>
 
           {/* Sidebar */}
