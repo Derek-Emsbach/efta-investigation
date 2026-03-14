@@ -1,0 +1,784 @@
+{
+  "metadata": {
+    "generated_at": "2026-03-14T00:12:33.956511",
+    "samples_per_dataset": 20,
+    "random_seed": 42,
+    "total_attempted": 240,
+    "total_found": 64,
+    "total_pages_analyzed": 197
+  },
+  "per_dataset": {
+    "1": {
+      "range": [
+        1,
+        4521
+      ],
+      "samples_attempted": 20,
+      "samples_found": 17,
+      "samples_not_found": 3,
+      "availability_rate": 0.85,
+      "total_pages": 17,
+      "scanned_pages": 0,
+      "hybrid_pages": 17,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 1.0,
+      "resolutions": [
+        {
+          "width": 1152,
+          "height": 769
+        },
+        {
+          "width": 769,
+          "height": 1152
+        },
+        {
+          "width": 1152,
+          "height": 769
+        },
+        {
+          "width": 1152,
+          "height": 769
+        },
+        {
+          "width": 769,
+          "height": 1152
+        },
+        {
+          "width": 769,
+          "height": 1152
+        },
+        {
+          "width": 1152,
+          "height": 769
+        },
+        {
+          "width": 769,
+          "height": 1152
+        },
+        {
+          "width": 769,
+          "height": 1152
+        },
+        {
+          "width": 769,
+          "height": 1152
+        },
+        {
+          "width": 1152,
+          "height": 769
+        },
+        {
+          "width": 769,
+          "height": 1152
+        },
+        {
+          "width": 1152,
+          "height": 769
+        },
+        {
+          "width": 1152,
+          "height": 769
+        },
+        {
+          "width": 1152,
+          "height": 769
+        },
+        {
+          "width": 1908,
+          "height": 1431
+        },
+        {
+          "width": 1908,
+          "height": 1431
+        }
+      ]
+    },
+    "2": {
+      "range": [
+        4522,
+        5586
+      ],
+      "samples_attempted": 20,
+      "samples_found": 1,
+      "samples_not_found": 19,
+      "availability_rate": 0.05,
+      "total_pages": 100,
+      "scanned_pages": 0,
+      "hybrid_pages": 100,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 100.0,
+      "resolutions": [
+        {
+          "width": 812,
+          "height": 1060
+        },
+        {
+          "width": 812,
+          "height": 1061
+        },
+        {
+          "width": 815,
+          "height": 1060
+        },
+        {
+          "width": 815,
+          "height": 1062
+        },
+        {
+          "width": 815,
+          "height": 1064
+        },
+        {
+          "width": 816,
+          "height": 1061
+        },
+        {
+          "width": 816,
+          "height": 1062
+        },
+        {
+          "width": 816,
+          "height": 1063
+        },
+        {
+          "width": 817,
+          "height": 1060
+        },
+        {
+          "width": 817,
+          "height": 1061
+        },
+        {
+          "width": 817,
+          "height": 1062
+        },
+        {
+          "width": 818,
+          "height": 1061
+        },
+        {
+          "width": 818,
+          "height": 1063
+        },
+        {
+          "width": 819,
+          "height": 1061
+        },
+        {
+          "width": 871,
+          "height": 1077
+        },
+        {
+          "width": 871,
+          "height": 1081
+        },
+        {
+          "width": 871,
+          "height": 1082
+        },
+        {
+          "width": 872,
+          "height": 1084
+        },
+        {
+          "width": 873,
+          "height": 1082
+        },
+        {
+          "width": 874,
+          "height": 1085
+        },
+        {
+          "width": 875,
+          "height": 1080
+        },
+        {
+          "width": 876,
+          "height": 1078
+        },
+        {
+          "width": 876,
+          "height": 1079
+        },
+        {
+          "width": 876,
+          "height": 1083
+        },
+        {
+          "width": 877,
+          "height": 1072
+        },
+        {
+          "width": 877,
+          "height": 1089
+        },
+        {
+          "width": 878,
+          "height": 1077
+        },
+        {
+          "width": 878,
+          "height": 1087
+        },
+        {
+          "width": 878,
+          "height": 1088
+        },
+        {
+          "width": 878,
+          "height": 1089
+        },
+        {
+          "width": 878,
+          "height": 1090
+        },
+        {
+          "width": 879,
+          "height": 1077
+        },
+        {
+          "width": 879,
+          "height": 1085
+        },
+        {
+          "width": 879,
+          "height": 1086
+        },
+        {
+          "width": 879,
+          "height": 1087
+        },
+        {
+          "width": 879,
+          "height": 1096
+        },
+        {
+          "width": 880,
+          "height": 1081
+        },
+        {
+          "width": 880,
+          "height": 1083
+        },
+        {
+          "width": 880,
+          "height": 1085
+        },
+        {
+          "width": 880,
+          "height": 1086
+        },
+        {
+          "width": 880,
+          "height": 1087
+        },
+        {
+          "width": 881,
+          "height": 1079
+        },
+        {
+          "width": 881,
+          "height": 1080
+        },
+        {
+          "width": 881,
+          "height": 1084
+        },
+        {
+          "width": 881,
+          "height": 1086
+        },
+        {
+          "width": 881,
+          "height": 1090
+        },
+        {
+          "width": 882,
+          "height": 1082
+        },
+        {
+          "width": 882,
+          "height": 1084
+        },
+        {
+          "width": 882,
+          "height": 1086
+        },
+        {
+          "width": 883,
+          "height": 1079
+        },
+        {
+          "width": 883,
+          "height": 1080
+        },
+        {
+          "width": 883,
+          "height": 1081
+        },
+        {
+          "width": 883,
+          "height": 1084
+        },
+        {
+          "width": 883,
+          "height": 1085
+        },
+        {
+          "width": 883,
+          "height": 1086
+        },
+        {
+          "width": 883,
+          "height": 1087
+        },
+        {
+          "width": 883,
+          "height": 1089
+        },
+        {
+          "width": 884,
+          "height": 1081
+        },
+        {
+          "width": 884,
+          "height": 1082
+        },
+        {
+          "width": 884,
+          "height": 1084
+        },
+        {
+          "width": 884,
+          "height": 1085
+        },
+        {
+          "width": 884,
+          "height": 1086
+        },
+        {
+          "width": 884,
+          "height": 1088
+        },
+        {
+          "width": 884,
+          "height": 1090
+        },
+        {
+          "width": 885,
+          "height": 1088
+        },
+        {
+          "width": 885,
+          "height": 1091
+        },
+        {
+          "width": 886,
+          "height": 1081
+        },
+        {
+          "width": 886,
+          "height": 1083
+        },
+        {
+          "width": 886,
+          "height": 1089
+        },
+        {
+          "width": 889,
+          "height": 1076
+        },
+        {
+          "width": 889,
+          "height": 1089
+        },
+        {
+          "width": 892,
+          "height": 1081
+        },
+        {
+          "width": 893,
+          "height": 1091
+        },
+        {
+          "width": 895,
+          "height": 1082
+        }
+      ]
+    },
+    "3": {
+      "range": [
+        5705,
+        69044
+      ],
+      "samples_attempted": 20,
+      "samples_found": 1,
+      "samples_not_found": 19,
+      "availability_rate": 0.05,
+      "total_pages": 8,
+      "scanned_pages": 0,
+      "hybrid_pages": 8,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 8.0,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1056
+        }
+      ]
+    },
+    "4": {
+      "range": [
+        69045,
+        90321
+      ],
+      "samples_attempted": 20,
+      "samples_found": 3,
+      "samples_not_found": 17,
+      "availability_rate": 0.15,
+      "total_pages": 3,
+      "scanned_pages": 0,
+      "hybrid_pages": 3,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 1.0,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        }
+      ]
+    },
+    "5": {
+      "range": [
+        90322,
+        96905
+      ],
+      "samples_attempted": 20,
+      "samples_found": 1,
+      "samples_not_found": 19,
+      "availability_rate": 0.05,
+      "total_pages": 1,
+      "scanned_pages": 0,
+      "hybrid_pages": 1,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 1.0,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1056
+        }
+      ]
+    },
+    "6": {
+      "range": [
+        96906,
+        107252
+      ],
+      "samples_attempted": 20,
+      "samples_found": 4,
+      "samples_not_found": 16,
+      "availability_rate": 0.2,
+      "total_pages": 10,
+      "scanned_pages": 0,
+      "hybrid_pages": 10,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 2.5,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        }
+      ]
+    },
+    "7": {
+      "range": [
+        107253,
+        117395
+      ],
+      "samples_attempted": 20,
+      "samples_found": 1,
+      "samples_not_found": 19,
+      "availability_rate": 0.05,
+      "total_pages": 3,
+      "scanned_pages": 0,
+      "hybrid_pages": 3,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 3.0,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1056
+        }
+      ]
+    },
+    "8": {
+      "range": [
+        117396,
+        176563
+      ],
+      "samples_attempted": 20,
+      "samples_found": 4,
+      "samples_not_found": 16,
+      "availability_rate": 0.2,
+      "total_pages": 6,
+      "scanned_pages": 0,
+      "hybrid_pages": 6,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 1.5,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 963,
+          "height": 640
+        },
+        {
+          "width": 816,
+          "height": 1056
+        }
+      ]
+    },
+    "9": {
+      "range": [
+        176564,
+        1243099
+      ],
+      "samples_attempted": 20,
+      "samples_found": 9,
+      "samples_not_found": 11,
+      "availability_rate": 0.45,
+      "total_pages": 19,
+      "scanned_pages": 0,
+      "hybrid_pages": 19,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 2.1,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 1908,
+          "height": 1425
+        }
+      ]
+    },
+    "10": {
+      "range": [
+        1243100,
+        1524192
+      ],
+      "samples_attempted": 20,
+      "samples_found": 11,
+      "samples_not_found": 9,
+      "availability_rate": 0.55,
+      "total_pages": 11,
+      "scanned_pages": 0,
+      "hybrid_pages": 11,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 1.0,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1089
+        },
+        {
+          "width": 816,
+          "height": 1089
+        },
+        {
+          "width": 816,
+          "height": 1089
+        },
+        {
+          "width": 816,
+          "height": 1089
+        },
+        {
+          "width": 816,
+          "height": 1089
+        },
+        {
+          "width": 1040,
+          "height": 753
+        },
+        {
+          "width": 816,
+          "height": 1056
+        },
+        {
+          "width": 1056,
+          "height": 866
+        },
+        {
+          "width": 1056,
+          "height": 866
+        },
+        {
+          "width": 1056,
+          "height": 866
+        },
+        {
+          "width": 1056,
+          "height": 866
+        }
+      ]
+    },
+    "11": {
+      "range": [
+        1524193,
+        2640992
+      ],
+      "samples_attempted": 20,
+      "samples_found": 11,
+      "samples_not_found": 9,
+      "availability_rate": 0.55,
+      "total_pages": 18,
+      "scanned_pages": 0,
+      "hybrid_pages": 18,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 1.6,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        },
+        {
+          "width": 816,
+          "height": 1073
+        }
+      ]
+    },
+    "12": {
+      "range": [
+        2640993,
+        2858497
+      ],
+      "samples_attempted": 20,
+      "samples_found": 1,
+      "samples_not_found": 19,
+      "availability_rate": 0.05,
+      "total_pages": 1,
+      "scanned_pages": 0,
+      "hybrid_pages": 1,
+      "born_digital_pages": 0,
+      "scan_percentage": 100.0,
+      "avg_page_count": 1.0,
+      "resolutions": [
+        {
+          "width": 816,
+          "height": 1073
+        }
+      ]
+    }
+  },
+  "overall": {
+    "total_pages": 197,
+    "scanned_pages": 0,
+    "hybrid_pages": 197,
+    "born_digital_pages": 0,
+    "scan_percentage": 100.0,
+    "availability_rate": 0.267
+  }
+}

@@ -1,0 +1,2910 @@
+{
+  "1": [
+    {
+      "bates": "EFTA00000205",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 448214,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1152,
+            "height": 769
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00000218",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 390443,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 769,
+            "height": 1152
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00000245",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 452338,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1152,
+            "height": 769
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00000261",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 363947,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1152,
+            "height": 769
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00000713",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 333486,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 769,
+            "height": 1152
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00000768",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 484762,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 769,
+            "height": 1152
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00000840",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 595383,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1152,
+            "height": 769
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00000913",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 376475,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 769,
+            "height": 1152
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00001144",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 350185,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 769,
+            "height": 1152
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00001629",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 365777,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 769,
+            "height": 1152
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00001792",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 407163,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1152,
+            "height": 769
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00001829",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 467774,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 769,
+            "height": 1152
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00001906",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 362385,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1152,
+            "height": 769
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00002007",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 241089,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1152,
+            "height": 769
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00002254",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 1,
+      "file_size": 413454,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1152,
+            "height": 769
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00003437",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 3,
+      "file_size": 1396455,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1908,
+            "height": 1431
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00003457",
+      "status": "found",
+      "dataset_predicted": 1,
+      "dataset_found_on": 2,
+      "file_size": 1017383,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1908,
+            "height": 1431
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00004140",
+      "status": "not_found",
+      "dataset_predicted": 1
+    },
+    {
+      "bates": "EFTA00004465",
+      "status": "not_found",
+      "dataset_predicted": 1
+    },
+    {
+      "bates": "EFTA00004468",
+      "status": "not_found",
+      "dataset_predicted": 1
+    }
+  ],
+  "2": [
+    {
+      "bates": "EFTA00004535",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004610",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004711",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004720",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004731",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004777",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004840",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004848",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004962",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00004973",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005063",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005091",
+      "status": "found",
+      "dataset_predicted": 2,
+      "dataset_found_on": 3,
+      "file_size": 42601905,
+      "analysis": {
+        "page_count": 100,
+        "scanned_pages": 0,
+        "hybrid_pages": 100,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 812,
+            "height": 1060
+          },
+          {
+            "width": 812,
+            "height": 1061
+          },
+          {
+            "width": 815,
+            "height": 1060
+          },
+          {
+            "width": 815,
+            "height": 1062
+          },
+          {
+            "width": 815,
+            "height": 1064
+          },
+          {
+            "width": 816,
+            "height": 1061
+          },
+          {
+            "width": 816,
+            "height": 1062
+          },
+          {
+            "width": 816,
+            "height": 1063
+          },
+          {
+            "width": 817,
+            "height": 1060
+          },
+          {
+            "width": 817,
+            "height": 1061
+          },
+          {
+            "width": 817,
+            "height": 1062
+          },
+          {
+            "width": 818,
+            "height": 1061
+          },
+          {
+            "width": 818,
+            "height": 1063
+          },
+          {
+            "width": 819,
+            "height": 1061
+          },
+          {
+            "width": 871,
+            "height": 1077
+          },
+          {
+            "width": 871,
+            "height": 1081
+          },
+          {
+            "width": 871,
+            "height": 1082
+          },
+          {
+            "width": 872,
+            "height": 1084
+          },
+          {
+            "width": 873,
+            "height": 1082
+          },
+          {
+            "width": 874,
+            "height": 1085
+          },
+          {
+            "width": 875,
+            "height": 1080
+          },
+          {
+            "width": 876,
+            "height": 1078
+          },
+          {
+            "width": 876,
+            "height": 1079
+          },
+          {
+            "width": 876,
+            "height": 1083
+          },
+          {
+            "width": 877,
+            "height": 1072
+          },
+          {
+            "width": 877,
+            "height": 1089
+          },
+          {
+            "width": 878,
+            "height": 1077
+          },
+          {
+            "width": 878,
+            "height": 1087
+          },
+          {
+            "width": 878,
+            "height": 1088
+          },
+          {
+            "width": 878,
+            "height": 1089
+          },
+          {
+            "width": 878,
+            "height": 1090
+          },
+          {
+            "width": 879,
+            "height": 1077
+          },
+          {
+            "width": 879,
+            "height": 1085
+          },
+          {
+            "width": 879,
+            "height": 1086
+          },
+          {
+            "width": 879,
+            "height": 1087
+          },
+          {
+            "width": 879,
+            "height": 1096
+          },
+          {
+            "width": 880,
+            "height": 1081
+          },
+          {
+            "width": 880,
+            "height": 1083
+          },
+          {
+            "width": 880,
+            "height": 1085
+          },
+          {
+            "width": 880,
+            "height": 1086
+          },
+          {
+            "width": 880,
+            "height": 1087
+          },
+          {
+            "width": 881,
+            "height": 1079
+          },
+          {
+            "width": 881,
+            "height": 1080
+          },
+          {
+            "width": 881,
+            "height": 1084
+          },
+          {
+            "width": 881,
+            "height": 1086
+          },
+          {
+            "width": 881,
+            "height": 1090
+          },
+          {
+            "width": 882,
+            "height": 1082
+          },
+          {
+            "width": 882,
+            "height": 1084
+          },
+          {
+            "width": 882,
+            "height": 1086
+          },
+          {
+            "width": 883,
+            "height": 1079
+          },
+          {
+            "width": 883,
+            "height": 1080
+          },
+          {
+            "width": 883,
+            "height": 1081
+          },
+          {
+            "width": 883,
+            "height": 1084
+          },
+          {
+            "width": 883,
+            "height": 1085
+          },
+          {
+            "width": 883,
+            "height": 1086
+          },
+          {
+            "width": 883,
+            "height": 1087
+          },
+          {
+            "width": 883,
+            "height": 1089
+          },
+          {
+            "width": 884,
+            "height": 1081
+          },
+          {
+            "width": 884,
+            "height": 1082
+          },
+          {
+            "width": 884,
+            "height": 1084
+          },
+          {
+            "width": 884,
+            "height": 1085
+          },
+          {
+            "width": 884,
+            "height": 1086
+          },
+          {
+            "width": 884,
+            "height": 1088
+          },
+          {
+            "width": 884,
+            "height": 1090
+          },
+          {
+            "width": 885,
+            "height": 1088
+          },
+          {
+            "width": 885,
+            "height": 1091
+          },
+          {
+            "width": 886,
+            "height": 1081
+          },
+          {
+            "width": 886,
+            "height": 1083
+          },
+          {
+            "width": 886,
+            "height": 1089
+          },
+          {
+            "width": 889,
+            "height": 1076
+          },
+          {
+            "width": 889,
+            "height": 1089
+          },
+          {
+            "width": 892,
+            "height": 1081
+          },
+          {
+            "width": 893,
+            "height": 1091
+          },
+          {
+            "width": 895,
+            "height": 1082
+          }
+        ],
+        "fonts": [
+          "ArialMT",
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00005211",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005218",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005226",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005257",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005300",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005387",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005441",
+      "status": "not_found",
+      "dataset_predicted": 2
+    },
+    {
+      "bates": "EFTA00005462",
+      "status": "not_found",
+      "dataset_predicted": 2
+    }
+  ],
+  "3": [
+    {
+      "bates": "EFTA00008708",
+      "status": "found",
+      "dataset_predicted": 3,
+      "dataset_found_on": 6,
+      "file_size": 362474,
+      "analysis": {
+        "page_count": 8,
+        "scanned_pages": 0,
+        "hybrid_pages": 8,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00010263",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00010869",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00018306",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00020640",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00024670",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00024918",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00029405",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00030512",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00041883",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00043542",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00046240",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00046903",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00049041",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00051879",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00056368",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00060060",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00062177",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00063733",
+      "status": "not_found",
+      "dataset_predicted": 3
+    },
+    {
+      "bates": "EFTA00066148",
+      "status": "not_found",
+      "dataset_predicted": 3
+    }
+  ],
+  "4": [
+    {
+      "bates": "EFTA00071384",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00071659",
+      "status": "found",
+      "dataset_predicted": 4,
+      "dataset_found_on": 9,
+      "file_size": 24363,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00072354",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00074374",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00074652",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00075910",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00076673",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00077066",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00077793",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00078153",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00080686",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00080999",
+      "status": "found",
+      "dataset_predicted": 4,
+      "dataset_found_on": 9,
+      "file_size": 48385,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00081175",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00081500",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00083902",
+      "status": "found",
+      "dataset_predicted": 4,
+      "dataset_found_on": 9,
+      "file_size": 24682,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00086547",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00089005",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00089851",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00089875",
+      "status": "not_found",
+      "dataset_predicted": 4
+    },
+    {
+      "bates": "EFTA00090279",
+      "status": "not_found",
+      "dataset_predicted": 4
+    }
+  ],
+  "5": [
+    {
+      "bates": "EFTA00090584",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00090780",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00090864",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00091660",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00092050",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00092121",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00092198",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00092515",
+      "status": "found",
+      "dataset_predicted": 5,
+      "dataset_found_on": 9,
+      "file_size": 38591,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00092533",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00092906",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00092978",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00093430",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00093608",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00094108",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00094884",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00095564",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00095930",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00095959",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00096616",
+      "status": "not_found",
+      "dataset_predicted": 5
+    },
+    {
+      "bates": "EFTA00096678",
+      "status": "not_found",
+      "dataset_predicted": 5
+    }
+  ],
+  "6": [
+    {
+      "bates": "EFTA00099172",
+      "status": "found",
+      "dataset_predicted": 6,
+      "dataset_found_on": 9,
+      "file_size": 64801,
+      "analysis": {
+        "page_count": 2,
+        "scanned_pages": 0,
+        "hybrid_pages": 2,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00099193",
+      "status": "found",
+      "dataset_predicted": 6,
+      "dataset_found_on": 9,
+      "file_size": 41387,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00099246",
+      "status": "found",
+      "dataset_predicted": 6,
+      "dataset_found_on": 9,
+      "file_size": 299469,
+      "analysis": {
+        "page_count": 5,
+        "scanned_pages": 0,
+        "hybrid_pages": 5,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00100389",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00100499",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00100946",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00101210",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00101245",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00102061",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00102836",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00103388",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00103449",
+      "status": "found",
+      "dataset_predicted": 6,
+      "dataset_found_on": 9,
+      "file_size": 79751,
+      "analysis": {
+        "page_count": 2,
+        "scanned_pages": 0,
+        "hybrid_pages": 2,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00103925",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00104423",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00105085",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00105736",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00106103",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00106198",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00106466",
+      "status": "not_found",
+      "dataset_predicted": 6
+    },
+    {
+      "bates": "EFTA00106483",
+      "status": "not_found",
+      "dataset_predicted": 6
+    }
+  ],
+  "7": [
+    {
+      "bates": "EFTA00107441",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00108024",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00108293",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00108742",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00109049",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00109129",
+      "status": "found",
+      "dataset_predicted": 7,
+      "dataset_found_on": 9,
+      "file_size": 172285,
+      "analysis": {
+        "page_count": 3,
+        "scanned_pages": 0,
+        "hybrid_pages": 3,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00109757",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00109874",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00111372",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00113505",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00113557",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00114169",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00114921",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00115338",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00115601",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00115922",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00116050",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00116317",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00117016",
+      "status": "not_found",
+      "dataset_predicted": 7
+    },
+    {
+      "bates": "EFTA00117024",
+      "status": "not_found",
+      "dataset_predicted": 7
+    }
+  ],
+  "8": [
+    {
+      "bates": "EFTA00117608",
+      "status": "found",
+      "dataset_predicted": 8,
+      "dataset_found_on": 9,
+      "file_size": 60826,
+      "analysis": {
+        "page_count": 2,
+        "scanned_pages": 0,
+        "hybrid_pages": 2,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00124369",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00124706",
+      "status": "found",
+      "dataset_predicted": 8,
+      "dataset_found_on": 9,
+      "file_size": 137334,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00127761",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00129104",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00134657",
+      "status": "found",
+      "dataset_predicted": 8,
+      "dataset_found_on": 9,
+      "file_size": 284932,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 963,
+            "height": 640
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00134882",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00136630",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00139689",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00145888",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00147131",
+      "status": "found",
+      "dataset_predicted": 8,
+      "dataset_found_on": 9,
+      "file_size": 36244,
+      "analysis": {
+        "page_count": 2,
+        "scanned_pages": 0,
+        "hybrid_pages": 2,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00150202",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00150667",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00159402",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00164560",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00164719",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00166605",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00167331",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00167766",
+      "status": "not_found",
+      "dataset_predicted": 8
+    },
+    {
+      "bates": "EFTA00174795",
+      "status": "not_found",
+      "dataset_predicted": 8
+    }
+  ],
+  "9": [
+    {
+      "bates": "EFTA00177763",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00217409",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 177796,
+      "analysis": {
+        "page_count": 4,
+        "scanned_pages": 0,
+        "hybrid_pages": 4,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman",
+          "ZapfDingbats"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00298041",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00321713",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00341729",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00356192",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 101903,
+      "analysis": {
+        "page_count": 4,
+        "scanned_pages": 0,
+        "hybrid_pages": 4,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00411167",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 75839,
+      "analysis": {
+        "page_count": 2,
+        "scanned_pages": 0,
+        "hybrid_pages": 2,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00497091",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00515356",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00593710",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 381963,
+      "analysis": {
+        "page_count": 4,
+        "scanned_pages": 0,
+        "hybrid_pages": 4,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00678731",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 37517,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00681708",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00802448",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00821467",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA00856368",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 58373,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00937789",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 19561,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA00960718",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 31777,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01195759",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA01201244",
+      "status": "not_found",
+      "dataset_predicted": 9
+    },
+    {
+      "bates": "EFTA01241210",
+      "status": "found",
+      "dataset_predicted": 9,
+      "dataset_found_on": 9,
+      "file_size": 995415,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1908,
+            "height": 1425
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    }
+  ],
+  "10": [
+    {
+      "bates": "EFTA01276668",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01306541",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01309034",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01310414",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01329674",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01348561",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 80533,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1089
+          }
+        ],
+        "fonts": [
+          "ArialMT",
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01354143",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 178150,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1089
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01360906",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 34211,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1089
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01373073",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 134874,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1089
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01382066",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 71056,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1089
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01406529",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01438879",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01452286",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 175623,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1040,
+            "height": 753
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01464946",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01472790",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 34208,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1056
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01479808",
+      "status": "not_found",
+      "dataset_predicted": 10
+    },
+    {
+      "bates": "EFTA01492284",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 67735,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1056,
+            "height": 866
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01514458",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 61790,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1056,
+            "height": 866
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01519753",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 58154,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1056,
+            "height": 866
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01522391",
+      "status": "found",
+      "dataset_predicted": 10,
+      "dataset_found_on": 10,
+      "file_size": 60915,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 1056,
+            "height": 866
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    }
+  ],
+  "11": [
+    {
+      "bates": "EFTA01539273",
+      "status": "not_found",
+      "dataset_predicted": 11
+    },
+    {
+      "bates": "EFTA01568305",
+      "status": "not_found",
+      "dataset_predicted": 11
+    },
+    {
+      "bates": "EFTA01590070",
+      "status": "not_found",
+      "dataset_predicted": 11
+    },
+    {
+      "bates": "EFTA01647660",
+      "status": "not_found",
+      "dataset_predicted": 11
+    },
+    {
+      "bates": "EFTA01665541",
+      "status": "not_found",
+      "dataset_predicted": 11
+    },
+    {
+      "bates": "EFTA01672791",
+      "status": "not_found",
+      "dataset_predicted": 11
+    },
+    {
+      "bates": "EFTA01673076",
+      "status": "not_found",
+      "dataset_predicted": 11
+    },
+    {
+      "bates": "EFTA01801671",
+      "status": "not_found",
+      "dataset_predicted": 11
+    },
+    {
+      "bates": "EFTA01973480",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 10,
+      "file_size": 168364,
+      "analysis": {
+        "page_count": 2,
+        "scanned_pages": 0,
+        "hybrid_pages": 2,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA01986022",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 10,
+      "file_size": 35363,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02004318",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 10,
+      "file_size": 43081,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02006778",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 10,
+      "file_size": 14789,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02023324",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 10,
+      "file_size": 35609,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02033795",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 10,
+      "file_size": 24960,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02108202",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 10,
+      "file_size": 28815,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02217151",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 11,
+      "file_size": 56015,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02233209",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 11,
+      "file_size": 197431,
+      "analysis": {
+        "page_count": 5,
+        "scanned_pages": 0,
+        "hybrid_pages": 5,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold",
+          "Times-Roman"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02515455",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 11,
+      "file_size": 208072,
+      "analysis": {
+        "page_count": 3,
+        "scanned_pages": 0,
+        "hybrid_pages": 3,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Courier",
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02542180",
+      "status": "found",
+      "dataset_predicted": 11,
+      "dataset_found_on": 11,
+      "file_size": 58287,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02602456",
+      "status": "not_found",
+      "dataset_predicted": 11
+    }
+  ],
+  "12": [
+    {
+      "bates": "EFTA02655193",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02656882",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02665719",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02666402",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02666792",
+      "status": "found",
+      "dataset_predicted": 12,
+      "dataset_found_on": 11,
+      "file_size": 12460,
+      "analysis": {
+        "page_count": 1,
+        "scanned_pages": 0,
+        "hybrid_pages": 1,
+        "born_digital_pages": 0,
+        "classification": "all_hybrid",
+        "resolutions": [
+          {
+            "width": 816,
+            "height": 1073
+          }
+        ],
+        "fonts": [
+          "Helvetica",
+          "Helvetica-Bold"
+        ],
+        "pdf_producer": "",
+        "pdf_creator": ""
+      }
+    },
+    {
+      "bates": "EFTA02690907",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02733869",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02747701",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02748760",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02752031",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02753990",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02763420",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02764980",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02810385",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02812292",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02813741",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02817511",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02832115",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02846676",
+      "status": "not_found",
+      "dataset_predicted": 12
+    },
+    {
+      "bates": "EFTA02852673",
+      "status": "not_found",
+      "dataset_predicted": 12
+    }
+  ]
+}
