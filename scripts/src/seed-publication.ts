@@ -996,6 +996,107 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  // ─── Story 11: The Washington List (D.C. journal cluster) ────────────────────
+  {
+    slug: 'the-washington-list',
+    title: 'The Washington List',
+    deck: 'Four men from one city, one professional network — two AOL co-founders, an AOL vice chairman, and an NFL team owner — all named in the same victim\'s forensically authenticated journals. All listed in Epstein\'s contact directory. None investigated. None charged.',
+    section: 'the-network' as const,
+    file: 'the-washington-list.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-14T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Aol-building.jpg/1280px-Aol-building.jpg',
+    hero_image_caption:
+      'The AOL headquarters in Dulles, Virginia — two of the four D.C. journal-named men co-founded America Online, and a third served as its vice chairman.',
+    metadata: { source_analysis: 'entity enrichment — D.C. journal cluster analysis' },
+    entities: [
+      { name: 'Jim Kimsey', mention_count: 4, is_primary: true },
+      { name: 'Steve Case', mention_count: 4, is_primary: true },
+      { name: 'Ted Leonsis', mention_count: 4, is_primary: true },
+      { name: 'Dan Snyder', mention_count: 4, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 8, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 2, is_primary: false },
+      { name: 'Alan Dershowitz', mention_count: 1, is_primary: false },
+      { name: 'Larry Summers', mention_count: 1, is_primary: false },
+      { name: 'Marvin Minsky', mention_count: 1, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — references Giuffre victim journals with forensic authentication (gel pen analysis, contemporaneous dating), lists journal-named individuals',
+        page_reference: 'Evidence inventory section',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Epstein contact directory ("black book") with 1,571 names, multiple entries for D.C.-area figures',
+        page_reference: 'Evidence inventory section',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — documents 24 minor victims and 14 adult victims, journal evidence cross-referenced with flight logs and contact records',
+        page_reference: 'Victim accounts section',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Epstein\'s institutional relationships including Harvard donations during Summers\' presidency and MIT connections',
+        page_reference: 'Network analysis section',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Jean-Luc Brunel\'s MC2 modeling agency as international recruitment arm',
+        page_reference: 'Co-conspirator analysis',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — references 2007 NPA blanket immunity provision covering unnamed "potential co-conspirators"',
+        page_reference: 'Legal framework section',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Dershowitz role as Epstein defense attorney who negotiated NPA immunity, later named by Giuffre',
+        page_reference: 'NPA analysis section',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — no charges filed against journal-named individuals, investigation scope limited to Maxwell and select co-conspirators',
+        page_reference: 'Charging recommendations',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA02731082',
+        description:
+          'Public reporting — Dan Snyder sold Washington Commanders July 2023 for $6.05 billion amid separate House Oversight investigation',
+        page_reference: 'Public record',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Section D (Groff/co-conspirator charging analysis) entirely redacted under Category C institutional protection',
+        page_reference: 'Section D',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

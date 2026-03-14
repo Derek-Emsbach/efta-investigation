@@ -210,8 +210,9 @@
 - [x] Editorial attribution — Derek Emsbach as named editor across masthead, story bylines, footer, about page. AI-Assisted badge on stories.
 - [x] Related Stories — "Continue Reading" section on every story page (3 related articles, matched by shared entities → section → recency)
 - [x] Story 10: "Three Million Pages of Nothing" (DOJ scanning analysis) — section: the-cover-up — ~1,800 words, 6 citations, 1 entity link, 2 inline images + hero image. Systematic sampling of all 12 datasets confirms 100% hybrid scans at 96 DPI. Seeded 2026-03-14.
-- [ ] Story 11: "The Last Night" (MCC death) — section: the-cover-up
-- [ ] Story 12: "The Governor's Ranch" (Bill Richardson) — section: the-network
+- [x] Story 11: "The Washington List" (D.C. journal cluster) — section: the-network — ~2,000 words, 10 citations, 9 entity links, 4 inline images + hero image. Kimsey/Case/Leonsis/Snyder AOL cluster pattern. Seeded 2026-03-14.
+- [ ] Story 12: "The Last Night" (MCC death) — section: the-cover-up
+- [ ] Story 13: "The Governor's Ranch" (Bill Richardson) — section: the-network
 
 ---
 

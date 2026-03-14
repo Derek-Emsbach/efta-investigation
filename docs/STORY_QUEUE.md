@@ -19,6 +19,7 @@
 | 8 | the-billion-dollar-blind-eye | The Billion-Dollar Blind Eye | follow-the-money | LEON_BLACK/Analysis.md | 2026-03 |
 | 9 | the-recruitment-trip | The Recruitment Trip | the-operation | DS12_EXPANSION (Cape Town) | 2026-03 |
 | 10 | three-million-pages-of-nothing | Three Million Pages of Nothing | the-cover-up | scan-analysis-report.json | 2026-03 |
+| 11 | the-washington-list | The Washington List | the-network | Entity enrichment (D.C. cluster) | 2026-03 |
 
 ## Ready to Write
 
@@ -28,8 +29,9 @@
 | ~~2~~ | ~~The Billion-Dollar Blind Eye~~ | ~~follow-the-money~~ | ~~LEON_BLACK/Analysis.md~~ | **PUBLISHED** (Story 8, 2026-03-12) |
 | ~~3~~ | ~~The Recruitment Trip~~ | ~~the-operation~~ | ~~DS12_EXPANSION (Cape Town)~~ | **PUBLISHED** (Story 9, 2026-03-12) |
 | ~~4~~ | ~~Three Million Pages of Nothing~~ | ~~the-cover-up~~ | ~~scan-analysis-report.json~~ | **PUBLISHED** (Story 10, 2026-03-14) |
-| 5 | The Last Night | the-cover-up | DS12_EXPANSION (MCC) | Minute-by-minute MCC failure — not conspiracy, just institutional negligence |
-| 6 | The Governor's Ranch | the-network | Richardson investigation | Pilot testimony, campaign money, Richardson died uninvestigated in 2023 |
+| ~~5~~ | ~~The Washington List~~ | ~~the-network~~ | ~~Entity enrichment (D.C. cluster)~~ | **PUBLISHED** (Story 11, 2026-03-14) |
+| 6 | The Last Night | the-cover-up | DS12_EXPANSION (MCC) | Minute-by-minute MCC failure — not conspiracy, just institutional negligence |
+| 7 | The Governor's Ranch | the-network | Richardson investigation | Pilot testimony, campaign money, Richardson died uninvestigated in 2023 |
 
 ## Needs More Investigation
 
