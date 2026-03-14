@@ -368,6 +368,9 @@ body {
   outline: 2px solid var(--color-info);
   outline-offset: 2px;
 }
+[data-no-focus-ring]:focus-visible {
+  outline: none;
+}
 
 /* === Input autofill override for dark theme === */
 input:-webkit-autofill,

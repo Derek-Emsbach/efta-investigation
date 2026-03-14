@@ -237,7 +237,8 @@ export function SearchInterface() {
             placeholder={mode === 'corpus'
               ? 'Search full corpus text... (supports "exact phrase", AND, OR, NOT)'
               : 'Search documents, Bates numbers, entities...'}
-            className="flex-1 bg-transparent px-3 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted outline-none focus:outline-none focus:ring-0"
+            data-no-focus-ring
+            className="flex-1 bg-transparent px-3 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted outline-none"
           />
           <button
             type="submit"
