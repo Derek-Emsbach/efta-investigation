@@ -23,6 +23,7 @@
 | 12 | the-last-night | The Last Night | the-cover-up | DS12_EXPANSION (MCC) | 2026-03 |
 | 13 | the-governors-ranch | The Governor's Ranch | the-network | DS12_EXPANSION (Richardson) | 2026-03 |
 | 14 | normal-for-this-client | Normal for This Client | follow-the-money | DEUTSCHE_BANK/Analysis.md | 2026-03 |
+| 15 | the-four-names | The Four Names | the-cover-up | NPA_CO_CONSPIRATORS/Analysis.md | 2026-03 |
 
 ## Ready to Write
 
@@ -41,7 +42,7 @@
 | Topic | Gap | Next Step |
 |-------|-----|-----------|
 | ~~Deutsche Bank compliance~~ | ~~Need full deep read of EFTA01681865 (52 pages)~~ | **PUBLISHED** (Story 14, 2026-03-14) |
-| NPA co-conspirators (Kellen, Ross) | Only Groff deeply analyzed | Deep dives on remaining 3 named co-conspirators |
+| ~~NPA co-conspirators (Kellen, Ross)~~ | ~~Only Groff deeply analyzed~~ | **PUBLISHED** (Story 15, 2026-03-14) |
 | Financial shell companies | Jeepers Inc, other entities not fully mapped | Corporate entity corpus sweep |
 | Jean-Luc Brunel / modeling pipeline | Entity exists but no deep document analysis | Corpus sweep for Brunel recruitment docs |
 

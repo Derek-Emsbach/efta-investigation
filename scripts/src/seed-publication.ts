@@ -1398,6 +1398,128 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  // ─── Story 15: The Four Names (NPA Co-Conspirators) ─────────────────────────
+  {
+    slug: 'the-four-names',
+    title: 'The Four Names',
+    deck: 'By May 2007, federal prosecutors had an 82-page prosecution memo and a 53-page sealed indictment ready for the grand jury. Four months later, the government signed a Non-Prosecution Agreement granting blanket immunity to every co-conspirator — naming four women explicitly: Sarah Kellen, Adriana Ross, Lesley Groff, and Nadia Marcinkova. None was required to cooperate. None was ever charged.',
+    section: 'the-cover-up' as const,
+    file: 'the-four-names.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 12,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-14T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/d/d9/PB_Courthouse.jpg',
+    hero_image_caption:
+      'The Palm Beach County Courthouse — where Epstein entered his state guilty plea on June 30, 2008, activating the NPA that immunized his co-conspirators from federal prosecution.',
+    metadata: {
+      source_analysis:
+        'docs/investigation/sources/NPA_CO_CONSPIRATORS/Analysis.md',
+    },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 20, is_primary: true },
+      { name: 'Lesley Groff', mention_count: 5, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 4, is_primary: true },
+      { name: 'Sarah Kellen', mention_count: 18, is_primary: true },
+      { name: 'Nadia Marcinkova', mention_count: 14, is_primary: true },
+      { name: 'Adriana Ross', mention_count: 8, is_primary: true },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA01186070',
+        description:
+          'CVRA Motion for Summary Judgment — 82-page prosecution memo and 53-page indictment referenced; Villafaña: "sitting on the shelf since May"',
+        page_reference: 'pp. 3, 11 (¶¶12, 25)',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01186070',
+        description:
+          'CVRA Motion — NPA immunity provision ¶40: "including but not limited to Sarah Kellen, Adrian Ross, Lesley Groff, or Nadia Marcinkova"; confidentiality provision; Lefkowitz: "keep this from becoming public"',
+        page_reference: 'pp. 14-21 (¶¶28, 37, 40-41)',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01653420',
+        description:
+          'FBI Organizational Chart — Kellen: "at least 10 girls state she is the direct point of contact for scheduling"; role descriptions for all four co-conspirators',
+        page_reference: 'Full document',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01659794',
+        description:
+          'Sealed Federal Indictment — Kellen named as defendant; Overt Act (2): led Jane Doe #2 (age 14) upstairs to Epstein\'s bedroom; took nude photographs',
+        page_reference: 'pp. 1-10',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01245817',
+        description:
+          'FBI 302 — victim interview: Kellen set up massage table, arranged lotions, scheduled via phone, called victims "ahead of time to advise of dates"',
+        page_reference: 'pp. 4-7',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01688916',
+        description:
+          'Daily Beast articles — Kellen 364 flight legs; Marcinkova FAA pilot; Maxwell trial context; post-Epstein identities',
+        page_reference: 'pp. 18-28',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA00081180',
+        description:
+          'Edwards v. Epstein Undisputed Facts — "Nadia Marcinkova (Epstein\'s live-in sex slave)"; E.W. forced to perform sex acts on Marcinkova; A.H. same',
+        page_reference: 'pp. 7-9 (¶¶11, 13, 27)',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA00585893',
+        description:
+          'Epstein gift declaration — Harley Davidson motorcycle to Peter Marcinkova, Malinovia 14, Presov, Slovakia 08001; valued at $9,905',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA00081180',
+        description:
+          'Edwards v. Epstein — Epstein redirected airplane from Teterboro to USVI to prevent FBI serving Marcinkova target letter; "verbally harassed Ms. Marcinkova"',
+        page_reference: 'pp. 9-10 (¶20)',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01699906',
+        description:
+          'FBI Briefing Document — Ross "admits during a proffer she was trained by [Kellen]"; "instructed to remove items from Palm Beach and Virgin Island homes and have them destroyed"',
+        page_reference: 'p. 3',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01186070',
+        description:
+          'CVRA Motion — Lefkowitz to Villafaña on day NPA signed: "Please do whatever you can to keep this from becoming public"',
+        page_reference: 'p. 17 (¶37)',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA00081180',
+        description:
+          'Edwards v. Epstein — FBI letters to victims Jan & May 2008: "currently under investigation... request your continued patience"; plea hearing July 11, 2008',
+        page_reference: 'pp. 12-16 (¶¶29-38)',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Maxwell conviction December 2021; sex trafficking, conspiracy, transporting minor; 20-year sentence',
+        page_reference: 'Legal framework section',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────
