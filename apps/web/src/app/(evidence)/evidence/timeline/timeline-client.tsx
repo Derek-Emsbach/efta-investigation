@@ -20,6 +20,9 @@ const EVENT_TYPE_OPTIONS = [
   { value: 'legislative', label: 'Legislative' },
   { value: 'travel', label: 'Travel' },
   { value: 'sighting', label: 'Sighting' },
+  { value: 'media', label: 'Media' },
+  { value: 'community', label: 'Community' },
+  { value: 'international', label: 'International' },
 ]
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
@@ -32,7 +35,17 @@ const EVENT_TYPE_COLORS: Record<string, string> = {
   legislative: '#14B8A6',
   travel: '#F97316',
   sighting: '#EC4899',
+  media: '#8B5CF6',
+  community: '#06B6D4',
+  international: '#0EA5E9',
+  other: '#6B7280',
 }
+
+const SOURCE_OPTIONS = [
+  { value: '', label: 'All Events' },
+  { value: 'investigation', label: 'Investigation' },
+  { value: 'public', label: 'Public Record' },
+] as const
 
 // -------------------------------------------------------------------
 // Types
@@ -53,6 +66,8 @@ interface TimelineEvent {
   date_end: string | null
   event_type: string | null
   significance: string | null
+  source?: 'investigation' | 'public'
+  source_urls?: string[]
   linked_entities: LinkedEntity[]
 }
 
@@ -108,6 +123,7 @@ export function EvidenceTimelineClient() {
   const [search, setSearch] = useState('')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
+  const [source, setSource] = useState('')
   const [page, setPage] = useState(1)
   const [data, setData] = useState<TimelineEvent[]>([])
   const [totalCount, setTotalCount] = useState(0)
@@ -124,6 +140,7 @@ export function EvidenceTimelineClient() {
       if (eventType) params.set('event_type', eventType)
       if (dateFrom) params.set('date_from', dateFrom)
       if (dateTo) params.set('date_to', dateTo)
+      if (source) params.set('source', source)
 
       const res = await fetch(`/api/public/timeline?${params.toString()}`)
       if (!res.ok) throw new Error('Failed to fetch')
@@ -137,7 +154,7 @@ export function EvidenceTimelineClient() {
     } finally {
       setIsLoading(false)
     }
-  }, [page, search, eventType, dateFrom, dateTo])
+  }, [page, search, eventType, dateFrom, dateTo, source])
 
   useEffect(() => {
     void fetchEvents()
@@ -146,7 +163,7 @@ export function EvidenceTimelineClient() {
   const groups = useMemo(() => groupByMonth(data), [data])
   const totalPages = Math.ceil(totalCount / PAGE_SIZE)
 
-  const hasFilters = eventType || search || dateFrom || dateTo
+  const hasFilters = eventType || search || dateFrom || dateTo || source
 
   return (
     <div className="min-h-[calc(100vh-120px)]">
@@ -157,6 +174,23 @@ export function EvidenceTimelineClient() {
           <p className="mt-1 text-sm text-text-muted">
             {isLoading ? 'Loading...' : `${totalCount} events in chronological order`}
           </p>
+        </div>
+
+        {/* Source filter — segmented control */}
+        <div className="flex items-center gap-1 mb-4 p-1 bg-surface rounded-lg border border-border-default w-fit">
+          {SOURCE_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => { setSource(opt.value); setPage(1) }}
+              className={`px-3 py-1.5 text-xs font-mono rounded-md transition-colors ${
+                source === opt.value
+                  ? 'bg-background text-text-primary shadow-sm'
+                  : 'text-text-muted hover:text-text-secondary'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
 
         {/* Filters */}
@@ -218,6 +252,7 @@ export function EvidenceTimelineClient() {
                 setSearch('')
                 setDateFrom('')
                 setDateTo('')
+                setSource('')
                 setPage(1)
               }}
               className="text-xs text-text-muted hover:text-text-primary transition-colors font-mono"
@@ -268,6 +303,7 @@ export function EvidenceTimelineClient() {
                 <div className="relative ml-4 border-l-2 border-border-default">
                   {group.events.map((event) => {
                     const typeColor = EVENT_TYPE_COLORS[event.event_type ?? ''] ?? '#6B7280'
+                    const isPublic = event.source === 'public'
 
                     return (
                       <div key={event.id} className="relative pl-8 pb-6 last:pb-0">
@@ -278,19 +314,30 @@ export function EvidenceTimelineClient() {
                         />
 
                         {/* Card */}
-                        <div className="bg-surface border border-border-default rounded-lg p-4">
+                        <div className={`bg-surface border rounded-lg p-4 ${
+                          isPublic
+                            ? 'border-border-default border-l-2'
+                            : 'border-border-default'
+                        }`} style={isPublic ? { borderLeftColor: '#06B6D4' } : undefined}>
                           <div className="flex items-start gap-3 flex-wrap">
                             <h4 className="text-sm font-medium text-text-primary flex-1 min-w-0">
                               {event.title}
                             </h4>
-                            {event.event_type && (
-                              <span
-                                className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded shrink-0"
-                                style={{ color: typeColor, backgroundColor: `${typeColor}15` }}
-                              >
-                                {formatLabel(event.event_type)}
-                              </span>
-                            )}
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {isPublic && (
+                                <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#06B6D4]/10 text-[#06B6D4]">
+                                  Public Record
+                                </span>
+                              )}
+                              {event.event_type && (
+                                <span
+                                  className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded"
+                                  style={{ color: typeColor, backgroundColor: `${typeColor}15` }}
+                                >
+                                  {formatLabel(event.event_type)}
+                                </span>
+                              )}
+                            </div>
                           </div>
 
                           {event.date && (
@@ -310,6 +357,23 @@ export function EvidenceTimelineClient() {
 
                           {event.significance && (
                             <p className="text-xs text-text-muted italic mt-2">{event.significance}</p>
+                          )}
+
+                          {/* Source URLs (public events only) */}
+                          {isPublic && event.source_urls && event.source_urls.length > 0 && (
+                            <div className="flex items-center gap-3 mt-2">
+                              {event.source_urls.map((url, idx) => (
+                                <a
+                                  key={idx}
+                                  href={url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[11px] font-mono text-text-muted hover:text-[#06B6D4] transition-colors"
+                                >
+                                  Source {event.source_urls!.length > 1 ? idx + 1 : ''} ↗
+                                </a>
+                              ))}
+                            </div>
                           )}
 
                           {/* Linked entities */}

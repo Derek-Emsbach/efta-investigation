@@ -84,7 +84,7 @@ export function TimelinePreview({ events }: TimelinePreviewProps) {
         </h2>
         <div className="flex-1 h-px bg-border-default" />
         <Link
-          href="/dashboard/timeline"
+          href="/evidence/timeline"
           className="font-sans text-[11px] font-medium text-text-muted hover:text-text-primary whitespace-nowrap tracking-[0.04em] transition-colors"
         >
           Full Interactive Timeline →

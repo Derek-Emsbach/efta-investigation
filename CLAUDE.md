@@ -154,7 +154,8 @@ After completing any task (feature, fix, or refactor):
 2. **Update memory** — if the work revealed stable patterns, gotchas, or architectural decisions worth remembering, update the auto memory files. Memory is split into topic files: `MEMORY.md` (index), `technical-notes.md`, `investigation-tracker.md`, `completed-work.md`, `session-log.md`. Only record things that are confirmed and likely to stay relevant across sessions.
 3. **Write a story (if applicable)** — if the session produced publishable investigation findings, write a story for The Epstein Crimes following the 7-step workflow and quality checklist in `docs/STORY_QUEUE.md`. Update the queue (move from "Ready to Write" → "Published").
 4. **Update case files (if applicable)** — if the session produced investigation findings that relate to an existing case file (see Case File Mapping in `docs/STORY_QUEUE.md`), note the case file ID and findings in TODO.md. When publishing a new story, always assign its `case_file_slug`. If a new topic emerges with enough evidence, create a new case file thread (see `docs/investigation/threads/` for format).
-5. **Context checkpoint** — when approaching ~90% context compaction (system will warn), proactively:
+5. **Update timeline (if applicable)** — if the session uncovered real-world developments (arrests, DOJ actions, legislative events), add via `create_public_event` MCP tool. For document analysis events, use `create_event` + `link_entity_to_event`.
+6. **Context checkpoint** — when approaching ~90% context compaction (system will warn), proactively:
    - Update `docs/TODO.md` with any completed or discovered items
    - Update memory files with new patterns, gotchas, or investigation findings from the session
    - Update `CLAUDE.md` if any structural changes were made (new routes, tables, tools)
