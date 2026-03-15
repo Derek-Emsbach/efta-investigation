@@ -19,7 +19,7 @@ import { SourceAttributionBar } from '@/components/publication/promo/source-attr
 export const metadata: Metadata = {
   title: 'The Epstein Crimes — Independent Investigation',
   description:
-    'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act. 12 DOJ dataset releases. 99 entities identified. The evidence speaks.',
+    'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act. 12 DOJ dataset releases. 120+ entities identified. The evidence speaks.',
   openGraph: {
     title: 'The Epstein Crimes — Independent Investigation',
     description:
@@ -107,9 +107,9 @@ export default async function HomePage() {
   const stats = {
     documents: (docCountResult.data as number) ?? 1_370_000,
     pages: 2_770_000,
-    entities: entityCountResult.count ?? 53,
-    connections: 200,
-    openQuestions: openQuestionCountResult.count ?? 44,
+    entities: entityCountResult.count ?? 120,
+    connections: 110,
+    openQuestions: openQuestionCountResult.count ?? 82,
   }
 
   // Split stories for dedicated sections

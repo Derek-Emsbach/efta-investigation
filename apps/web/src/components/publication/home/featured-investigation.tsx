@@ -85,7 +85,7 @@ export function FeaturedInvestigation() {
               {/* Label */}
               <div className="absolute bottom-3 left-3 right-3 text-center">
                 <span className="font-mono text-[10px] uppercase tracking-wider text-white/30">
-                  Interactive • 97 entities • 50+ connections
+                  Interactive • 120+ entities • 110+ connections
                 </span>
               </div>
             </div>

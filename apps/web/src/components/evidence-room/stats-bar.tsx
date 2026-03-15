@@ -74,7 +74,7 @@ function StatCell({
       >
         {value}
       </span>
-      <span className="font-mono text-[9px] uppercase tracking-wider text-text-muted mt-0.5">
+      <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted mt-0.5">
         {label}
       </span>
     </div>

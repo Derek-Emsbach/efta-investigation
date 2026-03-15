@@ -18,7 +18,8 @@ export function EvidenceHeader() {
             href="/"
             className="text-xs text-text-muted hover:text-text-secondary transition-colors"
           >
-            Back to Newsroom
+            <span className="hidden sm:inline">Back to Newsroom</span>
+            <span className="sm:hidden">&larr; Back</span>
           </Link>
         </nav>
       </div>

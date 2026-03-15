@@ -20,10 +20,10 @@ const REDACTION_DESCRIPTIONS: Record<string, string> = {
 const STATS = [
   { value: "~3.5M", label: "Pages Released", accent: true },
   { value: "1.37M+", label: "Documents Indexed", accent: false },
-  { value: "115+", label: "Entities Tracked", accent: false },
-  { value: "14", label: "Stories Published", accent: false },
-  { value: "190+", label: "Source Citations", accent: false },
-  { value: "44", label: "Open Questions", accent: false },
+  { value: "120+", label: "Entities Tracked", accent: false },
+  { value: "17", label: "Stories Published", accent: false },
+  { value: "233", label: "Source Citations", accent: false },
+  { value: "82", label: "Open Questions", accent: false },
 ]
 
 const PUBLICATIONS = [
@@ -31,21 +31,21 @@ const PUBLICATIONS = [
     title: "Investigative Stories",
     description:
       "Long-form reporting organized into four sections: The Cover-Up, The Network, Follow the Money, and The Operation. Each story is built on primary source documents with numbered citations you can verify.",
-    stat: "14 published, 190+ citations",
+    stat: "17 published, 233 citations",
     href: "/stories",
   },
   {
     title: "Case Files",
     description:
       "Structured investigation dossiers that track specific threads — from the 2007 non-prosecution agreement to financial networks. Each case file catalogs evidence, entities involved, and open questions still under investigation.",
-    stat: "6 active, 44 open questions",
+    stat: "11 active, 82 open questions",
     href: "/case-files",
   },
   {
     title: "Entity Profiles",
     description:
       "Detailed dossiers on individuals and organizations connected to the Epstein network, classified by evidence strength — not guilt. Each profile links to source documents, known connections, and timeline events.",
-    stat: "32 published, 115+ tracked",
+    stat: "53 published, 120+ tracked",
     href: "/entities",
   },
   {

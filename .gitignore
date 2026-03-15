@@ -17,6 +17,7 @@ out/
 # Build
 dist/
 build/
+*.tsbuildinfo
 
 # Python
 __pycache__/

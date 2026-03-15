@@ -40,7 +40,7 @@ export function EntitySpotlight({ entities }: EntitySpotlightProps) {
           href="/entities"
           className="font-sans text-[11px] font-medium text-text-muted hover:text-text-primary whitespace-nowrap tracking-[0.04em] transition-colors"
         >
-          Browse All 97+ Profiles →
+          Browse All Profiles →
         </Link>
       </div>
 

@@ -171,11 +171,11 @@ export function EntityDirectoryClient() {
         {!loading && filtered.length > 0 && (
           <div className="border border-border-default rounded-lg overflow-hidden">
             {/* Table header */}
-            <div className="grid grid-cols-[1fr_100px_100px_120px] gap-4 px-4 py-2.5 bg-elevated/50 border-b border-border-default text-xs font-mono text-text-muted uppercase tracking-wider">
+            <div className="grid grid-cols-[1fr_80px] sm:grid-cols-[1fr_100px_100px_120px] gap-4 px-4 py-2.5 bg-elevated/50 border-b border-border-default text-xs font-mono text-text-muted uppercase tracking-wider">
               <span>Name</span>
-              <span>Type</span>
+              <span className="hidden sm:block">Type</span>
               <span>Tier</span>
-              <span>Status</span>
+              <span className="hidden sm:block">Status</span>
             </div>
 
             {/* Rows */}
@@ -184,7 +184,7 @@ export function EntityDirectoryClient() {
                 <Link
                   key={entity.id}
                   href={`/evidence/entities/${entity.slug}`}
-                  className="grid grid-cols-[1fr_100px_100px_120px] gap-4 px-4 py-3 hover:bg-elevated/30 transition-colors group items-center"
+                  className="grid grid-cols-[1fr_80px] sm:grid-cols-[1fr_100px_100px_120px] gap-4 px-4 py-3 hover:bg-elevated/30 transition-colors group items-center"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     {entity.profile_image_url ? (
@@ -214,13 +214,13 @@ export function EntityDirectoryClient() {
                       )}
                     </div>
                   </div>
-                  <span className="text-xs text-text-secondary font-mono">
+                  <span className="hidden sm:block text-xs text-text-secondary font-mono">
                     {formatLabel(entity.entity_type)}
                   </span>
                   <span>
                     {entity.tier && <TierBadge tier={entity.tier as Tier} size="sm" />}
                   </span>
-                  <span className={`text-xs font-mono ${
+                  <span className={`hidden sm:block text-xs font-mono ${
                     entity.status === 'confirmed' ? 'text-neon-green' :
                     entity.status === 'under_investigation' ? 'text-neon-blue' :
                     'text-text-muted'

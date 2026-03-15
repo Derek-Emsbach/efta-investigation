@@ -334,12 +334,12 @@ export function EntityDetailClient({ slug }: { slug: string }) {
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-1 border-b border-border-default mb-6">
+        <div className="flex items-center gap-1 border-b border-border-default mb-6 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2.5 text-sm font-mono transition-colors border-b-2 -mb-px ${
+              className={`whitespace-nowrap shrink-0 px-3 sm:px-4 py-2.5 text-sm font-mono transition-colors border-b-2 -mb-px ${
                 activeTab === tab.key
                   ? 'border-critical text-critical'
                   : 'border-transparent text-text-muted hover:text-text-secondary'
@@ -386,11 +386,11 @@ function ConnectionsTab({ connections }: { connections: ConnectionRecord[] }) {
 
   return (
     <div className="border border-border-default rounded-lg overflow-hidden">
-      <div className="grid grid-cols-[1fr_140px_120px_1fr] gap-4 px-4 py-2.5 bg-elevated/50 border-b border-border-default text-xs font-mono text-text-muted uppercase tracking-wider">
+      <div className="grid grid-cols-[1fr_120px] sm:grid-cols-[1fr_140px_120px_1fr] gap-4 px-4 py-2.5 bg-elevated/50 border-b border-border-default text-xs font-mono text-text-muted uppercase tracking-wider">
         <span>Entity</span>
         <span>Relationship</span>
-        <span>Strength</span>
-        <span>Description</span>
+        <span className="hidden sm:block">Strength</span>
+        <span className="hidden sm:block">Description</span>
       </div>
       <div className="divide-y divide-border-default">
         {connections.map((conn) => {
@@ -398,7 +398,7 @@ function ConnectionsTab({ connections }: { connections: ConnectionRecord[] }) {
           const strengthColor = STRENGTH_COLORS[conn.evidence_strength ?? ''] ?? '#6b7280'
 
           return (
-            <div key={conn.id} className="grid grid-cols-[1fr_140px_120px_1fr] gap-4 px-4 py-3 items-center">
+            <div key={conn.id} className="grid grid-cols-[1fr_120px] sm:grid-cols-[1fr_140px_120px_1fr] gap-4 px-4 py-3 items-center">
               <div className="min-w-0">
                 {ce.profile_published && ce.slug ? (
                   <Link
@@ -420,12 +420,12 @@ function ConnectionsTab({ connections }: { connections: ConnectionRecord[] }) {
                 {formatLabel(conn.relationship_type)}
               </span>
               <span
-                className="text-xs font-mono"
+                className="hidden sm:block text-xs font-mono"
                 style={{ color: strengthColor }}
               >
                 {conn.evidence_strength ? formatLabel(conn.evidence_strength) : '—'}
               </span>
-              <span className="text-xs text-text-muted truncate">
+              <span className="hidden sm:block text-xs text-text-muted truncate">
                 {conn.description ?? '—'}
               </span>
             </div>
@@ -443,18 +443,18 @@ function DocumentsTab({ documents }: { documents: DocumentRecord[] }) {
 
   return (
     <div className="border border-border-default rounded-lg overflow-hidden">
-      <div className="grid grid-cols-[140px_1fr_100px_100px_80px] gap-4 px-4 py-2.5 bg-elevated/50 border-b border-border-default text-xs font-mono text-text-muted uppercase tracking-wider">
+      <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr_100px_100px_80px] gap-4 px-4 py-2.5 bg-elevated/50 border-b border-border-default text-xs font-mono text-text-muted uppercase tracking-wider">
         <span>Bates #</span>
         <span>Title</span>
-        <span>Type</span>
-        <span>Date</span>
-        <span>Pages</span>
+        <span className="hidden sm:block">Type</span>
+        <span className="hidden sm:block">Date</span>
+        <span className="hidden sm:block">Pages</span>
       </div>
       <div className="divide-y divide-border-default">
         {documents.map((doc) => {
           const d = doc.document
           return (
-            <div key={doc.id} className="grid grid-cols-[140px_1fr_100px_100px_80px] gap-4 px-4 py-3 items-center">
+            <div key={doc.id} className="grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr_100px_100px_80px] gap-4 px-4 py-3 items-center">
               {d.bates_number ? (
                 <Link href={`/evidence/documents/${d.bates_number}`} className="text-xs font-mono text-neon-cyan truncate hover:underline">
                   {d.bates_number}
@@ -465,13 +465,13 @@ function DocumentsTab({ documents }: { documents: DocumentRecord[] }) {
               <span className="text-sm text-text-primary truncate">
                 {d.title ?? 'Untitled document'}
               </span>
-              <span className="text-xs font-mono text-text-muted">
+              <span className="hidden sm:block text-xs font-mono text-text-muted">
                 {d.document_type ? formatLabel(d.document_type) : '—'}
               </span>
-              <span className="text-xs font-mono text-text-muted">
+              <span className="hidden sm:block text-xs font-mono text-text-muted">
                 {d.original_date ? formatDate(d.original_date) : '—'}
               </span>
-              <span className="text-xs font-mono text-text-muted text-right">
+              <span className="hidden sm:block text-xs font-mono text-text-muted text-right">
                 {d.page_count ?? '—'}
               </span>
             </div>
@@ -724,7 +724,7 @@ function PhotoLightbox({ photos, initialIndex, onClose }: { photos: PhotoRecord[
       <div className="absolute inset-0 bg-background/95 backdrop-blur-sm" onClick={onClose} />
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+        className="absolute top-4 right-4 z-10 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
         aria-label="Close"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -738,7 +738,7 @@ function PhotoLightbox({ photos, initialIndex, onClose }: { photos: PhotoRecord[
       {hasPrev && (
         <button
           onClick={() => { setLoaded(false); setIndex((i) => i - 1) }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
           aria-label="Previous"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>
@@ -747,7 +747,7 @@ function PhotoLightbox({ photos, initialIndex, onClose }: { photos: PhotoRecord[
       {hasNext && (
         <button
           onClick={() => { setLoaded(false); setIndex((i) => i + 1) }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-elevated/80 border border-border-default flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
           aria-label="Next"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 6 15 12 9 18" /></svg>

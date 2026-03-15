@@ -122,7 +122,7 @@ export function PublicHeader({ authState }: { authState: AuthState | null }) {
             </Link>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-text-secondary hover:text-text-primary transition-colors"
+              className="md:hidden p-3 text-text-secondary hover:text-text-primary transition-colors"
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
             >

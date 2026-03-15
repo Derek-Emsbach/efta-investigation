@@ -24,7 +24,7 @@ const FALLBACK = {
 
 const FALLBACK_SIDEBAR = [
   'Wexner Trust Restructuring: $46M in Pre-Arrest Asset Transfers',
-  'Shell Company Analysis: 14 Entities, 5 Jurisdictions, One Purpose',
+  'Shell Company Analysis: 30+ Entities, 5 Jurisdictions, One Purpose',
   'Deutsche Bank SAR Filings: What the Compliance Team Flagged — and What They Missed',
 ]
 

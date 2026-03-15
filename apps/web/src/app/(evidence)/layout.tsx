@@ -15,7 +15,7 @@ export default function EvidenceLayout({
       <DonateBar variant="bottom" />
       <CyclopsPromo variant="footer-banner" />
       <footer className="border-t border-border-default py-4">
-        <div className="mx-auto max-w-7xl px-6 flex items-center justify-between text-xs text-text-muted">
+        <div className="mx-auto max-w-7xl px-6 flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted">
           <a
             href="https://cyclops-digital.com"
             target="_blank"
