@@ -2,8 +2,8 @@
 type: investigation_thread
 thread_id: "04"
 thread_name: "Indyke Conflicts"
-version: "1.0"
-date: "2026-02-26"
+version: "1.1"
+date: "2026-03-14"
 classification: "UNRESTRICTED — PUBLIC ANALYSIS"
 sensitivity: contains_speculation_markers
 primary_entities:
@@ -152,6 +152,25 @@ The SDNY prosecution memo (EFTA02731082, p. 48) reveals that Kahn was the person
 
 Indyke and Kahn together formed the financial infrastructure of the estate. They were the only two individuals who received the complete package: cash bequest, loan forgiveness, and blanket debt cancellation extending to spouses and entities.
 
+### Shell Company Signer Authority (New Finding — March 2026)
+
+The Shell Companies investigation (THREAD_10) revealed a dimension of Indyke's control that extends far beyond the trust documents analyzed above. Indyke served as **authorized signer on 15+ shell entities** within Epstein's corporate network, making him the sole amendment gatekeeper for a $577 million estate.
+
+The shell company infrastructure included 30+ entities organized in distinct clusters:
+
+| Cluster | Entities | Indyke's Role |
+|---------|----------|---------------|
+| Tree-named property corps | Maple Inc, Nautilus Inc, Poplar Inc, Cypress Inc, Laurel Inc | Authorized signer, corporate officer |
+| Financial vehicles | Southern Trust Company, JEGE LLC, Financial Trust Company | Primary signatory |
+| Aviation | Plan D LLC, Zorro Aviation | Operational control |
+| Personal | NES LLC (69th Street), other residential | Nominee holder |
+
+The concentration of signer authority meant that virtually no financial transaction within the Epstein network could occur without Indyke's knowledge or approval. Combined with his seven roles documented above (attorney, trustee, beneficiary, debt holder, spouse beneficiary, nominee, amendment gatekeeper), the shell company signer authority reveals that Indyke's control over Epstein's financial empire was not merely fiduciary — it was operational.
+
+The 5-person signer pool (Indyke, Kahn, Groff, Kellerhals, and one other) functioned as the operational core of the estate. All corporate amendments, bank account changes, and financial transfers required at least one of these five individuals. Indyke and Kahn appeared on the most entities; Groff and Kellerhals appeared on operational entities (aviation, properties, travel).
+
+**Evidence tier:** ◆ Tier 1 — Direct documentary evidence from corporate filings and trust instruments
+
 ---
 
 ## 3. Timeline
@@ -262,6 +281,9 @@ The employment cliff (Section 2.5) and no-contest clause (Section 8.5) — the m
 
 ### → Thread 05 (Prosecutorial Failure)
 Indyke became co-executor of the Epstein estate after Epstein's death. The estate's cooperation (or non-cooperation) with SDNY and DANY investigations during the 2019-2024 period — the same period documented in Thread 05's prosecutorial failure timeline — was controlled by Indyke and Kahn. Whether the estate's conduct influenced prosecutorial decisions is unknown but operationally relevant.
+
+### → Thread 10 (Shell Companies)
+The shell company investigation reveals that Indyke's seven trust roles were the tip of the iceberg. His authorized signer status on 15+ shell entities — combined with his trust amendment gatekeeper role — gave him operational control over the entire Epstein financial network. The question raised by Thread 04 (whether Indyke's conflicts compromised his fiduciary duties) becomes significantly more consequential when the scope of his control expands from one trust to a $577M network of 30+ entities.
 
 ---
 

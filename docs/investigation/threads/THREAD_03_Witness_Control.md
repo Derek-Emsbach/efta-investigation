@@ -2,8 +2,8 @@
 type: investigation_thread
 thread_id: "03"
 thread_name: "Witness Control Mechanisms"
-version: "1.0"
-date: "2026-02-26"
+version: "1.1"
+date: "2026-03-14"
 classification: "UNRESTRICTED — PUBLIC ANALYSIS"
 sensitivity: contains_speculation_markers
 primary_entities:
@@ -32,7 +32,7 @@ source_documents:
   - efta: "EFTA02731082"
     title: "SDNY Co-Conspirator Prosecution Memo"
     analysis_report: "../sources/EFTA02731082/Analysis.md"
-related_threads: ["THREAD_01", "THREAD_02", "THREAD_04", "THREAD_05"]
+related_threads: ["THREAD_01", "THREAD_02", "THREAD_04", "THREAD_05", "THREAD_09", "THREAD_10"]
 key_finding: "Epstein's trust provisions created a legally binding financial incentive structure that paid witnesses for silence and punished cooperation — then his attorney enforced it operationally."
 ---
 
@@ -158,6 +158,40 @@ Juan Alessi, the Palm Beach house manager, had previously told Epstein to "slow 
 > — EFTA02731082, Page 18
 
 Victim 9, who had been recruited at age 13-14 and estimates she recruited approximately 100 underage girls for Epstein, was pressured by Epstein's attorneys to lie about telling Epstein her age. The threat — that telling the truth would result in losing custody of her child — was directed at a victim who was herself a minor when the abuse began.
+
+### Layer 3: The 1953 Trust Loyalty Clause (New Finding — March 2026)
+
+The Shell Companies investigation (THREAD_10) uncovered a structural mechanism that extends the witness control system beyond trust beneficiaries to all estate employees. The 1953 Trust — the umbrella entity controlling Epstein's $577M estate — contains Section 2.5(B):
+
+> Beneficiaries lose all bequests if they display "disloyalty" within 2 years of Epstein's death, with Darren Indyke and Richard D. Kahn as the **sole judges** of what constitutes disloyalty.
+
+This provision operated alongside the employment cliff (Layer 1) and golden handcuffs (Layer 2) to create a three-layer witness control system:
+
+| Layer | Mechanism | Scope | Duration |
+|-------|-----------|-------|----------|
+| 1 | Employment cliff (Section 2.5) | Employee-beneficiaries | 1 year post-death |
+| 2 | Golden handcuffs (A.36-37) | Selected employees | 2 years post-death |
+| 3 | 1953 Trust loyalty clause (2.5B) | All trust beneficiaries | 2 years post-death |
+
+The loyalty clause is particularly significant because "disloyalty" is undefined — cooperation with prosecutors could plausibly be characterized as disloyalty by trustees with financial interests in preventing such cooperation. SDNY demanded assurance on this clause 11 months after Epstein's death (EFTA00031989), suggesting prosecutors recognized its witness-silencing potential.
+
+**Evidence tier:** ◆ Tier 1 — Direct textual evidence from trust instruments
+
+### Layer 4: NPA Immunity as Systemic Witness Control (New Finding — March 2026)
+
+The NPA Co-Conspirators investigation (THREAD_09) revealed that the September 2007 Non-Prosecution Agreement provided blanket immunity to "any potential co-conspirators" — named and unnamed. This immunity neutralized the single most effective prosecutorial tool for breaking witness silence: the threat of personal prosecution in exchange for cooperation.
+
+For Sarah Kellen, Nadia Marcinkova, and Adriana Ross — all of whom had direct operational roles documented in the 82-page prosecution memo — the NPA eliminated any legal incentive to cooperate. They could not be charged, so they could not be leveraged. The sealed 53-page indictment that preceded the NPA contained per-person evidence sufficient for prosecution, but that evidence was rendered unusable by the agreement.
+
+The NPA immunity and the trust loyalty clause operated on different timelines but reinforced the same outcome:
+
+| Period | NPA Effect | Trust Effect |
+|--------|-----------|-------------|
+| 2008-2019 (Epstein alive) | Co-conspirators immune from prosecution | Employees financially dependent on Epstein |
+| 2019-2021 (Post-death) | NPA immunity continued for named individuals | Employment cliff + loyalty clause activated |
+| 2021-present | NPA expired for some conduct; CVRA challenge ongoing | Trust provisions fully vested |
+
+**Evidence tier:** ◆ Tier 1 — Direct textual evidence from NPA and prosecution memo
 
 ---
 
@@ -310,6 +344,14 @@ Eva Andersson-Dubin was the first successor trustee in all three trust versions.
 ### → THREAD_04 (Indyke): The Conflict Multiplier
 
 This thread documents what Indyke did operationally (instructed silence, controlled bequest administration). Thread 04 documents what he stood to gain financially ($8.25M+). The two threads together establish that the person enforcing witness silence was the person most financially exposed to its failure. The conflict of interest is not incidental — it is the mechanism by which the system functioned.
+
+### → THREAD_09 (NPA Co-Conspirators): Immunity as the Fourth Layer
+
+The NPA's blanket immunity for co-conspirators represents a fourth layer of witness control — one imposed not by the estate but by the federal government itself. By immunizing Kellen, Marcinkova, and Ross, the 2007 NPA eliminated the prosecutorial leverage that would have been necessary to break through the trust's financial silencing mechanisms. The trust provisions (Layers 1-3) made cooperation financially costly; the NPA immunity made it legally unnecessary. Together, they created a system in which no one had either the incentive or the obligation to cooperate.
+
+### → THREAD_10 (Shell Companies): The Loyalty Infrastructure
+
+The shell company network provided the corporate infrastructure through which the loyalty clause operated. The 1953 Trust's Section 2.5(B) was enforced through entity structures controlled by a 5-person signer pool (Indyke, Kahn, Groff, Kellerhals, and one other). The same individuals who administered the witness control mechanisms also controlled the corporate entities through which trust assets flowed. The shell companies were not merely a separate financial investigation — they were the delivery mechanism for the loyalty-based witness control system.
 
 ### → THREAD_05 (Prosecutorial Failure): Witness Control as Prosecution Obstacle
 

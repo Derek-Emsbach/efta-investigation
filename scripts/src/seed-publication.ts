@@ -71,15 +71,15 @@ const CASE_FILES: CaseFileDef[] = [
     slug: 'master-intelligence-brief',
     title: 'Master Intelligence Brief — EFTA Investigation',
     summary:
-      'Cross-thread synthesis of 5 investigation threads analyzing 7 primary source documents totaling ~500 pages from the EFTA corpus. Principal finding: the Epstein estate was a structurally integrated system aligning criminal exposure, financial incentives, governance authority, and witness control against disclosure.',
+      'Cross-thread synthesis of 10 investigation threads analyzing 60+ primary source documents from the EFTA corpus. Principal finding: the Epstein estate was a structurally integrated system aligning criminal exposure, financial incentives, governance authority, and witness control against disclosure — supported by institutional banking, modeling pipeline trafficking, NPA immunity, and shell company infrastructure.',
     file: 'MASTER_INTELLIGENCE_BRIEF.md',
     status: 'complete',
     date_range_start: '2014-11-18',
-    date_range_end: '2026-01-30',
-    docs_reviewed: 7,
+    date_range_end: '2026-03-14',
+    docs_reviewed: 60,
     completion_percentage: 100,
     methodology_notes:
-      'Full-text extraction from DOJ-hosted PDFs via SQLite corpus (6.3GB, 1.38M documents). Three-way trust comparison, prosecution memo analysis, and cross-document entity reconciliation.',
+      'Full-text extraction from DOJ-hosted PDFs via SQLite corpus (6.3GB, 1.38M documents). Three-way trust comparison, prosecution memo analysis, cross-document entity reconciliation, institutional banking analysis, corporate registry research, and NPA immunity assessment.',
     entities: [
       { name: 'Jeffrey Epstein', role: 'subject' },
       { name: 'Jes Staley', role: 'subject' },
@@ -91,6 +91,10 @@ const CASE_FILES: CaseFileDef[] = [
       { name: 'Lesley Groff', role: 'subject' },
       { name: 'Eva Andersson-Dubin', role: 'subject' },
       { name: 'Celina Edith Dubin', role: 'subject' },
+      { name: 'Sarah Kellen', role: 'subject' },
+      { name: 'Jean-Luc Brunel', role: 'subject' },
+      { name: 'Nadia Marcinkova', role: 'subject' },
+      { name: 'Adriana Ross', role: 'subject' },
     ],
     openQuestions: [
       {
@@ -154,8 +158,8 @@ const CASE_FILES: CaseFileDef[] = [
     status: 'active',
     date_range_start: '2008-02-01',
     date_range_end: '2025-02-01',
-    docs_reviewed: 20,
-    completion_percentage: 85,
+    docs_reviewed: 25,
+    completion_percentage: 87,
     methodology_notes:
       '51-query corpus search spanning 7,058 documents across 6 datasets. Deep reads of trust documents (EFTA01266380, 01266403, 01266427) and prosecution memo (EFTA02731082).',
     entities: [
@@ -268,8 +272,8 @@ const CASE_FILES: CaseFileDef[] = [
     status: 'active',
     date_range_start: '2014-11-18',
     date_range_end: '2019-12-19',
-    docs_reviewed: 6,
-    completion_percentage: 75,
+    docs_reviewed: 12,
+    completion_percentage: 80,
     methodology_notes:
       'Section-by-section trust comparison across three versions (EFTA01266380, 01266403, 01266427). Cross-reference with prosecution memo obstruction evidence (EFTA02731082).',
     entities: [
@@ -277,6 +281,9 @@ const CASE_FILES: CaseFileDef[] = [
       { name: 'Richard D. Kahn', role: 'subject' },
       { name: 'Jeffrey Epstein', role: 'subject' },
       { name: 'Lesley Groff', role: 'subject' },
+      { name: 'Sarah Kellen', role: 'linked' },
+      { name: 'Nadia Marcinkova', role: 'linked' },
+      { name: 'Adriana Ross', role: 'linked' },
     ],
     openQuestions: [
       {
@@ -287,6 +294,11 @@ const CASE_FILES: CaseFileDef[] = [
       {
         question:
           "Was Indyke's instruction to the assistant not to speak with police considered for obstruction charges?",
+        priority: 'critical',
+      },
+      {
+        question:
+          'Did the 1953 Trust loyalty clause (Section 2.5B) deter any beneficiaries from cooperating with prosecutors?',
         priority: 'critical',
       },
       {
@@ -306,6 +318,11 @@ const CASE_FILES: CaseFileDef[] = [
       },
       {
         question:
+          'Did NPA immunity for Kellen, Marcinkova, and Ross eliminate prosecutorial leverage that might have overcome the trust silencing mechanisms?',
+        priority: 'high',
+      },
+      {
+        question:
           'Did any employee-beneficiary cooperate with SDNY despite the financial risk of forfeiture?',
         priority: 'medium',
       },
@@ -321,19 +338,25 @@ const CASE_FILES: CaseFileDef[] = [
     status: 'active',
     date_range_start: '2014-11-18',
     date_range_end: '2015-09-30',
-    docs_reviewed: 4,
-    completion_percentage: 70,
+    docs_reviewed: 10,
+    completion_percentage: 78,
     methodology_notes:
       'Role-by-role analysis across three trust versions (EFTA01266380, 01266403, 01266427). Financial exposure calculation from documented provisions.',
     entities: [
       { name: 'Darren Indyke', role: 'subject' },
       { name: 'Richard D. Kahn', role: 'subject' },
       { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'Lesley Groff', role: 'linked' },
     ],
     openQuestions: [
       {
         question:
           'What debts did Indyke owe Epstein and his entities? The blanket cancellation scope suggests significant amounts.',
+        priority: 'critical',
+      },
+      {
+        question:
+          'What was the full scope of Indyke\'s authorized signer authority across the 30+ shell entities?',
         priority: 'critical',
       },
       {
@@ -373,8 +396,8 @@ const CASE_FILES: CaseFileDef[] = [
     status: 'active',
     date_range_start: '2019-12-19',
     date_range_end: '2026-01-30',
-    docs_reviewed: 30,
-    completion_percentage: 90,
+    docs_reviewed: 45,
+    completion_percentage: 95,
     methodology_notes:
       'Prosecution memo section-by-section analysis (EFTA02731082, all 86 pages). Leon Black investigation timeline reconstruction from DS12 communications.',
     entities: [
@@ -384,6 +407,7 @@ const CASE_FILES: CaseFileDef[] = [
       { name: 'Ghislaine Maxwell', role: 'subject' },
       { name: 'Glenn Dubin', role: 'linked' },
       { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'Sarah Kellen', role: 'linked' },
     ],
     openQuestions: [
       {
@@ -430,6 +454,299 @@ const CASE_FILES: CaseFileDef[] = [
         question:
           'What happened between August 2024 (last known Black investigation activity) and January 2026 (EFTA release)?',
         priority: 'high',
+      },
+    ],
+  },
+  {
+    case_id: 'CF-2026-006',
+    slug: 'leon-black-prosecution-failure',
+    title: 'Leon Black — Private Equity, Prosecution Decline',
+    summary:
+      'Leon Black made $158 million in documented payments to Epstein. A 3-year SDNY investigation accumulated forensically authenticated victim journals, 3+ corroborating victims, bank statements, and medical records — yet the original AUSA never wrote a formal assessment. Black settled with USVI for $62.5 million. Zero criminal charges filed.',
+    file: 'THREAD_06_Leon_Black.md',
+    status: 'active',
+    date_range_start: '2012-01-01',
+    date_range_end: '2024-08-01',
+    docs_reviewed: 25,
+    completion_percentage: 90,
+    methodology_notes:
+      'Dataset 12 email reconstruction (prosecution timeline), victim journal forensic analysis cross-reference, financial records from Deutsche Bank and JPMorgan productions.',
+    entities: [
+      { name: 'Leon Black', role: 'subject' },
+      { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'Ghislaine Maxwell', role: 'linked' },
+      { name: 'Jean-Luc Brunel', role: 'linked' },
+    ],
+    openQuestions: [
+      {
+        question:
+          'Why was no formal prosecution assessment written despite three years of evidence accumulation?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'What triggered the $62.5M USVI settlement? Was it connected to EFTA disclosure timelines?',
+        priority: 'critical',
+      },
+      {
+        question:
+          "Did Christensen's departure from SDNY effectively end the Leon Black investigation?",
+        priority: 'high',
+      },
+      {
+        question:
+          'What is the full scope of the $158M in payments — were they personal or routed through Apollo entities?',
+        priority: 'high',
+      },
+      {
+        question:
+          'How many victims are documented in the forensic journals naming Leon Black?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Did the Apollo Global Management board investigate Black\'s Epstein payments before his resignation?',
+        priority: 'medium',
+      },
+    ],
+  },
+  {
+    case_id: 'CF-2026-007',
+    slug: 'deutsche-bank-compliance-failure',
+    title: 'Deutsche Bank — Institutional Complicity',
+    summary:
+      'Deutsche Bank maintained 76 accounts for Epstein under the "Southern Financial Relationship" designation, processing payments to named co-conspirators including Brunel and Kellen. Compliance systems documented suspicious activity repeatedly without escalation. NYDFS imposed a $150M penalty in 2020 — the largest regulatory fine in the case.',
+    file: 'THREAD_07_Deutsche_Bank.md',
+    status: 'active',
+    date_range_start: '2013-08-19',
+    date_range_end: '2020-07-06',
+    docs_reviewed: 15,
+    completion_percentage: 85,
+    methodology_notes:
+      'NYDFS Consent Order analysis, Deutsche Bank internal compliance review documents, Butterfly Trust corporate structure analysis, cross-reference with prosecution memo financial evidence.',
+    entities: [
+      { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'Darren Indyke', role: 'linked' },
+      { name: 'Lesley Groff', role: 'linked' },
+      { name: 'Jean-Luc Brunel', role: 'linked' },
+    ],
+    openQuestions: [
+      {
+        question:
+          'Which individual compliance reviewers approved continued banking despite documented red flags?',
+        priority: 'critical',
+      },
+      {
+        question:
+          "What was the Butterfly Trust's actual purpose and who were its beneficiaries?",
+        priority: 'critical',
+      },
+      {
+        question:
+          'How much of the $150M NYDFS penalty was related to Epstein-specific compliance failures vs. broader AML deficiencies?',
+        priority: 'high',
+      },
+      {
+        question:
+          'What were the "ostensible foreign models" payments and did Deutsche Bank report them to FinCEN?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Did Deutsche Bank\'s relationship with Epstein continue after JPMorgan terminated its accounts in 2013?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Were any Deutsche Bank compliance officers referred for criminal prosecution?',
+        priority: 'medium',
+      },
+      {
+        question:
+          'What was the full scope of the "Southern Financial Relationship" — how many entities were included beyond the 76 accounts?',
+        priority: 'medium',
+      },
+    ],
+  },
+  {
+    case_id: 'CF-2026-008',
+    slug: 'brunel-modeling-pipeline',
+    title: 'Jean-Luc Brunel — The Modeling Pipeline',
+    summary:
+      'Jean-Luc Brunel operated MC2 Model Management as a trafficking front, capitalized with a $1M wire from Epstein. The pipeline extended back to Karin Models (1978) and was documented by CBS 60 Minutes (1988), FBI interviews, and French prosecution. Brunel died in custody in February 2022 (ruled suicide), ending criminal proceedings.',
+    file: 'THREAD_08_Brunel_Modeling_Pipeline.md',
+    status: 'complete',
+    date_range_start: '1978-01-01',
+    date_range_end: '2022-02-19',
+    docs_reviewed: 15,
+    completion_percentage: 85,
+    methodology_notes:
+      'CBS 60 Minutes transcript analysis, FBI interview documentation, French prosecution records, MC2 corporate filings, SDNY prosecution memo cross-reference (EFTA02731082).',
+    entities: [
+      { name: 'Jean-Luc Brunel', role: 'subject' },
+      { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'Ghislaine Maxwell', role: 'linked' },
+      { name: 'Lesley Groff', role: 'linked' },
+    ],
+    openQuestions: [
+      {
+        question:
+          "What was the extent of Maxwell's involvement in the MC2/modeling pipeline operations?",
+        priority: 'critical',
+      },
+      {
+        question:
+          'How many models were recruited through MC2 and what happened to them after arriving in the US?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'Did MC2 operate as a legitimate modeling agency alongside its trafficking function?',
+        priority: 'high',
+      },
+      {
+        question:
+          "What was Groff's role in Brunel's travel logistics and visa arrangements?",
+        priority: 'high',
+      },
+      {
+        question:
+          'Were other modeling agencies besides MC2 and Karin Models involved in the pipeline?',
+        priority: 'medium',
+      },
+      {
+        question:
+          'What are the circumstances of Brunel\'s death in custody and who had access to him?',
+        priority: 'medium',
+      },
+      {
+        question:
+          'Did FBI Agent Cordero\'s confirmation of MC2 as trafficking front lead to any federal action?',
+        priority: 'high',
+      },
+    ],
+  },
+  {
+    case_id: 'CF-2026-009',
+    slug: 'npa-co-conspirators',
+    title: 'The NPA Co-Conspirators — Immunity and Impunity',
+    summary:
+      'The September 2007 Non-Prosecution Agreement granted blanket immunity to "any potential co-conspirators" — named and unnamed. A sealed 53-page indictment and 82-page prosecution memo documented per-person evidence against Sarah Kellen, Nadia Marcinkova, and Adriana Ross. The NPA converted sufficient evidence into historical record rather than charging instruments.',
+    file: 'THREAD_09_NPA_Co_Conspirators.md',
+    status: 'active',
+    date_range_start: '2007-09-24',
+    date_range_end: '2026-01-30',
+    docs_reviewed: 20,
+    completion_percentage: 80,
+    methodology_notes:
+      'NPA text analysis, sealed indictment cross-reference, prosecution memo per-person evidence extraction, CVRA litigation timeline, post-NPA career tracking.',
+    entities: [
+      { name: 'Sarah Kellen', role: 'subject' },
+      { name: 'Nadia Marcinkova', role: 'subject' },
+      { name: 'Adriana Ross', role: 'subject' },
+      { name: 'Lesley Groff', role: 'linked' },
+      { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'Ghislaine Maxwell', role: 'linked' },
+    ],
+    openQuestions: [
+      {
+        question:
+          'What does the sealed 53-page indictment contain beyond what is in the prosecution memo?',
+        priority: 'critical',
+      },
+      {
+        question:
+          "Who negotiated the NPA's blanket immunity provision and was it standard practice?",
+        priority: 'critical',
+      },
+      {
+        question:
+          'Did the NPA immunity extend to conduct that occurred after the agreement was signed?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Were any co-conspirators offered immunity in exchange for cooperation, and did any cooperate?',
+        priority: 'high',
+      },
+      {
+        question:
+          'What was the basis for the CVRA challenge and what did the 11th Circuit rule in 2019?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Did Kellen, Marcinkova, or Ross provide any cooperation to SDNY after 2019?',
+        priority: 'medium',
+      },
+      {
+        question:
+          "How did Kellen's rebranding as Sarah Vickers and career in interior design escape public scrutiny?",
+        priority: 'medium',
+      },
+      {
+        question:
+          'Was the 82-page prosecution memo ever formally considered for reopening after the NPA was voided?',
+        priority: 'high',
+      },
+    ],
+  },
+  {
+    case_id: 'CF-2026-010',
+    slug: 'shell-company-infrastructure',
+    title: 'The Shell Company Infrastructure',
+    summary:
+      'Darren Indyke and Richard D. Kahn controlled a network of 30+ shell entities organizing Epstein\'s $577M estate. Tree-named property corporations, financial vehicles, and aviation entities were managed by a 5-person signer pool. The 1953 Trust\'s Section 2.5(B) loyalty clause ensured beneficiary silence for 2 years post-death.',
+    file: 'THREAD_10_Shell_Companies.md',
+    status: 'active',
+    date_range_start: '2000-01-01',
+    date_range_end: '2019-08-10',
+    docs_reviewed: 20,
+    completion_percentage: 75,
+    methodology_notes:
+      'Corporate registry research (NY, FL, USVI, NM), trust instrument analysis, Deutsche Bank account structure cross-reference, prosecution memo financial evidence correlation.',
+    entities: [
+      { name: 'Darren Indyke', role: 'subject' },
+      { name: 'Richard D. Kahn', role: 'subject' },
+      { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'Lesley Groff', role: 'linked' },
+      { name: 'Erika Kellerhals', role: 'linked' },
+    ],
+    openQuestions: [
+      {
+        question:
+          'What was the full scope of the "Southern Financial Relationship" that Deutsche Bank used to designate Epstein\'s accounts?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'How many of the 30+ shell entities are still active and who controls them post-death?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'What was the purpose of the tree-named property corporations — were they used for asset concealment?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Who is the 5th member of the signer pool beyond Indyke, Kahn, Groff, and Kellerhals?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Were any shell entities used to make payments that would otherwise be traceable to Epstein?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Did the $577M estate valuation include assets held in non-US jurisdictions?',
+        priority: 'medium',
+      },
+      {
+        question:
+          'What happened to assets in the 1953 Trust after the 2-year loyalty period expired?',
+        priority: 'medium',
       },
     ],
   },
@@ -689,7 +1006,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 7,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'npa-co-conspirators',
     published_at: '2026-03-12T00:00:00Z',
     hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Victoria%27s_Secret_Store_10%2C_722_Lexington_Ave%2C_New_York%2C_NY_10022%2C_USA_-_Dec_2012.JPG',
     hero_image_caption: 'Victoria\'s Secret at 722 Lexington Avenue, Manhattan — the brand name Epstein invoked as a recruitment lure, and a block from 575 Lexington where Groff worked in Darren Indyke\'s law office',
@@ -733,7 +1050,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 10,
     is_featured: false,
-    case_file_slug: 'prosecutorial-failure',
+    case_file_slug: 'leon-black-prosecution-failure',
     published_at: '2026-03-12T00:00:00Z',
     hero_image_url: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Marshal_courthouse_jeh.JPG',
     hero_image_caption: 'The Thurgood Marshall U.S. Courthouse on Foley Square, Manhattan — home of the Southern District of New York, which declined to charge Leon Black despite three years of accumulating evidence.',
@@ -779,7 +1096,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 8,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'brunel-modeling-pipeline',
     published_at: '2026-03-12T00:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/a/a9/Table_mountain_and_the_ocean_cape_town.JPG',
@@ -941,7 +1258,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 10,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'prosecutorial-failure',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/c/c8/Department_of_Justice%2C_Washington%2C_D.C._2012.JPG',
@@ -1006,7 +1323,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 10,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'master-intelligence-brief',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Aol-building.jpg/1280px-Aol-building.jpg',
@@ -1107,7 +1424,7 @@ const STORIES: StoryDef[] = [
     byline: 'Derek Emsbach',
     reading_time_minutes: 10,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'prosecutorial-failure',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/4/46/MCC_New_York_jeh.JPG',
@@ -1167,7 +1484,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 10,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'master-intelligence-brief',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Santa_Fe_County_New_Mexico_landscape.jpg/1280px-Santa_Fe_County_New_Mexico_landscape.jpg',
@@ -1265,7 +1582,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 11,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'deutsche-bank-compliance-failure',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/4/4b/Deutsche_Bank_Wall_Street.jpg',
@@ -1408,7 +1725,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 12,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'npa-co-conspirators',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/d/d9/PB_Courthouse.jpg',
@@ -1529,7 +1846,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 11,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'brunel-modeling-pipeline',
     published_at: '2026-03-14T12:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Flatiron_Building_crop.jpg/800px-Flatiron_Building_crop.jpg',
@@ -1654,7 +1971,7 @@ const STORIES: StoryDef[] = [
     byline: 'EFTA Investigation Team',
     reading_time_minutes: 14,
     is_featured: false,
-    case_file_slug: null,
+    case_file_slug: 'shell-company-infrastructure',
     published_at: '2026-03-14T18:00:00Z',
     hero_image_url:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/US_Virgin_Islands_-_St_Thomas.jpg/1280px-US_Virgin_Islands_-_St_Thomas.jpg',

@@ -1,7 +1,7 @@
 ---
 type: master_intelligence_brief
-version: "1.0"
-date: "2026-02-26"
+version: "1.1"
+date: "2026-03-14"
 classification: "UNRESTRICTED — PUBLIC ANALYSIS"
 sensitivity: contains_speculation_markers
 threads:
@@ -20,7 +20,22 @@ threads:
   - id: "THREAD_05"
     name: "Prosecutorial Failure"
     file: "THREAD_05_Prosecutorial_Failure.md"
-source_documents_analyzed: 7
+  - id: "THREAD_06"
+    name: "Leon Black — Private Equity, Prosecution Decline"
+    file: "THREAD_06_Leon_Black.md"
+  - id: "THREAD_07"
+    name: "Deutsche Bank — Institutional Complicity"
+    file: "THREAD_07_Deutsche_Bank.md"
+  - id: "THREAD_08"
+    name: "Jean-Luc Brunel — The Modeling Pipeline"
+    file: "THREAD_08_Brunel_Modeling_Pipeline.md"
+  - id: "THREAD_09"
+    name: "NPA Co-Conspirators — Immunity and Impunity"
+    file: "THREAD_09_NPA_Co_Conspirators.md"
+  - id: "THREAD_10"
+    name: "The Shell Company Infrastructure"
+    file: "THREAD_10_Shell_Companies.md"
+source_documents_analyzed: 60
 corpus_footprint: "1.38M documents (EFTA corpus)"
 datasets_referenced: [8, 9, 10, 11, 12]
 principal_finding: "The Epstein estate was not merely a wealth transfer mechanism — it was a structurally integrated system in which criminal exposure, financial incentives, governance authority, and witness control converged on a small group of individuals whose interests were aligned against disclosure."
@@ -28,8 +43,8 @@ principal_finding: "The Epstein estate was not merely a wealth transfer mechanis
 
 # Master Intelligence Brief — EFTA Investigation
 
-**Date:** February 26, 2026
-**Scope:** Deep analysis of 7 primary source documents from the EFTA corpus, synthesized into 5 investigation threads
+**Date:** March 14, 2026
+**Scope:** Deep analysis of 60+ primary source documents from the EFTA corpus, synthesized into 10 investigation threads
 **Methodology:** Full-text extraction from DOJ-hosted PDFs via SQLite corpus (6.3GB, 1.38M documents), three-way trust comparison, prosecution memo analysis, and cross-document entity reconciliation
 
 ---
@@ -94,7 +109,9 @@ Taken individually, each finding represents a serious matter. Taken together, th
 
 ---
 
-## 3. The Five Threads — Summary Map
+## 3. The Ten Threads — Summary Map
+
+> The original five threads (01-05) were produced from deep-read analysis of the EFTA corpus documents. Five additional threads (06-10) were created in March 2026 from follow-on investigations that uncovered new subjects and patterns.
 
 ### Thread 01: Staley — Trustee, Banker, Accused Rapist
 
@@ -125,6 +142,36 @@ Darren Indyke (Tier 6) held seven simultaneous roles: Epstein's personal attorne
 Two documented failures: (1) The December 2019 prosecution memo presented evidence against multiple subjects — only Maxwell was charged. Named perpetrators (Staley, Black, Weinstein, Dubin) were documented but not analyzed for charges. (2) The Leon Black investigation (2021-2024) accumulated victim journals, multiple victims, bank statements, and forensic authentication — and the AUSA admitted he "did not write anything up on Leon Black." Both failures are matters of record. The institutional reasoning is hidden behind redaction.
 
 **Key question:** What do the redacted pages 74-85 of the prosecution memo say about the three redacted subjects?
+
+### Thread 06: Leon Black — Private Equity, Prosecution Decline
+
+Leon Black (Tier 1) made $158 million in documented payments to Epstein between 2012 and 2017. The SDNY investigation (2021-2024) accumulated forensically authenticated victim journals naming Black among 30+ abusers, at least 3 victims with corroborating accounts, and bank statements — yet the original AUSA "did not write anything up on Leon Black." A 6-phase prosecution decline is fully documented in Dataset 12. Black subsequently settled with USVI for $62.5 million.
+
+**Key question:** Why was no formal prosecution assessment ever written despite three years of evidence accumulation?
+
+### Thread 07: Deutsche Bank — Institutional Complicity
+
+Deutsche Bank maintained 76 accounts for Epstein under the "Southern Financial Relationship" designation, processing transactions totaling hundreds of millions of dollars including payments to named co-conspirators. The bank's compliance systems documented suspicious activity multiple times but never escalated to account closure until 2019. NYDFS imposed a $150 million penalty in 2020 — the largest regulatory fine in the case. The Butterfly Trust, controlled by Indyke, operated as the primary financial vehicle.
+
+**Key question:** Which compliance reviewers approved continued banking despite documented red flags?
+
+### Thread 08: Jean-Luc Brunel — The Modeling Pipeline
+
+Jean-Luc Brunel (Tier 1, deceased February 2022) operated MC2 Model Management as a trafficking front, capitalized with a $1 million wire from Epstein. The pipeline extended back to Karin Models in 1978 and was documented by CBS 60 Minutes in 1988, FBI interviews in the 2000s, and French prosecution in 2020. Brunel's death in custody (ruled suicide) ended criminal proceedings but left the structural question: how did a model agency owner documented as an abuser for 40 years continue operating with institutional support?
+
+**Key question:** What was the extent of Maxwell's involvement in the MC2/modeling pipeline operations?
+
+### Thread 09: NPA Co-Conspirators — Immunity and Impunity
+
+The September 2007 Non-Prosecution Agreement granted blanket immunity to "any potential co-conspirators" — named and unnamed. A sealed 53-page indictment and 82-page prosecution memo documented per-person evidence against Sarah Kellen (Tier 2), Nadia Marcinkova (Tier 2), and Adriana Ross (Tier 2). The NPA converted this evidence into historical record rather than charging instruments. The hierarchy of complicity — from scheduling to participation to surveillance — was documented but never prosecuted.
+
+**Key question:** What does the sealed 53-page indictment contain beyond what is in the prosecution memo?
+
+### Thread 10: The Shell Company Infrastructure
+
+Darren Indyke and Richard D. Kahn controlled a network of 30+ shell entities organizing Epstein's $577 million estate. Tree-named property corporations (Maple, Nautilus, Poplar, Cypress, Laurel), financial vehicles (Southern Trust, JEGE LLC), and aviation entities (Plan D, Zorro Aviation) were managed by a 5-person signer pool. The 1953 Trust's Section 2.5(B) loyalty clause — administered by Indyke and Kahn as sole judges — ensured beneficiary silence for 2 years post-death.
+
+**Key question:** What was the full scope of the "Southern Financial Relationship" that Deutsche Bank used to designate Epstein's accounts?
 
 ---
 
@@ -161,6 +208,26 @@ Across all five threads, the same pattern recurs: evidence was gathered, documen
 | $250K witness payment timing | EFTA02731082, pp. 51-52 | No charges |
 | Trust witness control provisions | EFTA01266427 | Never analyzed |
 | 24 minor victims + 14 adult victims | EFTA02731082 | One conviction (Maxwell) |
+
+### Pattern 4: Post-Publication Investigations (Stories 7-17) — The Five Systems
+
+Stories 7-17 expanded the investigation beyond the original five threads, revealing that Epstein's operation functioned as five interlocking systems:
+
+| System | Key Finding | Thread | Stories |
+|--------|------------|--------|---------|
+| **Protection Apparatus** | NPA blanket immunity foreclosed prosecution of co-conspirators with documented evidence | THREAD_09 | 7, 15 |
+| **Financial Infrastructure** | Deutsche Bank maintained 76 accounts despite compliance red flags; $150M penalty | THREAD_07 | 14 |
+| **Inner Circle** | Leon Black: $158M payments, 3+ victims, zero charges, $62.5M USVI settlement | THREAD_06 | 8 |
+| **Recruitment Pipeline** | Brunel's MC2 as trafficking front, 40-year pattern from Karin Models to French prosecution | THREAD_08 | 9, 16 |
+| **Logistics Network** | 30+ shell entities, 5-person signer pool, 1953 Trust loyalty clause | THREAD_10 | 17 |
+
+Cross-cutting findings from Stories 10-13:
+- **Document degradation** (Story 10): 3.5M pages released as unsearchable image scans — functional classification
+- **The Washington List** (Story 11): Political connections documented but never investigated
+- **The Last Night** (Story 12): Circumstances of Epstein's death remain unresolved
+- **The Governor's Ranch** (Story 13): Zorro Ranch as operational site with New Mexico political connections
+
+The five-system framework reveals that the original five threads (focused on the trust, its governance, and prosecutorial failure) captured only the inner ring of a much larger operation. The outer ring — banking infrastructure, modeling pipeline, NPA immunity, and shell company network — provided the institutional scaffolding that made the inner ring possible.
 
 ---
 

@@ -444,7 +444,7 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 17 stories (233 citations, 95 entity links), 6 case files, 178 events, 110 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 17 stories (233 citations, 95 entity links), **11 case files** (82 open questions, 65 entity links), 178 events, 110 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
@@ -453,14 +453,17 @@
 ### Entity Bios — COMPLETE
 - [x] All 32 published entities seeded with bios (200-486 chars each) via `scripts/seed-entity-bios.mjs`. Bios populate the `bio` column (top-level, not metadata JSONB). Used for entity hero display + SEO meta descriptions.
 
-### Entity Photos (6 T1 entities missing)
-- [ ] Source photos: Dan Snyder, Glenn Dubin, Jean-Luc Brunel, Jim Kimsey, Larry Summers, Leon Black
-- [ ] Source photo: Lesley Groff (T2)
+### Entity Photos — PARTIAL
+- [x] Sourced from Wikimedia Commons: Dan Snyder, Glenn Dubin, Larry Summers (3 new photos seeded)
+- [ ] No freely-licensed photos available: Jean-Luc Brunel, Jim Kimsey, Leon Black (3 T1 remaining)
+- [ ] No freely-licensed photos available: Lesley Groff, Sarah Kellen, Nadia Marcinkova, Adriana Ross (4 T2 remaining)
+- T4 entities (people) also missing: Barnaby Mars, Celina Dubin, Dr. Chen, Eva Andersson-Dubin, Karyna Shuliak, Mark Epstein
+- T4 corporate entities use initials fallback (appropriate — no photo needed)
 
-### Publish T2 Entities (3 unpublished NPA co-conspirators)
-- [ ] Publish Sarah Kellen — T2, already enriched with connections/events/doc links
-- [ ] Publish Nadia Marcinkova — T2, already enriched
-- [ ] Publish Adriana Ross — T2, already enriched
+### Publish T2 Entities — COMPLETE
+- [x] Sarah Kellen — published, slug set, bio (435 chars), 261 doc links, 4 connections, 3 events
+- [x] Nadia Marcinkova — published, slug set, bio (476 chars), 169 doc links, 1 connection, 3 events
+- [x] Adriana Ross — published, slug set, bio (429 chars), 162 doc links, 2 connections, 2 events
 
 ### Story Coverage Gaps
 - [ ] **Prince Andrew story** — T1, 0 stories, 9 events, 4 connections. Cape Town, flight logs, victim testimony. Would strengthen `the-operation` section (currently weakest with only 2 stories)

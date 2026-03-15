@@ -50,6 +50,26 @@
 
 ---
 
+## Case File Mapping
+
+Each case file covers a distinct investigative topic. When writing a new story, link it to the most relevant case file. If a story opens a genuinely new topic, create a new case file thread.
+
+| Case File | Slug | Topics | Related Stories |
+|-----------|------|--------|-----------------|
+| CF-2026-000 | `master-intelligence-brief` | Cross-thread synthesis, Five Systems framework | 6, 11, 13 |
+| CF-2026-001 | `staley-trustee-banker` | Jes Staley, trust governance, Barclays | 3 |
+| CF-2026-002 | `dubin-architecture` | Dubin family, beneficiary structure | 4 |
+| CF-2026-003 | `witness-control-mechanisms` | Employment cliff, golden handcuffs, loyalty clause | 1 |
+| CF-2026-004 | `indyke-conflicts-of-interest` | Darren Indyke, 7 roles, amendment gatekeeper | 5 |
+| CF-2026-005 | `prosecutorial-failure` | SDNY prosecution memo, institutional failure, document degradation | 2, 10, 12 |
+| CF-2026-006 | `leon-black-prosecution-failure` | Leon Black, $158M payments, prosecution decline | 8 |
+| CF-2026-007 | `deutsche-bank-compliance-failure` | Deutsche Bank, 76 accounts, $150M penalty | 14 |
+| CF-2026-008 | `brunel-modeling-pipeline` | Jean-Luc Brunel, MC2, modeling/trafficking pipeline | 9, 16 |
+| CF-2026-009 | `npa-co-conspirators` | NPA immunity, Kellen/Marcinkova/Ross, sealed indictment | 7, 15 |
+| CF-2026-010 | `shell-company-infrastructure` | 30+ shell entities, 1953 Trust, signer pool | 17 |
+
+---
+
 ## Story-Writing Workflow
 
 From "analysis doc exists" → "story live on site" in 7 steps:
@@ -61,6 +81,7 @@ From "analysis doc exists" → "story live on site" in 7 steps:
 5. **Define StoryDef metadata** — slug, title, deck, section, case_file_slug, hero_image, reading_time.
 6. **Add to seed script and run** — Append StoryDef to `STORIES` array in `scripts/src/seed-publication.ts`, then `pnpm --filter @efta/scripts seed:publication`.
 7. **Verify** — Hit `/api/public/stories/{slug}`, check citations resolve and entity links work.
+8. **Link to case file** — Assign `case_file_slug` to the most relevant case file (see Case File Mapping above). If the story opens a new topic not covered by an existing case file, create a new case file thread.
 
 ---
 

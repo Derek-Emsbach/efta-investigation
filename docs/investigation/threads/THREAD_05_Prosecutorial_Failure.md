@@ -2,8 +2,8 @@
 type: investigation_thread
 thread_id: "05"
 thread_name: "Prosecutorial Failure"
-version: "1.0"
-date: "2026-02-26"
+version: "1.1"
+date: "2026-03-14"
 classification: "UNRESTRICTED — PUBLIC ANALYSIS"
 sensitivity: contains_speculation_markers
 primary_entities:
@@ -157,6 +157,57 @@ The outcome: Maxwell was arrested on July 2, 2020, and convicted on December 29,
 > — EFTA02731771
 
 The original AUSA handling the case — who received bank statements, victim testimony, and corroborating accounts — never wrote a formal assessment. In a federal prosecution office, writing something up is the mechanism by which evidence becomes a charging recommendation. Not writing it up means the evidence was never formally evaluated.
+
+### Failure 3: The Leon Black Prosecution Decline (New Finding — March 2026)
+
+The Leon Black investigation (THREAD_06) documents a third prosecutorial failure that extends the pattern beyond Epstein's immediate circle. Over three years (2021-2024), SDNY accumulated evidence against Leon Black including:
+
+- **$158 million** in documented payments to Epstein (2012-2017)
+- **3+ victims** with corroborating accounts, including forensically authenticated journals
+- **6-phase prosecution decision chain** documented in Dataset 12 emails
+- Medical records documenting sexual assault injuries
+- Text messages from victim to Black: "You sexually harassed me, sex trafficked me, raped me"
+
+The decision not to prosecute followed a pattern now recognizable across the EFTA corpus:
+
+| Phase | Action | Document |
+|-------|--------|----------|
+| 1 | Evidence received | EFTA02731718 |
+| 2 | "Not inclined to open" | EFTA02731578 |
+| 3 | Additional evidence received | EFTA02731636 |
+| 4 | CRU formal decline | EFTA02731660 |
+| 5 | "Agree with DTC" | EFTA02731632 |
+| 6 | Journals forensically authenticated — no action | EFTA02731724 |
+
+The original AUSA admitted: "I did not write anything up on Leon Black" (EFTA02731771). No formal prosecution assessment was ever written despite three years of evidence accumulation. Black subsequently settled with USVI for $62.5 million — an amount suggesting the evidence was substantial.
+
+**Evidence tier:** ◆ Tier 1 — Direct documentary evidence from DS12
+
+### Failure 4: NPA Blanket Immunity (New Finding — March 2026)
+
+The NPA Co-Conspirators investigation (THREAD_09) documents how the September 2007 Non-Prosecution Agreement foreclosed prosecution of individuals for whom the sealed 53-page indictment contained per-person evidence. The NPA granted blanket immunity to "any potential co-conspirators" — a provision that:
+
+1. **Protected named individuals** — Sarah Kellen (scheduling), Nadia Marcinkova (participation), Adriana Ross (surveillance)
+2. **Extended to unnamed individuals** — the "named and unnamed" language created immunity for anyone who might have been part of the conspiracy
+3. **Was negotiated in secret** — victims were not notified, in violation of the Crime Victims' Rights Act (later confirmed by 11th Circuit, 2019)
+
+The sealed indictment and 82-page prosecution memo documented sufficient evidence for individual prosecutions. The NPA converted this evidence into historical record rather than charging instruments.
+
+**Evidence tier:** ◆ Tier 1 — Direct textual evidence from NPA and sealed indictment
+
+### Failure 5: Document Degradation as Systemic Obstruction (New Finding — March 2026)
+
+Story 10 ("Three Million Pages of Nothing") documented that the 3.5 million EFTA document pages were released as low-quality scanned images with:
+
+- No OCR text layer (preventing searchability)
+- Metadata stripped from all files
+- Inconsistent Bates numbering across datasets
+- Multi-page documents split into individual page images
+- Resolution insufficient for reading handwritten annotations
+
+This is not a technical limitation — it is a policy choice. The DOJ possessed the original digital files for many documents (emails, spreadsheets, typed memoranda). The decision to release only degraded image scans effectively ensured that the corpus would be unsearchable without significant investment in processing infrastructure. For a 3.5-million-page corpus, this is the functional equivalent of classification — the documents are technically public but practically inaccessible.
+
+**Evidence tier:** ◆ Tier 2 — Observable pattern requiring inference about intent
 
 ---
 

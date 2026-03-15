@@ -2,8 +2,8 @@
 type: investigation_thread
 thread_id: "01"
 thread_name: "Staley — Trustee, Banker, Accused Rapist"
-version: "1.0"
-date: "2026-02-26"
+version: "1.1"
+date: "2026-03-14"
 classification: "UNRESTRICTED — PUBLIC ANALYSIS"
 sensitivity: contains_speculation_markers
 primary_entities:
@@ -299,6 +299,10 @@ Staley and Indyke served as co-trustees across all three trust versions. The ope
 The prosecution memo documents Staley's rape of a victim, presents JPMorgan communication evidence corroborating the timeline, and notes DANY's assessment that the victim's account is credible. But the charging analysis section does not include Staley among its five subjects. This is not a failure of evidence gathering — the evidence was gathered and documented. It is a failure of analytical follow-through: the evidence was treated as background to the main Epstein conspiracy case rather than as a standalone charging question.
 
 Whether this omission reflects a deliberate prosecutorial decision, a jurisdictional limitation, a statute of limitations assessment, or simple prioritization cannot be determined from the unredacted portions of the memo. See THREAD_05 for full analysis.
+
+### → THREAD_06 (Leon Black): Parallel Banking Relationships (New — March 2026)
+
+Staley and Leon Black share a structural pattern: both maintained banking relationships with Epstein-connected institutions (JPMorgan for Staley, Deutsche Bank for Black's $158M in payments), both are documented in the prosecution memo as having committed sexual offenses, and both avoided prosecution despite substantial evidence. Staley's Barclays role parallels Black's Apollo Global Management role — both were CEOs of major financial institutions with documented exposure to Epstein's operation. The prosecution memo treated both as supporting evidence for the main conspiracy rather than standalone charging questions. Thread 06 documents Black's $62.5M USVI settlement — no comparable civil settlement has been documented for Staley.
 
 ---
 
