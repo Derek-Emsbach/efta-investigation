@@ -1645,6 +1645,138 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  {
+    slug: 'the-architecture-of-opacity',
+    title: 'The Architecture of Opacity',
+    deck: 'Two days before his death, Jeffrey Epstein signed a trust agreement transferring $577 million in assets to "The 1953 Trust" — managed by the same two men who controlled his 30+ shell companies. Buried in its provisions: a loyalty clause that threatened employees with losing million-dollar bequests if they were deemed "disloyal." It took the Southern District of New York eleven months to demand the estate promise not to use it against witnesses.',
+    section: 'follow-the-money' as const,
+    file: 'the-architecture-of-opacity.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 14,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-14T18:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/US_Virgin_Islands_-_St_Thomas.jpg/1280px-US_Virgin_Islands_-_St_Thomas.jpg',
+    hero_image_caption:
+      'St. Thomas, U.S. Virgin Islands — where all 30+ Epstein shell companies were registered at the same address: 6100 Red Hook Quarter B3. The USVI registration concealed beneficial ownership across $577 million in assets.',
+    metadata: {
+      source_analysis: 'docs/investigation/sources/SHELL_COMPANIES/Analysis.md',
+    },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 30, is_primary: true },
+      { name: 'Darren Indyke', mention_count: 18, is_primary: true },
+      { name: 'Lesley Groff', mention_count: 6, is_primary: false },
+      { name: 'Ghislaine Maxwell', mention_count: 4, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA00027979',
+        description:
+          'Probate petition — full estate inventory: $577,672,654 total. Will dated August 8, 2019 (2 days before death). Executors: Indyke and Kahn. Successor executor: Boris Nikolic. Everything to The 1953 Trust.',
+        page_reference: 'Full document (21 pages)',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01266204',
+        description:
+          'The 1953 Trust agreement — complete trust document. Sections 2.3 (bequests: $50M Indyke, $25M Kahn, $10M Maxwell), 2.5(A) (2-year lockout), 2.5(B) (loyalty clause: "disloyalty" as termination cause). All property to Karyna Shuliak.',
+        page_reference: 'Full document (16+ pages)',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01424505',
+        description:
+          'CDD forms email from Bebe Avdiu (Indyke legal assistant) listing all 15 entities in the Southern Financial relationship at Deutsche Bank',
+        page_reference: 'Full document (4 pages)',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01424842',
+        description:
+          'Complete authorized signers for ALL Southern Financial entities — Butterfly Trust, JEGE, Plan D, Southern Financial, HBRK, Hyperion Air, Jeepers, Haze Trust, Zorro, etc. Same 5 people across 20+ entities.',
+        page_reference: 'Full document (13 pages)',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01421742',
+        description:
+          'Deutsche Bank entity spreadsheet with purposes — Southern Financial: "formed to hold personal wealth and invest"; Zorro: "real estate holding company"; Hyperion Air: "holds funds for airplane costs"; Plan D: "formed by one individual for one individual"',
+        page_reference: 'Full document (2 pages)',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA00082467',
+        description:
+          'First quarterly accounting with Schedule B — all entity values: Southern Trust $236M, Southern Financial $176M, Nautilus $63M, Maple $56M, Poplar $22M, Plan D $17M, Cypress $17M, Laurel $12M, SCIJEP $9M, Hyperion $4.5M',
+        page_reference: 'Full document (11 pages)',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA01588813',
+        description:
+          '$1.5M wire transfer FROM Jeepers Inc TO Jeffrey Epstein at JPMorgan Chase (July 15, 2013); also $125K from Southern Trust to Adfin Solutions',
+        page_reference: 'Full document (3 pages)',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01583466',
+        description:
+          'Plan D LLC operating agreement — formed October 19, 2012; sole member Jeffrey E. Epstein; purpose: "any lawful activity"',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01424585',
+        description:
+          'Deutsche Bank ACU reviews — Jeepers: "sub S managing various investments"; Mort: "entity holding shares of private company Jawbone"; Haze Trust: "investment vehicle"',
+        page_reference: 'Full document (6 pages)',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01420392',
+        description:
+          'Butterfly Trust compliance — Deutsche Bank asks Richard Kahn: "What is the purpose of this trust, as it is not cleared within the original trust agreement?" Kahn defers to Stewart Oldfield.',
+        page_reference: 'Full document (4 pages)',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01423947',
+        description:
+          'Caterpillar Trust transfer memo — Lesley Groff directing interest transfers, March 2019. Trust wound down April 2019, three months before arrest.',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA00031989',
+        description:
+          'SDNY letter re: Section 2.5(B) — estate counsel Marc Weinstein (Hughes Hubbard & Reed) confirms: trust provision "has not been and will not be used" to retaliate against witnesses cooperating with law enforcement. July 27, 2020.',
+        page_reference: 'Full document (2 pages)',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA01422395',
+        description:
+          'Deutsche Bank KYC review — Gratitude America Ltd and Mort Inc under "high-risked" Southern Financial relationship. Epstein as president, Kahn and Indyke as directors.',
+        page_reference: 'Full document (6 pages)',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01928357',
+        description:
+          'Boris Nikolic email to Epstein (2014) — personal correspondence. Also EFTA02032070: Nikolic + Kimbal Musk + Epstein Halloween costume discussion (2012)',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA00019322',
+        description:
+          'Internal DOJ email: "As for where his assets actually go, it all goes to the acting Trustees of the 1953 Trust — i.e., nobody is named herein."',
+        page_reference: 'Full document (1 page)',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

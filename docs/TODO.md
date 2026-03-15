@@ -216,6 +216,7 @@
 - [x] Story 14: "Normal for This Client" (Deutsche Bank) — section: follow-the-money — ~2,200 words, 16 citations, 6 entity links, 2 inline images + hero image. Full investigation: corpus sweep (200+ docs), deep read EFTA01681865 (52 pages) + 7 supporting docs, analysis at `docs/investigation/sources/DEUTSCHE_BANK/Analysis.md`. 5 new entities (Paul Morris, Tazia Smith, Stewart Oldfield, Harry Beller, Erica Kellerhals), 7 timeline events (2013-2020), 3 connections, 8 suspect watchlist entries. Seeded 2026-03-14.
 - [x] Story 15: "The Four Names" (NPA co-conspirators) — section: the-cover-up — ~2,400 words, 13 citations, 6 entity links, 2 inline images + hero image. Full investigation: corpus sweep (Kellen, Marcinkova, Ross), 10+ documents deep-read, analysis at `docs/investigation/sources/NPA_CO_CONSPIRATORS/Analysis.md`. 3 suspects promoted to T2 entities, 6 connections, 4 events, 23 entity-document links. Seeded 2026-03-14.
 - [x] Story 16: "The Conveyor Belt" (Jean-Luc Brunel / MC2 modeling pipeline) — section: the-operation — ~2,200 words, 14 citations, 4 entity links, 3 inline images + hero image. Full investigation: corpus sweep (19+ documents deep-read), analysis at `docs/investigation/sources/BRUNEL/Analysis.md`. Entity enriched, 2 new entities (Jeffrey Fuller T4, Sergio Cordero T4), 3 new connections + 2 updated, 8 timeline events. Seeded 2026-03-14.
+- [x] Story 17: "The Architecture of Opacity" (Shell company network / 1953 Trust) — section: follow-the-money — ~2,800 words, 15 citations, 4 entity links, 3 inline images + hero image. Full investigation: corpus sweep (25+ documents deep-read, 10+ key docs), analysis at `docs/investigation/sources/SHELL_COMPANIES/Analysis.md`. Maps 30+ shell entities, tree-named property corps, $577M estate, Section 2.5(B) loyalty/intimidation clause, Boris Nikolic successor executor, Deutsche Bank "Southern Financial Relationship." DB entity updates deferred (MCP server down). Seeded 2026-03-14.
 
 ---
 
@@ -443,17 +444,14 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 16 stories (218 citations), 6 case files, 178 events, 110 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 17 stories (233 citations, 95 entity links), 6 case files, 178 events, 110 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
 - [x] Jim Kimsey (1), Ted Leonsis (2), Steve Case (22), Dan Snyder (38) — verified low counts are accurate. Minimal corpus presence confirmed via FTS5. Involvement documented through specific documents (flight logs, journals), not broad mentions.
 
-### Entity Bios (HIGH PRIORITY — all 32 published entities missing bios)
-- [ ] Write bios for T1 entities (17): Jeffrey Epstein, Ghislaine Maxwell, Alan Dershowitz, Bill Clinton, Dan Snyder, George Mitchell, Glenn Dubin, Harvey Weinstein, Jean-Luc Brunel, Jes Staley, Jim Kimsey, Larry Summers, Leon Black, Marvin Minsky, Prince Andrew, Steve Case, Ted Leonsis
-- [ ] Write bios for T2 entity: Lesley Groff
-- [ ] Write bios for T3 entity: Bill Richardson
-- [ ] Write bios for T4 entities (13): Apollo Global, Barnaby Mars, Celina Dubin, Dr. Chen, Eva Andersson-Dubin, Gerd, Karyna Shuliak, KKR, Les Wexner, Mark Epstein, Oaktree Capital, The Blackstone Group, The Carlyle Group
+### Entity Bios — COMPLETE
+- [x] All 32 published entities seeded with bios (200-486 chars each) via `scripts/seed-entity-bios.mjs`. Bios populate the `bio` column (top-level, not metadata JSONB). Used for entity hero display + SEO meta descriptions.
 
 ### Entity Photos (6 T1 entities missing)
 - [ ] Source photos: Dan Snyder, Glenn Dubin, Jean-Luc Brunel, Jim Kimsey, Larry Summers, Leon Black
