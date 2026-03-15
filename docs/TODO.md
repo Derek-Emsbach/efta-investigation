@@ -182,6 +182,8 @@
 - [x] Public timeline API — `/api/public/timeline` — rate-limited, 5-min cache, entity slug filter, privacy-filtered (published entities only), cache-control headers. Enhanced: merges `events` (184 investigation) + `public_events` (45 real-world) into unified timeline with source filter, entity name resolution, and source URL links.
 - [x] Timeline page — `/evidence/timeline` — chronological events grouped by month-year, event type/date/search filters, entity chips link to evidence room profiles. Enhanced: source filter (All/Investigation/Public Record), public event badges + source URLs, 4 new event types (media, community, international, other).
 - [x] Fix homepage timeline link — changed `/dashboard/timeline` → `/evidence/timeline` so public users reach the Evidence Room timeline
+- [x] Infinite scroll — replaced Previous/Next pagination with IntersectionObserver-based auto-loading
+- [x] Timeline data cleanup — deduplicated 22 events (per-entity copies of NPA, Giuffre journals, Leon Black, Dataset 12, Trust amendment consolidated into single events with multi-entity links), added 8 missing landmark events (2008 guilty plea, 2018 Miami Herald, 2019 CVRA ruling, 2019 arrest, 2019 MCC death, 2020 Maxwell arrest, 2021 Maxwell conviction, 2022 Brunel death). Final count: 170 investigation + 45 public = 215 total events.
 
 **Phase 10 COMPLETE** — Evidence Room expanded from search-only to full research workspace with 4 integrated views
 
