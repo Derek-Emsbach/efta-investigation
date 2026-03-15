@@ -65,8 +65,8 @@ def run(min_shared_docs: int = 2) -> list[dict]:
     connections = db.get_connections()
     existing_pairs: set[tuple[str, str]] = set()
     for conn in connections:
-        ea = conn.get("entity_a_id") or conn.get("source_entity_id", "")
-        eb = conn.get("entity_b_id") or conn.get("target_entity_id", "")
+        ea = conn.get("entity_a", "")
+        eb = conn.get("entity_b", "")
         if ea and eb:
             pair = tuple(sorted([ea, eb]))
             existing_pairs.add(pair)

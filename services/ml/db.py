@@ -36,7 +36,7 @@ def get_entity_documents(
     """Fetch entity_documents links with optional entity filter."""
     client = get_client()
     query = client.table("entity_documents").select(
-        "id, entity_id, document_id, role_in_document, excerpt, page_number, is_fuzzy_match"
+        "id, entity_id, document_id, role_in_document, excerpt, page_number"
     )
     if entity_id:
         query = query.eq("entity_id", entity_id)
