@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Link from 'next/link'
 
 // -------------------------------------------------------------------
@@ -124,16 +124,25 @@ export function EvidenceTimelineClient() {
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
   const [source, setSource] = useState('')
-  const [page, setPage] = useState(1)
   const [data, setData] = useState<TimelineEvent[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [isFetchingMore, setIsFetchingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const pageRef = useRef(1)
+  const sentinelRef = useRef<HTMLDivElement>(null)
 
-  const fetchEvents = useCallback(async () => {
-    setIsLoading(true)
+  // Fetch a page of events — append=true for infinite scroll loads
+  const fetchEvents = useCallback(async (pageNum: number, append: boolean) => {
+    if (append) {
+      setIsFetchingMore(true)
+    } else {
+      setIsLoading(true)
+    }
+
     try {
       const params = new URLSearchParams()
-      params.set('page', String(page))
+      params.set('page', String(pageNum))
       params.set('limit', String(PAGE_SIZE))
 
       if (search) params.set('search', search)
@@ -146,24 +155,64 @@ export function EvidenceTimelineClient() {
       if (!res.ok) throw new Error('Failed to fetch')
 
       const result: ApiResponse = await res.json()
-      setData(result.data)
+
+      if (append) {
+        setData((prev) => [...prev, ...result.data])
+      } else {
+        setData(result.data)
+      }
       setTotalCount(result.count)
+      setHasMore(pageNum * PAGE_SIZE < result.count)
     } catch {
-      setData([])
-      setTotalCount(0)
+      if (!append) {
+        setData([])
+        setTotalCount(0)
+      }
+      setHasMore(false)
     } finally {
       setIsLoading(false)
+      setIsFetchingMore(false)
     }
-  }, [page, search, eventType, dateFrom, dateTo, source])
+  }, [search, eventType, dateFrom, dateTo, source])
 
+  // Initial load + reset on filter change
   useEffect(() => {
-    void fetchEvents()
+    pageRef.current = 1
+    setHasMore(true)
+    void fetchEvents(1, false)
   }, [fetchEvents])
 
+  // Infinite scroll via IntersectionObserver
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoading && !isFetchingMore) {
+          pageRef.current += 1
+          void fetchEvents(pageRef.current, true)
+        }
+      },
+      { rootMargin: '400px' },
+    )
+
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [hasMore, isLoading, isFetchingMore, fetchEvents])
+
   const groups = useMemo(() => groupByMonth(data), [data])
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
 
   const hasFilters = eventType || search || dateFrom || dateTo || source
+
+  // Reset helper for filters
+  const resetFilters = () => {
+    setEventType('')
+    setSearch('')
+    setDateFrom('')
+    setDateTo('')
+    setSource('')
+  }
 
   return (
     <div className="min-h-[calc(100vh-120px)]">
@@ -181,7 +230,7 @@ export function EvidenceTimelineClient() {
           {SOURCE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
-              onClick={() => { setSource(opt.value); setPage(1) }}
+              onClick={() => setSource(opt.value)}
               className={`px-3 py-1.5 text-xs font-mono rounded-md transition-colors ${
                 source === opt.value
                   ? 'bg-background text-text-primary shadow-sm'
@@ -199,7 +248,7 @@ export function EvidenceTimelineClient() {
           <div className="relative">
             <select
               value={eventType}
-              onChange={(e) => { setEventType(e.target.value); setPage(1) }}
+              onChange={(e) => setEventType(e.target.value)}
               className="appearance-none bg-surface border border-border-default rounded-lg text-text-primary text-sm px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-critical/30 focus:border-critical transition-colors cursor-pointer font-mono"
             >
               {EVENT_TYPE_OPTIONS.map((opt) => (
@@ -219,7 +268,7 @@ export function EvidenceTimelineClient() {
             <input
               type="text"
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search events..."
               className="w-full bg-surface border border-border-default rounded-lg pl-10 pr-4 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-critical/30 focus:border-critical transition-colors font-mono"
             />
@@ -231,7 +280,7 @@ export function EvidenceTimelineClient() {
             <input
               type="date"
               value={dateFrom}
-              onChange={(e) => { setDateFrom(e.target.value); setPage(1) }}
+              onChange={(e) => setDateFrom(e.target.value)}
               className="bg-surface border border-border-default rounded-lg text-text-primary text-sm px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-critical/30 focus:border-critical transition-colors font-mono"
             />
           </div>
@@ -240,21 +289,14 @@ export function EvidenceTimelineClient() {
             <input
               type="date"
               value={dateTo}
-              onChange={(e) => { setDateTo(e.target.value); setPage(1) }}
+              onChange={(e) => setDateTo(e.target.value)}
               className="bg-surface border border-border-default rounded-lg text-text-primary text-sm px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-critical/30 focus:border-critical transition-colors font-mono"
             />
           </div>
 
           {hasFilters && (
             <button
-              onClick={() => {
-                setEventType('')
-                setSearch('')
-                setDateFrom('')
-                setDateTo('')
-                setSource('')
-                setPage(1)
-              }}
+              onClick={resetFilters}
               className="text-xs text-text-muted hover:text-text-primary transition-colors font-mono"
             >
               Clear all
@@ -262,7 +304,7 @@ export function EvidenceTimelineClient() {
           )}
         </div>
 
-        {/* Loading */}
+        {/* Initial loading */}
         {isLoading && (
           <div className="space-y-6">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -410,28 +452,22 @@ export function EvidenceTimelineClient() {
           </div>
         )}
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-border-default">
+        {/* Infinite scroll sentinel + loading indicator */}
+        <div ref={sentinelRef} className="h-1" />
+        {isFetchingMore && (
+          <div className="flex items-center justify-center gap-2 py-8">
+            <div className="h-1.5 w-1.5 rounded-full bg-text-muted animate-pulse" />
+            <div className="h-1.5 w-1.5 rounded-full bg-text-muted animate-pulse [animation-delay:150ms]" />
+            <div className="h-1.5 w-1.5 rounded-full bg-text-muted animate-pulse [animation-delay:300ms]" />
+          </div>
+        )}
+
+        {/* End of timeline indicator */}
+        {!isLoading && !hasMore && data.length > 0 && (
+          <div className="text-center py-8">
             <p className="text-xs text-text-muted font-mono">
-              Page {page} of {totalPages} ({totalCount} events)
+              {totalCount} events loaded
             </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="px-3 py-1.5 text-sm font-mono rounded-lg border border-border-default text-text-muted hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="px-3 py-1.5 text-sm font-mono rounded-lg border border-border-default text-text-muted hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              >
-                Next
-              </button>
-            </div>
           </div>
         )}
       </div>
