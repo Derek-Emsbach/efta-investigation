@@ -33,6 +33,7 @@ const adminItems = [
   { label: "Processing", href: "/dashboard/processing", icon: "loader" as const },
   { label: "Review", href: "/dashboard/review", icon: "check-circle" as const },
   { label: "Detective", href: "/dashboard/assistant", icon: "sparkles" as const },
+  { label: "ML Pipeline", href: "/dashboard/ml", icon: "brain" as const },
   { label: "Admin", href: "/dashboard/admin", icon: "gauge" as const },
 ];
 

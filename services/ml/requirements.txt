@@ -1,0 +1,26 @@
+supabase>=2.3.0
+boto3>=1.34.0
+python-dotenv>=1.0.0
+httpx>=0.26.0
+
+# ML core
+spacy>=3.7.0
+scikit-learn>=1.4.0
+numpy>=1.26.0
+pandas>=2.2.0
+
+# Embeddings
+sentence-transformers>=2.5.0
+
+# Similarity search
+faiss-cpu>=1.8.0
+
+# Statistics / anomaly detection
+scipy>=1.12.0
+
+# Claude API (connection type classification)
+anthropic>=0.18.0
+
+# CLI
+click>=8.1.0
+rich>=13.0.0
