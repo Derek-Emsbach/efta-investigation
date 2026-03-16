@@ -18,7 +18,7 @@ interface GraphNode extends d3.SimulationNodeDatum {
   tier: Tier | null
   category: string | null
   status: string | null
-  evidence_summary: string | null
+  bio: string | null
   profile_image_url: string | null
 }
 
@@ -1536,9 +1536,9 @@ export default function EvidenceNetworkClient() {
                 </div>
 
                 {/* Evidence summary */}
-                {selectedEntitySummary.node.evidence_summary && (
+                {selectedEntitySummary.node.bio && (
                   <p className="text-[11px] text-text-secondary font-mono mt-3 leading-relaxed line-clamp-4">
-                    {selectedEntitySummary.node.evidence_summary}
+                    {selectedEntitySummary.node.bio}
                   </p>
                 )}
 

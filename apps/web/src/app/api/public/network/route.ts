@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const [entitiesResult, connectionsResult] = await Promise.all([
       supabase
         .from('entities')
-        .select('id, name, slug, entity_type, tier, category, status, evidence_summary, profile_image_url')
+        .select('id, name, slug, entity_type, tier, category, status, bio, profile_image_url')
         .eq('profile_published', true),
       supabase
         .from('entity_connections')
