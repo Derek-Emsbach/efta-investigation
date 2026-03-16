@@ -453,7 +453,7 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 19 stories (262 citations, 103 entity links), **11 case files** (82 open questions, 65 entity links), 185 events, 114 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 19 stories (262 citations, 103 entity links), **11 case files** (82 open questions, 65 entity links), 185 events, 157 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
@@ -480,7 +480,7 @@
 - [ ] **Harvey Weinstein story** — T1, 0 stories, 6 events, 2 connections. Cross-pollination between Epstein and Weinstein networks
 
 ### Connection Network Gaps
-- [ ] Enrich connections for under-connected T1 entities: Dershowitz (3), Summers (3), Minsky (2), Weinstein (2)
+- [x] Enrich connections for under-connected T1 entities — 33 connections added. Dershowitz 4→10, Weinstein 2→5, Summers 3→5, Minsky 2→4. Also enriched: Marcinkova 1→5, Ross 2→5, Ehud Barak 1→4, Peter Mandelson 1→4, Les Wexner 1→4, Bill Richardson 3→5. Total connections: 114→157.
 - [ ] Add connections for T4 entities with only 1 connection: Dr. Chen, Gerd, KKR, Oaktree, Blackstone, Carlyle
 
 ### T4 Corporate Entity Triage
