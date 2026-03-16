@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import * as d3 from 'd3'
-import { TierBadge } from '@/components/ui/tier-badge'
 import { TIER_LABELS, type Tier } from '@efta/shared'
 
 // -------------------------------------------------------------------
@@ -18,6 +18,8 @@ interface GraphNode extends d3.SimulationNodeDatum {
   tier: Tier | null
   category: string | null
   status: string | null
+  evidence_summary: string | null
+  profile_image_url: string | null
 }
 
 interface GraphEdge extends d3.SimulationLinkDatum<GraphNode> {
@@ -35,7 +37,7 @@ interface GraphData {
 }
 
 // -------------------------------------------------------------------
-// Constants
+// Constants — evidence room neon/dark palette
 // -------------------------------------------------------------------
 
 const TIER_COLORS: Record<number, string> = {
@@ -94,7 +96,18 @@ const RELATIONSHIP_LABELS: Record<string, string> = {
   protected_by: 'Protected by',
 }
 
-// Edge colors by relationship category
+const STATUS_LABELS: Record<string, string> = {
+  convicted: 'Convicted',
+  settled: 'Settled',
+  not_investigated: 'Not Investigated',
+  identified: 'Identified',
+  deceased: 'Deceased',
+  active: 'Active',
+  unknown: 'Unknown',
+  immunized: 'Immunized',
+}
+
+// Edge colors by relationship category (neon evidence room palette)
 type EdgeCategory = 'criminal' | 'financial' | 'legal' | 'personal' | 'other'
 
 const EDGE_CATEGORY_MAP: Record<string, EdgeCategory> = {
@@ -170,11 +183,18 @@ function getEdgeCategory(type: string): EdgeCategory {
   return EDGE_CATEGORY_MAP[type] ?? 'other'
 }
 
+function shouldShowPhoto(d: GraphNode, selectedId: string | null, connectedIds: Set<string>): boolean {
+  if (!d.profile_image_url) return false
+  if ((d.tier ?? 6) <= 2) return true
+  if (d.id === selectedId || connectedIds.has(d.id)) return true
+  return false
+}
+
+type LayoutMode = 'force' | 'radial'
+
 // -------------------------------------------------------------------
 // Component
 // -------------------------------------------------------------------
-
-type LayoutMode = 'force' | 'radial'
 
 export default function EvidenceNetworkClient() {
   const router = useRouter()
@@ -205,6 +225,15 @@ export default function EvidenceNetworkClient() {
   const [pathTo, setPathTo] = useState<string | null>(null)
   const [pathFromSearch, setPathFromSearch] = useState('')
   const [pathToSearch, setPathToSearch] = useState('')
+
+  // Escape key to deselect
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedNodeId(null)
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   // Initialize relationship filter options from data
   useEffect(() => {
@@ -252,6 +281,16 @@ export default function EvidenceNetworkClient() {
   const relationshipTypes = useMemo(() => {
     if (!data) return []
     return Array.from(new Set(data.edges.map((e) => e.relationship_type))).sort()
+  }, [data])
+
+  const tierCounts = useMemo(() => {
+    if (!data) return new Map<number, number>()
+    const counts = new Map<number, number>()
+    for (const node of data.nodes) {
+      const tier = node.tier ?? 0
+      counts.set(tier, (counts.get(tier) ?? 0) + 1)
+    }
+    return counts
   }, [data])
 
   // Client-side filtered data
@@ -302,6 +341,36 @@ export default function EvidenceNetworkClient() {
     return data.nodes.filter((n) => n.name.toLowerCase().includes(pathToSearch.toLowerCase())).slice(0, 6)
   }, [pathToSearch, data])
 
+  // Entity summary for selection panel
+  const selectedEntitySummary = useMemo(() => {
+    if (!selectedNodeId || !filteredData) return null
+    const node = filteredData.nodes.find((n) => n.id === selectedNodeId)
+    if (!node) return null
+
+    const connectedEdges = filteredData.edges.filter(
+      (e) => e.entity_a === selectedNodeId || e.entity_b === selectedNodeId,
+    )
+
+    const categoryCounts: Record<EdgeCategory, number> = { criminal: 0, financial: 0, legal: 0, personal: 0, other: 0 }
+    for (const e of connectedEdges) {
+      const cat = getEdgeCategory(e.relationship_type)
+      categoryCounts[cat]++
+    }
+
+    const connectedNodes = connectedEdges
+      .map((e) => {
+        const otherId = e.entity_a === selectedNodeId ? e.entity_b : e.entity_a
+        return filteredData.nodes.find((n) => n.id === otherId)
+      })
+      .filter((n): n is GraphNode => n != null)
+      .sort((a, b) => {
+        const tierDiff = (a.tier ?? 6) - (b.tier ?? 6)
+        return tierDiff !== 0 ? tierDiff : a.name.localeCompare(b.name)
+      })
+
+    return { node, connectedEdges, categoryCounts, connectedNodes, totalConnections: connectedEdges.length }
+  }, [selectedNodeId, filteredData])
+
   // Handlers
   const handleSearchSelect = useCallback((nodeId: string) => {
     setHighlightedNodeId(nodeId)
@@ -344,7 +413,15 @@ export default function EvidenceNetworkClient() {
     })
   }, [])
 
-  // --- D3 force simulation ---
+  const resetAll = useCallback(() => {
+    setActiveTiers(new Set([1, 2, 3, 4, 5, 6]))
+    setActiveStrengths(new Set(['documented', 'alleged', 'circumstantial']))
+    if (data) setActiveRelationships(new Set(data.edges.map((e) => e.relationship_type)))
+  }, [data])
+
+  // -------------------------------------------------------------------
+  // D3 force simulation
+  // -------------------------------------------------------------------
   useEffect(() => {
     if (!filteredData || !svgRef.current || filteredData.nodes.length === 0 || dimensions.width === 0) {
       if (svgRef.current) d3.select(svgRef.current).selectAll('*').remove()
@@ -375,6 +452,16 @@ export default function EvidenceNetworkClient() {
       edgePairIndex.set(e.id, count - 1)
     }
 
+    // Determine which nodes are connected to the selected node
+    const selectedConnIds = new Set<string>()
+    if (selectedNodeId) {
+      selectedConnIds.add(selectedNodeId)
+      for (const e of filteredData.edges) {
+        if (e.entity_a === selectedNodeId) selectedConnIds.add(e.entity_b)
+        if (e.entity_b === selectedNodeId) selectedConnIds.add(e.entity_a)
+      }
+    }
+
     const nodes: GraphNode[] = filteredData.nodes.map((n) => ({ ...n }))
     const edges: GraphEdge[] = filteredData.edges.map((e) => ({
       ...e,
@@ -382,7 +469,7 @@ export default function EvidenceNetworkClient() {
       target: e.entity_b,
     }))
 
-    // ── SVG defs (glow filters) ──
+    // ── SVG defs (glow filters + clip paths) ──
     const defs = svg.append('defs')
 
     // Glow filters for T1-T2 nodes
@@ -422,6 +509,17 @@ export default function EvidenceNetworkClient() {
     edgeMerge.append('feMergeNode').attr('in', 'blur')
     edgeMerge.append('feMergeNode').attr('in', 'SourceGraphic')
 
+    // Clip paths for photo nodes
+    for (const n of nodes) {
+      if (n.profile_image_url) {
+        const r = getNodeRadius(degreeMap.get(n.id) ?? 0)
+        defs.append('clipPath')
+          .attr('id', `clip-${n.id.replace(/[^a-zA-Z0-9]/g, '')}`)
+          .append('circle')
+          .attr('r', r)
+      }
+    }
+
     const g = svg.append('g')
 
     // Track current zoom level for progressive label disclosure
@@ -439,13 +537,13 @@ export default function EvidenceNetworkClient() {
 
     // ── Cluster positions ──
     const clusterAngle: Record<ClusterGroup, number> = {
-      inner_circle: 0,       // center (no offset)
-      financial: Math.PI / 4, // top-right
-      legal_political: -Math.PI / 4 + Math.PI, // top-left
-      operations: Math.PI / 2 + Math.PI / 4, // bottom-right
-      peripheral: -Math.PI / 2 - Math.PI / 4, // bottom-left
+      inner_circle: 0,
+      financial: Math.PI / 4,
+      legal_political: -Math.PI / 4 + Math.PI,
+      operations: Math.PI / 2 + Math.PI / 4,
+      peripheral: -Math.PI / 2 - Math.PI / 4,
     }
-    const clusterRadius = Math.min(width, height) * 0.18
+    const clusterRadius = Math.min(width, height) * 0.25
 
     function getClusterX(category: string | null): number {
       const group = getClusterGroup(category)
@@ -459,14 +557,14 @@ export default function EvidenceNetworkClient() {
       return cy + Math.sin(clusterAngle[group]) * clusterRadius
     }
 
-    // ── Simulation ──
+    // ── Simulation — wider spacing ──
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink<GraphNode, GraphEdge>(edges).id((d) => d.id).distance(150))
-      .force('charge', d3.forceManyBody().strength(-120))
-      .force('center', d3.forceCenter(cx, cy).strength(0.05))
+      .force('link', d3.forceLink<GraphNode, GraphEdge>(edges).id((d) => d.id).distance(200))
+      .force('charge', d3.forceManyBody().strength(-200))
+      .force('center', d3.forceCenter(cx, cy).strength(0.03))
       .force('collision', d3.forceCollide().radius((d) => {
         const node = d as GraphNode
-        return getNodeRadius(degreeMap.get(node.id) ?? 0) + 6
+        return getNodeRadius(degreeMap.get(node.id) ?? 0) + 14
       }))
       .velocityDecay(0.45)
       .alphaDecay(0.03)
@@ -478,10 +576,10 @@ export default function EvidenceNetworkClient() {
         .force('clusterY', d3.forceY<GraphNode>((d) => getClusterY(d.category)).strength(0.04))
     } else {
       // Radial mode: concentric rings by tier
-      const tierRadius: Record<number, number> = { 1: 0, 2: 120, 3: 220, 4: 320, 5: 400, 6: 400 }
+      const tierRadius: Record<number, number> = { 1: 0, 2: 150, 3: 280, 4: 400, 5: 500, 6: 500 }
       simulation
         .force('radial', d3.forceRadial<GraphNode>(
-          (d) => tierRadius[d.tier ?? 6] ?? 400,
+          (d) => tierRadius[d.tier ?? 6] ?? 500,
           cx, cy,
         ).strength(0.8))
         .force('clusterX', null)
@@ -489,7 +587,7 @@ export default function EvidenceNetworkClient() {
         .force('center', null)
     }
 
-    // Pre-compute layout: run 120 ticks before rendering
+    // Pre-compute layout: run 150 ticks before rendering
     simulation.alpha(1).stop()
     for (let i = 0; i < 150; i++) simulation.tick()
 
@@ -507,12 +605,11 @@ export default function EvidenceNetworkClient() {
       })
       .attr('stroke-width', (d) => {
         if (pathResult?.edgeIds.has(d.id)) return 3
-        const cat = getEdgeCategory(d.relationship_type)
-        return cat === 'criminal' ? 1.5 : 1
+        return getEdgeCategory(d.relationship_type) === 'criminal' ? 1.5 : 1
       })
       .attr('stroke-opacity', (d) => {
         if (pathResult) return pathResult.edgeIds.has(d.id) ? 0.9 : 0.04
-        return 0.3
+        return 0.35
       })
       .attr('filter', (d) => {
         const cat = getEdgeCategory(d.relationship_type)
@@ -536,7 +633,7 @@ export default function EvidenceNetworkClient() {
       .selectAll<SVGTextElement, GraphEdge>('text')
       .data(edges)
       .join('text')
-      .text((d) => RELATIONSHIP_LABELS[d.relationship_type] ?? d.relationship_type.replace(/_/g, ' '))
+      .text((d) => RELATIONSHIP_LABELS[d.relationship_type] ?? formatRelationship(d.relationship_type))
       .attr('font-size', '9px')
       .attr('fill', (d) => getEdgeColor(d.relationship_type))
       .attr('text-anchor', 'middle')
@@ -558,16 +655,24 @@ export default function EvidenceNetworkClient() {
       .attr('stroke-opacity', 0.5)
       .style('pointer-events', 'none')
 
-    // ── Nodes ──
-    const node = g.append('g')
-      .selectAll<SVGCircleElement, GraphNode>('circle')
+    // ── Node groups (for photo support) ──
+    const nodeGroup = g.append('g').attr('class', 'nodes')
+
+    const nodeG = nodeGroup
+      .selectAll<SVGGElement, GraphNode>('g')
       .data(nodes)
-      .join('circle')
+      .join('g')
+      .style('cursor', 'pointer')
+
+    // Background circle (always present)
+    nodeG.append('circle')
+      .attr('class', 'node-bg')
       .attr('r', (d) => {
         if (pathResult?.nodeIds.has(d.id)) return getNodeRadius(degreeMap.get(d.id) ?? 0) + 2
         return getNodeRadius(degreeMap.get(d.id) ?? 0)
       })
       .attr('fill', (d) => {
+        if (shouldShowPhoto(d, selectedNodeId, selectedConnIds)) return '#0d0f11'
         if (pathResult && !pathResult.nodeIds.has(d.id)) return DEFAULT_COLOR
         return TIER_COLORS[d.tier ?? 0] ?? DEFAULT_COLOR
       })
@@ -575,7 +680,6 @@ export default function EvidenceNetworkClient() {
         if (d.id === pathFrom || d.id === pathTo) return '#10B981'
         if (pathResult?.nodeIds.has(d.id)) return '#10B981'
         if (d.id === highlightedNodeId || d.id === selectedNodeId) return '#FFFFFF'
-        // T1-T2 get a colored ring
         if ((d.tier ?? 6) <= 2) return TIER_GLOW_COLORS[d.tier ?? 1]
         return '#0d0f11'
       })
@@ -590,7 +694,36 @@ export default function EvidenceNetworkClient() {
         if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
         return 1
       })
-      .style('cursor', 'pointer')
+
+    // Photo images (only for nodes with profile_image_url)
+    nodeG.each(function (d) {
+      if (!d.profile_image_url) return
+      const r = getNodeRadius(degreeMap.get(d.id) ?? 0)
+      const clipId = `clip-${d.id.replace(/[^a-zA-Z0-9]/g, '')}`
+      const show = shouldShowPhoto(d, selectedNodeId, selectedConnIds)
+
+      const el = d3.select(this)
+      el.append('image')
+        .attr('class', 'node-photo')
+        .attr('href', d.profile_image_url)
+        .attr('width', r * 2)
+        .attr('height', r * 2)
+        .attr('x', -r)
+        .attr('y', -r)
+        .attr('clip-path', `url(#${clipId})`)
+        .attr('preserveAspectRatio', 'xMidYMid slice')
+        .attr('opacity', show ? 1 : 0)
+        .style('pointer-events', 'none')
+
+      // Stroke ring over photo
+      el.append('circle')
+        .attr('class', 'node-ring')
+        .attr('r', r)
+        .attr('fill', 'none')
+        .attr('stroke', d.id === selectedNodeId ? '#FFFFFF' : (TIER_COLORS[d.tier ?? 0] ?? DEFAULT_COLOR))
+        .attr('stroke-width', show ? 2.5 : 0)
+        .style('pointer-events', 'none')
+    })
 
     // Highlighted search ring
     if (highlightedNodeId) {
@@ -634,9 +767,8 @@ export default function EvidenceNetworkClient() {
       })
       .attr('opacity', (d) => {
         if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0
-        // Progressive disclosure: T1-T2 always, others hidden until zoom
         if ((d.tier ?? 6) <= 2) return 1
-        return 0 // Will be updated by zoom handler
+        return 0
       })
       .attr('text-anchor', 'middle')
       .attr('dy', (d) => getNodeRadius(degreeMap.get(d.id) ?? 0) + 14)
@@ -645,7 +777,7 @@ export default function EvidenceNetworkClient() {
 
     // Progressive label visibility based on zoom
     function updateLabelVisibility() {
-      if (pathResult || selectedNodeId) return // Don't override during selection/path
+      if (pathResult || selectedNodeId) return
       label.attr('opacity', (d) => {
         const tier = d.tier ?? 6
         if (tier <= 2) return 1
@@ -656,7 +788,6 @@ export default function EvidenceNetworkClient() {
       })
     }
 
-    // Run initial label visibility
     updateLabelVisibility()
 
     // ── Edge path generator ──
@@ -671,7 +802,6 @@ export default function EvidenceNetworkClient() {
       const idx = edgePairIndex.get(d.id) ?? 0
 
       if (totalEdges === 1) {
-        // Single edge: subtle arc
         const dx = x2 - x1, dy = y2 - y1
         const dist = Math.sqrt(dx * dx + dy * dy) || 1
         const offset = Math.min(12, dist * 0.08)
@@ -680,7 +810,6 @@ export default function EvidenceNetworkClient() {
         return `M${x1},${y1} Q${mx},${my} ${x2},${y2}`
       }
 
-      // Multiple edges: spread curves
       const dx = x2 - x1, dy = y2 - y1
       const dist = Math.sqrt(dx * dx + dy * dy) || 1
       const spread = 18
@@ -690,27 +819,68 @@ export default function EvidenceNetworkClient() {
       return `M${x1},${y1} Q${mx},${my} ${x2},${y2}`
     }
 
+    // Compute fit-all transform
+    function computeFitAllTransform(): d3.ZoomTransform {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+      for (const n of nodes) {
+        if (n.x != null && n.y != null) {
+          minX = Math.min(minX, n.x); minY = Math.min(minY, n.y)
+          maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y)
+        }
+      }
+      if (minX >= Infinity) return d3.zoomIdentity
+      const padding = 60
+      const bw = maxX - minX + padding * 2
+      const bh = maxY - minY + padding * 2
+      const scale = Math.min(width / bw, height / bh, 1.5)
+      const tx = width / 2 - (minX + maxX) / 2 * scale
+      const ty = height / 2 - (minY + maxY) / 2 * scale
+      return d3.zoomIdentity.translate(tx, ty).scale(scale)
+    }
+
+    // Zoom to subgraph around a node
+    function zoomToSubgraph(nodeId: string) {
+      const connIds = new Set<string>([nodeId])
+      for (const e of edges) {
+        const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
+        const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
+        if (src === nodeId) connIds.add(tgt as string)
+        if (tgt === nodeId) connIds.add(src as string)
+      }
+
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+      for (const n of nodes) {
+        if (connIds.has(n.id) && n.x != null && n.y != null) {
+          minX = Math.min(minX, n.x); minY = Math.min(minY, n.y)
+          maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y)
+        }
+      }
+
+      if (minX >= Infinity) return
+      const padding = 80
+      const bw = maxX - minX + padding * 2
+      const bh = maxY - minY + padding * 2
+      const scale = Math.min(width / bw, height / bh, 2.0)
+      const tx = width / 2 - (minX + maxX) / 2 * scale
+      const ty = height / 2 - (minY + maxY) / 2 * scale
+      svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale))
+    }
+
     // ── Drag behavior ──
-    const drag = d3.drag<SVGCircleElement, GraphNode>()
+    const drag = d3.drag<SVGGElement, GraphNode>()
       .on('start', (event, d) => {
         if (!event.active) simulation.alphaTarget(0.1).restart()
-        d.fx = d.x
-        d.fy = d.y
+        d.fx = d.x; d.fy = d.y
       })
-      .on('drag', (event, d) => {
-        d.fx = event.x
-        d.fy = event.y
-      })
+      .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y })
       .on('end', (event, d) => {
         if (!event.active) simulation.alphaTarget(0)
-        d.fx = null
-        d.fy = null
+        d.fx = null; d.fy = null
       })
-
-    node.call(drag)
+    nodeG.call(drag)
 
     // ── Hover & click interactions ──
-    function highlightConnections(nodeId: string) {
+    function highlightConnections(nodeId: string, animate = false) {
       const connIds = new Set<string>([nodeId])
       const connEdgeIds = new Set<string>()
 
@@ -724,159 +894,222 @@ export default function EvidenceNetworkClient() {
         }
       }
 
-      link
-        .attr('stroke-opacity', (e) => connEdgeIds.has(e.id) ? 0.8 : 0.04)
-        .attr('stroke-width', (e) => connEdgeIds.has(e.id) ? 2.5 : 1)
+      const dur = animate ? 400 : 0
+
+      // Edge styling
+      if (animate) {
+        link.transition().duration(dur)
+          .attr('stroke-opacity', (e) => connEdgeIds.has(e.id) ? 0.8 : 0.04)
+          .attr('stroke-width', (e) => connEdgeIds.has(e.id) ? 2.5 : 1)
+      } else {
+        link
+          .attr('stroke-opacity', (e) => connEdgeIds.has(e.id) ? 0.8 : 0.04)
+          .attr('stroke-width', (e) => connEdgeIds.has(e.id) ? 2.5 : 1)
+      }
+
+      // Animated dash flow on connected edges
+      if (animate) {
+        link.filter((e) => connEdgeIds.has(e.id))
+          .attr('stroke-dasharray', '6,3')
+          .each(function animateEdge() {
+            const el = d3.select(this)
+            function runAnimation() {
+              el.attr('stroke-dashoffset', 0)
+                .transition().duration(1500).ease(d3.easeLinear)
+                .attr('stroke-dashoffset', -18)
+                .on('end', runAnimation)
+            }
+            runAnimation()
+          })
+        link.filter((e) => !connEdgeIds.has(e.id))
+          .attr('stroke-dasharray', null)
+          .interrupt()
+      }
 
       linkLabel.style('opacity', (e) => connEdgeIds.has(e.id) ? 1 : 0)
-      node.attr('opacity', (n) => connIds.has(n.id) ? 1 : 0.08)
+
+      // Node opacity
+      if (animate) {
+        nodeG.select('.node-bg').transition().duration(dur)
+          .attr('opacity', (n) => connIds.has((n as GraphNode).id) ? 1 : 0.08)
+      } else {
+        nodeG.select('.node-bg')
+          .attr('opacity', (n) => connIds.has((n as GraphNode).id) ? 1 : 0.08)
+      }
+
+      // Glow circles
       glowCircle.attr('stroke-opacity', (n) => connIds.has(n.id) ? 0.6 : 0.05)
+
+      // Show/hide photos on connected nodes
+      nodeG.select('.node-photo')
+        .transition().duration(dur)
+        .attr('opacity', function () {
+          const d = d3.select((this as SVGElement).parentElement as unknown as SVGGElement).datum() as GraphNode
+          return shouldShowPhoto(d, nodeId, connIds) ? 1 : 0
+        })
+      nodeG.select('.node-ring')
+        .attr('stroke-width', function () {
+          const d = d3.select((this as SVGElement).parentElement as unknown as SVGGElement).datum() as GraphNode
+          return shouldShowPhoto(d, nodeId, connIds) ? 2.5 : 0
+        })
+
+      // Label visibility for connected nodes
       label
         .attr('opacity', (n) => connIds.has(n.id) ? 1 : 0)
         .attr('font-size', (n) => connIds.has(n.id) && n.id !== nodeId ? '11px' : (n.id === nodeId ? '13px' : '10px'))
     }
 
-    function resetHighlight() {
-      if (selectedNodeId) {
-        highlightConnections(selectedNodeId)
-        return
+    function resetHighlight(animate = false) {
+      if (selectedNodeId) { highlightConnections(selectedNodeId, animate); return }
+
+      const dur = animate ? 400 : 0
+
+      // Remove dash animations
+      link.interrupt()
+        .attr('stroke-dasharray', null)
+
+      if (animate) {
+        link.transition().duration(dur)
+          .attr('stroke', (d) => pathResult?.edgeIds.has(d.id) ? '#10B981' : getEdgeColor(d.relationship_type))
+          .attr('stroke-opacity', (d) => pathResult ? (pathResult.edgeIds.has(d.id) ? 0.9 : 0.04) : 0.35)
+          .attr('stroke-width', (d) => pathResult?.edgeIds.has(d.id) ? 3 : (getEdgeCategory(d.relationship_type) === 'criminal' ? 1.5 : 1))
+      } else {
+        link
+          .attr('stroke', (d) => pathResult?.edgeIds.has(d.id) ? '#10B981' : getEdgeColor(d.relationship_type))
+          .attr('stroke-opacity', (d) => pathResult ? (pathResult.edgeIds.has(d.id) ? 0.9 : 0.04) : 0.35)
+          .attr('stroke-width', (d) => pathResult?.edgeIds.has(d.id) ? 3 : (getEdgeCategory(d.relationship_type) === 'criminal' ? 1.5 : 1))
       }
 
-      link
-        .attr('stroke', (d) => {
-          if (pathResult?.edgeIds.has(d.id)) return '#10B981'
-          return getEdgeColor(d.relationship_type)
-        })
-        .attr('stroke-opacity', (d) => {
-          if (pathResult) return pathResult.edgeIds.has(d.id) ? 0.9 : 0.04
-          return 0.3
-        })
-        .attr('stroke-width', (d) => {
-          if (pathResult?.edgeIds.has(d.id)) return 3
-          const cat = getEdgeCategory(d.relationship_type)
-          return cat === 'criminal' ? 1.5 : 1
-        })
       linkLabel.style('opacity', 0)
-      node.attr('opacity', (d) => {
-        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
-        return 1
-      })
+
+      if (animate) {
+        nodeG.select('.node-bg').transition().duration(dur)
+          .attr('opacity', (d) => {
+            if (pathResult) return pathResult.nodeIds.has((d as GraphNode).id) ? 1 : 0.1
+            return 1
+          })
+      } else {
+        nodeG.select('.node-bg')
+          .attr('opacity', (d) => {
+            if (pathResult) return pathResult.nodeIds.has((d as GraphNode).id) ? 1 : 0.1
+            return 1
+          })
+      }
+
+      // Reset glow
       glowCircle.attr('stroke-opacity', 0.5)
+
+      // Reset photo visibility to default (T1-T2 only)
+      nodeG.select('.node-photo')
+        .transition().duration(dur)
+        .attr('opacity', function () {
+          const d = d3.select((this as SVGElement).parentElement as unknown as SVGGElement).datum() as GraphNode
+          return shouldShowPhoto(d, null, new Set()) ? 1 : 0
+        })
+      nodeG.select('.node-ring')
+        .attr('stroke-width', function () {
+          const d = d3.select((this as SVGElement).parentElement as unknown as SVGGElement).datum() as GraphNode
+          return shouldShowPhoto(d, null, new Set()) ? 2.5 : 0
+        })
+
       updateLabelVisibility()
     }
 
-    // Node hover
-    node
-      .on('mouseover', (_event, d) => {
+    // Node hover & click
+    nodeG
+      .on('mouseover', function (_event, d) {
         setHoveredNode(d)
-        if (!selectedNodeId) highlightConnections(d.id)
+        if (!selectedNodeId) {
+          highlightConnections(d.id)
+          // Hover scale-up
+          d3.select(this).raise()
+            .transition().duration(150)
+            .attr('transform', `translate(${d.x ?? 0},${d.y ?? 0}) scale(1.12)`)
+        }
       })
-      .on('mouseout', () => {
+      .on('mouseout', function (_event, d) {
         setHoveredNode(null)
-        if (!selectedNodeId) resetHighlight()
+        if (!selectedNodeId) {
+          resetHighlight()
+          d3.select(this)
+            .transition().duration(150)
+            .attr('transform', `translate(${d.x ?? 0},${d.y ?? 0}) scale(1)`)
+        }
       })
       .on('click', (event, d) => {
         event.stopPropagation()
         if (selectedNodeId === d.id) {
-          // Deselect
           setSelectedNodeId(null)
-          resetHighlight()
+          resetHighlight(true)
+          svg.transition().duration(600).call(zoom.transform, computeFitAllTransform())
         } else {
           setSelectedNodeId(d.id)
-          highlightConnections(d.id)
+          highlightConnections(d.id, true)
+          zoomToSubgraph(d.id)
         }
       })
       .on('dblclick', (_event, d) => {
-        if (d.slug) {
-          router.push(`/evidence/entities/${d.slug}`)
-        }
+        if (d.slug) router.push(`/evidence/entities/${d.slug}`)
       })
 
     // Edge hover
     linkHitArea
       .on('mouseover', (_event, d) => {
         setHoveredEdge(d)
-        // Highlight just this edge
         link.attr('stroke-opacity', (e) => e.id === d.id ? 0.9 : 0.1)
         linkLabel.style('opacity', (e) => e.id === d.id ? 1 : 0)
       })
       .on('mouseout', () => {
         setHoveredEdge(null)
-        if (selectedNodeId) {
-          highlightConnections(selectedNodeId)
-        } else {
-          resetHighlight()
-        }
+        if (selectedNodeId) highlightConnections(selectedNodeId)
+        else resetHighlight()
       })
 
-    // Background click to deselect
+    // Background click — deselect + zoom back
     svg.on('click', () => {
       setSelectedNodeId(null)
       setHoveredEdge(null)
-      resetHighlight()
+      resetHighlight(true)
+      svg.transition().duration(600).call(zoom.transform, computeFitAllTransform())
     })
 
     // ── Tick ──
-    // Start simulation gently after pre-computation
     simulation.alpha(0.3).restart()
 
     simulation.on('tick', () => {
       link.attr('d', edgePath)
       linkHitArea.attr('d', edgePath)
-
       linkLabel
         .attr('x', (d) => ((d.source as GraphNode).x! + (d.target as GraphNode).x!) / 2)
         .attr('y', (d) => ((d.source as GraphNode).y! + (d.target as GraphNode).y!) / 2)
-
       glowCircle
         .attr('cx', (d) => d.x ?? 0)
         .attr('cy', (d) => d.y ?? 0)
-
-      node
-        .attr('cx', (d) => d.x ?? 0)
-        .attr('cy', (d) => d.y ?? 0)
-
+      nodeG
+        .attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`)
       label
         .attr('x', (d) => d.x ?? 0)
         .attr('y', (d) => d.y ?? 0)
-
       svg.select('.highlight-ring')
         .attr('cx', (d) => (d as GraphNode).x ?? 0)
         .attr('cy', (d) => (d as GraphNode).y ?? 0)
     })
 
-    // Fit graph to view after settling
     simulation.on('end', () => {
       if (highlightedNodeId) {
         const hn = nodes.find((n) => n.id === highlightedNodeId)
         if (hn && hn.x != null && hn.y != null) {
           const scale = 1.8
-          svg.transition()
-            .duration(750)
-            .call(zoom.transform, d3.zoomIdentity.translate(width / 2 - hn.x * scale, height / 2 - hn.y * scale).scale(scale))
+          svg.transition().duration(750).call(
+            zoom.transform,
+            d3.zoomIdentity.translate(width / 2 - hn.x * scale, height / 2 - hn.y * scale).scale(scale),
+          )
         }
+      } else if (selectedNodeId) {
+        zoomToSubgraph(selectedNodeId)
+        highlightConnections(selectedNodeId, true)
       } else {
-        // Auto-fit: compute bounds and zoom to fit with padding
-        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
-        for (const n of nodes) {
-          if (n.x != null && n.y != null) {
-            minX = Math.min(minX, n.x)
-            minY = Math.min(minY, n.y)
-            maxX = Math.max(maxX, n.x)
-            maxY = Math.max(maxY, n.y)
-          }
-        }
-        if (minX < Infinity) {
-          const padding = 60
-          const bw = maxX - minX + padding * 2
-          const bh = maxY - minY + padding * 2
-          const scale = Math.min(width / bw, height / bh, 1.5)
-          const tx = width / 2 - (minX + maxX) / 2 * scale
-          const ty = height / 2 - (minY + maxY) / 2 * scale
-          svg.transition()
-            .duration(600)
-            .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale))
-        }
+        svg.transition().duration(600).call(zoom.transform, computeFitAllTransform())
       }
     })
 
@@ -950,6 +1183,9 @@ export default function EvidenceNetworkClient() {
               <path strokeLinecap="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
             </svg>
             Filters
+            {(activeTiers.size < 6 || activeStrengths.size < 3 || (data && activeRelationships.size < new Set(data.edges.map((e) => e.relationship_type)).size)) && (
+              <span className="w-1.5 h-1.5 rounded-full bg-critical" />
+            )}
           </button>
 
           {/* Path finder toggle */}
@@ -1044,6 +1280,7 @@ export default function EvidenceNetworkClient() {
                     <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[tier] }} />
                     <span className="font-mono">Tier {tier}</span>
                     <span className="text-text-muted ml-auto">{TIER_LABELS[tier]}</span>
+                    <span className="text-[10px] text-text-muted ml-1">{tierCounts.get(tier) ?? 0}</span>
                   </button>
                 ))}
               </div>
@@ -1068,7 +1305,7 @@ export default function EvidenceNetworkClient() {
                       )}
                     </span>
                     <span className="w-2.5 h-0.5 rounded shrink-0" style={{ backgroundColor: getEdgeColor(type) }} />
-                    <span className="font-mono">{RELATIONSHIP_LABELS[type] ?? type.replace(/_/g, ' ')}</span>
+                    <span className="font-mono">{RELATIONSHIP_LABELS[type] ?? formatRelationship(type)}</span>
                   </button>
                 ))}
               </div>
@@ -1092,6 +1329,14 @@ export default function EvidenceNetworkClient() {
                   </button>
                 ))}
               </div>
+              <div className="mt-4 pt-3 border-t border-border-default">
+                <p className="text-xs font-mono uppercase tracking-wider text-text-muted mb-2">Quick Filters</p>
+                <div className="flex flex-wrap gap-1.5">
+                  <button onClick={() => { setActiveTiers(new Set([1, 2, 3])); setActiveStrengths(new Set(['documented', 'alleged', 'circumstantial'])) }} className="text-[10px] px-2 py-1 bg-elevated border border-border-default rounded text-text-muted hover:text-text-secondary transition-colors font-mono">High-risk only</button>
+                  <button onClick={() => { setActiveStrengths(new Set(['documented'])); setActiveTiers(new Set([1, 2, 3, 4, 5, 6])) }} className="text-[10px] px-2 py-1 bg-elevated border border-border-default rounded text-text-muted hover:text-text-secondary transition-colors font-mono">Documented only</button>
+                  <button onClick={resetAll} className="text-[10px] px-2 py-1 bg-elevated border border-border-default rounded text-text-muted hover:text-text-secondary transition-colors font-mono">Reset all</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1100,91 +1345,79 @@ export default function EvidenceNetworkClient() {
       {/* Path finder */}
       {showPathFinder && (
         <div className="bg-surface border border-border-default rounded-lg p-4 mb-4">
-          <p className="text-xs font-mono uppercase tracking-wider text-text-muted mb-3">Shortest Path Finder</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* From */}
-            <div className="relative">
-              <label className="text-xs text-text-muted font-mono block mb-1">From</label>
-              <input
-                type="text"
-                value={pathFromSearch}
-                onChange={(e) => setPathFromSearch(e.target.value)}
-                placeholder="Search entity..."
-                className="w-full bg-elevated border border-border-default px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-critical focus:outline-none font-mono rounded-lg"
-              />
-              {pathFromSearch.trim() && pathFromMatches.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-elevated border border-border-default shadow-lg z-50 rounded-lg overflow-hidden">
-                  {pathFromMatches.map((m) => (
-                    <button
-                      key={m.id}
-                      onClick={() => { setPathFrom(m.id); setPathFromSearch(m.name) }}
-                      className="w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
-                    >
-                      {m.name}
-                    </button>
-                  ))}
+          <div className="flex items-center gap-2 mb-3">
+            <p className="text-sm font-medium text-text-primary font-mono">Find Shortest Path Between Entities</p>
+            {pathResult && <button onClick={clearPath} className="ml-auto text-xs text-text-muted hover:text-text-secondary font-mono">Clear path</button>}
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-4">
+            <div className="flex-1 relative">
+              <label className="text-xs text-text-muted mb-1 block font-mono">From</label>
+              {pathFrom && data ? (
+                <div className="flex items-center gap-2 bg-elevated border border-neon-green/30 rounded-lg px-3 py-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[data.nodes.find((n) => n.id === pathFrom)?.tier ?? 0] ?? DEFAULT_COLOR }} />
+                  <span className="text-sm text-text-primary truncate">{data.nodes.find((n) => n.id === pathFrom)?.name}</span>
+                  <button onClick={() => { setPathFrom(null); setPathFromSearch('') }} className="ml-auto shrink-0 text-text-muted hover:text-text-secondary">&times;</button>
                 </div>
+              ) : (
+                <>
+                  <input type="text" value={pathFromSearch} onChange={(e) => setPathFromSearch(e.target.value)} placeholder="Search entity..." className="w-full bg-elevated border border-border-default rounded-lg px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-critical focus:outline-none font-mono" />
+                  {pathFromSearch.trim() && pathFromMatches.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-elevated border border-border-default rounded-lg shadow-lg z-50 overflow-hidden">
+                      {pathFromMatches.map((m) => (
+                        <button key={m.id} onClick={() => { setPathFrom(m.id); setPathFromSearch('') }} className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors">
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[m.tier ?? 0] ?? DEFAULT_COLOR }} />
+                          <span className="truncate">{m.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
-              {pathFrom && <p className="text-[10px] text-neon-green font-mono mt-1">Selected: {data.nodes.find((n) => n.id === pathFrom)?.name}</p>}
             </div>
-
-            {/* To */}
-            <div className="relative">
-              <label className="text-xs text-text-muted font-mono block mb-1">To</label>
-              <input
-                type="text"
-                value={pathToSearch}
-                onChange={(e) => setPathToSearch(e.target.value)}
-                placeholder="Search entity..."
-                className="w-full bg-elevated border border-border-default px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-critical focus:outline-none font-mono rounded-lg"
-              />
-              {pathToSearch.trim() && pathToMatches.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-elevated border border-border-default shadow-lg z-50 rounded-lg overflow-hidden">
-                  {pathToMatches.map((m) => (
-                    <button
-                      key={m.id}
-                      onClick={() => { setPathTo(m.id); setPathToSearch(m.name) }}
-                      className="w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
-                    >
-                      {m.name}
-                    </button>
-                  ))}
+            <div className="hidden sm:flex items-center pt-5 text-text-muted">&rarr;</div>
+            <div className="flex-1 relative">
+              <label className="text-xs text-text-muted mb-1 block font-mono">To</label>
+              {pathTo && data ? (
+                <div className="flex items-center gap-2 bg-elevated border border-neon-green/30 rounded-lg px-3 py-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[data.nodes.find((n) => n.id === pathTo)?.tier ?? 0] ?? DEFAULT_COLOR }} />
+                  <span className="text-sm text-text-primary truncate">{data.nodes.find((n) => n.id === pathTo)?.name}</span>
+                  <button onClick={() => { setPathTo(null); setPathToSearch('') }} className="ml-auto shrink-0 text-text-muted hover:text-text-secondary">&times;</button>
                 </div>
+              ) : (
+                <>
+                  <input type="text" value={pathToSearch} onChange={(e) => setPathToSearch(e.target.value)} placeholder="Search entity..." className="w-full bg-elevated border border-border-default rounded-lg px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-critical focus:outline-none font-mono" />
+                  {pathToSearch.trim() && pathToMatches.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-elevated border border-border-default rounded-lg shadow-lg z-50 overflow-hidden">
+                      {pathToMatches.map((m) => (
+                        <button key={m.id} onClick={() => { setPathTo(m.id); setPathToSearch('') }} className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors">
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[m.tier ?? 0] ?? DEFAULT_COLOR }} />
+                          <span className="truncate">{m.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
-              {pathTo && <p className="text-[10px] text-neon-green font-mono mt-1">Selected: {data.nodes.find((n) => n.id === pathTo)?.name}</p>}
             </div>
           </div>
-
-          {/* Path result */}
-          {pathResult && (
+          {pathFrom && pathTo && (
             <div className="mt-3 pt-3 border-t border-border-default">
-              <p className="text-xs text-neon-green font-mono">
-                Path found: {pathResult.path.length} nodes, {pathResult.edgeIds.size} connections
-              </p>
-              <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                {pathResult.path.map((nodeId, i) => {
-                  const n = data.nodes.find((x) => x.id === nodeId)
-                  return (
-                    <span key={nodeId} className="flex items-center gap-1.5">
-                      {i > 0 && <span className="text-text-muted">→</span>}
-                      <span className="text-xs font-mono text-text-primary bg-elevated px-2 py-0.5 rounded">
-                        {n?.name ?? nodeId}
+              {pathResult ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-neon-green font-medium font-mono">Path found: {pathResult.path.length - 1} hop{pathResult.path.length - 1 !== 1 ? 's' : ''}</span>
+                  <div className="flex items-center gap-1 text-xs text-text-muted overflow-x-auto">
+                    {pathResult.path.map((nodeId, i) => (
+                      <span key={nodeId} className="flex items-center gap-1 shrink-0">
+                        {i > 0 && <span className="text-neon-green">&rarr;</span>}
+                        <span className="text-text-secondary font-mono">{data?.nodes.find((n) => n.id === nodeId)?.name ?? 'Unknown'}</span>
                       </span>
-                    </span>
-                  )
-                })}
-              </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-critical font-mono">No path found between these entities with current filters.</p>
+              )}
             </div>
-          )}
-
-          {pathFrom && pathTo && !pathResult && (
-            <p className="mt-3 text-xs text-critical font-mono">No path found between these entities</p>
-          )}
-
-          {(pathFrom || pathTo) && (
-            <button onClick={clearPath} className="mt-3 text-xs text-text-muted hover:text-text-primary font-mono transition-colors">
-              Clear path
-            </button>
           )}
         </div>
       )}
@@ -1195,9 +1428,9 @@ export default function EvidenceNetworkClient() {
           <>
             <svg ref={svgRef} width={dimensions.width} height={dimensions.height} className="w-full" style={{ background: '#0d0f11' }} />
 
-            {/* Relationship legend (bottom-left overlay) */}
-            {showLegend && (
-              <div className="absolute bottom-4 left-4 bg-elevated/90 backdrop-blur-sm border border-border-default rounded-lg p-3 z-10">
+            {/* Connection legend (bottom-left overlay) — hidden when selection panel is showing */}
+            {showLegend && !selectedNodeId && (
+              <div className="absolute bottom-4 left-4 bg-[#111318]/95 backdrop-blur border border-[#1e2330] rounded-lg p-3 z-10">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-[10px] font-mono uppercase tracking-wider text-text-muted">Connections</p>
                   <button onClick={() => setShowLegend(false)} className="text-text-muted hover:text-text-secondary ml-4">
@@ -1216,43 +1449,176 @@ export default function EvidenceNetworkClient() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-2 pt-2 border-t border-border-default space-y-1">
-                  <p className="text-[9px] font-mono text-text-muted">Click node to pin</p>
-                  <p className="text-[9px] font-mono text-text-muted">Double-click to view profile</p>
-                  <p className="text-[9px] font-mono text-text-muted">Scroll to zoom</p>
+                <div className="mt-2 pt-2 border-t border-[#1e2330] space-y-1">
+                  <p className="text-[9px] font-mono text-text-muted">Click to pin, double-click for profile</p>
+                  <p className="text-[9px] font-mono text-text-muted">Scroll to zoom, Esc to deselect</p>
                 </div>
               </div>
             )}
 
-            {!showLegend && (
+            {!showLegend && !selectedNodeId && (
               <button
                 onClick={() => setShowLegend(true)}
-                className="absolute bottom-4 left-4 bg-elevated/80 backdrop-blur-sm border border-border-default rounded-lg px-2.5 py-1.5 text-[10px] font-mono text-text-muted hover:text-text-secondary z-10"
+                className="absolute bottom-4 left-4 bg-[#111318]/80 backdrop-blur border border-[#1e2330] rounded-lg px-2.5 py-1.5 text-[10px] font-mono text-text-muted hover:text-text-secondary z-10"
               >
                 Legend
               </button>
             )}
 
-            {/* Hover tooltip */}
-            {hoveredNode && (
-              <div className="absolute top-4 right-4 bg-elevated border border-border-default rounded-lg p-3 min-w-[180px] pointer-events-none shadow-lg z-10">
-                <p className="text-sm font-medium text-text-primary">{hoveredNode.name}</p>
-                <p className="text-xs text-text-muted mt-0.5">{hoveredNode.entity_type}</p>
-                {hoveredNode.category && (
-                  <p className="text-[10px] text-text-muted mt-0.5 font-mono">{hoveredNode.category}</p>
+            {/* Entity summary panel (on selection) */}
+            {selectedEntitySummary && (
+              <div className="absolute top-4 right-4 bg-[#111318]/95 backdrop-blur border border-[#1e2330] rounded-lg p-4 z-20 w-[280px] max-h-[calc(100%-32px)] overflow-y-auto">
+                {/* Close button */}
+                <button
+                  onClick={() => setSelectedNodeId(null)}
+                  className="absolute top-2 right-2 text-text-muted hover:text-text-primary transition-colors"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
+                {/* Photo + Name */}
+                <div className="flex items-start gap-3 pr-6">
+                  {selectedEntitySummary.node.profile_image_url ? (
+                    <img
+                      src={selectedEntitySummary.node.profile_image_url}
+                      alt={selectedEntitySummary.node.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 shrink-0"
+                      style={{ borderColor: TIER_COLORS[selectedEntitySummary.node.tier ?? 0] ?? DEFAULT_COLOR }}
+                    />
+                  ) : (
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                      style={{ backgroundColor: TIER_COLORS[selectedEntitySummary.node.tier ?? 0] ?? DEFAULT_COLOR }}
+                    >
+                      {selectedEntitySummary.node.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <h3 className="font-mono text-sm font-bold text-text-primary leading-tight">
+                      {selectedEntitySummary.node.name}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      {selectedEntitySummary.node.tier && (
+                        <span
+                          className="text-[10px] font-medium px-1.5 py-0.5 font-mono rounded"
+                          style={{
+                            color: TIER_COLORS[selectedEntitySummary.node.tier] ?? DEFAULT_COLOR,
+                            backgroundColor: `${TIER_COLORS[selectedEntitySummary.node.tier] ?? DEFAULT_COLOR}15`,
+                          }}
+                        >
+                          Tier {selectedEntitySummary.node.tier}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Category + Status */}
+                <div className="flex flex-wrap items-center gap-1.5 mt-3">
+                  {selectedEntitySummary.node.category && (
+                    <span className="text-[10px] px-1.5 py-0.5 bg-elevated border border-border-default rounded text-text-secondary font-mono capitalize">
+                      {selectedEntitySummary.node.category.replace(/_/g, ' ').replace(/-/g, ' ')}
+                    </span>
+                  )}
+                  {selectedEntitySummary.node.status && selectedEntitySummary.node.status !== 'unknown' && (
+                    <span className={`text-[10px] px-1.5 py-0.5 border rounded font-mono ${
+                      selectedEntitySummary.node.status === 'convicted' ? 'bg-red-950/50 border-red-800/50 text-red-400' :
+                      selectedEntitySummary.node.status === 'deceased' ? 'bg-gray-900/50 border-gray-700/50 text-gray-400' :
+                      selectedEntitySummary.node.status === 'immunized' ? 'bg-orange-950/50 border-orange-800/50 text-orange-400' :
+                      selectedEntitySummary.node.status === 'settled' ? 'bg-amber-950/50 border-amber-800/50 text-amber-400' :
+                      'bg-elevated border-border-default text-text-muted'
+                    }`}>
+                      {STATUS_LABELS[selectedEntitySummary.node.status] ?? selectedEntitySummary.node.status}
+                    </span>
+                  )}
+                </div>
+
+                {/* Evidence summary */}
+                {selectedEntitySummary.node.evidence_summary && (
+                  <p className="text-[11px] text-text-secondary font-mono mt-3 leading-relaxed line-clamp-4">
+                    {selectedEntitySummary.node.evidence_summary}
+                  </p>
                 )}
-                {hoveredNode.tier && (
-                  <div className="mt-1.5">
-                    <TierBadge tier={hoveredNode.tier} size="sm" />
+
+                {/* Connection breakdown */}
+                <div className="mt-3 pt-3 border-t border-[#1e2330]">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted font-mono">
+                      Connections
+                    </p>
+                    <span className="text-[10px] text-text-muted font-mono">
+                      {selectedEntitySummary.totalConnections} total
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    {(Object.entries(selectedEntitySummary.categoryCounts) as [EdgeCategory, number][])
+                      .filter(([, count]) => count > 0)
+                      .sort(([, a], [, b]) => b - a)
+                      .map(([cat, count]) => (
+                        <div key={cat} className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: EDGE_CATEGORY_COLORS[cat] }} />
+                          <span className="text-[11px] text-text-secondary font-mono flex-1">{EDGE_CATEGORY_LABELS[cat]}</span>
+                          <span className="text-[11px] text-text-primary font-medium font-mono">{count}</span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
+                {/* Connected entities — walkable chips */}
+                {selectedEntitySummary.connectedNodes.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-[#1e2330]">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted font-mono mb-2">
+                      Connected To
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {selectedEntitySummary.connectedNodes.map((n) => (
+                        <button
+                          key={n.id}
+                          onClick={() => setSelectedNodeId(n.id)}
+                          className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] bg-elevated border border-border-default rounded hover:border-critical/50 transition-colors font-mono group"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[n.tier ?? 0] ?? DEFAULT_COLOR }} />
+                          <span className="truncate max-w-[100px] text-text-secondary group-hover:text-text-primary transition-colors">{n.name}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
+
+                {/* View profile link */}
+                {selectedEntitySummary.node.slug && (
+                  <Link
+                    href={`/evidence/entities/${selectedEntitySummary.node.slug}`}
+                    className="flex items-center gap-1.5 mt-3 pt-3 border-t border-[#1e2330] text-xs text-critical hover:text-critical/80 transition-colors font-mono"
+                  >
+                    <span>View Full Profile</span>
+                    <span>&rarr;</span>
+                  </Link>
+                )}
+              </div>
+            )}
+
+            {/* Hover tooltip (only when no selection panel or hovering a different node) */}
+            {hoveredNode && (!selectedNodeId || hoveredNode.id !== selectedNodeId) && !selectedEntitySummary && (
+              <div className="absolute top-4 right-4 bg-[#111318]/95 backdrop-blur border border-[#1e2330] rounded-lg p-3 min-w-[180px] pointer-events-none shadow-lg z-10">
+                <p className="text-sm font-medium text-text-primary">{hoveredNode.name}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  {hoveredNode.tier && (
+                    <span className="text-xs font-medium px-1.5 py-0.5 font-mono rounded" style={{ color: TIER_COLORS[hoveredNode.tier] ?? DEFAULT_COLOR, backgroundColor: `${TIER_COLORS[hoveredNode.tier] ?? DEFAULT_COLOR}20` }}>
+                      Tier {hoveredNode.tier}
+                    </span>
+                  )}
+                  {hoveredNode.category && <span className="text-xs text-text-muted capitalize font-mono">{hoveredNode.category.replace(/_/g, ' ')}</span>}
+                </div>
                 {hoveredNode.slug && <p className="text-xs text-critical mt-1.5 font-mono">Double-click to view profile</p>}
               </div>
             )}
 
             {/* Edge tooltip */}
-            {hoveredEdge && !hoveredNode && (
-              <div className="absolute top-4 right-4 bg-elevated border border-border-default rounded-lg p-3 min-w-[200px] pointer-events-none shadow-lg z-10">
+            {hoveredEdge && !hoveredNode && !selectedEntitySummary && (
+              <div className="absolute top-4 right-4 bg-[#111318]/95 backdrop-blur border border-[#1e2330] rounded-lg p-3 min-w-[200px] pointer-events-none shadow-lg z-10">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="w-3 h-0.5 rounded" style={{ backgroundColor: getEdgeColor(hoveredEdge.relationship_type) }} />
                   <p className="text-xs font-mono text-text-primary">
@@ -1260,7 +1626,7 @@ export default function EvidenceNetworkClient() {
                   </p>
                 </div>
                 <p className="text-[10px] text-text-muted">
-                  {data.nodes.find((n) => n.id === hoveredEdge.entity_a)?.name} → {data.nodes.find((n) => n.id === hoveredEdge.entity_b)?.name}
+                  {data?.nodes.find((n) => n.id === hoveredEdge.entity_a)?.name} → {data?.nodes.find((n) => n.id === hoveredEdge.entity_b)?.name}
                 </p>
                 {hoveredEdge.description && (
                   <p className="text-[10px] text-text-secondary mt-1 line-clamp-3">{hoveredEdge.description}</p>
@@ -1280,16 +1646,30 @@ export default function EvidenceNetworkClient() {
         )}
       </div>
 
-      {/* Tier legend (below graph) */}
-      <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-text-muted font-mono">
-        <span className="text-text-secondary">Tiers:</span>
-        {([1, 2, 3, 4, 5, 6] as const).map((tier) => (
-          <span key={tier} className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: TIER_COLORS[tier] }} />
-            T{tier}
-          </span>
-        ))}
-      </div>
+      {/* Stats + Tier legend (below graph) */}
+      {filteredData && filteredData.nodes.length > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-4 mt-4">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-text-muted font-mono">
+            <span className="text-text-secondary">Tiers:</span>
+            {([1, 2, 3, 4, 5, 6] as const).map((tier) => (
+              <button key={tier} onClick={() => toggleTier(tier)} className={`flex items-center gap-1 transition-opacity ${activeTiers.has(tier) ? 'opacity-100' : 'opacity-30'}`}>
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: TIER_COLORS[tier] }} />
+                T{tier}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-6">
+            <p className="text-xs text-text-muted font-mono">
+              <span className="text-text-secondary font-medium">{filteredData.nodes.length}</span>
+              {data && filteredData.nodes.length < data.nodes.length ? ` / ${data.nodes.length}` : ''} entities
+            </p>
+            <p className="text-xs text-text-muted font-mono">
+              <span className="text-text-secondary font-medium">{filteredData.edges.length}</span>
+              {data && filteredData.edges.length < data.edges.length ? ` / ${data.edges.length}` : ''} connections
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -1304,7 +1684,11 @@ function getNodeRadius(degree: number): number {
 
 function truncateName(name: string): string {
   if (name.length <= 20) return name
-  return name.slice(0, 18) + '…'
+  return name.slice(0, 18) + '\u2026'
+}
+
+function formatRelationship(type: string): string {
+  return type.replace(/_/g, ' ')
 }
 
 // -------------------------------------------------------------------

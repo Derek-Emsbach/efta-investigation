@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import * as d3 from 'd3'
 import { TIER_LABELS, type Tier } from '@efta/shared'
 
@@ -17,6 +18,8 @@ interface GraphNode extends d3.SimulationNodeDatum {
   tier: Tier | null
   category: string | null
   status: string | null
+  evidence_summary: string | null
+  profile_image_url: string | null
 }
 
 interface GraphEdge extends d3.SimulationLinkDatum<GraphNode> {
@@ -75,6 +78,17 @@ const RELATIONSHIP_LABELS: Record<string, string> = {
   professional: 'Professional',
   associated_with: 'Associated with',
   protected_by: 'Protected by',
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  convicted: 'Convicted',
+  settled: 'Settled',
+  not_investigated: 'Not Investigated',
+  identified: 'Identified',
+  deceased: 'Deceased',
+  active: 'Active',
+  unknown: 'Unknown',
+  immunized: 'Immunized',
 }
 
 // Edge colors by relationship category (warm publication palette)
@@ -153,6 +167,13 @@ function getEdgeCategory(type: string): EdgeCategory {
   return EDGE_CATEGORY_MAP[type] ?? 'other'
 }
 
+function shouldShowPhoto(d: GraphNode, selectedId: string | null, connectedIds: Set<string>): boolean {
+  if (!d.profile_image_url) return false
+  if ((d.tier ?? 6) <= 2) return true
+  if (d.id === selectedId || connectedIds.has(d.id)) return true
+  return false
+}
+
 type LayoutMode = 'force' | 'radial'
 
 // -------------------------------------------------------------------
@@ -188,6 +209,15 @@ export default function NetworkClient() {
   const [pathTo, setPathTo] = useState<string | null>(null)
   const [pathFromSearch, setPathFromSearch] = useState('')
   const [pathToSearch, setPathToSearch] = useState('')
+
+  // Escape key to deselect
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedNodeId(null)
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   // Initialize relationship filter options from data
   useEffect(() => {
@@ -284,6 +314,36 @@ export default function NetworkClient() {
     return data.nodes.filter((n) => n.name.toLowerCase().includes(pathToSearch.toLowerCase())).slice(0, 6)
   }, [pathToSearch, data])
 
+  // Entity summary for selection panel
+  const selectedEntitySummary = useMemo(() => {
+    if (!selectedNodeId || !filteredData) return null
+    const node = filteredData.nodes.find((n) => n.id === selectedNodeId)
+    if (!node) return null
+
+    const connectedEdges = filteredData.edges.filter(
+      (e) => e.entity_a === selectedNodeId || e.entity_b === selectedNodeId,
+    )
+
+    const categoryCounts: Record<EdgeCategory, number> = { criminal: 0, financial: 0, legal: 0, personal: 0, other: 0 }
+    for (const e of connectedEdges) {
+      const cat = getEdgeCategory(e.relationship_type)
+      categoryCounts[cat]++
+    }
+
+    const connectedNodes = connectedEdges
+      .map((e) => {
+        const otherId = e.entity_a === selectedNodeId ? e.entity_b : e.entity_a
+        return filteredData.nodes.find((n) => n.id === otherId)
+      })
+      .filter((n): n is GraphNode => n != null)
+      .sort((a, b) => {
+        const tierDiff = (a.tier ?? 6) - (b.tier ?? 6)
+        return tierDiff !== 0 ? tierDiff : a.name.localeCompare(b.name)
+      })
+
+    return { node, connectedEdges, categoryCounts, connectedNodes, totalConnections: connectedEdges.length }
+  }, [selectedNodeId, filteredData])
+
   // Handlers
   const handleSearchSelect = useCallback((nodeId: string) => {
     setHighlightedNodeId(nodeId)
@@ -360,12 +420,34 @@ export default function NetworkClient() {
       edgePairIndex.set(e.id, count - 1)
     }
 
+    // Determine which nodes are connected to the selected node
+    const selectedConnIds = new Set<string>()
+    if (selectedNodeId) {
+      selectedConnIds.add(selectedNodeId)
+      for (const e of filteredData.edges) {
+        if (e.entity_a === selectedNodeId) selectedConnIds.add(e.entity_b)
+        if (e.entity_b === selectedNodeId) selectedConnIds.add(e.entity_a)
+      }
+    }
+
     const nodes: GraphNode[] = filteredData.nodes.map((n) => ({ ...n }))
     const edges: GraphEdge[] = filteredData.edges.map((e) => ({
       ...e,
       source: e.entity_a,
       target: e.entity_b,
     }))
+
+    // Defs for clip paths
+    const defs = svg.append('defs')
+    for (const n of nodes) {
+      if (n.profile_image_url) {
+        const r = getNodeRadius(degreeMap.get(n.id) ?? 0)
+        defs.append('clipPath')
+          .attr('id', `clip-${n.id.replace(/[^a-zA-Z0-9]/g, '')}`)
+          .append('circle')
+          .attr('r', r)
+      }
+    }
 
     const g = svg.append('g')
     let currentZoom = 1
@@ -387,7 +469,7 @@ export default function NetworkClient() {
       operations: Math.PI / 2 + Math.PI / 4,
       peripheral: -Math.PI / 2 - Math.PI / 4,
     }
-    const clusterRadius = Math.min(width, height) * 0.18
+    const clusterRadius = Math.min(width, height) * 0.25
 
     function getClusterX(category: string | null): number {
       const group = getClusterGroup(category)
@@ -401,14 +483,14 @@ export default function NetworkClient() {
       return cy + Math.sin(clusterAngle[group]) * clusterRadius
     }
 
-    // Simulation
+    // Simulation — wider spacing
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink<GraphNode, GraphEdge>(edges).id((d) => d.id).distance(150))
-      .force('charge', d3.forceManyBody().strength(-120))
-      .force('center', d3.forceCenter(cx, cy).strength(0.05))
+      .force('link', d3.forceLink<GraphNode, GraphEdge>(edges).id((d) => d.id).distance(200))
+      .force('charge', d3.forceManyBody().strength(-200))
+      .force('center', d3.forceCenter(cx, cy).strength(0.03))
       .force('collision', d3.forceCollide().radius((d) => {
         const node = d as GraphNode
-        return getNodeRadius(degreeMap.get(node.id) ?? 0) + 6
+        return getNodeRadius(degreeMap.get(node.id) ?? 0) + 14
       }))
       .velocityDecay(0.45)
       .alphaDecay(0.03)
@@ -418,10 +500,10 @@ export default function NetworkClient() {
         .force('clusterX', d3.forceX<GraphNode>((d) => getClusterX(d.category)).strength(0.04))
         .force('clusterY', d3.forceY<GraphNode>((d) => getClusterY(d.category)).strength(0.04))
     } else {
-      const tierRadius: Record<number, number> = { 1: 0, 2: 120, 3: 220, 4: 320, 5: 400, 6: 400 }
+      const tierRadius: Record<number, number> = { 1: 0, 2: 150, 3: 280, 4: 400, 5: 500, 6: 500 }
       simulation
         .force('radial', d3.forceRadial<GraphNode>(
-          (d) => tierRadius[d.tier ?? 6] ?? 400,
+          (d) => tierRadius[d.tier ?? 6] ?? 500,
           cx, cy,
         ).strength(0.8))
         .force('clusterX', null)
@@ -480,16 +562,24 @@ export default function NetworkClient() {
       .style('opacity', 0)
       .style('text-shadow', '0 0 4px rgba(0,0,0,0.7)')
 
-    // Nodes
-    const node = g.append('g')
-      .selectAll<SVGCircleElement, GraphNode>('circle')
+    // Node groups (for photo support)
+    const nodeGroup = g.append('g').attr('class', 'nodes')
+
+    const nodeG = nodeGroup
+      .selectAll<SVGGElement, GraphNode>('g')
       .data(nodes)
-      .join('circle')
+      .join('g')
+      .style('cursor', 'pointer')
+
+    // Background circle (always present)
+    nodeG.append('circle')
+      .attr('class', 'node-bg')
       .attr('r', (d) => {
         if (pathResult?.nodeIds.has(d.id)) return getNodeRadius(degreeMap.get(d.id) ?? 0) + 2
         return getNodeRadius(degreeMap.get(d.id) ?? 0)
       })
       .attr('fill', (d) => {
+        if (shouldShowPhoto(d, selectedNodeId, selectedConnIds)) return '#111318'
         if (pathResult && !pathResult.nodeIds.has(d.id)) return DEFAULT_COLOR
         return TIER_COLORS[d.tier ?? 0] ?? DEFAULT_COLOR
       })
@@ -511,7 +601,36 @@ export default function NetworkClient() {
         if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
         return 1
       })
-      .style('cursor', 'pointer')
+
+    // Photo images (only for nodes with profile_image_url)
+    nodeG.each(function (d) {
+      if (!d.profile_image_url) return
+      const r = getNodeRadius(degreeMap.get(d.id) ?? 0)
+      const clipId = `clip-${d.id.replace(/[^a-zA-Z0-9]/g, '')}`
+      const show = shouldShowPhoto(d, selectedNodeId, selectedConnIds)
+
+      const el = d3.select(this)
+      el.append('image')
+        .attr('class', 'node-photo')
+        .attr('href', d.profile_image_url)
+        .attr('width', r * 2)
+        .attr('height', r * 2)
+        .attr('x', -r)
+        .attr('y', -r)
+        .attr('clip-path', `url(#${clipId})`)
+        .attr('preserveAspectRatio', 'xMidYMid slice')
+        .attr('opacity', show ? 1 : 0)
+        .style('pointer-events', 'none')
+
+      // Stroke ring over photo
+      el.append('circle')
+        .attr('class', 'node-ring')
+        .attr('r', r)
+        .attr('fill', 'none')
+        .attr('stroke', d.id === selectedNodeId ? '#FFFFFF' : (TIER_COLORS[d.tier ?? 0] ?? DEFAULT_COLOR))
+        .attr('stroke-width', show ? 2.5 : 0)
+        .style('pointer-events', 'none')
+    })
 
     // Highlight ring
     if (highlightedNodeId) {
@@ -605,8 +724,55 @@ export default function NetworkClient() {
       return `M${x1},${y1} Q${mx},${my} ${x2},${y2}`
     }
 
+    // Compute fit-all transform
+    function computeFitAllTransform(): d3.ZoomTransform {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+      for (const n of nodes) {
+        if (n.x != null && n.y != null) {
+          minX = Math.min(minX, n.x); minY = Math.min(minY, n.y)
+          maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y)
+        }
+      }
+      if (minX >= Infinity) return d3.zoomIdentity
+      const padding = 60
+      const bw = maxX - minX + padding * 2
+      const bh = maxY - minY + padding * 2
+      const scale = Math.min(width / bw, height / bh, 1.5)
+      const tx = width / 2 - (minX + maxX) / 2 * scale
+      const ty = height / 2 - (minY + maxY) / 2 * scale
+      return d3.zoomIdentity.translate(tx, ty).scale(scale)
+    }
+
+    // Zoom to subgraph around a node
+    function zoomToSubgraph(nodeId: string) {
+      const connIds = new Set<string>([nodeId])
+      for (const e of edges) {
+        const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
+        const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
+        if (src === nodeId) connIds.add(tgt as string)
+        if (tgt === nodeId) connIds.add(src as string)
+      }
+
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+      for (const n of nodes) {
+        if (connIds.has(n.id) && n.x != null && n.y != null) {
+          minX = Math.min(minX, n.x); minY = Math.min(minY, n.y)
+          maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y)
+        }
+      }
+
+      if (minX >= Infinity) return
+      const padding = 80
+      const bw = maxX - minX + padding * 2
+      const bh = maxY - minY + padding * 2
+      const scale = Math.min(width / bw, height / bh, 2.0)
+      const tx = width / 2 - (minX + maxX) / 2 * scale
+      const ty = height / 2 - (minY + maxY) / 2 * scale
+      svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale))
+    }
+
     // Drag
-    const drag = d3.drag<SVGCircleElement, GraphNode>()
+    const drag = d3.drag<SVGGElement, GraphNode>()
       .on('start', (event, d) => {
         if (!event.active) simulation.alphaTarget(0.1).restart()
         d.fx = d.x; d.fy = d.y
@@ -616,10 +782,10 @@ export default function NetworkClient() {
         if (!event.active) simulation.alphaTarget(0)
         d.fx = null; d.fy = null
       })
-    node.call(drag)
+    nodeG.call(drag)
 
     // Interaction helpers
-    function highlightConnections(nodeId: string) {
+    function highlightConnections(nodeId: string, animate = false) {
       const connIds = new Set<string>([nodeId])
       const connEdgeIds = new Set<string>()
 
@@ -633,57 +799,155 @@ export default function NetworkClient() {
         }
       }
 
-      link
-        .attr('stroke-opacity', (e) => connEdgeIds.has(e.id) ? 0.8 : 0.04)
-        .attr('stroke-width', (e) => connEdgeIds.has(e.id) ? 2.5 : 1)
+      const dur = animate ? 400 : 0
+
+      // Edge styling
+      if (animate) {
+        link.transition().duration(dur)
+          .attr('stroke-opacity', (e) => connEdgeIds.has(e.id) ? 0.8 : 0.04)
+          .attr('stroke-width', (e) => connEdgeIds.has(e.id) ? 2.5 : 1)
+      } else {
+        link
+          .attr('stroke-opacity', (e) => connEdgeIds.has(e.id) ? 0.8 : 0.04)
+          .attr('stroke-width', (e) => connEdgeIds.has(e.id) ? 2.5 : 1)
+      }
+
+      // Animated dash flow on connected edges
+      if (animate) {
+        link.filter((e) => connEdgeIds.has(e.id))
+          .attr('stroke-dasharray', '6,3')
+          .each(function animateEdge() {
+            const el = d3.select(this)
+            function runAnimation() {
+              el.attr('stroke-dashoffset', 0)
+                .transition().duration(1500).ease(d3.easeLinear)
+                .attr('stroke-dashoffset', -18)
+                .on('end', runAnimation)
+            }
+            runAnimation()
+          })
+        link.filter((e) => !connEdgeIds.has(e.id))
+          .attr('stroke-dasharray', null)
+          .interrupt()
+      }
+
       linkLabel.style('opacity', (e) => connEdgeIds.has(e.id) ? 1 : 0)
-      node.attr('opacity', (n) => connIds.has(n.id) ? 1 : 0.08)
+
+      // Node opacity
+      if (animate) {
+        nodeG.select('.node-bg').transition().duration(dur)
+          .attr('opacity', (n) => connIds.has((n as GraphNode).id) ? 1 : 0.08)
+      } else {
+        nodeG.select('.node-bg')
+          .attr('opacity', (n) => connIds.has((n as GraphNode).id) ? 1 : 0.08)
+      }
+
+      // Show/hide photos on connected nodes
+      nodeG.select('.node-photo')
+        .transition().duration(dur)
+        .attr('opacity', function () {
+          const d = d3.select((this as SVGElement).parentElement as unknown as SVGGElement).datum() as GraphNode
+          return shouldShowPhoto(d, nodeId, connIds) ? 1 : 0
+        })
+      nodeG.select('.node-ring')
+        .attr('stroke-width', function () {
+          const d = d3.select((this as SVGElement).parentElement as unknown as SVGGElement).datum() as GraphNode
+          return shouldShowPhoto(d, nodeId, connIds) ? 2.5 : 0
+        })
+
+      // Label visibility for connected nodes
       label
         .attr('opacity', (n) => connIds.has(n.id) ? 1 : 0)
         .attr('font-size', (n) => connIds.has(n.id) && n.id !== nodeId ? '11px' : (n.id === nodeId ? '13px' : '10px'))
     }
 
-    function resetHighlight() {
-      if (selectedNodeId) { highlightConnections(selectedNodeId); return }
-      link
-        .attr('stroke', (d) => {
-          if (pathResult?.edgeIds.has(d.id)) return '#10B981'
-          return getEdgeColor(d.relationship_type)
-        })
-        .attr('stroke-opacity', (d) => {
-          if (pathResult) return pathResult.edgeIds.has(d.id) ? 0.9 : 0.04
-          return 0.35
-        })
-        .attr('stroke-width', (d) => {
-          if (pathResult?.edgeIds.has(d.id)) return 3
-          return getEdgeCategory(d.relationship_type) === 'criminal' ? 1.5 : 1
-        })
+    function resetHighlight(animate = false) {
+      if (selectedNodeId) { highlightConnections(selectedNodeId, animate); return }
+
+      const dur = animate ? 400 : 0
+
+      // Remove dash animations
+      link.interrupt()
+        .attr('stroke-dasharray', null)
+
+      const strokeFn = (d: GraphEdge) => pathResult?.edgeIds.has(d.id) ? '#10B981' : getEdgeColor(d.relationship_type)
+      const opacityFn = (d: GraphEdge) => pathResult ? (pathResult.edgeIds.has(d.id) ? 0.9 : 0.04) : 0.35
+      const widthFn = (d: GraphEdge) => pathResult?.edgeIds.has(d.id) ? 3 : (getEdgeCategory(d.relationship_type) === 'criminal' ? 1.5 : 1)
+      if (animate) {
+        link.transition().duration(dur)
+          .attr('stroke', strokeFn)
+          .attr('stroke-opacity', opacityFn)
+          .attr('stroke-width', widthFn)
+      } else {
+        link
+          .attr('stroke', strokeFn)
+          .attr('stroke-opacity', opacityFn)
+          .attr('stroke-width', widthFn)
+      }
+
       linkLabel.style('opacity', 0)
-      node.attr('opacity', (d) => {
-        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
-        return 1
-      })
+
+      if (animate) {
+        nodeG.select('.node-bg').transition().duration(dur)
+          .attr('opacity', (d) => {
+            if (pathResult) return pathResult.nodeIds.has((d as GraphNode).id) ? 1 : 0.1
+            return 1
+          })
+      } else {
+        nodeG.select('.node-bg')
+          .attr('opacity', (d) => {
+            if (pathResult) return pathResult.nodeIds.has((d as GraphNode).id) ? 1 : 0.1
+            return 1
+          })
+      }
+
+      // Reset photo visibility to default (T1-T2 only)
+      nodeG.select('.node-photo')
+        .transition().duration(dur)
+        .attr('opacity', function () {
+          const d = d3.select((this as SVGElement).parentElement as unknown as SVGGElement).datum() as GraphNode
+          return shouldShowPhoto(d, null, new Set()) ? 1 : 0
+        })
+      nodeG.select('.node-ring')
+        .attr('stroke-width', function () {
+          const d = d3.select((this as SVGElement).parentElement as unknown as SVGGElement).datum() as GraphNode
+          return shouldShowPhoto(d, null, new Set()) ? 2.5 : 0
+        })
+
       updateLabelVisibility()
     }
 
     // Node hover & click
-    node
-      .on('mouseover', (_event, d) => {
+    nodeG
+      .on('mouseover', function (_event, d) {
         setHoveredNode(d)
-        if (!selectedNodeId) highlightConnections(d.id)
+        if (!selectedNodeId) {
+          highlightConnections(d.id)
+          // Hover scale-up
+          d3.select(this).raise()
+            .transition().duration(150)
+            .attr('transform', `translate(${d.x ?? 0},${d.y ?? 0}) scale(1.12)`)
+        }
       })
-      .on('mouseout', () => {
+      .on('mouseout', function (_event, d) {
         setHoveredNode(null)
-        if (!selectedNodeId) resetHighlight()
+        if (!selectedNodeId) {
+          resetHighlight()
+          d3.select(this)
+            .transition().duration(150)
+            .attr('transform', `translate(${d.x ?? 0},${d.y ?? 0}) scale(1)`)
+        }
       })
       .on('click', (event, d) => {
         event.stopPropagation()
         if (selectedNodeId === d.id) {
           setSelectedNodeId(null)
-          resetHighlight()
+          resetHighlight(true)
+          svg.transition().duration(600).call(zoom.transform, computeFitAllTransform())
         } else {
           setSelectedNodeId(d.id)
-          highlightConnections(d.id)
+          highlightConnections(d.id, true)
+          zoomToSubgraph(d.id)
         }
       })
       .on('dblclick', (_event, d) => {
@@ -703,11 +967,12 @@ export default function NetworkClient() {
         else resetHighlight()
       })
 
-    // Background click
+    // Background click — deselect + zoom back
     svg.on('click', () => {
       setSelectedNodeId(null)
       setHoveredEdge(null)
-      resetHighlight()
+      resetHighlight(true)
+      svg.transition().duration(600).call(zoom.transform, computeFitAllTransform())
     })
 
     // Start gently
@@ -719,9 +984,8 @@ export default function NetworkClient() {
       linkLabel
         .attr('x', (d) => ((d.source as GraphNode).x! + (d.target as GraphNode).x!) / 2)
         .attr('y', (d) => ((d.source as GraphNode).y! + (d.target as GraphNode).y!) / 2)
-      node
-        .attr('cx', (d) => d.x ?? 0)
-        .attr('cy', (d) => d.y ?? 0)
+      nodeG
+        .attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`)
       label
         .attr('x', (d) => d.x ?? 0)
         .attr('y', (d) => d.y ?? 0)
@@ -740,23 +1004,11 @@ export default function NetworkClient() {
             d3.zoomIdentity.translate(width / 2 - hn.x * scale, height / 2 - hn.y * scale).scale(scale),
           )
         }
+      } else if (selectedNodeId) {
+        zoomToSubgraph(selectedNodeId)
+        highlightConnections(selectedNodeId, true)
       } else {
-        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
-        for (const n of nodes) {
-          if (n.x != null && n.y != null) {
-            minX = Math.min(minX, n.x); minY = Math.min(minY, n.y)
-            maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y)
-          }
-        }
-        if (minX < Infinity) {
-          const padding = 60
-          const bw = maxX - minX + padding * 2
-          const bh = maxY - minY + padding * 2
-          const scale = Math.min(width / bw, height / bh, 1.5)
-          const tx = width / 2 - (minX + maxX) / 2 * scale
-          const ty = height / 2 - (minY + maxY) / 2 * scale
-          svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale))
-        }
+        svg.transition().duration(600).call(zoom.transform, computeFitAllTransform())
       }
     })
 
@@ -1072,7 +1324,7 @@ export default function NetworkClient() {
           <svg ref={svgRef} width={dimensions.width} height={dimensions.height} className="w-full" style={{ background: '#111318' }} />
 
           {/* Connection legend */}
-          {showLegend && (
+          {showLegend && !selectedNodeId && (
             <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm border border-border-default p-3 z-10">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted font-sans">Connections</p>
@@ -1096,7 +1348,7 @@ export default function NetworkClient() {
             </div>
           )}
 
-          {!showLegend && (
+          {!showLegend && !selectedNodeId && (
             <button
               onClick={() => setShowLegend(true)}
               className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm border border-border-default px-2.5 py-1.5 text-[10px] font-sans text-text-muted hover:text-text-secondary z-10"
@@ -1105,8 +1357,143 @@ export default function NetworkClient() {
             </button>
           )}
 
-          {/* Hover tooltip */}
-          {hoveredNode && (
+          {/* Entity summary panel (on selection) */}
+          {selectedEntitySummary && (
+            <div className="absolute top-4 right-4 bg-white border border-border-default shadow-md p-4 z-20 w-[280px] max-h-[calc(100%-32px)] overflow-y-auto">
+              {/* Close button */}
+              <button
+                onClick={() => setSelectedNodeId(null)}
+                className="absolute top-2 right-2 text-text-muted hover:text-text-primary transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              {/* Photo + Name */}
+              <div className="flex items-start gap-3 pr-6">
+                {selectedEntitySummary.node.profile_image_url ? (
+                  <img
+                    src={selectedEntitySummary.node.profile_image_url}
+                    alt={selectedEntitySummary.node.name}
+                    className="w-12 h-12 rounded-full object-cover border-2 shrink-0"
+                    style={{ borderColor: TIER_COLORS[selectedEntitySummary.node.tier ?? 0] ?? DEFAULT_COLOR }}
+                  />
+                ) : (
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                    style={{ backgroundColor: TIER_COLORS[selectedEntitySummary.node.tier ?? 0] ?? DEFAULT_COLOR }}
+                  >
+                    {selectedEntitySummary.node.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <h3 className="font-display text-sm font-bold text-text-primary leading-tight">
+                    {selectedEntitySummary.node.name}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    {selectedEntitySummary.node.tier && (
+                      <span
+                        className="text-[10px] font-medium px-1.5 py-0.5 font-mono"
+                        style={{
+                          color: TIER_COLORS[selectedEntitySummary.node.tier] ?? DEFAULT_COLOR,
+                          backgroundColor: `${TIER_COLORS[selectedEntitySummary.node.tier] ?? DEFAULT_COLOR}15`,
+                        }}
+                      >
+                        Tier {selectedEntitySummary.node.tier}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Category + Status */}
+              <div className="flex flex-wrap items-center gap-1.5 mt-3">
+                {selectedEntitySummary.node.category && (
+                  <span className="text-[10px] px-1.5 py-0.5 bg-elevated border border-border-default text-text-secondary font-sans capitalize">
+                    {selectedEntitySummary.node.category.replace(/_/g, ' ').replace(/-/g, ' ')}
+                  </span>
+                )}
+                {selectedEntitySummary.node.status && selectedEntitySummary.node.status !== 'unknown' && (
+                  <span className={`text-[10px] px-1.5 py-0.5 border font-sans ${
+                    selectedEntitySummary.node.status === 'convicted' ? 'bg-red-50 border-red-200 text-red-700' :
+                    selectedEntitySummary.node.status === 'deceased' ? 'bg-gray-50 border-gray-200 text-gray-600' :
+                    selectedEntitySummary.node.status === 'immunized' ? 'bg-orange-50 border-orange-200 text-orange-700' :
+                    selectedEntitySummary.node.status === 'settled' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                    'bg-elevated border-border-default text-text-muted'
+                  }`}>
+                    {STATUS_LABELS[selectedEntitySummary.node.status] ?? selectedEntitySummary.node.status}
+                  </span>
+                )}
+              </div>
+
+              {/* Evidence summary */}
+              {selectedEntitySummary.node.evidence_summary && (
+                <p className="text-[11px] text-text-secondary font-body mt-3 leading-relaxed line-clamp-4">
+                  {selectedEntitySummary.node.evidence_summary}
+                </p>
+              )}
+
+              {/* Connection breakdown */}
+              <div className="mt-3 pt-3 border-t border-border-default">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted font-sans">
+                    Connections
+                  </p>
+                  <span className="text-[10px] text-text-muted font-sans">
+                    {selectedEntitySummary.totalConnections} total
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  {(Object.entries(selectedEntitySummary.categoryCounts) as [EdgeCategory, number][])
+                    .filter(([, count]) => count > 0)
+                    .sort(([, a], [, b]) => b - a)
+                    .map(([cat, count]) => (
+                      <div key={cat} className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: EDGE_CATEGORY_COLORS[cat] }} />
+                        <span className="text-[11px] text-text-secondary font-sans flex-1">{EDGE_CATEGORY_LABELS[cat]}</span>
+                        <span className="text-[11px] text-text-primary font-medium font-sans">{count}</span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              {/* Connected entities — walkable chips */}
+              {selectedEntitySummary.connectedNodes.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-border-default">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted font-sans mb-2">
+                    Connected To
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {selectedEntitySummary.connectedNodes.map((n) => (
+                      <button
+                        key={n.id}
+                        onClick={() => setSelectedNodeId(n.id)}
+                        className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] bg-elevated border border-border-default hover:border-accent-gold/50 transition-colors font-sans group"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[n.tier ?? 0] ?? DEFAULT_COLOR }} />
+                        <span className="truncate max-w-[100px] text-text-secondary group-hover:text-text-primary transition-colors">{n.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* View profile link */}
+              {selectedEntitySummary.node.slug && (
+                <Link
+                  href={`/entities/${selectedEntitySummary.node.slug}`}
+                  className="flex items-center gap-1.5 mt-3 pt-3 border-t border-border-default text-xs text-accent-gold hover:text-accent-gold/80 transition-colors font-sans"
+                >
+                  <span>View Full Profile</span>
+                  <span>&rarr;</span>
+                </Link>
+              )}
+            </div>
+          )}
+
+          {/* Hover tooltip (only when no selection panel or hovering a different node) */}
+          {hoveredNode && (!selectedNodeId || hoveredNode.id !== selectedNodeId) && !selectedEntitySummary && (
             <div className="absolute top-4 right-4 bg-white border border-border-default p-3 min-w-[180px] pointer-events-none shadow-sm z-10">
               <p className="font-display text-sm font-semibold text-text-primary">{hoveredNode.name}</p>
               <div className="flex items-center gap-2 mt-1">
@@ -1122,7 +1509,7 @@ export default function NetworkClient() {
           )}
 
           {/* Edge tooltip */}
-          {hoveredEdge && !hoveredNode && (
+          {hoveredEdge && !hoveredNode && !selectedEntitySummary && (
             <div className="absolute top-4 right-4 bg-white border border-border-default p-3 min-w-[200px] pointer-events-none shadow-sm z-10">
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-3 h-0.5 rounded" style={{ backgroundColor: getEdgeColor(hoveredEdge.relationship_type) }} />
