@@ -35,7 +35,7 @@ interface CorpusRow {
 }
 
 export async function GET(request: NextRequest) {
-  const rateLimited = checkRateLimit(request, 'search')
+  const rateLimited = await checkRateLimit(request, 'search')
   if (rateLimited) return rateLimited
 
   try {

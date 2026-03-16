@@ -25,7 +25,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const rateLimited = checkRateLimit(request)
+  const rateLimited = await checkRateLimit(request)
   if (rateLimited) return rateLimited
 
   try {

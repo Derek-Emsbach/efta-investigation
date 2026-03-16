@@ -15,7 +15,7 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const rateLimited = checkRateLimit(request, 'comments')
+  const rateLimited = await checkRateLimit(request, 'comments')
   if (rateLimited) return rateLimited
 
   const { id } = await params

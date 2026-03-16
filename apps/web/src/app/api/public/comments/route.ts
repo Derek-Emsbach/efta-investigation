@@ -21,7 +21,7 @@ const MAX_PER_PAGE = 50
 const DEFAULT_PER_PAGE = 20
 
 export async function GET(request: NextRequest) {
-  const rateLimited = checkRateLimit(request)
+  const rateLimited = await checkRateLimit(request)
   if (rateLimited) return rateLimited
 
   try {

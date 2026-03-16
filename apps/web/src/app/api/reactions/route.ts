@@ -13,7 +13,7 @@ const adminSupabase = createAdminClient(
 )
 
 export async function POST(request: Request) {
-  const rateLimited = checkRateLimit(request, 'comments')
+  const rateLimited = await checkRateLimit(request, 'comments')
   if (rateLimited) return rateLimited
 
   const supabase = await createClient()

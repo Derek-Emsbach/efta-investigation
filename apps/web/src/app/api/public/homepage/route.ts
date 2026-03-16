@@ -11,7 +11,7 @@ const supabase = createClient(
 let homepageCache: { data: unknown; expiry: number } | null = null
 
 export async function GET(request: NextRequest) {
-  const rateLimited = checkRateLimit(request)
+  const rateLimited = await checkRateLimit(request)
   if (rateLimited) return rateLimited
 
   try {

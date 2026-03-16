@@ -11,7 +11,7 @@ const supabase = createClient(
 type RouteContext = { params: Promise<{ id: string }> }
 
 export async function GET(request: Request, { params }: RouteContext) {
-  const rateLimited = checkRateLimit(request)
+  const rateLimited = await checkRateLimit(request)
   if (rateLimited) return rateLimited
 
   try {

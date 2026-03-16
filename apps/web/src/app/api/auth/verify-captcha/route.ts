@@ -4,7 +4,7 @@ import { verifyTurnstileToken } from '@/lib/turnstile'
 
 export async function POST(request: Request) {
   // Auth-tier rate limit: 5 attempts per minute
-  const rateLimited = checkRateLimit(request, 'auth')
+  const rateLimited = await checkRateLimit(request, 'auth')
   if (rateLimited) return rateLimited
 
   const body = await request.json()

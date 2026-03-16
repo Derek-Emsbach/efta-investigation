@@ -10,7 +10,7 @@ const supabase = createClient(
 const DEFAULT_LIMIT = 40
 
 export async function GET(request: NextRequest) {
-  const rateLimited = checkRateLimit(request)
+  const rateLimited = await checkRateLimit(request)
   if (rateLimited) return rateLimited
 
   try {
