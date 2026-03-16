@@ -330,7 +330,7 @@
   - [x] Connection suggestions: co-occurrence mining, context extraction, 4-signal scoring, Claude API type classification (~$2-3 for 500 pairs)
   - [x] Migration 022: 6 ML tables (ml_training_snapshots, ml_model_runs, ml_entity_eval, ml_crossref_scores, ml_anomalies, ml_connection_suggestions)
   - [x] Dashboard UI: `/dashboard/ml` with anomaly review, connection approval cards, model run history. 4 API routes at `/api/admin/ml/*`
-  - [ ] Run connection suggestions pipeline (next step — will use Claude API)
+  - [x] Run connection suggestions pipeline — 19 suggestions across 11 unique entity pairs. Top pairs: Marcinkova↔Kellen (co_accused, 44 shared docs), Marcinkova↔Ross (co_accused, 35 shared docs), Clinton↔Dershowitz (5 excerpts), Christensen↔Epstein (attorney_for). Context enrichment via SQLite corpus (6/14 enriched). Claude classification cost: $0.02. Results reviewable at `/dashboard/ml`.
   - [ ] Deploy ML service to Railway
 
 ### Public Document Viewer (Hybrid Access)

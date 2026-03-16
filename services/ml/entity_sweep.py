@@ -105,15 +105,12 @@ def coverage_audit(min_tier: int = 4, top_n: int = 50) -> list[dict]:
 def discover_frequent_names(min_mentions: int = 50, limit: int = 100) -> list[dict]:
     """Find names that appear frequently in the corpus but aren't tracked entities.
 
-    Uses a simple heuristic: search for common name patterns and compare
-    against existing entity names.
+    Three discovery strategies:
+    1. Concordance — custodians and email participants from DOJ production metadata
+    2. Corpus FTS — names co-occurring with known entities in document text
+    3. Suspect watchlist cross-check — names in watchlist that also appear in corpus
     """
     console.print("[bold]Discovering frequent untracked names...[/]\n")
-
-    db_conn = corpus.get_corpus_db()
-    if not db_conn:
-        console.print("[red]  Corpus database not found![/]")
-        return []
 
     # Get all existing entity names + aliases for exclusion
     entities = db.get_all_entities()
@@ -126,49 +123,109 @@ def discover_frequent_names(min_mentions: int = 50, limit: int = 100) -> list[di
 
     console.print(f"  Known entity names/aliases: {len(known_names)}")
 
-    # Search for common investigation-relevant terms
-    # We'll look for names that appear in high-value document types
-    search_terms = [
-        # Prosecutors and attorneys
-        '"Assistant United States Attorney"',
-        '"Special Agent"',
-        # Financial figures
-        '"wire transfer" AND "Epstein"',
-        # Key locations
-        '"Little St. James"',
-        '"Zorro Ranch"',
-        '"Palm Beach"',
-    ]
-
-    # Extract person names using simple regex from search results
-    name_pattern = re.compile(r'\b([A-Z][a-z]+(?:\s+[A-Z]\.?)?\s+[A-Z][a-z]{2,})\b')
     name_counts: Counter = Counter()
+    name_sources: dict[str, set[str]] = defaultdict(set)
 
-    for term in search_terms:
-        results = corpus.corpus_search(term, limit=100)
-        for r in results:
-            snippet = r.get("snippet", "")
-            names = name_pattern.findall(snippet)
-            for name in names:
-                if name.lower() not in known_names and len(name) > 5:
-                    name_counts[name] += 1
+    # Strategy 1: Concordance — custodians and email senders/recipients
+    conc_db = corpus.get_concordance_db()
+    if conc_db:
+        console.print("  [cyan]Strategy 1:[/] Scanning concordance custodians & email participants...")
 
-    # Filter by minimum mentions and sort
-    frequent = [
-        {"name": name, "mention_count": count}
-        for name, count in name_counts.most_common(limit)
-        if count >= min_mentions
-    ]
+        # Custodians
+        try:
+            rows = conc_db.execute(
+                "SELECT custodian, COUNT(*) as cnt FROM documents WHERE custodian IS NOT NULL AND custodian != '' GROUP BY custodian ORDER BY cnt DESC LIMIT 200"
+            ).fetchall()
+            for r in rows:
+                name = r["custodian"].strip()
+                if name.lower() not in known_names and len(name) > 3 and not name.startswith("EFTA"):
+                    name_counts[name] += r["cnt"]
+                    name_sources[name].add("custodian")
+        except Exception as e:
+            console.print(f"    [yellow]Custodian query failed: {e}[/]")
+
+        # Email senders
+        try:
+            rows = conc_db.execute(
+                "SELECT author, COUNT(*) as cnt FROM documents WHERE author IS NOT NULL AND author != '' GROUP BY author ORDER BY cnt DESC LIMIT 200"
+            ).fetchall()
+            for r in rows:
+                name = r["author"].strip()
+                if name.lower() not in known_names and len(name) > 3 and "@" not in name:
+                    name_counts[name] += r["cnt"]
+                    name_sources[name].add("author")
+        except Exception as e:
+            console.print(f"    [yellow]Author query failed: {e}[/]")
+
+        console.print(f"    Found {len(name_counts)} unique names from concordance")
+    else:
+        console.print("  [yellow]Concordance database not found, skipping Strategy 1[/]")
+
+    # Strategy 2: Corpus FTS — names near known entities in high-value docs
+    corpus_db = corpus.get_corpus_db()
+    if corpus_db:
+        console.print("  [cyan]Strategy 2:[/] Scanning corpus for names near known entities...")
+        name_pattern = re.compile(r'\b([A-Z][a-z]+(?:\s+[A-Z]\.?)?\s+[A-Z][a-z]{2,})\b')
+
+        # Search for names co-occurring with top entities in prosecution/legal docs
+        search_terms = [
+            '"prosecution memo"', '"FBI 302"', '"grand jury"',
+            '"plea agreement"', '"cooperating witness"',
+            '"wire transfer" AND "Epstein"',
+            '"Little St. James"', '"Zorro Ranch"',
+            '"victim" AND "massage"',
+            '"non-prosecution agreement"',
+        ]
+
+        for term in search_terms:
+            results = corpus.corpus_search(term, limit=100)
+            for r in results:
+                snippet = r.get("snippet", "")
+                names = name_pattern.findall(snippet)
+                for name in names:
+                    if name.lower() not in known_names and len(name) > 5:
+                        name_counts[name] += 1
+                        name_sources[name].add("corpus_fts")
+
+        console.print(f"    Total unique names after FTS: {len(name_counts)}")
+
+    # Strategy 3: Cross-check suspect watchlist
+    supabase = db.get_client()
+    try:
+        suspects = supabase.table("suspect_watchlist").select("name, priority, notes").execute()
+        if suspects.data:
+            console.print(f"  [cyan]Strategy 3:[/] Cross-checking {len(suspects.data)} watchlist entries...")
+            for s in suspects.data:
+                sname = s["name"]
+                if sname.lower() not in known_names:
+                    # Check corpus presence
+                    mentions = corpus.count_entity_mentions(sname) if corpus_db else 0
+                    if mentions > 0:
+                        name_counts[sname] += mentions
+                        name_sources[sname].add(f"watchlist_P{s.get('priority', '?')}")
+    except Exception:
+        pass  # suspect_watchlist may not exist
+
+    # Filter, sort, and display
+    frequent = []
+    for name, count in name_counts.most_common(limit):
+        if count >= min_mentions:
+            frequent.append({
+                "name": name,
+                "mention_count": count,
+                "sources": sorted(name_sources.get(name, set())),
+            })
 
     if frequent:
         table = Table(title=f"Frequent Untracked Names (>= {min_mentions} mentions)")
         table.add_column("Name", style="bold")
         table.add_column("Mentions", justify="right")
-        for f in frequent[:30]:
-            table.add_row(f["name"], str(f["mention_count"]))
+        table.add_column("Sources")
+        for f in frequent[:40]:
+            table.add_row(f["name"], f"{f['mention_count']:,}", ", ".join(f["sources"]))
         console.print(table)
     else:
-        console.print(f"  No names found with >= {min_mentions} mentions in sample")
+        console.print(f"  No names found with >= {min_mentions} mentions")
 
     return frequent
 
