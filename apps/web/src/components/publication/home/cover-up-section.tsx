@@ -125,7 +125,7 @@ export function CoverUpSection({ stories }: CoverUpSectionProps) {
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
-                unoptimized={!right.hero_image_url.includes('wikimedia.org')}
+                unoptimized
               />
             </div>
           )}

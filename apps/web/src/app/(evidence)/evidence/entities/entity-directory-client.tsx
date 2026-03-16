@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { TierBadge } from '@/components/ui/tier-badge'
+import { EntityPlaceholder } from '@/components/ui/entity-placeholder'
 import type { Tier } from '@efta/shared'
 
 interface PublicEntity {
@@ -195,15 +196,16 @@ export function EntityDirectoryClient() {
                           fill
                           sizes="28px"
                           className="object-cover"
-                          unoptimized={!entity.profile_image_url.includes('wikimedia.org')}
+                          unoptimized
                         />
                       </div>
                     ) : (
-                      <div className="w-7 h-7 bg-elevated border border-border-default flex items-center justify-center shrink-0 rounded-sm">
-                        <span className="font-mono text-[9px] text-text-muted">
-                          {entity.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('')}
-                        </span>
-                      </div>
+                      <EntityPlaceholder
+                        name={entity.name}
+                        entityType={entity.entity_type}
+                        size={28}
+                        className="border border-border-default rounded-sm"
+                      />
                     )}
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-text-primary truncate group-hover:text-critical transition-colors">

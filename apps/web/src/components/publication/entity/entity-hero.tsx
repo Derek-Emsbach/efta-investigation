@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import type { Entity, Tier } from '@efta/shared'
 import { TierBadgePub } from './tier-badge-pub'
+import { EntityPlaceholder } from '@/components/ui/entity-placeholder'
 
 interface EntityHeroProps {
   entity: Entity
@@ -38,15 +39,16 @@ export function EntityHero({
               fill
               sizes="80px"
               className="object-cover"
-              unoptimized={!entity.profile_image_url.includes('wikimedia.org')}
+              unoptimized
             />
           </div>
         ) : (
-          <div className="w-20 h-20 bg-elevated border border-border-default flex items-center justify-center shrink-0">
-            <span className="font-display text-2xl font-bold text-text-muted">
-              {getInitials(entity.name)}
-            </span>
-          </div>
+          <EntityPlaceholder
+            name={entity.name}
+            entityType={entity.entity_type}
+            size={80}
+            className="border border-border-default"
+          />
         )}
 
         <div className="min-w-0 flex-1">

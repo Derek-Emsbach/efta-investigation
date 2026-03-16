@@ -79,7 +79,7 @@ export function WikipediaSection({ entityId }: WikipediaSectionProps) {
               width={80}
               height={80}
               className="w-20 h-20 rounded-lg object-cover border border-border-default"
-              unoptimized={!source.thumbnail_url.includes('wikimedia.org')}
+              unoptimized
             />
           </div>
         )}

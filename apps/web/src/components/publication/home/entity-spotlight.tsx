@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { TIER_CONFIG } from '@efta/shared'
 import type { Tier } from '@efta/shared'
+import { EntityPlaceholder } from '@/components/ui/entity-placeholder'
 
 interface EntityPreview {
   id: string
@@ -61,15 +62,16 @@ export function EntitySpotlight({ entities }: EntitySpotlightProps) {
                       fill
                       sizes="48px"
                       className="object-cover"
-                      unoptimized={!ent.profile_image_url.includes('wikimedia.org')}
+                      unoptimized
                     />
                   </div>
                 ) : (
-                  <div className="w-12 h-12 bg-elevated border border-border-default flex items-center justify-center shrink-0">
-                    <span className="font-display text-sm font-bold text-text-muted">
-                      {getInitials(ent.name)}
-                    </span>
-                  </div>
+                  <EntityPlaceholder
+                    name={ent.name}
+                    entityType={ent.category === 'corporate' ? 'organization' : 'person'}
+                    size={48}
+                    className="border border-border-default"
+                  />
                 )}
                 <div className="min-w-0 flex-1">
                   <span

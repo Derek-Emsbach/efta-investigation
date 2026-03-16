@@ -111,7 +111,7 @@ export function HeroSection({ leadStory, sidebarStories, openQuestions }: HeroSe
                     sizes="(max-width: 1024px) 100vw, 65vw"
                     className="object-cover"
                     priority
-                    unoptimized={!leadStory.hero_image_url.includes('wikimedia.org')}
+                    unoptimized
                   />
                 </div>
                 <div className="font-sans text-xs text-text-muted mt-2 pt-2 border-t border-border-default">

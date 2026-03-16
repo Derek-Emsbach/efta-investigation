@@ -123,7 +123,7 @@ export default async function EntityProfilePage({
                   fill
                   sizes="64px"
                   className="object-cover"
-                  unoptimized={!profileImageUrl.includes('wikimedia.org')}
+                  unoptimized
                 />
               </div>
             ) : (

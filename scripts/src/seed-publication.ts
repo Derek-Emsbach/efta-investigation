@@ -1326,9 +1326,9 @@ const STORIES: StoryDef[] = [
     case_file_slug: 'master-intelligence-brief',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Aol-building.jpg/1280px-Aol-building.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Capitol_Building_Full_View.jpg/1280px-Capitol_Building_Full_View.jpg',
     hero_image_caption:
-      'The AOL headquarters in Dulles, Virginia — two of the four D.C. journal-named men co-founded America Online, and a third served as its vice chairman.',
+      'The U.S. Capitol — the Washington, D.C. power network documented in Epstein\u2019s forensic journals connected AOL co-founders, an NFL team owner, and a vice chairman, all named in the same cluster.',
     metadata: { source_analysis: 'entity enrichment — D.C. journal cluster analysis' },
     entities: [
       { name: 'Jim Kimsey', mention_count: 4, is_primary: true },
@@ -1487,9 +1487,9 @@ const STORIES: StoryDef[] = [
     case_file_slug: 'master-intelligence-brief',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Santa_Fe_County_New_Mexico_landscape.jpg/1280px-Santa_Fe_County_New_Mexico_landscape.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Desert_Landscape_-_New_Mexico_%285989098056%29.jpg/1280px-Desert_Landscape_-_New_Mexico_%285989098056%29.jpg',
     hero_image_caption:
-      "The New Mexico landscape near Stanley — where Jeffrey Epstein's 10,000-acre Zorro Ranch hosted political figures including Governor Bill Richardson, documented by sworn pilot testimony and campaign finance records.",
+      "The New Mexico desert — where Jeffrey Epstein's 10,000-acre Zorro Ranch hosted political figures including Governor Bill Richardson, documented by sworn pilot testimony and campaign finance records.",
     metadata: { source_analysis: 'docs/investigation/DS12_EXPANSION_Analysis.md' },
     entities: [
       { name: 'Jeffrey Epstein', mention_count: 12, is_primary: true },
@@ -1585,9 +1585,9 @@ const STORIES: StoryDef[] = [
     case_file_slug: 'deutsche-bank-compliance-failure',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
-      'https://upload.wikimedia.org/wikipedia/commons/4/4b/Deutsche_Bank_Wall_Street.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Deutsche-Bank-Frankfurt-am-Main.jpg/1280px-Deutsche-Bank-Frankfurt-am-Main.jpg',
     hero_image_caption:
-      "Deutsche Bank's Wall Street headquarters in Lower Manhattan — where the Epstein relationship was managed from 2013 to 2018, generating an estimated $8-20 million in revenue before a $150 million regulatory penalty.",
+      "Deutsche Bank's Frankfurt headquarters — the institution managed the Epstein relationship from 2013 to 2018, generating an estimated $8-20 million in revenue before a $150 million regulatory penalty.",
     metadata: {
       source_analysis:
         'docs/investigation/sources/DEUTSCHE_BANK/Analysis.md',
@@ -1728,7 +1728,7 @@ const STORIES: StoryDef[] = [
     case_file_slug: 'npa-co-conspirators',
     published_at: '2026-03-14T00:00:00Z',
     hero_image_url:
-      'https://upload.wikimedia.org/wikipedia/commons/d/d9/PB_Courthouse.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Palm_Beach_County_Courthouse_%28East_face%29.jpg/1280px-Palm_Beach_County_Courthouse_%28East_face%29.jpg',
     hero_image_caption:
       'The Palm Beach County Courthouse — where Epstein entered his state guilty plea on June 30, 2008, activating the NPA that immunized his co-conspirators from federal prosecution.',
     metadata: {
@@ -1849,9 +1849,9 @@ const STORIES: StoryDef[] = [
     case_file_slug: 'brunel-modeling-pipeline',
     published_at: '2026-03-14T12:00:00Z',
     hero_image_url:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Flatiron_Building_crop.jpg/800px-Flatiron_Building_crop.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Lower_Manhattan%2C_New_York_skyline_from_Liberty_Island_2021.jpg/1280px-Lower_Manhattan%2C_New_York_skyline_from_Liberty_Island_2021.jpg',
     hero_image_caption:
-      'The Flatiron District in Manhattan — MC2 Model Management operated at 6 West 14th Street, a few blocks south, where Brunel ran the modeling agency Epstein capitalized with a $1 million wire transfer.',
+      'Lower Manhattan — MC2 Model Management operated at 6 West 14th Street, where Brunel ran the modeling agency Epstein capitalized with a $1 million wire transfer.',
     metadata: {
       source_analysis: 'docs/investigation/sources/BRUNEL/Analysis.md',
     },
@@ -1974,7 +1974,7 @@ const STORIES: StoryDef[] = [
     case_file_slug: 'shell-company-infrastructure',
     published_at: '2026-03-14T18:00:00Z',
     hero_image_url:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/US_Virgin_Islands_-_St_Thomas.jpg/1280px-US_Virgin_Islands_-_St_Thomas.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Drake%27s_Seat%3B_Saint_Thomas%2C_United_States_Virgin_Islands.jpg/1280px-Drake%27s_Seat%3B_Saint_Thomas%2C_United_States_Virgin_Islands.jpg',
     hero_image_caption:
       'St. Thomas, U.S. Virgin Islands — where all 30+ Epstein shell companies were registered at the same address: 6100 Red Hook Quarter B3. The USVI registration concealed beneficial ownership across $577 million in assets.',
     metadata: {

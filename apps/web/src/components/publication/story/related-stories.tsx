@@ -61,7 +61,7 @@ export function RelatedStories({ stories }: RelatedStoriesProps) {
                     fill
                     sizes="(max-width: 640px) 100vw, 250px"
                     className="object-cover"
-                    unoptimized={!story.hero_image_url.includes('wikimedia.org')}
+                    unoptimized
                   />
                 </div>
               )}

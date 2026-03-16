@@ -56,7 +56,7 @@ export function StoryGrid({ stories }: StoryGridProps) {
                 fill
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 className="object-cover"
-                unoptimized={!featured.hero_image_url.includes('wikimedia.org')}
+                unoptimized
               />
             </div>
           )}

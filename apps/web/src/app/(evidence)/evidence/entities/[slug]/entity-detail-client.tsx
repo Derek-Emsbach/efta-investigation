@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { TierBadge } from '@/components/ui/tier-badge'
+import { EntityPlaceholder } from '@/components/ui/entity-placeholder'
 import type { Tier } from '@efta/shared'
 
 // -------------------------------------------------------------------
@@ -247,15 +248,16 @@ export function EntityDetailClient({ slug }: { slug: string }) {
                     fill
                     sizes="64px"
                     className="object-cover"
-                    unoptimized={!entity.profile_image_url.includes('wikimedia.org')}
+                    unoptimized
                   />
                 </div>
               ) : (
-                <div className="w-16 h-16 bg-elevated border border-border-default flex items-center justify-center shrink-0 rounded-sm">
-                  <span className="font-mono text-lg text-text-muted">
-                    {entity.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('')}
-                  </span>
-                </div>
+                <EntityPlaceholder
+                  name={entity.name}
+                  entityType={entity.entity_type}
+                  size={64}
+                  className="border border-border-default rounded-sm"
+                />
               )}
               <div>
                 <h1 className="font-display text-2xl font-bold text-text-primary">

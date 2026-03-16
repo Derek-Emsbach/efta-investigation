@@ -254,7 +254,7 @@ export default async function StoryPage({
                     sizes="(max-width: 1024px) 100vw, 700px"
                     className="object-cover"
                     priority
-                    unoptimized={!typedStory.hero_image_url.includes('wikimedia.org')}
+                    unoptimized
                   />
                 </div>
                 {typedStory.hero_image_caption && (

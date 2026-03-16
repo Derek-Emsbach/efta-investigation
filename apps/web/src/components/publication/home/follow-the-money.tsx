@@ -64,7 +64,7 @@ export function FollowTheMoney({ stories }: FollowTheMoneyProps) {
                 fill
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 className="object-cover"
-                unoptimized={!lead.hero_image_url.includes('wikimedia.org')}
+                unoptimized
               />
             </div>
           )}
