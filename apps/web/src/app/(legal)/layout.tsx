@@ -13,7 +13,7 @@ export default function LegalLayout({
             href="/"
             className="font-display text-sm font-semibold text-text-primary hover:text-info transition-colors"
           >
-            EFTA Investigation Platform
+            The Epstein Crimes
           </Link>
           <nav className="flex gap-4 text-xs text-text-muted">
             <Link href="/about" className="hover:text-text-secondary transition-colors">About</Link>

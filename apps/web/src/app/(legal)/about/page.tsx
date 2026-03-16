@@ -21,8 +21,8 @@ const STATS = [
   { value: "~3.5M", label: "Pages Released", accent: true },
   { value: "1.37M+", label: "Documents Indexed", accent: false },
   { value: "120+", label: "Entities Tracked", accent: false },
-  { value: "17", label: "Stories Published", accent: false },
-  { value: "233", label: "Source Citations", accent: false },
+  { value: "19", label: "Stories Published", accent: false },
+  { value: "262", label: "Source Citations", accent: false },
   { value: "82", label: "Open Questions", accent: false },
 ]
 
@@ -31,7 +31,7 @@ const PUBLICATIONS = [
     title: "Investigative Stories",
     description:
       "Long-form reporting organized into four sections: The Cover-Up, The Network, Follow the Money, and The Operation. Each story is built on primary source documents with numbered citations you can verify.",
-    stat: "17 published, 233 citations",
+    stat: "19 published, 262 citations",
     href: "/stories",
   },
   {
@@ -45,7 +45,7 @@ const PUBLICATIONS = [
     title: "Entity Profiles",
     description:
       "Detailed dossiers on individuals and organizations connected to the Epstein network, classified by evidence strength — not guilt. Each profile links to source documents, known connections, and timeline events.",
-    stat: "53 published, 120+ tracked",
+    stat: "32 published, 120+ tracked",
     href: "/entities",
   },
   {
