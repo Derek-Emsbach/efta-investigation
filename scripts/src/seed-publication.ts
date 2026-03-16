@@ -2550,6 +2550,126 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  // ─── Story 21: The Source of All His Wealth (Wexner financial engine) ────────
+  {
+    slug: 'the-source-of-all-his-wealth',
+    title: 'The Source of All His Wealth',
+    deck: 'Federal prosecutors wrote one sentence that reframes the entire Epstein case: his misconduct and fees from managing Les Wexner\'s finances "appears to account for virtually all of Epstein\'s wealth." Wexner\'s $7 billion retail empire — Victoria\'s Secret, The Limited, Abercrombie & Fitch — was managed exclusively by Epstein with virtually no oversight. When Wexner departed in 2007, the entity through which Epstein managed wealth collapsed from $66 million in fee income to $100,000. The Manhattan townhouse that became the primary abuse site was transferred from Wexner at a discount of $35-66 million. The brand was weaponized for recruitment. And when Wexner discovered the theft, he chose private settlement over law enforcement.',
+    section: 'follow-the-money' as const,
+    file: 'the-source-of-all-his-wealth.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 9,
+    is_featured: false,
+    case_file_slug: 'master-intelligence-brief',
+    published_at: '2026-03-16T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Columbus-ohio-leveque-702702.jpg/1280px-Columbus-ohio-leveque-702702.jpg',
+    hero_image_caption:
+      'The L Brands headquarters in Columbus, Ohio — Les Wexner built a $7 billion retail empire including Victoria\'s Secret, and Jeffrey Epstein managed his personal finances for nearly two decades.',
+    metadata: {
+      source_analysis: 'Wexner financial deep-dive — prosecution memo, power of attorney, Financial Trust fee collapse, townhouse transfer, $46M charitable routing',
+    },
+    entities: [
+      { name: 'Les Wexner', mention_count: 25, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 18, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 3, is_primary: false },
+      { name: 'Virginia Giuffre', mention_count: 2, is_primary: false },
+      { name: 'Richard Kahn', mention_count: 1, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Wexner attorney proffer summary: Epstein controlled all Wexner personal finances with "virtually no oversight." Fees and misconduct "appears to account for virtually all of Epstein\'s wealth." Townhouse and plane sold at "deeply discounted price."',
+        page_reference: 'pp. 64-65',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01365971',
+        description:
+          'Power of attorney filed in Franklin County, Ohio (1991) — grants Epstein authority to borrow money, pay expenses, sign contracts, and handle all financial dealings on Wexner\'s behalf. "He had absolute control."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01682059',
+        description:
+          'Financial Trust Company records — fee income collapse: $66 million (2006), $4 million (2007), $100,000 (2008). Tracks precisely to Wexner\'s departure, proving Wexner was Epstein\'s sole source of revenue.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02731069',
+        description:
+          'SDNY corporate prosecution analysis memo — analyzes whether Nine East 71st Street Corporation (Wexner\'s shell) could be criminally charged. Property valued at $55-86 million, transferred to Epstein for ~$20 million. Criminal acts at address "beginning in at least 2002."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — describes 9 East 71st Street mansion as primary abuse site. Search warrant executed July 6, 2019; photographs of victims found. Maxwell coordinated logistics from this address.',
+        page_reference: 'pp. 3-8',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA02731941',
+        description:
+          'Civil complaint filed by victim "Juliette" — Epstein told her "his good friend Les Wexner owned Victoria\'s Secret" during recruitment, using the brand as a credibility lure.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA01681842',
+        description:
+          'Dershowitz affidavit — allegation that Wexner asked a victim to "dress up in baby doll lingerie of the type made by Victoria\'s Secret."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01654937',
+        description:
+          'C.O.U.Q. Foundation / YLK Charitable Fund records — $46 million in stock and other assets contributed from Epstein\'s foundation to Wexner\'s charitable fund in 2008, just before Epstein\'s Palm Beach jail sentence. Richard Kahn replaced Maxwell as treasurer.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01656152',
+        description:
+          'FBI case presentation slides — under "PROMINENT NAMES," Wexner entry records: victim "stated Epstein earned his money from having homosexual sex with Wexner." Reported via anonymous NTOCs.',
+        page_reference: 'Wexner slide',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01657683',
+        description:
+          'Virginia Giuffre recorded telephone interview, April 7, 2011 — asked if Les Wexner has "relevant information about Jeffrey\'s taking advantage of underage girls," Giuffre answered: "I think he has relevant information, but I don\'t think he\'ll tell you the truth."',
+        page_reference: 'p. 26',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01656152',
+        description:
+          'FBI case presentation slides — distinguishes "FBI-attended Proffers" (Groff, Visoski, Rodgers) from "SDNY Attorney Proffers" (Les Wexner, Abigail Wexner). The Wexners were interviewed through counsel, not by FBI agents.',
+        page_reference: 'Proffer classification slide',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA02731082',
+        description:
+          '2007 Non-Prosecution Agreement — blanket immunity provision for unnamed "potential co-conspirators." May extend to Wexner as an uncharged individual connected to Epstein\'s financial infrastructure.',
+        page_reference: 'NPA section',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA01617356',
+        description:
+          'Text message records, November 2015 — someone texts Epstein: "Are you still close w Les Wexner? He seems very nice." Eight years after the claimed severance of the relationship.',
+        page_reference: 'Full document',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

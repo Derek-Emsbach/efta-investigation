@@ -29,6 +29,7 @@
 | 18 | the-worst-dancer-in-the-world | The Worst Dancer in the World | the-operation | FBI 302s, royal correspondence, SDNY records | 2026-03 |
 | 19 | shes-here | She's Here | the-network | FBI 302 EFTA02857849, scheduling corpus, Apollo deposition | 2026-03 |
 | 20 | they-use-it-to-find-us | They Use It to Find Us | the-operation | DC/AOL cluster deep-dive, victim journal EFTA02731465 p.6 | 2026-03 |
+| 21 | the-source-of-all-his-wealth | The Source of All His Wealth | follow-the-money | Wexner financial deep-dive — prosecution memo, FTC fee collapse, townhouse transfer | 2026-03 |
 
 ## Ready to Write
 

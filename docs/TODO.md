@@ -210,7 +210,14 @@
 - [x] Applied to all 3 implementations: evidence room (neon), dashboard (dark), publication (warm cream) — each with theme-appropriate color palettes
 - [x] Build verification passes
 
-**Phase 12 COMPLETE** — Network graph redesigned from rubber-band ball to elegant, readable visualization with relationship-typed edges, progressive disclosure, spatial clustering, and radial layout mode
+- [x] Phase 7 — Increased spacing: charge -120→-200, linkDistance 150→200, collision buffer +6→+14, cluster radius 0.18→0.25, center strength 0.05→0.03
+- [x] Phase 8 — Profile photo nodes: T1-T2 entities with `profile_image_url` show photos inside SVG circle nodes via `<clipPath>` + `<image>`. Connected nodes reveal photos on selection
+- [x] Phase 9 — Entity summary panel: click a node to see connection breakdown (Criminal: N, Financial: N, etc.), evidence summary, status badges, walkable entity chips for graph exploration
+- [x] Phase 10 — UX polish: zoom-to-subgraph on selection, animated edge dash flow, hover scale-up (1.12x), Escape key deselect, background click zoom-back, 400ms smooth transitions
+- [x] Applied to all 3 implementations with theme-appropriate panels: publication (white card), evidence room (dark glass), dashboard (dark card)
+- [x] Build verification passes
+
+**Phase 12 COMPLETE** — Network graph redesigned from rubber-band ball to elegant, readable visualization with relationship-typed edges, progressive disclosure, spatial clustering, radial layout mode, photo nodes, entity summary panel with walkable graph exploration
 
 ### Story Pipeline (Ongoing)
 
@@ -465,7 +472,7 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (33 published), 20 stories (286 citations, 109 entity links), **11 case files** (82 open questions, 65 entity links), 185 events, 157 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (33 published), 21 stories (299 citations, 113 entity links), **11 case files** (82 open questions, 65 entity links), 185 events, 157 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
@@ -489,6 +496,7 @@
 ### Story Coverage Gaps
 - [x] **Prince Andrew story** — PUBLISHED (Story 18, "The Worst Dancer in the World", 2026-03-15). 11 citations from FBI 302s, internal FBI emails, royal correspondence. Linked to `prosecutorial-failure` case file. `the-operation` section now has 4 stories.
 - [x] **George Mitchell story** — PUBLISHED (Story 19, "She's Here", 2026-03-15). 18 citations from FBI 302, scheduling docs, depositions, witness lists, Maxwell trial testimony. 4 connections added (Epstein, Maxwell, Groff, Black). 7 events added. `the-network` section now has 6 stories.
+- [x] **Les Wexner story** — PUBLISHED (Story 21, "The Source of All His Wealth", 2026-03-16). 13 citations from SDNY prosecution memo, corporate prosecution memo, Financial Trust records, power of attorney, FBI slides, Giuffre interview. Wexner upgraded from T4→T3 with enriched bio, evidence summary, tier justification. `follow-the-money` section now has 5 stories.
 - [ ] **Harvey Weinstein story** — T1, 0 stories, 6 events, 2 connections. Cross-pollination between Epstein and Weinstein networks
 
 ### Connection Network Gaps
@@ -502,7 +510,7 @@
 - [ ] Add events for: Barnaby Mars, Celina Edith Dubin, Dr. Chen, Eva Andersson-Dubin, Gerd, Karyna Shuliak, KKR, Oaktree Capital, The Blackstone Group, The Carlyle Group
 
 ### Story Section Balance
-- [ ] `the-operation` needs more stories (currently 4, vs 5 for cover-up, 6 for network, 4 for follow-the-money)
+- [ ] `the-operation` needs more stories (currently 4, vs 5 for cover-up, 6 for network, 5 for follow-the-money)
 - [ ] Consider: recruitment mechanics, Cape Town trip, Caribbean island operations, massage protocol, scheduling systems
 
 ### Unpublished Entity Pipeline (86 entities)
