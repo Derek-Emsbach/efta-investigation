@@ -8,7 +8,7 @@ export async function GET() {
     const [entitiesResult, connectionsResult] = await Promise.all([
       supabase
         .from('entities')
-        .select('id, name, entity_type, tier, category, status'),
+        .select('id, name, slug, entity_type, tier, category, status, evidence_summary, profile_image_url'),
       supabase
         .from('entity_connections')
         .select('id, entity_a, entity_b, relationship_type, evidence_strength, description'),
