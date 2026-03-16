@@ -472,7 +472,7 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (33 published), 21 stories (299 citations, 113 entity links), **11 case files** (82 open questions, 65 entity links), 185 events, 157 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 121 entities (34 published), 21 stories (299 citations, 116 entity links), **11 case files** (82 open questions, 65 entity links), 188 events, 165 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
@@ -501,6 +501,7 @@
 
 ### Entity Enrichment
 - [x] **Donald Trump enrichment** — (2026-03-16) Tier 4, all DB writes from Session AJ plan completed. Bio, evidence_summary (6 primary sources, signal-vs-noise note, 3 unresolved questions), tier_justification, profile photo (official White House portrait), external_urls (Wikipedia, Wikimedia). 2 connections (Epstein strength 75, Maxwell strength 50). 6 timeline events (Giuffre recruitment, Vanity Fair quote, falling out, Mark Epstein deposition, Katie Johnson suit, Bondi notification). 5 key document links upgraded with roles + excerpts (EFTA00729910 subject, EFTA01249325 subject, EFTA00105921/EFTA01657683/EFTA01987273 mentioned with notes). 38,000+ corpus mentions (~95% political noise, ~10 substantive docs).
+- [x] **Virginia Giuffre entity CREATED** — (2026-03-16) Tier 5, `is_public=true`. First published victim/witness entity. Sourced bio centering her agency as survivor and key witness. 8 connections (Epstein, Maxwell, Prince Andrew, Dershowitz, Mitchell, Richardson, Wexner, Trump). 19 events linked (16 existing + 3 new: Giuffre v. Maxwell 2015, CVRA 2008, sworn interview 2011). Added to Stories 18, 19, 21 entity lists. Now 34 published entities, 116 story entity links.
 
 ### Connection Network Gaps
 - [x] Enrich connections for under-connected T1 entities — 33 connections added. Dershowitz 4→10, Weinstein 2→5, Summers 3→5, Minsky 2→4. Also enriched: Marcinkova 1→5, Ross 2→5, Ehud Barak 1→4, Peter Mandelson 1→4, Les Wexner 1→4, Bill Richardson 3→5. Total connections: 114→157.

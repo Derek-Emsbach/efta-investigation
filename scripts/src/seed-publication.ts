@@ -2187,6 +2187,7 @@ const STORIES: StoryDef[] = [
       { name: 'Prince Andrew', mention_count: 25, is_primary: true },
       { name: 'Jeffrey Epstein', mention_count: 12, is_primary: true },
       { name: 'Ghislaine Maxwell', mention_count: 8, is_primary: true },
+      { name: 'Virginia Giuffre', mention_count: 8, is_primary: true },
     ],
     citations: [
       {
@@ -2292,6 +2293,7 @@ const STORIES: StoryDef[] = [
       { name: 'Lesley Groff', mention_count: 8, is_primary: true },
       { name: 'Ghislaine Maxwell', mention_count: 5, is_primary: false },
       { name: 'Leon Black', mention_count: 4, is_primary: false },
+      { name: 'Virginia Giuffre', mention_count: 2, is_primary: false },
     ],
     citations: [
       {
