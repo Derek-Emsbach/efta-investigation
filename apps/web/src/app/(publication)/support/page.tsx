@@ -1,24 +1,75 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { StripeButton } from '@/components/publication/support/stripe-buttons'
 
-// TODO: Replace with your actual Ko-fi username once created
 const KOFI_USERNAME = 'theepsteincrimes'
 const KOFI_URL = `https://ko-fi.com/${KOFI_USERNAME}`
 
 export const metadata: Metadata = {
   title: 'Support — The Epstein Crimes',
   description:
-    'Support the independent investigation of 1.38 million EFTA documents. Free and open to everyone.',
+    'Support the independent investigation of 1.38 million EFTA documents. Donations unlock Supporter and Investigator perks.',
   openGraph: {
     title: 'Support The Epstein Crimes',
     description:
-      'Help fund the independent investigation of EFTA documents. No paywalls, no tiers — completely free.',
+      'Help fund the independent investigation of EFTA documents. All content stays free — donations unlock bonus features.',
     type: 'website',
     siteName: 'The Epstein Crimes',
   },
 }
 
-export default function SupportPage() {
+const TIERS = [
+  {
+    id: 'supporter' as const,
+    badge: 'SUPPORTER',
+    name: 'Supporter',
+    tagline: 'One-time donation',
+    description: 'Make any one-time donation to earn permanent Supporter status.',
+    features: [
+      'Supporter badge on your profile',
+      'Comment on stories and case files',
+      'Like and boost articles',
+      'Flag potential inaccuracies for review',
+      'Personal case notes workspace',
+    ],
+    borderColor: 'border-accent-gold/60',
+    badgeColor: 'bg-accent-gold/10 text-accent-gold',
+  },
+  {
+    id: 'investigator' as const,
+    badge: 'INVESTIGATOR',
+    name: 'Investigator',
+    tagline: 'Monthly subscription',
+    description: 'Subscribe monthly to unlock the full investigation toolkit.',
+    features: [
+      'Everything in Supporter, plus:',
+      'AI detective with 10 queries/day',
+      'Submit findings and case files for review',
+      'Earn XP and detective ranks',
+      'Early access to new investigation tools',
+    ],
+    borderColor: 'border-accent-red/60',
+    badgeColor: 'bg-accent-red/10 text-accent-red',
+  },
+]
+
+export default async function SupportPage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  let currentTier: string | null = null
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('subscription_tier')
+      .eq('id', user.id)
+      .single()
+    currentTier = profile?.subscription_tier ?? null
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
       {/* Breadcrumb */}
@@ -40,11 +91,110 @@ export default function SupportPage() {
         </h1>
         <div className="mt-4 h-[3px] w-16 mx-auto bg-accent-red" />
         <p className="mt-6 font-body text-lg text-text-secondary leading-relaxed max-w-xl mx-auto">
-          This platform is completely free. No paywalls. No tiers. Every document,
-          every story, every entity profile is accessible to everyone. Your contribution
-          keeps the investigation going.
+          This platform is completely free. No paywalls. Every document,
+          every story, every entity profile is accessible to everyone. Donations
+          unlock bonus features and keep the investigation going.
         </p>
       </header>
+
+      {/* Tier cards */}
+      <section className="mb-14">
+        <h2 className="font-display text-2xl font-bold text-text-primary mb-2">
+          Choose Your Level
+        </h2>
+        <p className="font-body text-sm text-text-muted mb-8">
+          All content stays free. These tiers unlock participation features.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {TIERS.map((tier) => {
+            const isCurrentTier = currentTier === tier.id
+            const isUpgrade = tier.id === 'investigator' && currentTier === 'supporter'
+            const isDowngrade = tier.id === 'supporter' && currentTier === 'investigator'
+
+            return (
+              <div
+                key={tier.id}
+                className={`relative border-2 ${tier.borderColor} bg-surface p-6 transition-all ${
+                  isCurrentTier ? 'ring-2 ring-accent-gold/30' : ''
+                }`}
+              >
+                {isCurrentTier && (
+                  <span className="absolute -top-3 right-4 bg-accent-gold text-ink text-[10px] font-bold uppercase tracking-wider px-2 py-0.5">
+                    Current
+                  </span>
+                )}
+                <span
+                  className={`mb-3 inline-block text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 ${tier.badgeColor}`}
+                >
+                  {tier.badge}
+                </span>
+                <h3 className="font-display text-xl font-bold text-text-primary">
+                  {tier.name}
+                </h3>
+                <p className="mb-1 font-mono text-[11px] text-text-muted uppercase tracking-wider">
+                  {tier.tagline}
+                </p>
+                <p className="mb-4 font-body text-sm text-text-secondary leading-relaxed">
+                  {tier.description}
+                </p>
+                <ul className="mb-6 space-y-1.5">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
+                      <span className="mt-0.5 text-accent-gold shrink-0">&#10003;</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                {isCurrentTier ? (
+                  <div className="w-full text-center font-sans text-sm font-bold uppercase tracking-[0.08em] border border-accent-gold/40 text-accent-gold px-8 py-3.5">
+                    Active
+                  </div>
+                ) : isDowngrade ? (
+                  <div className="w-full text-center font-sans text-xs text-text-muted py-3.5">
+                    Included in your Investigator tier
+                  </div>
+                ) : (
+                  <StripeButton
+                    type={tier.id}
+                    isAuthenticated={!!user}
+                  />
+                )}
+                {isUpgrade && (
+                  <p className="mt-2 text-center text-[11px] text-text-muted">
+                    Upgrade from Supporter
+                  </p>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* Ko-fi alternative */}
+      <section className="mb-14">
+        <div className="border border-border-default bg-elevated/30 p-6 text-center">
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-text-muted mb-3">
+            Prefer Ko-fi?
+          </p>
+          <p className="font-body text-sm text-text-secondary leading-relaxed max-w-md mx-auto mb-4">
+            You can also donate via Ko-fi (0% platform fees). Ko-fi donations are
+            appreciated but don&apos;t automatically upgrade your account tier.
+          </p>
+          <a
+            href={KOFI_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 font-sans text-sm font-semibold text-text-primary hover:text-accent-gold transition-colors"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z" />
+            </svg>
+            Support on Ko-fi
+          </a>
+        </div>
+      </section>
 
       {/* What your support funds */}
       <section className="mb-14">
@@ -85,31 +235,9 @@ export default function SupportPage() {
         </div>
       </section>
 
-      {/* Donate via Ko-fi */}
+      {/* Additional ways */}
       <section className="mb-14">
-        <div className="border border-accent-gold/30 bg-accent-gold/5 p-8 text-center">
-          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-accent-gold mb-4">
-            Donate Securely via Ko-fi
-          </p>
-          <p className="font-body text-sm text-text-secondary leading-relaxed max-w-md mx-auto mb-6">
-            Ko-fi charges no platform fees. 100% of your donation goes directly
-            to funding this investigation. One-time or monthly — every amount helps.
-          </p>
-          <a
-            href={KOFI_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 font-sans text-sm font-bold uppercase tracking-[0.08em] bg-accent-gold text-ink px-8 py-3.5 hover:bg-accent-gold/90 transition-colors"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z" />
-            </svg>
-            Support on Ko-fi
-          </a>
-        </div>
-
-        {/* Additional ways */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border border-border-default p-5">
             <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-text-primary mb-2">
               Share the Investigation

@@ -59,7 +59,7 @@ export type SuspectDbStatus = 'not_in_db' | 'pending_promotion' | 'in_db'
 
 export type UserRole = 'admin' | 'viewer'
 
-export type SubscriptionTier = 'subscriber' | 'investigator'
+export type SubscriptionTier = 'subscriber' | 'supporter' | 'investigator'
 
 export type InvestigatorRank =
   | 'Junior Detective'
@@ -510,6 +510,12 @@ export interface Profile {
   avatar_url: string | null
   bio_short: string | null
   is_public: boolean
+  stripe_customer_id: string | null
+  stripe_subscription_id: string | null
+  donation_total_cents: number
+  first_donation_at: string | null
+  subscription_started_at: string | null
+  subscription_cancelled_at: string | null
   created_at: string
   updated_at: string
 }
