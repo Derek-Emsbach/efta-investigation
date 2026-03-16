@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 11 case files (82 open questions, 65 entity links). 19 stories (262 citations, 103 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 32 published entities fully enriched.
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 11 case files (82 open questions, 65 entity links). 20 stories (286 citations, 109 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 33 published entities fully enriched (incl. George Vradenburg III).
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -199,6 +199,18 @@
 - [x] next.config.ts already has `upload.wikimedia.org` in `remotePatterns`
 
 **Phase 11 COMPLETE** — Real images throughout public site: entity profile photos, story hero images, public document image API
+
+### Phase 12: Network Graph Visual Redesign
+- [x] Phase 1 — Calm physics: charge -300→-120, linkDistance 100→150, velocityDecay 0.45, alphaDecay 0.03, pre-computed layout (150 ticks before render)
+- [x] Phase 2 — Edge styling by relationship type: 5 color categories (criminal/financial/legal/personal/other) mapping 15 relationship types. Bezier curves replace straight lines, parallel edge offset, hover tooltips
+- [x] Phase 3 — Smarter node sizing: `8 + sqrt(degree) * 5` (min 8, max 28). Progressive label disclosure by tier/zoom. SVG glow filters for T1-T2 (evidence room only)
+- [x] Phase 4 — Spatial clustering: weak forceX/forceY (0.04 strength) nudges entities toward category positions (inner circle, financial, legal/political, operations, peripheral)
+- [x] Phase 5 — Interactions: click-to-pin subgraph highlight (single click), double-click to navigate to profile, collapsible legend, edge tooltips, auto-fit zoom on simulation end
+- [x] Phase 6 — Layout mode toggle: Force (default) + Radial (concentric tier rings via d3.forceRadial)
+- [x] Applied to all 3 implementations: evidence room (neon), dashboard (dark), publication (warm cream) — each with theme-appropriate color palettes
+- [x] Build verification passes
+
+**Phase 12 COMPLETE** — Network graph redesigned from rubber-band ball to elegant, readable visualization with relationship-typed edges, progressive disclosure, spatial clustering, and radial layout mode
 
 ### Story Pipeline (Ongoing)
 
@@ -453,7 +465,7 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 19 stories (262 citations, 103 entity links), **11 case files** (82 open questions, 65 entity links), 185 events, 157 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (33 published), 20 stories (286 citations, 109 entity links), **11 case files** (82 open questions, 65 entity links), 185 events, 157 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.

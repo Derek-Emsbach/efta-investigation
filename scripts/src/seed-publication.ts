@@ -1317,7 +1317,7 @@ const STORIES: StoryDef[] = [
   {
     slug: 'the-washington-list',
     title: 'The Washington List',
-    deck: 'Four men from one city, one professional network — two AOL co-founders, an AOL vice chairman, and an NFL team owner — all named in the same victim\'s forensically authenticated journals. All listed in Epstein\'s contact directory. None investigated. None charged.',
+    deck: 'Four men from one city, one company, one social circle — AOL\'s founding CEO, CEO, vice chairman, and SVP for policy — all named in the same victim\'s authenticated journals alongside the owner of the Washington NFL franchise. Deutsche Bank client records, Edge Foundation guest lists, and USVI property records independently place them in Epstein\'s orbit. None investigated. None charged.',
     section: 'the-network' as const,
     file: 'the-washington-list.md',
     byline: 'EFTA Investigation Team',
@@ -1331,12 +1331,13 @@ const STORIES: StoryDef[] = [
       'The U.S. Capitol — the Washington, D.C. power network documented in Epstein\u2019s forensic journals connected AOL co-founders, an NFL team owner, and a vice chairman, all named in the same cluster.',
     metadata: { source_analysis: 'entity enrichment — D.C. journal cluster analysis' },
     entities: [
-      { name: 'Jim Kimsey', mention_count: 4, is_primary: true },
-      { name: 'Steve Case', mention_count: 4, is_primary: true },
-      { name: 'Ted Leonsis', mention_count: 4, is_primary: true },
-      { name: 'Dan Snyder', mention_count: 4, is_primary: true },
-      { name: 'Jeffrey Epstein', mention_count: 8, is_primary: true },
+      { name: 'Jim Kimsey', mention_count: 6, is_primary: true },
+      { name: 'Steve Case', mention_count: 6, is_primary: true },
+      { name: 'Ted Leonsis', mention_count: 6, is_primary: true },
+      { name: 'Dan Snyder', mention_count: 5, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 10, is_primary: true },
       { name: 'Ghislaine Maxwell', mention_count: 2, is_primary: false },
+      { name: 'George Vradenburg III', mention_count: 3, is_primary: false },
       { name: 'Alan Dershowitz', mention_count: 1, is_primary: false },
       { name: 'Larry Summers', mention_count: 1, is_primary: false },
       { name: 'Marvin Minsky', mention_count: 1, is_primary: false },
@@ -1344,72 +1345,142 @@ const STORIES: StoryDef[] = [
     citations: [
       {
         number: 1,
-        bates_number: 'EFTA02731082',
+        bates_number: 'EFTA02731420',
         description:
-          'SDNY prosecution memo — references Giuffre victim journals with forensic authentication (gel pen analysis, contemporaneous dating), lists journal-named individuals',
-        page_reference: 'Evidence inventory section',
+          'Victim handwritten scrapbook journal #1 (13 pages), marked "CONFIDENTIAL FOR ATTORNEY\'S EYES ONLY." Names 30+ men the victim was directed to have sexual encounters with.',
+        page_reference: 'Full document (13 pages)',
       },
       {
         number: 2,
         bates_number: 'EFTA02731082',
         description:
-          'SDNY prosecution memo — Epstein contact directory ("black book") with 1,571 names, multiple entries for D.C.-area figures',
+          'SDNY prosecution memo — Epstein contact directory ("black book") with 1,571 names, multiple entries for D.C.-area figures including all four AOL executives',
         page_reference: 'Evidence inventory section',
       },
       {
         number: 3,
-        bates_number: 'EFTA02731082',
+        bates_number: 'EFTA02731465',
         description:
-          'SDNY prosecution memo — documents 24 minor victims and 14 adult victims, journal evidence cross-referenced with flight logs and contact records',
-        page_reference: 'Victim accounts section',
+          'Victim handwritten scrapbook journal #2 (8 pages), marked "CONFIDENTIAL FOR ATTORNEY\'S EYES ONLY." Contains George Vradenburg reference and AOL platform accusation.',
+        page_reference: 'p. 5',
       },
       {
         number: 4,
-        bates_number: 'EFTA02731082',
+        bates_number: 'EFTA02731420',
         description:
-          'SDNY prosecution memo — Epstein\'s institutional relationships including Harvard donations during Summers\' presidency and MIT connections',
-        page_reference: 'Network analysis section',
+          'Victim journal #1 — "flights of horror" passage naming Leonsis, Case, Snyder, the Gregorys, and Colgan alongside Epstein. Language of property: "being borrowed" and "rented."',
+        page_reference: 'p. 11',
       },
       {
         number: 5,
-        bates_number: 'EFTA02731082',
+        bates_number: 'EFTA02731420',
         description:
-          'SDNY prosecution memo — Jean-Luc Brunel\'s MC2 modeling agency as international recruitment arm',
-        page_reference: 'Co-conspirator analysis',
+          'Victim journal #1 — "Joe Gibbs is so nice but Dan Snyder is a pig! A red skin hoggett(sp?)!" alongside Joe Gibbs positive description.',
+        page_reference: 'p. 4',
       },
       {
         number: 6,
-        bates_number: 'EFTA02731082',
+        bates_number: 'EFTA00521006',
         description:
-          'SDNY prosecution memo — references 2007 NPA blanket immunity provision covering unnamed "potential co-conspirators"',
-        page_reference: 'Legal framework section',
+          'Blank aircraft passenger release form from Joe Gibbs Racing, Inc. found in Epstein\'s files — suggests shared private aviation access between Redskins social circle and Epstein operation.',
+        page_reference: 'Full document (1 page)',
       },
       {
         number: 7,
-        bates_number: 'EFTA02731082',
+        bates_number: 'EFTA02731420',
         description:
-          'SDNY prosecution memo — Dershowitz role as Epstein defense attorney who negotiated NPA immunity, later named by Giuffre',
-        page_reference: 'NPA analysis section',
+          'Victim journal #1 — "Why would they all allow Mr. Leonsis wait this long? Why would he bring a friend and make a video?" Specific allegation of filmed sexual abuse with third-party participant.',
+        page_reference: 'p. 5 (journal #2, EFTA02731465)',
       },
       {
         number: 8,
-        bates_number: 'EFTA02731082',
+        bates_number: 'EFTA01413261',
         description:
-          'SDNY prosecution memo — no charges filed against journal-named individuals, investigation scope limited to Maxwell and select co-conspirators',
-        page_reference: 'Charging recommendations',
+          'Deutsche Bank Wealth Management client records — Dan Snyder listed as client. Internal documents discuss "strategic lending dialog" including boat loans and stadium financing, "$25mm managed investments."',
+        page_reference: 'Full document',
       },
       {
         number: 9,
-        bates_number: 'EFTA02731082',
+        bates_number: 'EFTA01472840',
         description:
-          'Public reporting — Dan Snyder sold Washington Commanders July 2023 for $6.05 billion amid separate House Oversight investigation',
-        page_reference: 'Public record',
+          'Deutsche Bank planning document — projected $25mm managed investments for Snyder with "strategic lending" dialog.',
+        page_reference: 'Full document',
       },
       {
         number: 10,
+        bates_number: 'EFTA01416472',
+        description:
+          'Deutsche Bank client event list — Snyder and Epstein placed at the same invitation-only Deutsche Bank gatherings: "Dan Snyder and Karl Schreiber — dinner and preview" alongside "Jeffrey Epstein — preview."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01478894',
+        description:
+          'Deutsche Bank client records — Steve Case listed as "Steve Case, Revolution LLC (former Chairman of AOL)" in Deutsche Bank Wealth Management division.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA02548313',
+        description:
+          'Edge Foundation billionaire science dinner guest lists — Steve Case attended multiple annual dinners alongside Jeffrey Epstein, Jeff Bezos, Sergey Brin, Bill Gates, and Elon Musk. Hosted by literary agent John Brockman.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 13,
+        bates_number: 'HOUSE_OVERSIGHT_016552',
+        description:
+          'House Oversight property records — Jim Kimsey (as Stephen P. Kimsey) owned $1.2 million Villa Fiorentina condominium in the US Virgin Islands, same territory as Epstein\'s Little St. James.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01082667',
+        description:
+          'Trilateral Commission membership roster — Kimsey listed as "James Kimsey, Founding CEO of AOL." Elite networking body where Epstein cultivated relationships.',
+        page_reference: 'p. 4',
+      },
+      {
+        number: 15,
         bates_number: 'EFTA02731082',
         description:
-          'SDNY prosecution memo — Section D (Groff/co-conspirator charging analysis) entirely redacted under Category C institutional protection',
+          'SDNY prosecution memo — Harvard donations during Larry Summers\' presidency and MIT connections (Marvin Minsky) as institutional access points.',
+        page_reference: 'Network analysis section',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Jean-Luc Brunel\'s MC2 modeling agency as international recruitment pipeline.',
+        page_reference: 'Co-conspirator analysis',
+      },
+      {
+        number: 17,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — 2007 NPA blanket immunity provision covering unnamed "potential co-conspirators," negotiated by Epstein\'s defense team.',
+        page_reference: 'Legal framework section',
+      },
+      {
+        number: 18,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Dershowitz role as Epstein defense attorney who negotiated NPA, later named as having sexually abused victims.',
+        page_reference: 'NPA analysis section',
+      },
+      {
+        number: 19,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — no charges filed against journal-named individuals, no law enforcement interviews of D.C. cluster members.',
+        page_reference: 'Charging recommendations',
+      },
+      {
+        number: 20,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — Section D (charging analysis) entirely redacted under Category C institutional protection. The section that would have addressed these names remains sealed.',
         page_reference: 'Section D',
       },
     ],
@@ -2348,6 +2419,134 @@ const STORIES: StoryDef[] = [
         description:
           'Virginia Giuffre account (91 pages): Mitchell "frequently visited Epstein\'s New York residence." Description: "very clean-cut. You wouldn\'t think of him being part of Jeffrey\'s crew."',
         page_reference: 'pp. 46-48',
+      },
+    ],
+  },
+  // ─── Story 20: They Use It to Find Us (AOL platform accusation) ──────────────
+  {
+    slug: 'they-use-it-to-find-us',
+    title: 'They Use It to Find Us',
+    deck: 'A teenage victim pasted AOL clippings into her journal and wrote seven words never publicly reported: "They use it to find us." Four of AOL\'s top five executives appear in the same journals as men she was directed to have sexual encounters with. The company\'s SVP for policy — the executive most responsible for child safety — is named among those who "dont care if this happens." This is the only accusation in the EFTA corpus that implicates a technology platform as an instrument of the trafficking operation.',
+    section: 'the-operation' as const,
+    file: 'they-use-it-to-find-us.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: 'master-intelligence-brief',
+    published_at: '2026-03-16T00:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Aol-logo.svg/1280px-Aol-logo.svg.png',
+    hero_image_caption:
+      'The AOL logo — in the early 2000s, America Online was the dominant internet service provider in the United States. A teenage victim accused the company of being used as a tool to find and target girls like her.',
+    metadata: {
+      source_analysis: 'DC/AOL cluster deep-dive — victim journal analysis, platform accusation',
+    },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 8, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 4, is_primary: true },
+      { name: 'Jim Kimsey', mention_count: 5, is_primary: true },
+      { name: 'Steve Case', mention_count: 5, is_primary: true },
+      { name: 'Ted Leonsis', mention_count: 4, is_primary: true },
+      { name: 'Dan Snyder', mention_count: 3, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02731465',
+        description:
+          'Victim handwritten scrapbook journal #2 (8 pages) — p.6 contains AOL clippings pasted into margins with victim\'s handwritten accusation: "That company does not protect kids!" and "They use it to find us!" Same page documents pregnancy at "over 20 weeks" while underage.',
+        page_reference: 'p. 6',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02731420',
+        description:
+          'Victim handwritten scrapbook journal #1 (13 pages), marked "CONFIDENTIAL FOR ATTORNEY\'S EYES ONLY." Names 30+ men including four AOL executives.',
+        page_reference: 'Full document (13 pages)',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — AOL chat rooms documented as environment where adults routinely accessed minors in early 2000s. Child safety enforcement described as reactive.',
+        page_reference: 'Evidence context section',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02731420',
+        description:
+          'Victim journal #1 — "flights of horror" passage naming Leonsis, Case, Snyder, and Kimsey alongside Epstein. Kimsey described as "deranged."',
+        page_reference: 'pp. 5, 11',
+      },
+      {
+        number: 5,
+        bates_number: 'HOUSE_OVERSIGHT_016552',
+        description:
+          'House Oversight property records — Jim Kimsey (as Stephen P. Kimsey) owned $1.2 million Villa Fiorentina condominium in the US Virgin Islands, same territory as Epstein\'s Little St. James island.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01082667',
+        description:
+          'Trilateral Commission membership roster — Kimsey listed as "James Kimsey, Founding CEO of AOL."',
+        page_reference: 'p. 4',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02548313',
+        description:
+          'Edge Foundation billionaire science dinner guest lists — Steve Case attended multiple annual dinners alongside Jeffrey Epstein, Jeff Bezos, Bill Gates, and Elon Musk.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01478894',
+        description:
+          'Deutsche Bank client records — Steve Case listed as "Steve Case, Revolution LLC (former Chairman of AOL)" in Wealth Management division.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA02731465',
+        description:
+          'Victim journal #2 — "Why would they all allow Mr. Leonsis wait this long? Why would he bring a friend and make a video?" Allegation of filmed sexual abuse.',
+        page_reference: 'p. 5',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA02731465',
+        description:
+          'Victim journal #2 — George Vradenburg III listed among those who "dont care if this happens." Vradenburg was AOL\'s SVP for Global and Strategic Policy, overseeing child safety.',
+        page_reference: 'p. 5',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01413261',
+        description:
+          'Deutsche Bank Wealth Management client records — Dan Snyder listed as client alongside Epstein. Bank opened 76 accounts for Epstein\'s shell entities after 2008 conviction, later fined $150M.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA01472840',
+        description:
+          'Deutsche Bank internal planning document — "$25mm managed investments" for Snyder with "strategic lending" including boat loans and stadium financing.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA01416472',
+        description:
+          'Deutsche Bank client event list — Snyder and Epstein at same invitation-only gatherings.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA00521006',
+        description:
+          'Blank aircraft passenger release form from Joe Gibbs Racing, Inc. found in Epstein\'s files — suggests shared private aviation access between Redskins social circle and Epstein.',
+        page_reference: 'Full document (1 page)',
       },
     ],
   },
