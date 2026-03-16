@@ -42,7 +42,7 @@ export function CommentThread({
   const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null)
   const [flaggingId, setFlaggingId] = useState<string | null>(null)
 
-  const canComment = user && (user.tier === 'subscriber' || user.tier === 'investigator')
+  const canComment = user && (user.tier === 'supporter' || user.tier === 'investigator')
   const hasMore = page * perPage < total
 
   const loadMore = async () => {
