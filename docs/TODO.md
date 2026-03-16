@@ -309,7 +309,7 @@
 - [x] Custom domain — `theepsteincrimes.com` live (Cloudflare DNS → Vercel, Supabase redirect URLs updated)
 - [x] RLS fix — `doj_accountability` table RLS enabled (migration 021)
 - [ ] Vercel Attack Challenge Mode — keep off normally, enable during active attacks
-- [ ] Upstash Redis upgrade — replace in-memory rate limiting with distributed Redis (needed at scale)
+- [x] Upstash Redis upgrade — `@upstash/ratelimit` + `@upstash/redis` replaces in-memory Maps. Sliding window per tier, graceful fallback to in-memory when env vars unset. 22 API routes updated to `await` async `checkRateLimit`.
 
 ### Monetization (Stripe + Pro Tier)
 > Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase D)
@@ -323,10 +323,15 @@
 - [ ] Add `estimated_cost` column to `api_usage_log` table
 
 ### AI-Assisted Analysis (Phase 2 of processing)
-- [ ] Train entity extraction on our reviewed data
-- [ ] Automated cross-referencing with confidence scores
-- [ ] Anomaly detection (unusual redaction patterns, timeline gaps)
-- [ ] Suggested connections based on co-occurrence analysis
+- [x] **ML pipeline built (March 15, 2026)** — Full `services/ml/` Python package with Click CLI, 4 pipeline features:
+  - [x] Entity extraction: spaCy NER training pipeline (extract → prepare → train → evaluate → inference)
+  - [x] Anomaly detection: 9 detectors (timeline gaps, mention frequency shifts, event clustering, entity density outliers, redaction inconsistency, category mismatch, density spikes, type-redaction combos, cross-dataset inconsistency). First run: **95 anomalies** (14 critical, 7 high, 74 medium)
+  - [x] Automated cross-referencing: sentence-transformer embeddings (MiniLM-L6-v2), FAISS index, 4-signal weighted scoring (entity co-occurrence, semantic similarity, temporal proximity, document type compatibility)
+  - [x] Connection suggestions: co-occurrence mining, context extraction, 4-signal scoring, Claude API type classification (~$2-3 for 500 pairs)
+  - [x] Migration 022: 6 ML tables (ml_training_snapshots, ml_model_runs, ml_entity_eval, ml_crossref_scores, ml_anomalies, ml_connection_suggestions)
+  - [x] Dashboard UI: `/dashboard/ml` with anomaly review, connection approval cards, model run history. 4 API routes at `/api/admin/ml/*`
+  - [ ] Run connection suggestions pipeline (next step — will use Claude API)
+  - [ ] Deploy ML service to Railway
 
 ### Public Document Viewer (Hybrid Access)
 > Documents clickable throughout the site. Public metadata + text excerpts; PDF viewer requires auth.
