@@ -2197,6 +2197,160 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  {
+    slug: 'shes-here',
+    title: "She's Here",
+    deck: "An FBI 302 documents a Brazilian victim sent by Jeffrey Epstein to former Senate Majority Leader George Mitchell at two luxury hotels — the Beverly Hills Hotel and the Four Seasons in Washington, D.C. Mitchell was on the phone with Epstein when she arrived. Fifteen scheduling documents show the relationship continued for years after Epstein's conviction. Mitchell was formally listed as a witness with \"knowledge of sexual trafficking conduct.\" No law enforcement agency has interviewed him.",
+    section: 'the-network' as const,
+    file: 'shes-here.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 12,
+    is_featured: false,
+    case_file_slug: 'prosecutorial-failure',
+    published_at: '2026-03-15T16:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/2023_United_States_Capitol_118th_Congress%2C_sunrise.jpg/1280px-2023_United_States_Capitol_118th_Congress%2C_sunrise.jpg',
+    hero_image_caption:
+      'The United States Capitol — where George Mitchell served as Senate Majority Leader from 1989 to 1995. After leaving office, he maintained a relationship with Jeffrey Epstein that continued years after Epstein\'s conviction.',
+    metadata: {
+      source_analysis: 'FBI FD-302 EFTA02857849, scheduling corpus, Apollo deposition EFTA01165407',
+    },
+    entities: [
+      { name: 'George Mitchell', mention_count: 30, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 15, is_primary: true },
+      { name: 'Lesley Groff', mention_count: 8, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 5, is_primary: false },
+      { name: 'Leon Black', mention_count: 4, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02857849',
+        description:
+          'FBI FD-302 — victim interview August 21, 2020 (DS12, less-redacted version). Brazilian victim describes being sent by Epstein to George Mitchell at Beverly Hills Hotel (LA) and Four Seasons (DC). Mitchell on phone with Epstein: "She\'s here." Multiple sexual encounters at both locations.',
+        page_reference: 'Full document (8 pages)',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01248273',
+        description:
+          'FBI FD-302 — same victim interview (DS9, more heavily redacted version). Substantively identical account with additional redactions of names and identifying details.',
+        page_reference: 'Full document (8 pages)',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01155017',
+        description:
+          'Handwritten contact list from Epstein records. "1.george Mitchell" is the first entry. List continues with Leon, Boris (Nikolic), Bill Richardson, Jes (Staley), Summers, Weinstein, Milken, Pritzker.',
+        page_reference: 'Full document (3 pages)',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01983409',
+        description:
+          'Email March 19, 2012 — two seminar invite lists. "Seminar-POWER": Bill Clinton, Bill Gates, George Mitchell, Michael Ovitz. "Seminar-MONEY": Bezos, Brin, Andreessen, Schmidt, Thiel, Simons.',
+        page_reference: 'Full document (2 pages)',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA02408153',
+        description:
+          'Email August 2, 2010 to jeevacation@gmail.com: "George Mitchell returned your phone call."',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA02407784',
+        description:
+          'Email August 13, 2010 — Lesley Groff to Epstein: called Mitchell\'s office about Yom Kippur dinner, "it would mean a lot to you if the Senator could join you." Includes Mitchell cell number.',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02419244',
+        description:
+          'Email September 10, 2010 — Groff to Epstein: "I know you still have Senator Mitchell and Larry Summers on your radar... emailed Senator Mitchell\'s assistants several times."',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA02421885',
+        description:
+          'Email October 25, 2010 — Groff to Mitchell\'s three staffers (Julia Reed, Janice Neal, Maher Bitar): "Jeffrey Epstein would like to speak with Senator Mitchell."',
+        page_reference: 'Full document (2 pages)',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA00560723',
+        description:
+          'Email January 28, 2011 — Epstein instructs Groff to "schedule George Mitchell to come see him and Peter Mandelson while Peter is in NY."',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA02415821',
+        description:
+          'Email November 30, 2010 — Groff arranging for Mitchell to "stop by and sit down for a chat with you and Andrew" (Prince Andrew reference).',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA02148518',
+        description:
+          'Calendar February 12, 2013: "check in with Senator George Mitchell to see if he is around for a possible lunch on March 1 with JE and Bill Gates."',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA01948080',
+        description:
+          'Schedule November 6, 2013: 10:30am "Appt w/Senator George Mitchell" followed by 2-5pm meeting at "LEON\'S OFFICE" (Leon Black, 9 West 57th Street, 48th Floor).',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA01165407',
+        description:
+          'Deposition transcript (95 pages): "Epstein and WR back channel to George Mitchell to preempt a blowup." WR = Senator Warren Rudman. Mitchell used as diplomatic intermediary between Epstein and Apollo Global Management.',
+        page_reference: 'pp. 73-74',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01249058',
+        description:
+          'AUSA "Highly Confidential" memo, March 9, 2011 — lists Mitchell among "important people" named by victim. Notes encounters were videotaped, consistent with blackmail theory.',
+        page_reference: 'Full document (3 pages)',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA00157613',
+        description:
+          'Juan Alessi witness preparation memo, June 8, 2021 — Epstein\'s Palm Beach house manager lists famous visitors including "Senator George Mitchell, John Kennedy Jr., Alan Dershowitz... Prince Andrew."',
+        page_reference: 'p. 4',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA01182998',
+        description:
+          'Formal witness list — Mitchell is #53: "Has knowledge of Ghislaine Maxwell and Jeffrey Epstein\'s sexual trafficking conduct and interaction with underage minors."',
+        page_reference: 'p. 57',
+      },
+      {
+        number: 17,
+        bates_number: 'DOJ-OGR-00022656',
+        description:
+          'Maxwell trial testimony — cross-examination by Todd Blanche. Maxwell: "Yeah, I do remember George... I was friendly with his wife... Heather." Confirmed traveling to Rome with Mitchell and Epstein as a foursome.',
+        page_reference: 'pp. 199-200',
+      },
+      {
+        number: 18,
+        bates_number: 'EFTA01116468',
+        description:
+          'Virginia Giuffre account (91 pages): Mitchell "frequently visited Epstein\'s New York residence." Description: "very clean-cut. You wouldn\'t think of him being part of Jeffrey\'s crew."',
+        page_reference: 'pp. 46-48',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

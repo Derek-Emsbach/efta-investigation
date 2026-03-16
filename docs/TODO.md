@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 11 case files (82 open questions, 65 entity links). 18 stories (244 citations, 98 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 32 published entities fully enriched.
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 11 case files (82 open questions, 65 entity links). 19 stories (262 citations, 103 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 32 published entities fully enriched.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -453,7 +453,7 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 18 stories (244 citations, 98 entity links), **11 case files** (82 open questions, 65 entity links), 178 events, 110 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 19 stories (262 citations, 103 entity links), **11 case files** (82 open questions, 65 entity links), 185 events, 114 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
@@ -476,7 +476,7 @@
 
 ### Story Coverage Gaps
 - [x] **Prince Andrew story** — PUBLISHED (Story 18, "The Worst Dancer in the World", 2026-03-15). 11 citations from FBI 302s, internal FBI emails, royal correspondence. Linked to `prosecutorial-failure` case file. `the-operation` section now has 4 stories.
-- [ ] **George Mitchell story** — T1, 0 stories, 5 events, 3 connections. Scheduling evidence, Zorro Ranch connections
+- [x] **George Mitchell story** — PUBLISHED (Story 19, "She's Here", 2026-03-15). 18 citations from FBI 302, scheduling docs, depositions, witness lists, Maxwell trial testimony. 4 connections added (Epstein, Maxwell, Groff, Black). 7 events added. `the-network` section now has 6 stories.
 - [ ] **Harvey Weinstein story** — T1, 0 stories, 6 events, 2 connections. Cross-pollination between Epstein and Weinstein networks
 
 ### Connection Network Gaps
@@ -490,7 +490,7 @@
 - [ ] Add events for: Barnaby Mars, Celina Edith Dubin, Dr. Chen, Eva Andersson-Dubin, Gerd, Karyna Shuliak, KKR, Oaktree Capital, The Blackstone Group, The Carlyle Group
 
 ### Story Section Balance
-- [ ] `the-operation` needs more stories (currently 2, vs 5 each for cover-up and network, 3 for follow-the-money)
+- [ ] `the-operation` needs more stories (currently 4, vs 5 for cover-up, 6 for network, 4 for follow-the-money)
 - [ ] Consider: recruitment mechanics, Cape Town trip, Caribbean island operations, massage protocol, scheduling systems
 
 ### Unpublished Entity Pipeline (86 entities)
