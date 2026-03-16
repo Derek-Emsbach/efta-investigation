@@ -2,6 +2,7 @@ import { PublicHeader } from '@/components/publication/public-header'
 import { PublicFooter } from '@/components/publication/public-footer'
 import { DonateBar } from '@/components/publication/donate-bar'
 import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
+import { ModeSwitch } from '@/components/ui/mode-switch'
 import { createClient } from '@/lib/supabase/server'
 import type { SubscriptionTier } from '@efta/shared'
 
@@ -44,6 +45,7 @@ export default async function PublicationLayout({
 
   return (
     <div data-theme="publication" className="min-h-screen bg-background text-text-primary font-body">
+      <ModeSwitch mode="newsroom" />
       <DonateBar variant="top" />
       <PublicHeader authState={authState} />
       <main>{children}</main>

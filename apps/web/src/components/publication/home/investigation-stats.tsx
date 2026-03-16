@@ -1,10 +1,9 @@
 interface InvestigationStatsProps {
   stats: {
     documents: number
-    pages: number
     entities: number
-    connections: number
     openQuestions: number
+    stories: number
   }
 }
 
@@ -16,13 +15,18 @@ interface StatDisplay {
 }
 
 function buildStats(stats: InvestigationStatsProps['stats']): StatDisplay[] {
-  const pagesMil = (stats.pages / 1_000_000).toFixed(1)
+  const docDisplay = stats.documents > 1_000_000
+    ? (stats.documents / 1_000_000).toFixed(1) + 'M'
+    : stats.documents > 1000
+      ? Math.round(stats.documents / 1000) + 'K'
+      : String(stats.documents)
+
   return [
-    { highlight: pagesMil, suffix: 'M', label: 'Pages Released' },
-    { highlight: String(stats.entities), suffix: '+', label: 'Persons Cataloged' },
-    { highlight: '0', suffix: '/10', label: 'DOJ Full Compliance' },
-    { highlight: '12', label: 'Datasets Under Review' },
-    { highlight: String(stats.documents > 1000 ? Math.round(stats.documents / 1000) + 'K' : stats.documents), label: 'Documents Analyzed' },
+    { highlight: docDisplay, suffix: '+', label: 'Documents Released' },
+    { highlight: String(stats.entities), label: 'Entities Profiled' },
+    { highlight: '0', label: 'Officials Held Accountable' },
+    { highlight: String(stats.openQuestions), label: 'Open Questions' },
+    { highlight: String(stats.stories), label: 'Stories Published' },
   ]
 }
 

@@ -14,12 +14,11 @@ interface AuthState {
 const SECTION_NAV = [
   { label: 'Home', href: '/' },
   { label: 'The Network', href: '/network' },
-  { label: 'Follow the Money', href: '/stories?section=follow-the-money' },
-  { label: 'The Cover-Up', href: '/stories?section=the-cover-up' },
-  { label: 'The Operation', href: '/stories?section=the-operation' },
-  { label: 'Voices', href: '/stories?section=voices' },
+  { label: 'Follow the Money', href: '/sections/follow-the-money' },
+  { label: 'The Cover-Up', href: '/sections/the-cover-up' },
+  { label: 'The Operation', href: '/sections/the-operation' },
+  { label: 'Voices', href: '/sections/voices' },
   { label: 'The Case Files', href: '/case-files' },
-  { label: 'Evidence Room', href: '/evidence' },
 ]
 
 const UTILITY_NAV = [

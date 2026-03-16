@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { EvidenceHeader } from '@/components/evidence-room/evidence-header'
 import { DonateBar } from '@/components/publication/donate-bar'
 import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
+import { ModeSwitch } from '@/components/ui/mode-switch'
 
 export default function EvidenceLayout({
   children,
@@ -10,6 +11,7 @@ export default function EvidenceLayout({
 }>) {
   return (
     <div data-theme="evidence-room" className="min-h-screen bg-background text-text-primary font-body">
+      <ModeSwitch mode="evidence" />
       <EvidenceHeader />
       <main>{children}</main>
       <DonateBar variant="bottom" />

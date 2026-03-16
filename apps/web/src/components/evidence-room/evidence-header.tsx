@@ -13,15 +13,11 @@ export function EvidenceHeader() {
             EVIDENCE ROOM
           </Link>
         </div>
-        <nav className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="text-xs text-text-muted hover:text-text-secondary transition-colors"
-          >
-            <span className="hidden sm:inline">Back to Newsroom</span>
-            <span className="sm:hidden">&larr; Back</span>
-          </Link>
-        </nav>
+        <div className="flex items-center gap-4">
+          <span className="font-mono text-[10px] tracking-wider text-text-muted">
+            {/* Mode switch bar handles navigation */}
+          </span>
+        </div>
       </div>
     </header>
   )

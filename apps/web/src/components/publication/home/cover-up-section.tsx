@@ -44,7 +44,7 @@ export function CoverUpSection({ stories }: CoverUpSectionProps) {
         </h2>
         <div className="flex-1 h-px bg-border-default" />
         <Link
-          href="/stories?section=the-cover-up"
+          href="/sections/the-cover-up"
           className="font-sans text-[11px] font-medium text-text-muted hover:text-text-primary whitespace-nowrap tracking-[0.04em] transition-colors"
         >
           See All →

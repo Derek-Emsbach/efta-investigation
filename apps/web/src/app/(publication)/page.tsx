@@ -45,7 +45,7 @@ const supabase = createClient(
 const DEDICATED_SECTIONS = ['follow-the-money', 'the-cover-up']
 
 export default async function HomePage() {
-  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCountResult, openQuestionCountResult] =
+  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCountResult, openQuestionCountResult, storyCountResult] =
     await Promise.all([
       supabase
         .from('stories')
@@ -96,6 +96,11 @@ export default async function HomePage() {
         .from('open_questions')
         .select('id', { count: 'exact', head: true })
         .eq('status', 'open'),
+
+      supabase
+        .from('stories')
+        .select('id', { count: 'exact', head: true })
+        .eq('is_published', true),
     ])
 
   const stories = storiesResult.data ?? []
@@ -106,10 +111,9 @@ export default async function HomePage() {
 
   const stats = {
     documents: (docCountResult.data as number) ?? 1_370_000,
-    pages: 2_770_000,
-    entities: entityCountResult.count ?? 120,
-    connections: 110,
+    entities: entityCountResult.count ?? 42,
     openQuestions: openQuestionCountResult.count ?? 82,
+    stories: storyCountResult.count ?? 21,
   }
 
   // Split stories for dedicated sections

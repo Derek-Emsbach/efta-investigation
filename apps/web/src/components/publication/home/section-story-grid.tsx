@@ -75,7 +75,7 @@ export function SectionStoryGrid({ stories }: SectionStoryGridProps) {
         return (
           <section key={section}>
             {/* Section header */}
-            <SectionHeader label={label} color={color} href={`/stories?section=${section}`} />
+            <SectionHeader label={label} color={color} href={`/sections/${section}`} />
 
             {/* 3-column grid with border dividers */}
             <div className="grid grid-cols-1 md:grid-cols-3 border-t border-b border-border-default">
