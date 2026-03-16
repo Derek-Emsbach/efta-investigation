@@ -121,6 +121,35 @@ def suggest_connections(min_shared_docs: int, classify: bool, max_classify: int)
 
 
 # ─────────────────────────────────────────────────
+# Feature 5: Entity Sweep (Corpus-Connected)
+# ─────────────────────────────────────────────────
+
+@cli.command()
+@click.option("--min-tier", default=4, help="Audit entities with tier <= this value")
+@click.option("--top", default=50, help="Show top N results")
+def coverage_audit(min_tier: int, top: int):
+    """Compare corpus mentions vs linked documents for each entity."""
+    from entity_sweep import coverage_audit as audit
+    audit(min_tier=min_tier, top_n=top)
+
+
+@cli.command()
+@click.option("--min-mentions", default=20, help="Minimum mentions to report")
+def discover_names(min_mentions: int):
+    """Find frequently occurring names not in the entity database."""
+    from entity_sweep import discover_frequent_names
+    discover_frequent_names(min_mentions=min_mentions)
+
+
+@cli.command()
+@click.option("--max-pairs", default=50, help="Max pairs to enrich")
+def enrich_contexts(max_pairs: int):
+    """Fill missing context excerpts for connection suggestions from corpus."""
+    from entity_sweep import enrich_connection_contexts
+    enrich_connection_contexts(max_pairs=max_pairs)
+
+
+# ─────────────────────────────────────────────────
 # Full pipeline
 # ─────────────────────────────────────────────────
 
