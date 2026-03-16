@@ -1,18 +1,18 @@
 import type { SubscriptionTier, InvestigatorStats } from '@efta/shared'
 
-/** Subscribers and Investigators can comment */
+/** Any paid tier (supporter or investigator) can comment */
 export function canComment(tier: SubscriptionTier | null | undefined): boolean {
-  return tier === 'subscriber' || tier === 'investigator'
+  return tier === 'supporter' || tier === 'investigator'
 }
 
-/** Subscribers and Investigators can like/boost articles */
+/** Any paid tier (supporter or investigator) can like/boost articles */
 export function canBoost(tier: SubscriptionTier | null | undefined): boolean {
-  return tier === 'subscriber' || tier === 'investigator'
+  return tier === 'supporter' || tier === 'investigator'
 }
 
-/** Only Investigators can flag inaccuracies */
+/** Any paid tier (supporter or investigator) can flag inaccuracies */
 export function canFlag(tier: SubscriptionTier | null | undefined): boolean {
-  return tier === 'subscriber' || tier === 'investigator'
+  return tier === 'supporter' || tier === 'investigator'
 }
 
 /** Only Investigators can use the AI detective */
@@ -25,9 +25,9 @@ export function canSubmitFindings(tier: SubscriptionTier | null | undefined): bo
   return tier === 'investigator'
 }
 
-/** Only Investigators can use personal notes */
+/** Supporters and Investigators can use personal notes */
 export function canTakeNotes(tier: SubscriptionTier | null | undefined): boolean {
-  return tier === 'investigator'
+  return tier === 'supporter' || tier === 'investigator'
 }
 
 /**

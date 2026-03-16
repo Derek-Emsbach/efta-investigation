@@ -68,10 +68,9 @@ export async function updateSession(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
-    if (!profile?.subscription_tier) {
+    if (!profile?.subscription_tier || profile.subscription_tier === 'subscriber') {
       const url = request.nextUrl.clone()
-      url.pathname = '/signup'
-      url.searchParams.set('upgrade', 'true')
+      url.pathname = '/support'
       return NextResponse.redirect(url)
     }
   }

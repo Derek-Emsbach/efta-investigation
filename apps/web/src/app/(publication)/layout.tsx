@@ -26,7 +26,7 @@ export default async function PublicationLayout({
       .single()
 
     let rank: string | null = null
-    if (profile?.subscription_tier === 'investigator') {
+    if (profile?.subscription_tier === 'investigator' || profile?.subscription_tier === 'supporter') {
       const { data: stats } = await supabase
         .from('investigator_stats')
         .select('current_rank')

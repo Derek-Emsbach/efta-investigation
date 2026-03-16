@@ -177,9 +177,11 @@ function AccountContent() {
 
   const tierLabel = profile?.subscription_tier === "investigator"
     ? "Investigator"
-    : profile?.subscription_tier === "subscriber"
-      ? "Subscriber"
-      : "Viewer";
+    : profile?.subscription_tier === "supporter"
+      ? "Supporter"
+      : profile?.subscription_tier === "subscriber"
+        ? "Subscriber"
+        : "Viewer";
 
   return (
     <div className="mx-auto max-w-xl px-4 py-12">
@@ -379,22 +381,26 @@ function AccountContent() {
       </form>
 
       {/* Upgrade prompt for subscribers */}
-      {profile?.subscription_tier === "subscriber" && (
+      {profile?.subscription_tier !== "investigator" && (
         <div className="mt-10 rounded-lg border-2 border-accent-gold bg-accent-gold/5 px-5 py-5">
           <div className="mb-3 flex items-center gap-2">
             <span className="rounded bg-accent-gold/10 px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase text-accent-gold">
-              UPGRADE
+              {profile?.subscription_tier === "supporter" ? "UPGRADE" : "SUPPORT"}
             </span>
           </div>
-          <h3 className="font-display text-lg font-bold text-text-primary">Become an Investigator</h3>
+          <h3 className="font-display text-lg font-bold text-text-primary">
+            {profile?.subscription_tier === "supporter" ? "Become an Investigator" : "Support the Investigation"}
+          </h3>
           <p className="mt-1 text-sm text-text-secondary">
-            Unlock AI detective queries, personal case notes, the ability to submit findings, and earn XP ranks.
+            {profile?.subscription_tier === "supporter"
+              ? "Upgrade to a monthly subscription to unlock AI detective queries, submit findings, and earn XP ranks."
+              : "Donate to unlock commenting, case notes, and bonus features. Monthly subscribers get AI detective access and XP ranks."}
           </p>
           <Link
-            href="/signup?upgrade=true"
+            href="/support"
             className="mt-4 inline-block rounded bg-accent-gold px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-gold/90 transition-colors"
           >
-            Upgrade to Investigator →
+            {profile?.subscription_tier === "supporter" ? "Upgrade to Investigator →" : "Support the Investigation →"}
           </Link>
         </div>
       )}
