@@ -34,7 +34,7 @@ interface GraphData {
 }
 
 // -------------------------------------------------------------------
-// Constants — publication-adapted palette
+// Constants — publication warm palette
 // -------------------------------------------------------------------
 
 const TIER_COLORS: Record<number, string> = {
@@ -57,6 +57,7 @@ const STRENGTH_OPACITY: Record<string, number> = {
 const RELATIONSHIP_LABELS: Record<string, string> = {
   employed_by: 'Employed by',
   trafficked_by: 'Trafficked by',
+  trafficked_for: 'Trafficked for',
   represented_by: 'Represented by',
   investigated_by: 'Investigated by',
   paid_by: 'Paid by',
@@ -68,7 +69,91 @@ const RELATIONSHIP_LABELS: Record<string, string> = {
   referred_by: 'Referred by',
   subsidiary_of: 'Subsidiary of',
   owned_by: 'Owned by',
+  co_accused: 'Co-accused',
+  financial: 'Financial',
+  social: 'Social',
+  professional: 'Professional',
+  associated_with: 'Associated with',
+  protected_by: 'Protected by',
 }
+
+// Edge colors by relationship category (warm publication palette)
+type EdgeCategory = 'criminal' | 'financial' | 'legal' | 'personal' | 'other'
+
+const EDGE_CATEGORY_MAP: Record<string, EdgeCategory> = {
+  co_accused: 'criminal',
+  trafficked_by: 'criminal',
+  trafficked_for: 'criminal',
+  financial: 'financial',
+  employed_by: 'financial',
+  hired_by: 'financial',
+  paid_by: 'financial',
+  attorney_for: 'legal',
+  investigated_by: 'legal',
+  protected_by: 'legal',
+  referred_by: 'legal',
+  family_of: 'personal',
+  social: 'personal',
+  associated_with: 'other',
+  professional: 'other',
+  connected_to: 'other',
+}
+
+const EDGE_CATEGORY_COLORS: Record<EdgeCategory, string> = {
+  criminal: '#c41e3a',
+  financial: '#2d8a6e',
+  legal: '#4a7ab5',
+  personal: '#7c5bb0',
+  other: '#8b7d6b',
+}
+
+const EDGE_CATEGORY_LABELS: Record<EdgeCategory, string> = {
+  criminal: 'Criminal',
+  financial: 'Financial',
+  legal: 'Legal',
+  personal: 'Personal',
+  other: 'Other',
+}
+
+// Cluster positions
+type ClusterGroup = 'inner_circle' | 'financial' | 'legal_political' | 'operations' | 'peripheral'
+
+const CATEGORY_CLUSTER: Record<string, ClusterGroup> = {
+  'co-conspirator': 'inner_circle',
+  associate: 'inner_circle',
+  'inner-circle': 'inner_circle',
+  financier: 'financial',
+  financial_institution: 'financial',
+  trust: 'financial',
+  shell_company: 'financial',
+  bank: 'financial',
+  attorney: 'legal_political',
+  prosecutor: 'legal_political',
+  politician: 'legal_political',
+  government: 'legal_political',
+  'law-enforcement': 'legal_political',
+  recruiter: 'operations',
+  staff: 'operations',
+  pilot: 'operations',
+  property: 'operations',
+  employee: 'operations',
+}
+
+function getClusterGroup(category: string | null): ClusterGroup {
+  if (!category) return 'peripheral'
+  return CATEGORY_CLUSTER[category] ?? 'peripheral'
+}
+
+function getEdgeColor(type: string): string {
+  const cat = EDGE_CATEGORY_MAP[type] ?? 'other'
+  return EDGE_CATEGORY_COLORS[cat]
+}
+
+function getEdgeCategory(type: string): EdgeCategory {
+  return EDGE_CATEGORY_MAP[type] ?? 'other'
+}
+
+type LayoutMode = 'force' | 'radial'
 
 // -------------------------------------------------------------------
 // Page
@@ -81,7 +166,10 @@ export default function NetworkClient() {
   const [data, setData] = useState<GraphData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null)
+  const [hoveredEdge, setHoveredEdge] = useState<GraphEdge | null>(null)
   const [dimensions, setDimensions] = useState({ width: 900, height: 600 })
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('force')
+  const [showLegend, setShowLegend] = useState(true)
 
   // Filter state
   const [activeTiers, setActiveTiers] = useState<Set<number>>(new Set([1, 2, 3, 4, 5, 6]))
@@ -91,6 +179,7 @@ export default function NetworkClient() {
   )
   const [searchQuery, setSearchQuery] = useState('')
   const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null)
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
   // Path-finding state
@@ -133,7 +222,7 @@ export default function NetworkClient() {
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width } = entry.contentRect
-        setDimensions({ width, height: Math.max(500, Math.min(width * 0.65, 700)) })
+        setDimensions({ width, height: Math.max(600, Math.min(width * 0.7, 800)) })
       }
     })
     observer.observe(container)
@@ -251,12 +340,24 @@ export default function NetworkClient() {
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
     const { width, height } = dimensions
+    const cx = width / 2
+    const cy = height / 2
 
-    // Compute node degree
+    // Compute degree
     const degreeMap = new Map<string, number>()
     for (const edge of filteredData.edges) {
       degreeMap.set(edge.entity_a, (degreeMap.get(edge.entity_a) ?? 0) + 1)
       degreeMap.set(edge.entity_b, (degreeMap.get(edge.entity_b) ?? 0) + 1)
+    }
+
+    // Count parallel edges
+    const edgePairCount = new Map<string, number>()
+    const edgePairIndex = new Map<string, number>()
+    for (const e of filteredData.edges) {
+      const pairKey = [e.entity_a, e.entity_b].sort().join('|')
+      const count = (edgePairCount.get(pairKey) ?? 0) + 1
+      edgePairCount.set(pairKey, count)
+      edgePairIndex.set(e.id, count - 1)
     }
 
     const nodes: GraphNode[] = filteredData.nodes.map((n) => ({ ...n }))
@@ -267,43 +368,117 @@ export default function NetworkClient() {
     }))
 
     const g = svg.append('g')
+    let currentZoom = 1
+
     const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.3, 4])
-      .on('zoom', (event) => g.attr('transform', event.transform))
+      .scaleExtent([0.2, 4])
+      .on('zoom', (event) => {
+        g.attr('transform', event.transform)
+        currentZoom = event.transform.k
+        updateLabelVisibility()
+      })
     svg.call(zoom)
 
+    // Cluster positions
+    const clusterAngle: Record<ClusterGroup, number> = {
+      inner_circle: 0,
+      financial: Math.PI / 4,
+      legal_political: -Math.PI / 4 + Math.PI,
+      operations: Math.PI / 2 + Math.PI / 4,
+      peripheral: -Math.PI / 2 - Math.PI / 4,
+    }
+    const clusterRadius = Math.min(width, height) * 0.18
+
+    function getClusterX(category: string | null): number {
+      const group = getClusterGroup(category)
+      if (group === 'inner_circle') return cx
+      return cx + Math.cos(clusterAngle[group]) * clusterRadius
+    }
+
+    function getClusterY(category: string | null): number {
+      const group = getClusterGroup(category)
+      if (group === 'inner_circle') return cy
+      return cy + Math.sin(clusterAngle[group]) * clusterRadius
+    }
+
+    // Simulation
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink<GraphNode, GraphEdge>(edges).id((d) => d.id).distance(100))
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('link', d3.forceLink<GraphNode, GraphEdge>(edges).id((d) => d.id).distance(150))
+      .force('charge', d3.forceManyBody().strength(-120))
+      .force('center', d3.forceCenter(cx, cy).strength(0.05))
       .force('collision', d3.forceCollide().radius((d) => {
         const node = d as GraphNode
-        return getNodeRadius(degreeMap.get(node.id) ?? 0) + 4
+        return getNodeRadius(degreeMap.get(node.id) ?? 0) + 6
       }))
+      .velocityDecay(0.45)
+      .alphaDecay(0.03)
 
-    // Edges
-    const link = g.append('g')
-      .selectAll('line')
+    if (layoutMode === 'force') {
+      simulation
+        .force('clusterX', d3.forceX<GraphNode>((d) => getClusterX(d.category)).strength(0.04))
+        .force('clusterY', d3.forceY<GraphNode>((d) => getClusterY(d.category)).strength(0.04))
+    } else {
+      const tierRadius: Record<number, number> = { 1: 0, 2: 120, 3: 220, 4: 320, 5: 400, 6: 400 }
+      simulation
+        .force('radial', d3.forceRadial<GraphNode>(
+          (d) => tierRadius[d.tier ?? 6] ?? 400,
+          cx, cy,
+        ).strength(0.8))
+        .force('clusterX', null)
+        .force('clusterY', null)
+        .force('center', null)
+    }
+
+    // Pre-compute
+    simulation.alpha(1).stop()
+    for (let i = 0; i < 150; i++) simulation.tick()
+
+    // Edges (curved paths)
+    const linkGroup = g.append('g').attr('class', 'edges')
+
+    const link = linkGroup
+      .selectAll<SVGPathElement, GraphEdge>('path')
       .data(edges)
-      .join('line')
-      .attr('stroke', (d) => pathResult?.edgeIds.has(d.id) ? '#10B981' : '#4a4a4a')
-      .attr('stroke-width', (d) => pathResult?.edgeIds.has(d.id) ? 3 : 1.5)
-      .attr('stroke-opacity', (d) => {
-        if (pathResult) return pathResult.edgeIds.has(d.id) ? 1 : 0.1
-        return STRENGTH_OPACITY[d.evidence_strength ?? ''] ?? 0.4
+      .join('path')
+      .attr('fill', 'none')
+      .attr('stroke', (d) => {
+        if (pathResult?.edgeIds.has(d.id)) return '#10B981'
+        return getEdgeColor(d.relationship_type)
       })
+      .attr('stroke-width', (d) => {
+        if (pathResult?.edgeIds.has(d.id)) return 3
+        return getEdgeCategory(d.relationship_type) === 'criminal' ? 1.5 : 1
+      })
+      .attr('stroke-opacity', (d) => {
+        if (pathResult) return pathResult.edgeIds.has(d.id) ? 0.9 : 0.04
+        return 0.35
+      })
+      .style('cursor', 'pointer')
 
+    // Edge hit areas
+    const linkHitArea = linkGroup
+      .selectAll<SVGPathElement, GraphEdge>('.edge-hit')
+      .data(edges)
+      .join('path')
+      .attr('class', 'edge-hit')
+      .attr('fill', 'none')
+      .attr('stroke', 'transparent')
+      .attr('stroke-width', 12)
+      .style('cursor', 'pointer')
+
+    // Edge labels
     const linkLabel = g.append('g')
-      .selectAll('text')
+      .selectAll<SVGTextElement, GraphEdge>('text')
       .data(edges)
       .join('text')
-      .text((d) => formatRelationship(d.relationship_type))
-      .attr('font-size', '8px')
-      .attr('fill', '#9a9a9a')
+      .text((d) => RELATIONSHIP_LABELS[d.relationship_type] ?? formatRelationship(d.relationship_type))
+      .attr('font-size', '9px')
+      .attr('fill', (d) => getEdgeColor(d.relationship_type))
       .attr('text-anchor', 'middle')
-      .attr('dy', -4)
+      .attr('dy', -6)
       .style('pointer-events', 'none')
       .style('opacity', 0)
+      .style('text-shadow', '0 0 4px rgba(0,0,0,0.7)')
 
     // Nodes
     const node = g.append('g')
@@ -321,17 +496,19 @@ export default function NetworkClient() {
       .attr('stroke', (d) => {
         if (d.id === pathFrom || d.id === pathTo) return '#10B981'
         if (pathResult?.nodeIds.has(d.id)) return '#10B981'
-        if (d.id === highlightedNodeId) return '#FFFFFF'
+        if (d.id === highlightedNodeId || d.id === selectedNodeId) return '#FFFFFF'
+        if ((d.tier ?? 6) <= 2) return TIER_COLORS[d.tier ?? 1]
         return '#111318'
       })
       .attr('stroke-width', (d) => {
         if (d.id === pathFrom || d.id === pathTo) return 3
         if (pathResult?.nodeIds.has(d.id)) return 2.5
-        if (d.id === highlightedNodeId) return 3
-        return 2
+        if (d.id === highlightedNodeId || d.id === selectedNodeId) return 3
+        if ((d.tier ?? 6) <= 2) return 2
+        return 1.5
       })
       .attr('opacity', (d) => {
-        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.15
+        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
         return 1
       })
       .style('cursor', 'pointer')
@@ -342,7 +519,7 @@ export default function NetworkClient() {
       if (hn) {
         g.append('g').append('circle')
           .datum(hn)
-          .attr('r', getNodeRadius(degreeMap.get(hn.id) ?? 0) + 6)
+          .attr('r', getNodeRadius(degreeMap.get(hn.id) ?? 0) + 8)
           .attr('fill', 'none')
           .attr('stroke', '#b8860b')
           .attr('stroke-width', 2.5)
@@ -358,22 +535,80 @@ export default function NetworkClient() {
       .data(nodes)
       .join('text')
       .text((d) => truncateName(d.name))
-      .attr('font-size', (d) => (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId) ? '12px' : '10px')
-      .attr('font-weight', (d) => (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId) ? '600' : 'normal')
+      .attr('font-size', (d) => {
+        if (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId || d.id === selectedNodeId) return '12px'
+        if ((d.tier ?? 6) <= 2) return '12px'
+        if ((d.tier ?? 6) === 3) return '11px'
+        return '10px'
+      })
+      .attr('font-weight', (d) => {
+        if (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId || d.id === selectedNodeId) return '600'
+        if ((d.tier ?? 6) <= 2) return '600'
+        return 'normal'
+      })
       .attr('font-family', "'DM Sans', sans-serif")
-      .attr('fill', (d) => (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId) ? '#FFFFFF' : '#F9FAFB')
+      .attr('fill', (d) => {
+        if (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId || d.id === selectedNodeId) return '#FFFFFF'
+        if ((d.tier ?? 6) <= 2) return '#F9FAFB'
+        return '#D1D5DB'
+      })
       .attr('opacity', (d) => {
-        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
-        return 1
+        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0
+        if ((d.tier ?? 6) <= 2) return 1
+        return 0
       })
       .attr('text-anchor', 'middle')
       .attr('dy', (d) => getNodeRadius(degreeMap.get(d.id) ?? 0) + 14)
       .style('pointer-events', 'none')
+      .style('text-shadow', '0 0 6px rgba(0,0,0,0.9), 0 0 3px rgba(0,0,0,0.7)')
+
+    function updateLabelVisibility() {
+      if (pathResult || selectedNodeId) return
+      label.attr('opacity', (d) => {
+        const tier = d.tier ?? 6
+        if (tier <= 2) return 1
+        if (tier === 3 && currentZoom >= 1.0) return 0.9
+        if (tier === 4 && currentZoom >= 1.5) return 0.8
+        if ((tier === 5 || tier === 6) && currentZoom >= 2.0) return 0.7
+        return 0
+      })
+    }
+
+    updateLabelVisibility()
+
+    // Edge path generator
+    function edgePath(d: GraphEdge): string {
+      const src = d.source as GraphNode
+      const tgt = d.target as GraphNode
+      const x1 = src.x ?? 0, y1 = src.y ?? 0
+      const x2 = tgt.x ?? 0, y2 = tgt.y ?? 0
+
+      const pairKey = [d.entity_a, d.entity_b].sort().join('|')
+      const totalEdges = edgePairCount.get(pairKey) ?? 1
+      const idx = edgePairIndex.get(d.id) ?? 0
+
+      if (totalEdges === 1) {
+        const dx = x2 - x1, dy = y2 - y1
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1
+        const offset = Math.min(12, dist * 0.08)
+        const mx = (x1 + x2) / 2 - (dy / dist) * offset
+        const my = (y1 + y2) / 2 + (dx / dist) * offset
+        return `M${x1},${y1} Q${mx},${my} ${x2},${y2}`
+      }
+
+      const dx = x2 - x1, dy = y2 - y1
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1
+      const spread = 18
+      const offsetMag = spread * (idx - (totalEdges - 1) / 2)
+      const mx = (x1 + x2) / 2 - (dy / dist) * offsetMag
+      const my = (y1 + y2) / 2 + (dx / dist) * offsetMag
+      return `M${x1},${y1} Q${mx},${my} ${x2},${y2}`
+    }
 
     // Drag
     const drag = d3.drag<SVGCircleElement, GraphNode>()
       .on('start', (event, d) => {
-        if (!event.active) simulation.alphaTarget(0.3).restart()
+        if (!event.active) simulation.alphaTarget(0.1).restart()
         d.fx = d.x; d.fy = d.y
       })
       .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y })
@@ -383,60 +618,104 @@ export default function NetworkClient() {
       })
     node.call(drag)
 
-    // Hover
+    // Interaction helpers
+    function highlightConnections(nodeId: string) {
+      const connIds = new Set<string>([nodeId])
+      const connEdgeIds = new Set<string>()
+
+      for (const e of edges) {
+        const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
+        const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
+        if (src === nodeId || tgt === nodeId) {
+          connIds.add(src as string)
+          connIds.add(tgt as string)
+          connEdgeIds.add(e.id)
+        }
+      }
+
+      link
+        .attr('stroke-opacity', (e) => connEdgeIds.has(e.id) ? 0.8 : 0.04)
+        .attr('stroke-width', (e) => connEdgeIds.has(e.id) ? 2.5 : 1)
+      linkLabel.style('opacity', (e) => connEdgeIds.has(e.id) ? 1 : 0)
+      node.attr('opacity', (n) => connIds.has(n.id) ? 1 : 0.08)
+      label
+        .attr('opacity', (n) => connIds.has(n.id) ? 1 : 0)
+        .attr('font-size', (n) => connIds.has(n.id) && n.id !== nodeId ? '11px' : (n.id === nodeId ? '13px' : '10px'))
+    }
+
+    function resetHighlight() {
+      if (selectedNodeId) { highlightConnections(selectedNodeId); return }
+      link
+        .attr('stroke', (d) => {
+          if (pathResult?.edgeIds.has(d.id)) return '#10B981'
+          return getEdgeColor(d.relationship_type)
+        })
+        .attr('stroke-opacity', (d) => {
+          if (pathResult) return pathResult.edgeIds.has(d.id) ? 0.9 : 0.04
+          return 0.35
+        })
+        .attr('stroke-width', (d) => {
+          if (pathResult?.edgeIds.has(d.id)) return 3
+          return getEdgeCategory(d.relationship_type) === 'criminal' ? 1.5 : 1
+        })
+      linkLabel.style('opacity', 0)
+      node.attr('opacity', (d) => {
+        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
+        return 1
+      })
+      updateLabelVisibility()
+    }
+
+    // Node hover & click
     node
       .on('mouseover', (_event, d) => {
         setHoveredNode(d)
-        const connected = new Set<string>([d.id])
-        link
-          .attr('stroke-opacity', (e) => {
-            const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
-            const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
-            if (src === d.id || tgt === d.id) {
-              connected.add(src as string); connected.add(tgt as string)
-              return 1
-            }
-            return 0.08
-          })
-          .attr('stroke', (e) => {
-            const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
-            const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
-            return (src === d.id || tgt === d.id) ? '#b8860b' : '#4a4a4a'
-          })
-          .attr('stroke-width', (e) => {
-            const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
-            const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
-            return (src === d.id || tgt === d.id) ? 2.5 : 1.5
-          })
-        linkLabel.style('opacity', (e) => {
-          const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
-          const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
-          return (src === d.id || tgt === d.id) ? 1 : 0
-        })
-        node.attr('opacity', (n) => connected.has(n.id) ? 1 : 0.2)
-        label.attr('opacity', (n) => connected.has(n.id) ? 1 : 0.15)
+        if (!selectedNodeId) highlightConnections(d.id)
       })
       .on('mouseout', () => {
         setHoveredNode(null)
-        link
-          .attr('stroke', '#4a4a4a')
-          .attr('stroke-opacity', (d) => STRENGTH_OPACITY[d.evidence_strength ?? ''] ?? 0.4)
-          .attr('stroke-width', 1.5)
-        linkLabel.style('opacity', 0)
-        node.attr('opacity', 1)
-        label.attr('opacity', 1)
+        if (!selectedNodeId) resetHighlight()
       })
-      .on('click', (_event, d) => {
+      .on('click', (event, d) => {
+        event.stopPropagation()
+        if (selectedNodeId === d.id) {
+          setSelectedNodeId(null)
+          resetHighlight()
+        } else {
+          setSelectedNodeId(d.id)
+          highlightConnections(d.id)
+        }
+      })
+      .on('dblclick', (_event, d) => {
         if (d.slug) router.push(`/entities/${d.slug}`)
       })
 
-    // Tick
+    // Edge hover
+    linkHitArea
+      .on('mouseover', (_event, d) => {
+        setHoveredEdge(d)
+        link.attr('stroke-opacity', (e) => e.id === d.id ? 0.9 : 0.1)
+        linkLabel.style('opacity', (e) => e.id === d.id ? 1 : 0)
+      })
+      .on('mouseout', () => {
+        setHoveredEdge(null)
+        if (selectedNodeId) highlightConnections(selectedNodeId)
+        else resetHighlight()
+      })
+
+    // Background click
+    svg.on('click', () => {
+      setSelectedNodeId(null)
+      setHoveredEdge(null)
+      resetHighlight()
+    })
+
+    // Start gently
+    simulation.alpha(0.3).restart()
+
     simulation.on('tick', () => {
-      link
-        .attr('x1', (d) => (d.source as GraphNode).x ?? 0)
-        .attr('y1', (d) => (d.source as GraphNode).y ?? 0)
-        .attr('x2', (d) => (d.target as GraphNode).x ?? 0)
-        .attr('y2', (d) => (d.target as GraphNode).y ?? 0)
+      link.attr('d', edgePath)
+      linkHitArea.attr('d', edgePath)
       linkLabel
         .attr('x', (d) => ((d.source as GraphNode).x! + (d.target as GraphNode).x!) / 2)
         .attr('y', (d) => ((d.source as GraphNode).y! + (d.target as GraphNode).y!) / 2)
@@ -451,8 +730,8 @@ export default function NetworkClient() {
         .attr('cy', (d) => (d as GraphNode).y ?? 0)
     })
 
-    if (highlightedNodeId) {
-      simulation.on('end', () => {
+    simulation.on('end', () => {
+      if (highlightedNodeId) {
         const hn = nodes.find((n) => n.id === highlightedNodeId)
         if (hn && hn.x != null && hn.y != null) {
           const scale = 1.8
@@ -461,11 +740,28 @@ export default function NetworkClient() {
             d3.zoomIdentity.translate(width / 2 - hn.x * scale, height / 2 - hn.y * scale).scale(scale),
           )
         }
-      })
-    }
+      } else {
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+        for (const n of nodes) {
+          if (n.x != null && n.y != null) {
+            minX = Math.min(minX, n.x); minY = Math.min(minY, n.y)
+            maxX = Math.max(maxX, n.x); maxY = Math.max(maxY, n.y)
+          }
+        }
+        if (minX < Infinity) {
+          const padding = 60
+          const bw = maxX - minX + padding * 2
+          const bh = maxY - minY + padding * 2
+          const scale = Math.min(width / bw, height / bh, 1.5)
+          const tx = width / 2 - (minX + maxX) / 2 * scale
+          const ty = height / 2 - (minY + maxY) / 2 * scale
+          svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale))
+        }
+      }
+    })
 
     return () => { simulation.stop() }
-  }, [filteredData, dimensions, router, highlightedNodeId, pathResult, pathFrom, pathTo])
+  }, [filteredData, dimensions, router, highlightedNodeId, pathResult, pathFrom, pathTo, layoutMode, selectedNodeId])
 
   // -------------------------------------------------------------------
   // Render
@@ -479,12 +775,31 @@ export default function NetworkClient() {
             The Network Map
           </h1>
           <p className="font-body text-text-secondary mt-1">
-            Every documented connection across six evidence tiers. Hover to highlight, click to view profile, drag to rearrange.
+            Every documented connection across six evidence tiers. Click to pin, double-click to view profile, drag to rearrange.
           </p>
         </div>
 
-        {/* Controls */}
         <div className="flex flex-wrap items-center gap-2">
+          {/* Layout toggle */}
+          <div className="flex bg-white border border-border-default overflow-hidden">
+            <button
+              onClick={() => setLayoutMode('force')}
+              className={`px-3 py-1.5 text-xs font-sans transition-colors ${
+                layoutMode === 'force' ? 'bg-accent-gold/10 text-accent-gold' : 'text-text-muted hover:text-text-secondary'
+              }`}
+            >
+              Force
+            </button>
+            <button
+              onClick={() => setLayoutMode('radial')}
+              className={`px-3 py-1.5 text-xs font-sans transition-colors ${
+                layoutMode === 'radial' ? 'bg-accent-gold/10 text-accent-gold' : 'text-text-muted hover:text-text-secondary'
+              }`}
+            >
+              Radial
+            </button>
+          </div>
+
           {/* Search */}
           <div className="relative">
             <input
@@ -514,7 +829,6 @@ export default function NetworkClient() {
             )}
           </div>
 
-          {/* Highlighted indicator */}
           {highlightedNodeId && data && (
             <button
               onClick={clearHighlight}
@@ -525,7 +839,6 @@ export default function NetworkClient() {
             </button>
           )}
 
-          {/* Path finder */}
           <button
             onClick={() => { setShowPathFinder(!showPathFinder); if (showPathFinder) clearPath() }}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-sm transition-colors font-sans ${
@@ -537,7 +850,6 @@ export default function NetworkClient() {
             Find Path
           </button>
 
-          {/* Filters */}
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-sm transition-colors font-sans ${
@@ -558,7 +870,6 @@ export default function NetworkClient() {
       {showFilters && (
         <div className="bg-white border border-border-default p-4 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Tier filters */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs font-medium uppercase tracking-wider text-text-muted font-sans">Entity Tiers</p>
@@ -585,7 +896,6 @@ export default function NetworkClient() {
               </div>
             </div>
 
-            {/* Relationship filters */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs font-medium uppercase tracking-wider text-text-muted font-sans">Relationship Types</p>
@@ -602,6 +912,7 @@ export default function NetworkClient() {
                         </svg>
                       )}
                     </span>
+                    <span className="w-2.5 h-0.5 rounded shrink-0" style={{ backgroundColor: getEdgeColor(type) }} />
                     <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors capitalize font-sans">
                       {RELATIONSHIP_LABELS[type] ?? formatRelationship(type)}
                     </span>
@@ -610,7 +921,6 @@ export default function NetworkClient() {
               </div>
             </div>
 
-            {/* Strength filters */}
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-2 font-sans">Evidence Strength</p>
               <div className="space-y-1.5">
@@ -641,7 +951,7 @@ export default function NetworkClient() {
         </div>
       )}
 
-      {/* Path finder panel */}
+      {/* Path finder */}
       {showPathFinder && (
         <div className="bg-white border border-border-default p-4 mb-4">
           <div className="flex items-center gap-2 mb-3">
@@ -649,7 +959,6 @@ export default function NetworkClient() {
             {pathResult && <button onClick={clearPath} className="ml-auto text-xs text-text-muted hover:text-text-secondary font-sans">Clear path</button>}
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-4">
-            {/* From */}
             <div className="flex-1 relative">
               <label className="text-xs text-text-muted mb-1 block font-sans">From</label>
               {pathFrom && data ? (
@@ -675,7 +984,6 @@ export default function NetworkClient() {
               )}
             </div>
             <div className="hidden sm:flex items-center pt-5 text-text-muted">&rarr;</div>
-            {/* To */}
             <div className="flex-1 relative">
               <label className="text-xs text-text-muted mb-1 block font-sans">To</label>
               {pathTo && data ? (
@@ -733,14 +1041,14 @@ export default function NetworkClient() {
         ))}
       </div>
 
-      {/* Loading state */}
+      {/* Loading */}
       {isLoading && (
         <div className="border border-border-default p-8">
           <div className="w-full h-[500px] bg-elevated animate-pulse" />
         </div>
       )}
 
-      {/* Empty state */}
+      {/* Empty */}
       {!isLoading && filteredData && filteredData.nodes.length === 0 && (
         <div className="border border-border-default p-12 text-center">
           {data && data.nodes.length > 0 ? (
@@ -763,9 +1071,43 @@ export default function NetworkClient() {
         <div ref={containerRef} className="border border-border-default overflow-hidden relative">
           <svg ref={svgRef} width={dimensions.width} height={dimensions.height} className="w-full" style={{ background: '#111318' }} />
 
+          {/* Connection legend */}
+          {showLegend && (
+            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm border border-border-default p-3 z-10">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted font-sans">Connections</p>
+                <button onClick={() => setShowLegend(false)} className="text-text-muted hover:text-text-secondary ml-4">
+                  <span className="text-xs">&times;</span>
+                </button>
+              </div>
+              <div className="space-y-1.5">
+                {(Object.entries(EDGE_CATEGORY_COLORS) as [EdgeCategory, string][]).map(([cat, color]) => (
+                  <div key={cat} className="flex items-center gap-2">
+                    <svg width="20" height="6">
+                      <line x1="0" y1="3" x2="20" y2="3" stroke={color} strokeWidth={cat === 'criminal' ? 2 : 1.5} strokeOpacity={0.8} />
+                    </svg>
+                    <span className="text-[10px] text-text-secondary font-sans">{EDGE_CATEGORY_LABELS[cat]}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 pt-2 border-t border-border-default space-y-1">
+                <p className="text-[9px] text-text-muted font-sans">Click to pin, double-click for profile</p>
+              </div>
+            </div>
+          )}
+
+          {!showLegend && (
+            <button
+              onClick={() => setShowLegend(true)}
+              className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm border border-border-default px-2.5 py-1.5 text-[10px] font-sans text-text-muted hover:text-text-secondary z-10"
+            >
+              Legend
+            </button>
+          )}
+
           {/* Hover tooltip */}
           {hoveredNode && (
-            <div className="absolute top-4 right-4 bg-white border border-border-default p-3 min-w-[180px] pointer-events-none shadow-sm">
+            <div className="absolute top-4 right-4 bg-white border border-border-default p-3 min-w-[180px] pointer-events-none shadow-sm z-10">
               <p className="font-display text-sm font-semibold text-text-primary">{hoveredNode.name}</p>
               <div className="flex items-center gap-2 mt-1">
                 {hoveredNode.tier && (
@@ -775,7 +1117,23 @@ export default function NetworkClient() {
                 )}
                 {hoveredNode.category && <span className="text-xs text-text-muted capitalize">{hoveredNode.category.replace(/_/g, ' ')}</span>}
               </div>
-              {hoveredNode.slug && <p className="text-xs text-accent-gold mt-1.5">Click to view profile</p>}
+              {hoveredNode.slug && <p className="text-xs text-accent-gold mt-1.5">Double-click to view profile</p>}
+            </div>
+          )}
+
+          {/* Edge tooltip */}
+          {hoveredEdge && !hoveredNode && (
+            <div className="absolute top-4 right-4 bg-white border border-border-default p-3 min-w-[200px] pointer-events-none shadow-sm z-10">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-3 h-0.5 rounded" style={{ backgroundColor: getEdgeColor(hoveredEdge.relationship_type) }} />
+                <p className="text-xs text-text-primary font-sans">
+                  {RELATIONSHIP_LABELS[hoveredEdge.relationship_type] ?? hoveredEdge.relationship_type.replace(/_/g, ' ')}
+                </p>
+              </div>
+              <p className="text-[10px] text-text-muted">
+                {data?.nodes.find((n) => n.id === hoveredEdge.entity_a)?.name} → {data?.nodes.find((n) => n.id === hoveredEdge.entity_b)?.name}
+              </p>
+              {hoveredEdge.description && <p className="text-[10px] text-text-secondary mt-1 line-clamp-3">{hoveredEdge.description}</p>}
             </div>
           )}
         </div>
@@ -803,11 +1161,11 @@ export default function NetworkClient() {
 // -------------------------------------------------------------------
 
 function getNodeRadius(degree: number): number {
-  return Math.max(6, Math.min(20, 6 + degree * 2.5))
+  return Math.max(8, Math.min(28, 8 + Math.sqrt(degree) * 5))
 }
 
 function truncateName(name: string): string {
-  return name.length <= 18 ? name : name.slice(0, 16) + '...'
+  return name.length <= 20 ? name : name.slice(0, 18) + '\u2026'
 }
 
 function formatRelationship(type: string): string {

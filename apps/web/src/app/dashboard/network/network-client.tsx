@@ -39,6 +39,7 @@ interface GraphData {
 }
 
 type ViewMode = 'graph' | 'table'
+type LayoutMode = 'force' | 'radial'
 type SortKey = 'entity_a' | 'entity_b' | 'relationship' | 'strength'
 type SortDir = 'asc' | 'desc'
 
@@ -66,6 +67,7 @@ const STRENGTH_OPACITY: Record<string, number> = {
 const RELATIONSHIP_LABELS: Record<string, string> = {
   employed_by: 'Employed by',
   trafficked_by: 'Trafficked by',
+  trafficked_for: 'Trafficked for',
   represented_by: 'Represented by',
   investigated_by: 'Investigated by',
   paid_by: 'Paid by',
@@ -77,12 +79,94 @@ const RELATIONSHIP_LABELS: Record<string, string> = {
   referred_by: 'Referred by',
   subsidiary_of: 'Subsidiary of',
   owned_by: 'Owned by',
+  co_accused: 'Co-accused',
+  financial: 'Financial',
+  social: 'Social',
+  professional: 'Professional',
+  associated_with: 'Associated with',
+  protected_by: 'Protected by',
 }
 
 const STRENGTH_COLORS: Record<string, string> = {
   documented: '#10B981',
   alleged: '#F59E0B',
   circumstantial: '#6B7280',
+}
+
+// Edge colors by relationship category (dashboard palette)
+type EdgeCategory = 'criminal' | 'financial' | 'legal' | 'personal' | 'other'
+
+const EDGE_CATEGORY_MAP: Record<string, EdgeCategory> = {
+  co_accused: 'criminal',
+  trafficked_by: 'criminal',
+  trafficked_for: 'criminal',
+  financial: 'financial',
+  employed_by: 'financial',
+  hired_by: 'financial',
+  paid_by: 'financial',
+  attorney_for: 'legal',
+  investigated_by: 'legal',
+  protected_by: 'legal',
+  referred_by: 'legal',
+  family_of: 'personal',
+  social: 'personal',
+  associated_with: 'other',
+  professional: 'other',
+  connected_to: 'other',
+}
+
+const EDGE_CATEGORY_COLORS: Record<EdgeCategory, string> = {
+  criminal: '#DC2626',
+  financial: '#10B981',
+  legal: '#3B82F6',
+  personal: '#8B5CF6',
+  other: '#6B7280',
+}
+
+const EDGE_CATEGORY_LABELS: Record<EdgeCategory, string> = {
+  criminal: 'Criminal',
+  financial: 'Financial',
+  legal: 'Legal',
+  personal: 'Personal',
+  other: 'Other',
+}
+
+// Cluster positions by entity category
+type ClusterGroup = 'inner_circle' | 'financial' | 'legal_political' | 'operations' | 'peripheral'
+
+const CATEGORY_CLUSTER: Record<string, ClusterGroup> = {
+  'co-conspirator': 'inner_circle',
+  associate: 'inner_circle',
+  'inner-circle': 'inner_circle',
+  financier: 'financial',
+  financial_institution: 'financial',
+  trust: 'financial',
+  shell_company: 'financial',
+  bank: 'financial',
+  attorney: 'legal_political',
+  prosecutor: 'legal_political',
+  politician: 'legal_political',
+  government: 'legal_political',
+  'law-enforcement': 'legal_political',
+  recruiter: 'operations',
+  staff: 'operations',
+  pilot: 'operations',
+  property: 'operations',
+  employee: 'operations',
+}
+
+function getClusterGroup(category: string | null): ClusterGroup {
+  if (!category) return 'peripheral'
+  return CATEGORY_CLUSTER[category] ?? 'peripheral'
+}
+
+function getEdgeColor(type: string): string {
+  const cat = EDGE_CATEGORY_MAP[type] ?? 'other'
+  return EDGE_CATEGORY_COLORS[cat]
+}
+
+function getEdgeCategory(type: string): EdgeCategory {
+  return EDGE_CATEGORY_MAP[type] ?? 'other'
 }
 
 // -------------------------------------------------------------------
@@ -96,10 +180,13 @@ export default function NetworkClient() {
   const [data, setData] = useState<GraphData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null)
+  const [hoveredEdge, setHoveredEdge] = useState<GraphEdge | null>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   // View mode
   const [viewMode, setViewMode] = useState<ViewMode>('graph')
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('force')
+  const [showLegend, setShowLegend] = useState(true)
 
   // Filter state (shared between views)
   const [activeTiers, setActiveTiers] = useState<Set<number>>(new Set([1, 2, 3, 4, 5, 6]))
@@ -109,6 +196,7 @@ export default function NetworkClient() {
   )
   const [searchQuery, setSearchQuery] = useState('')
   const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null)
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
   // Path-finding state (graph view only)
@@ -157,7 +245,7 @@ export default function NetworkClient() {
       for (const entry of entries) {
         const { width } = entry.contentRect
         if (width > 0) {
-          setDimensions({ width, height: Math.max(500, Math.min(width * 0.65, 700)) })
+          setDimensions({ width, height: Math.max(600, Math.min(width * 0.7, 800)) })
         }
       }
     })
@@ -187,11 +275,9 @@ export default function NetworkClient() {
   const filteredData = useMemo(() => {
     if (!data) return null
 
-    // Filter nodes by tier
     const filteredNodes = data.nodes.filter((n) => activeTiers.has(n.tier ?? 0))
     const nodeIds = new Set(filteredNodes.map((n) => n.id))
 
-    // Filter edges: both endpoints must be visible, relationship type active, strength active
     const filteredEdges = data.edges.filter((e) => {
       if (!nodeIds.has(e.entity_a) || !nodeIds.has(e.entity_b)) return false
       if (!activeRelationships.has(e.relationship_type)) return false
@@ -199,7 +285,6 @@ export default function NetworkClient() {
       return true
     })
 
-    // Re-filter nodes: only keep those with at least one visible edge
     const connectedIds = new Set<string>()
     for (const e of filteredEdges) {
       connectedIds.add(e.entity_a)
@@ -214,9 +299,7 @@ export default function NetworkClient() {
   const searchMatches = useMemo(() => {
     if (!searchQuery.trim() || !data) return []
     const q = searchQuery.toLowerCase()
-    return data.nodes
-      .filter((n) => n.name.toLowerCase().includes(q))
-      .slice(0, 8)
+    return data.nodes.filter((n) => n.name.toLowerCase().includes(q)).slice(0, 8)
   }, [searchQuery, data])
 
   // Compute shortest path
@@ -228,25 +311,21 @@ export default function NetworkClient() {
   // Path search matches
   const pathFromMatches = useMemo(() => {
     if (!pathFromSearch.trim() || !data) return []
-    const q = pathFromSearch.toLowerCase()
-    return data.nodes.filter((n) => n.name.toLowerCase().includes(q)).slice(0, 6)
+    return data.nodes.filter((n) => n.name.toLowerCase().includes(pathFromSearch.toLowerCase())).slice(0, 6)
   }, [pathFromSearch, data])
 
   const pathToMatches = useMemo(() => {
     if (!pathToSearch.trim() || !data) return []
-    const q = pathToSearch.toLowerCase()
-    return data.nodes.filter((n) => n.name.toLowerCase().includes(q)).slice(0, 6)
+    return data.nodes.filter((n) => n.name.toLowerCase().includes(pathToSearch.toLowerCase())).slice(0, 6)
   }, [pathToSearch, data])
 
-  // Handle search selection
+  // Handlers
   const handleSearchSelect = useCallback((nodeId: string) => {
     setHighlightedNodeId(nodeId)
     setSearchQuery('')
   }, [])
 
-  const clearHighlight = useCallback(() => {
-    setHighlightedNodeId(null)
-  }, [])
+  const clearHighlight = useCallback(() => setHighlightedNodeId(null), [])
 
   const clearPath = useCallback(() => {
     setPathFrom(null)
@@ -255,7 +334,6 @@ export default function NetworkClient() {
     setPathToSearch('')
   }, [])
 
-  // Toggle helpers
   const toggleTier = useCallback((tier: number) => {
     setActiveTiers((prev) => {
       const next = new Set(prev)
@@ -310,8 +388,6 @@ export default function NetworkClient() {
     if (!filteredData || !data) return []
 
     const nodeMap = new Map(data.nodes.map((n) => [n.id, n]))
-
-    // Apply search filter for table view
     const q = searchQuery.trim().toLowerCase()
 
     const rows = filteredData.edges
@@ -337,7 +413,6 @@ export default function NetworkClient() {
         )
       })
 
-    // Sort
     rows.sort((a, b) => {
       let cmp = 0
       switch (sortKey) {
@@ -364,9 +439,7 @@ export default function NetworkClient() {
   useEffect(() => {
     if (viewMode !== 'graph') return
     if (!filteredData || !svgRef.current || filteredData.nodes.length === 0 || dimensions.width === 0) {
-      if (svgRef.current) {
-        d3.select(svgRef.current).selectAll('*').remove()
-      }
+      if (svgRef.current) d3.select(svgRef.current).selectAll('*').remove()
       return
     }
 
@@ -374,12 +447,24 @@ export default function NetworkClient() {
     svg.selectAll('*').remove()
 
     const { width, height } = dimensions
+    const cx = width / 2
+    const cy = height / 2
 
-    // Compute node degree for sizing
+    // Compute degree for node sizing
     const degreeMap = new Map<string, number>()
     for (const edge of filteredData.edges) {
       degreeMap.set(edge.entity_a, (degreeMap.get(edge.entity_a) ?? 0) + 1)
       degreeMap.set(edge.entity_b, (degreeMap.get(edge.entity_b) ?? 0) + 1)
+    }
+
+    // Count parallel edges for curve offset
+    const edgePairCount = new Map<string, number>()
+    const edgePairIndex = new Map<string, number>()
+    for (const e of filteredData.edges) {
+      const pairKey = [e.entity_a, e.entity_b].sort().join('|')
+      const count = (edgePairCount.get(pairKey) ?? 0) + 1
+      edgePairCount.set(pairKey, count)
+      edgePairIndex.set(e.id, count - 1)
     }
 
     const nodes: GraphNode[] = filteredData.nodes.map((n) => ({ ...n }))
@@ -389,56 +474,123 @@ export default function NetworkClient() {
       target: e.entity_b,
     }))
 
-    // Zoom container
     const g = svg.append('g')
 
+    // Track zoom level for progressive labels
+    let currentZoom = 1
+
     const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.3, 4])
+      .scaleExtent([0.2, 4])
       .on('zoom', (event) => {
         g.attr('transform', event.transform)
+        currentZoom = event.transform.k
+        updateLabelVisibility()
       })
 
     svg.call(zoom)
 
-    // Force simulation
+    // Cluster positions
+    const clusterAngle: Record<ClusterGroup, number> = {
+      inner_circle: 0,
+      financial: Math.PI / 4,
+      legal_political: -Math.PI / 4 + Math.PI,
+      operations: Math.PI / 2 + Math.PI / 4,
+      peripheral: -Math.PI / 2 - Math.PI / 4,
+    }
+    const clusterRadius = Math.min(width, height) * 0.18
+
+    function getClusterX(category: string | null): number {
+      const group = getClusterGroup(category)
+      if (group === 'inner_circle') return cx
+      return cx + Math.cos(clusterAngle[group]) * clusterRadius
+    }
+
+    function getClusterY(category: string | null): number {
+      const group = getClusterGroup(category)
+      if (group === 'inner_circle') return cy
+      return cy + Math.sin(clusterAngle[group]) * clusterRadius
+    }
+
+    // Simulation
     const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink<GraphNode, GraphEdge>(edges)
-        .id((d) => d.id)
-        .distance(100)
-      )
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('link', d3.forceLink<GraphNode, GraphEdge>(edges).id((d) => d.id).distance(150))
+      .force('charge', d3.forceManyBody().strength(-120))
+      .force('center', d3.forceCenter(cx, cy).strength(0.05))
       .force('collision', d3.forceCollide().radius((d) => {
         const node = d as GraphNode
-        return getNodeRadius(degreeMap.get(node.id) ?? 0) + 4
+        return getNodeRadius(degreeMap.get(node.id) ?? 0) + 6
       }))
+      .velocityDecay(0.45)
+      .alphaDecay(0.03)
 
-    // Draw edges
-    const link = g.append('g')
-      .selectAll('line')
+    if (layoutMode === 'force') {
+      simulation
+        .force('clusterX', d3.forceX<GraphNode>((d) => getClusterX(d.category)).strength(0.04))
+        .force('clusterY', d3.forceY<GraphNode>((d) => getClusterY(d.category)).strength(0.04))
+    } else {
+      const tierRadius: Record<number, number> = { 1: 0, 2: 120, 3: 220, 4: 320, 5: 400, 6: 400 }
+      simulation
+        .force('radial', d3.forceRadial<GraphNode>(
+          (d) => tierRadius[d.tier ?? 6] ?? 400,
+          cx, cy,
+        ).strength(0.8))
+        .force('clusterX', null)
+        .force('clusterY', null)
+        .force('center', null)
+    }
+
+    // Pre-compute layout
+    simulation.alpha(1).stop()
+    for (let i = 0; i < 150; i++) simulation.tick()
+
+    // Edges (curved paths)
+    const linkGroup = g.append('g').attr('class', 'edges')
+
+    const link = linkGroup
+      .selectAll<SVGPathElement, GraphEdge>('path')
       .data(edges)
-      .join('line')
-      .attr('stroke', (d) => pathResult?.edgeIds.has(d.id) ? '#10B981' : '#374151')
-      .attr('stroke-width', (d) => pathResult?.edgeIds.has(d.id) ? 3 : 1.5)
-      .attr('stroke-opacity', (d) => {
-        if (pathResult) return pathResult.edgeIds.has(d.id) ? 1 : 0.1
-        return STRENGTH_OPACITY[d.evidence_strength ?? ''] ?? 0.4
+      .join('path')
+      .attr('fill', 'none')
+      .attr('stroke', (d) => {
+        if (pathResult?.edgeIds.has(d.id)) return '#10B981'
+        return getEdgeColor(d.relationship_type)
       })
+      .attr('stroke-width', (d) => {
+        if (pathResult?.edgeIds.has(d.id)) return 3
+        const cat = getEdgeCategory(d.relationship_type)
+        return cat === 'criminal' ? 1.5 : 1
+      })
+      .attr('stroke-opacity', (d) => {
+        if (pathResult) return pathResult.edgeIds.has(d.id) ? 0.9 : 0.04
+        return 0.3
+      })
+      .style('cursor', 'pointer')
 
-    // Draw edge labels
+    // Edge hover areas
+    const linkHitArea = linkGroup
+      .selectAll<SVGPathElement, GraphEdge>('.edge-hit')
+      .data(edges)
+      .join('path')
+      .attr('class', 'edge-hit')
+      .attr('fill', 'none')
+      .attr('stroke', 'transparent')
+      .attr('stroke-width', 12)
+      .style('cursor', 'pointer')
+
+    // Edge labels
     const linkLabel = g.append('g')
-      .selectAll('text')
+      .selectAll<SVGTextElement, GraphEdge>('text')
       .data(edges)
       .join('text')
-      .text((d) => formatRelationship(d.relationship_type))
-      .attr('font-size', '8px')
-      .attr('fill', '#6B7280')
+      .text((d) => RELATIONSHIP_LABELS[d.relationship_type] ?? formatRelationship(d.relationship_type))
+      .attr('font-size', '9px')
+      .attr('fill', (d) => getEdgeColor(d.relationship_type))
       .attr('text-anchor', 'middle')
-      .attr('dy', -4)
+      .attr('dy', -6)
       .style('pointer-events', 'none')
       .style('opacity', 0)
 
-    // Draw nodes
+    // Nodes
     const node = g.append('g')
       .selectAll<SVGCircleElement, GraphNode>('circle')
       .data(nodes)
@@ -454,29 +606,31 @@ export default function NetworkClient() {
       .attr('stroke', (d) => {
         if (d.id === pathFrom || d.id === pathTo) return '#10B981'
         if (pathResult?.nodeIds.has(d.id)) return '#10B981'
-        if (d.id === highlightedNodeId) return '#FFFFFF'
+        if (d.id === highlightedNodeId || d.id === selectedNodeId) return '#FFFFFF'
+        if ((d.tier ?? 6) <= 2) return TIER_COLORS[d.tier ?? 1]
         return 'var(--color-background)'
       })
       .attr('stroke-width', (d) => {
         if (d.id === pathFrom || d.id === pathTo) return 3
         if (pathResult?.nodeIds.has(d.id)) return 2.5
-        if (d.id === highlightedNodeId) return 3
-        return 2
+        if (d.id === highlightedNodeId || d.id === selectedNodeId) return 3
+        if ((d.tier ?? 6) <= 2) return 2
+        return 1.5
       })
       .attr('opacity', (d) => {
-        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.15
+        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
         return 1
       })
       .style('cursor', 'pointer')
 
-    // Highlight ring for searched node
+    // Highlight ring
     if (highlightedNodeId) {
-      const highlightNode = nodes.find((n) => n.id === highlightedNodeId)
-      if (highlightNode) {
+      const hn = nodes.find((n) => n.id === highlightedNodeId)
+      if (hn) {
         g.append('g')
           .append('circle')
-          .datum(highlightNode)
-          .attr('r', getNodeRadius(degreeMap.get(highlightNode.id) ?? 0) + 6)
+          .datum(hn)
+          .attr('r', getNodeRadius(degreeMap.get(hn.id) ?? 0) + 8)
           .attr('fill', 'none')
           .attr('stroke', '#3B82F6')
           .attr('stroke-width', 2.5)
@@ -486,40 +640,85 @@ export default function NetworkClient() {
       }
     }
 
-    // Draw labels
+    // Labels
     const label = g.append('g')
       .selectAll<SVGTextElement, GraphNode>('text')
       .data(nodes)
       .join('text')
       .text((d) => truncateName(d.name))
       .attr('font-size', (d) => {
-        if (pathResult?.nodeIds.has(d.id)) return '12px'
-        if (d.id === highlightedNodeId) return '12px'
+        if (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId || d.id === selectedNodeId) return '12px'
+        if ((d.tier ?? 6) <= 2) return '12px'
+        if ((d.tier ?? 6) === 3) return '11px'
         return '10px'
       })
       .attr('font-weight', (d) => {
-        if (pathResult?.nodeIds.has(d.id)) return '600'
-        if (d.id === highlightedNodeId) return '600'
+        if (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId || d.id === selectedNodeId) return '600'
+        if ((d.tier ?? 6) <= 2) return '600'
         return 'normal'
       })
       .attr('font-family', 'var(--font-body)')
       .attr('fill', (d) => {
-        if (pathResult?.nodeIds.has(d.id)) return '#FFFFFF'
-        if (d.id === highlightedNodeId) return '#FFFFFF'
-        return '#F9FAFB'
+        if (pathResult?.nodeIds.has(d.id) || d.id === highlightedNodeId || d.id === selectedNodeId) return '#FFFFFF'
+        if ((d.tier ?? 6) <= 2) return '#F9FAFB'
+        return '#D1D5DB'
       })
       .attr('opacity', (d) => {
-        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
-        return 1
+        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0
+        if ((d.tier ?? 6) <= 2) return 1
+        return 0
       })
       .attr('text-anchor', 'middle')
       .attr('dy', (d) => getNodeRadius(degreeMap.get(d.id) ?? 0) + 14)
       .style('pointer-events', 'none')
 
-    // Drag behavior
+    function updateLabelVisibility() {
+      if (pathResult || selectedNodeId) return
+      label.attr('opacity', (d) => {
+        const tier = d.tier ?? 6
+        if (tier <= 2) return 1
+        if (tier === 3 && currentZoom >= 1.0) return 0.9
+        if (tier === 4 && currentZoom >= 1.5) return 0.8
+        if ((tier === 5 || tier === 6) && currentZoom >= 2.0) return 0.7
+        return 0
+      })
+    }
+
+    updateLabelVisibility()
+
+    // Edge path generator
+    function edgePath(d: GraphEdge): string {
+      const src = d.source as GraphNode
+      const tgt = d.target as GraphNode
+      const x1 = src.x ?? 0, y1 = src.y ?? 0
+      const x2 = tgt.x ?? 0, y2 = tgt.y ?? 0
+
+      const pairKey = [d.entity_a, d.entity_b].sort().join('|')
+      const totalEdges = edgePairCount.get(pairKey) ?? 1
+      const idx = edgePairIndex.get(d.id) ?? 0
+
+      if (totalEdges === 1) {
+        const dx = x2 - x1, dy = y2 - y1
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1
+        const offset = Math.min(12, dist * 0.08)
+        const mx = (x1 + x2) / 2 - (dy / dist) * offset
+        const my = (y1 + y2) / 2 + (dx / dist) * offset
+        return `M${x1},${y1} Q${mx},${my} ${x2},${y2}`
+      }
+
+      const dx = x2 - x1, dy = y2 - y1
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1
+      const spread = 18
+      const offsetMag = spread * (idx - (totalEdges - 1) / 2)
+      const mx = (x1 + x2) / 2 - (dy / dist) * offsetMag
+      const my = (y1 + y2) / 2 + (dx / dist) * offsetMag
+      return `M${x1},${y1} Q${mx},${my} ${x2},${y2}`
+    }
+
+    // Drag
     const drag = d3.drag<SVGCircleElement, GraphNode>()
       .on('start', (event, d) => {
-        if (!event.active) simulation.alphaTarget(0.3).restart()
+        if (!event.active) simulation.alphaTarget(0.1).restart()
         d.fx = d.x
         d.fy = d.y
       })
@@ -535,65 +734,108 @@ export default function NetworkClient() {
 
     node.call(drag)
 
-    // Hover effects
+    // Interaction helpers
+    function highlightConnections(nodeId: string) {
+      const connIds = new Set<string>([nodeId])
+      const connEdgeIds = new Set<string>()
+
+      for (const e of edges) {
+        const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
+        const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
+        if (src === nodeId || tgt === nodeId) {
+          connIds.add(src as string)
+          connIds.add(tgt as string)
+          connEdgeIds.add(e.id)
+        }
+      }
+
+      link
+        .attr('stroke-opacity', (e) => connEdgeIds.has(e.id) ? 0.8 : 0.04)
+        .attr('stroke-width', (e) => connEdgeIds.has(e.id) ? 2.5 : 1)
+      linkLabel.style('opacity', (e) => connEdgeIds.has(e.id) ? 1 : 0)
+      node.attr('opacity', (n) => connIds.has(n.id) ? 1 : 0.08)
+      label
+        .attr('opacity', (n) => connIds.has(n.id) ? 1 : 0)
+        .attr('font-size', (n) => connIds.has(n.id) && n.id !== nodeId ? '11px' : (n.id === nodeId ? '13px' : '10px'))
+    }
+
+    function resetHighlight() {
+      if (selectedNodeId) {
+        highlightConnections(selectedNodeId)
+        return
+      }
+      link
+        .attr('stroke', (d) => {
+          if (pathResult?.edgeIds.has(d.id)) return '#10B981'
+          return getEdgeColor(d.relationship_type)
+        })
+        .attr('stroke-opacity', (d) => {
+          if (pathResult) return pathResult.edgeIds.has(d.id) ? 0.9 : 0.04
+          return 0.3
+        })
+        .attr('stroke-width', (d) => {
+          if (pathResult?.edgeIds.has(d.id)) return 3
+          const cat = getEdgeCategory(d.relationship_type)
+          return cat === 'criminal' ? 1.5 : 1
+        })
+      linkLabel.style('opacity', 0)
+      node.attr('opacity', (d) => {
+        if (pathResult) return pathResult.nodeIds.has(d.id) ? 1 : 0.1
+        return 1
+      })
+      updateLabelVisibility()
+    }
+
+    // Node hover
     node
       .on('mouseover', (_event, d) => {
         setHoveredNode(d)
-        const connectedNodeIds = new Set<string>()
-        connectedNodeIds.add(d.id)
-
-        link
-          .attr('stroke-opacity', (e) => {
-            const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
-            const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
-            if (src === d.id || tgt === d.id) {
-              connectedNodeIds.add(src as string)
-              connectedNodeIds.add(tgt as string)
-              return 1
-            }
-            return 0.08
-          })
-          .attr('stroke', (e) => {
-            const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
-            const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
-            return src === d.id || tgt === d.id ? '#F59E0B' : '#374151'
-          })
-          .attr('stroke-width', (e) => {
-            const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
-            const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
-            return src === d.id || tgt === d.id ? 2.5 : 1.5
-          })
-
-        linkLabel.style('opacity', (e) => {
-          const src = typeof e.source === 'object' ? (e.source as GraphNode).id : e.source
-          const tgt = typeof e.target === 'object' ? (e.target as GraphNode).id : e.target
-          return src === d.id || tgt === d.id ? 1 : 0
-        })
-
-        node.attr('opacity', (n) => connectedNodeIds.has(n.id) ? 1 : 0.2)
-        label.attr('opacity', (n) => connectedNodeIds.has(n.id) ? 1 : 0.15)
+        if (!selectedNodeId) highlightConnections(d.id)
       })
       .on('mouseout', () => {
         setHoveredNode(null)
-        link
-          .attr('stroke', '#374151')
-          .attr('stroke-opacity', (d) => STRENGTH_OPACITY[d.evidence_strength ?? ''] ?? 0.4)
-          .attr('stroke-width', 1.5)
-        linkLabel.style('opacity', 0)
-        node.attr('opacity', 1)
-        label.attr('opacity', 1)
+        if (!selectedNodeId) resetHighlight()
       })
-      .on('click', (_event, d) => {
+      .on('click', (event, d) => {
+        event.stopPropagation()
+        if (selectedNodeId === d.id) {
+          setSelectedNodeId(null)
+          resetHighlight()
+        } else {
+          setSelectedNodeId(d.id)
+          highlightConnections(d.id)
+        }
+      })
+      .on('dblclick', (_event, d) => {
         router.push(`/dashboard/entities/${d.id}`)
       })
 
-    // Tick
+    // Edge hover
+    linkHitArea
+      .on('mouseover', (_event, d) => {
+        setHoveredEdge(d)
+        link.attr('stroke-opacity', (e) => e.id === d.id ? 0.9 : 0.1)
+        linkLabel.style('opacity', (e) => e.id === d.id ? 1 : 0)
+      })
+      .on('mouseout', () => {
+        setHoveredEdge(null)
+        if (selectedNodeId) highlightConnections(selectedNodeId)
+        else resetHighlight()
+      })
+
+    // Background click to deselect
+    svg.on('click', () => {
+      setSelectedNodeId(null)
+      setHoveredEdge(null)
+      resetHighlight()
+    })
+
+    // Start simulation gently after pre-computation
+    simulation.alpha(0.3).restart()
+
     simulation.on('tick', () => {
-      link
-        .attr('x1', (d) => (d.source as GraphNode).x ?? 0)
-        .attr('y1', (d) => (d.source as GraphNode).y ?? 0)
-        .attr('x2', (d) => (d.target as GraphNode).x ?? 0)
-        .attr('y2', (d) => (d.target as GraphNode).y ?? 0)
+      link.attr('d', edgePath)
+      linkHitArea.attr('d', edgePath)
 
       linkLabel
         .attr('x', (d) => ((d.source as GraphNode).x! + (d.target as GraphNode).x!) / 2)
@@ -612,28 +854,42 @@ export default function NetworkClient() {
         .attr('cy', (d) => (d as GraphNode).y ?? 0)
     })
 
-    // If highlighted node exists, zoom to it after simulation settles
-    if (highlightedNodeId) {
-      simulation.on('end', () => {
+    // Auto-fit after settling
+    simulation.on('end', () => {
+      if (highlightedNodeId) {
         const hn = nodes.find((n) => n.id === highlightedNodeId)
         if (hn && hn.x != null && hn.y != null) {
           const scale = 1.8
-          const tx = width / 2 - hn.x * scale
-          const ty = height / 2 - hn.y * scale
           svg.transition()
             .duration(750)
-            .call(
-              zoom.transform,
-              d3.zoomIdentity.translate(tx, ty).scale(scale),
-            )
+            .call(zoom.transform, d3.zoomIdentity.translate(width / 2 - hn.x * scale, height / 2 - hn.y * scale).scale(scale))
         }
-      })
-    }
+      } else {
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+        for (const n of nodes) {
+          if (n.x != null && n.y != null) {
+            minX = Math.min(minX, n.x)
+            minY = Math.min(minY, n.y)
+            maxX = Math.max(maxX, n.x)
+            maxY = Math.max(maxY, n.y)
+          }
+        }
+        if (minX < Infinity) {
+          const padding = 60
+          const bw = maxX - minX + padding * 2
+          const bh = maxY - minY + padding * 2
+          const scale = Math.min(width / bw, height / bh, 1.5)
+          const tx = width / 2 - (minX + maxX) / 2 * scale
+          const ty = height / 2 - (minY + maxY) / 2 * scale
+          svg.transition()
+            .duration(600)
+            .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale))
+        }
+      }
+    })
 
-    return () => {
-      simulation.stop()
-    }
-  }, [viewMode, filteredData, dimensions, router, highlightedNodeId, pathResult, pathFrom, pathTo])
+    return () => { simulation.stop() }
+  }, [viewMode, filteredData, dimensions, router, highlightedNodeId, pathResult, pathFrom, pathTo, layoutMode, selectedNodeId])
 
   // --- Export helpers ---
 
@@ -689,7 +945,7 @@ export default function NetworkClient() {
     <MainContent>
       <PageHeader
         title="Network Graph"
-        subtitle="Entity connections — hover to highlight, click to navigate, drag to rearrange"
+        subtitle="Entity connections — click to pin, double-click to navigate, drag to rearrange"
         actions={
           <div className="flex items-center gap-2">
             {/* View toggle */}
@@ -726,6 +982,32 @@ export default function NetworkClient() {
               </button>
             </div>
 
+            {/* Layout mode toggle (graph only) */}
+            {viewMode === 'graph' && (
+              <div className="flex rounded-lg border border-border-default overflow-hidden">
+                <button
+                  onClick={() => setLayoutMode('force')}
+                  className={`px-3 py-1.5 text-xs transition-colors ${
+                    layoutMode === 'force'
+                      ? 'bg-info/10 text-info'
+                      : 'bg-elevated text-text-muted hover:text-text-secondary'
+                  }`}
+                >
+                  Force
+                </button>
+                <button
+                  onClick={() => setLayoutMode('radial')}
+                  className={`px-3 py-1.5 text-xs transition-colors ${
+                    layoutMode === 'radial'
+                      ? 'bg-info/10 text-info'
+                      : 'bg-elevated text-text-muted hover:text-text-secondary'
+                  }`}
+                >
+                  Radial
+                </button>
+              </div>
+            )}
+
             {/* Filter toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -749,7 +1031,6 @@ export default function NetworkClient() {
 
       {/* Search + graph-specific actions */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
-        {/* Search */}
         <div className="relative">
           <input
             type="text"
@@ -772,7 +1053,6 @@ export default function NetworkClient() {
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
 
-          {/* Search dropdown (graph view only) */}
           {viewMode === 'graph' && searchQuery.trim() && searchMatches.length > 0 && (
             <div className="absolute top-full mt-1 right-0 w-64 bg-elevated border border-border-default rounded-lg shadow-lg z-50 overflow-hidden">
               {searchMatches.map((match) => (
@@ -781,14 +1061,9 @@ export default function NetworkClient() {
                   onClick={() => handleSearchSelect(match.id)}
                   className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
                 >
-                  <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{ backgroundColor: TIER_COLORS[match.tier ?? 0] ?? DEFAULT_COLOR }}
-                  />
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[match.tier ?? 0] ?? DEFAULT_COLOR }} />
                   <span className="truncate">{match.name}</span>
-                  {match.tier && (
-                    <span className="text-xs text-text-muted ml-auto shrink-0">T{match.tier}</span>
-                  )}
+                  {match.tier && <span className="text-xs text-text-muted ml-auto shrink-0">T{match.tier}</span>}
                 </button>
               ))}
             </div>
@@ -801,7 +1076,6 @@ export default function NetworkClient() {
           )}
         </div>
 
-        {/* Highlighted node indicator */}
         {highlightedNodeId && data && (
           <button
             onClick={clearHighlight}
@@ -816,10 +1090,8 @@ export default function NetworkClient() {
           </button>
         )}
 
-        {/* Graph-only actions */}
         {viewMode === 'graph' && (
           <>
-            {/* Path finder toggle */}
             <button
               onClick={() => {
                 setShowPathFinder(!showPathFinder)
@@ -839,7 +1111,6 @@ export default function NetworkClient() {
               {pathResult && <span className="w-1.5 h-1.5 rounded-full bg-success" />}
             </button>
 
-            {/* Export SVG */}
             <button
               onClick={exportSvg}
               className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm bg-elevated border border-border-default text-text-muted hover:text-text-secondary transition-colors"
@@ -851,7 +1122,6 @@ export default function NetworkClient() {
               SVG
             </button>
 
-            {/* Export PNG */}
             <button
               onClick={exportPng}
               className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm bg-elevated border border-border-default text-text-muted hover:text-text-secondary transition-colors"
@@ -873,37 +1143,20 @@ export default function NetworkClient() {
             {/* Tier filters */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Entity Tiers
-                </p>
-                <button
-                  onClick={selectAllTiers}
-                  className="text-[10px] text-info hover:text-info/80 transition-colors"
-                >
+                <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Entity Tiers</p>
+                <button onClick={selectAllTiers} className="text-[10px] text-info hover:text-info/80 transition-colors">
                   Select all
                 </button>
               </div>
               <div className="space-y-1.5">
                 {([1, 2, 3, 4, 5, 6] as const).map((tier) => (
-                  <label
-                    key={tier}
-                    className="flex items-center gap-2 cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={activeTiers.has(tier)}
-                      onChange={() => toggleTier(tier)}
-                      className="sr-only"
-                    />
+                  <label key={tier} className="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" checked={activeTiers.has(tier)} onChange={() => toggleTier(tier)} className="sr-only" />
                     <span
                       className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${
-                        activeTiers.has(tier)
-                          ? 'border-transparent'
-                          : 'border-border-default'
+                        activeTiers.has(tier) ? 'border-transparent' : 'border-border-default'
                       }`}
-                      style={{
-                        backgroundColor: activeTiers.has(tier) ? TIER_COLORS[tier] : 'transparent',
-                      }}
+                      style={{ backgroundColor: activeTiers.has(tier) ? TIER_COLORS[tier] : 'transparent' }}
                     >
                       {activeTiers.has(tier) && (
                         <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
@@ -914,9 +1167,7 @@ export default function NetworkClient() {
                     <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors">
                       T{tier}: {TIER_LABELS[tier]}
                     </span>
-                    <span className="text-[10px] text-text-muted ml-auto">
-                      {tierCounts.get(tier) ?? 0}
-                    </span>
+                    <span className="text-[10px] text-text-muted ml-auto">{tierCounts.get(tier) ?? 0}</span>
                   </label>
                 ))}
               </div>
@@ -925,33 +1176,18 @@ export default function NetworkClient() {
             {/* Relationship type filters */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
-                  Relationship Types
-                </p>
-                <button
-                  onClick={selectAllRelationships}
-                  className="text-[10px] text-info hover:text-info/80 transition-colors"
-                >
+                <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Relationship Types</p>
+                <button onClick={selectAllRelationships} className="text-[10px] text-info hover:text-info/80 transition-colors">
                   Select all
                 </button>
               </div>
               <div className="space-y-1.5 max-h-48 overflow-y-auto">
                 {relationshipTypes.map((type) => (
-                  <label
-                    key={type}
-                    className="flex items-center gap-2 cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={activeRelationships.has(type)}
-                      onChange={() => toggleRelationship(type)}
-                      className="sr-only"
-                    />
+                  <label key={type} className="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" checked={activeRelationships.has(type)} onChange={() => toggleRelationship(type)} className="sr-only" />
                     <span
                       className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${
-                        activeRelationships.has(type)
-                          ? 'bg-info border-info'
-                          : 'border-border-default'
+                        activeRelationships.has(type) ? 'bg-info border-info' : 'border-border-default'
                       }`}
                     >
                       {activeRelationships.has(type) && (
@@ -960,6 +1196,7 @@ export default function NetworkClient() {
                         </svg>
                       )}
                     </span>
+                    <span className="w-2.5 h-0.5 rounded shrink-0" style={{ backgroundColor: getEdgeColor(type) }} />
                     <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors capitalize">
                       {RELATIONSHIP_LABELS[type] ?? formatRelationship(type)}
                     </span>
@@ -970,26 +1207,14 @@ export default function NetworkClient() {
 
             {/* Evidence strength filters */}
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-2">
-                Evidence Strength
-              </p>
+              <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-2">Evidence Strength</p>
               <div className="space-y-1.5">
                 {(['documented', 'alleged', 'circumstantial'] as const).map((strength) => (
-                  <label
-                    key={strength}
-                    className="flex items-center gap-2 cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={activeStrengths.has(strength)}
-                      onChange={() => toggleStrength(strength)}
-                      className="sr-only"
-                    />
+                  <label key={strength} className="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" checked={activeStrengths.has(strength)} onChange={() => toggleStrength(strength)} className="sr-only" />
                     <span
                       className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${
-                        activeStrengths.has(strength)
-                          ? 'bg-info border-info'
-                          : 'border-border-default'
+                        activeStrengths.has(strength) ? 'bg-info border-info' : 'border-border-default'
                       }`}
                     >
                       {activeStrengths.has(strength) && (
@@ -998,25 +1223,14 @@ export default function NetworkClient() {
                         </svg>
                       )}
                     </span>
-                    <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors capitalize">
-                      {strength}
-                    </span>
-                    <span
-                      className="ml-auto w-8 h-0.5 rounded"
-                      style={{
-                        backgroundColor: '#374151',
-                        opacity: STRENGTH_OPACITY[strength],
-                      }}
-                    />
+                    <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors capitalize">{strength}</span>
+                    <span className="ml-auto w-8 h-0.5 rounded" style={{ backgroundColor: '#374151', opacity: STRENGTH_OPACITY[strength] }} />
                   </label>
                 ))}
               </div>
 
-              {/* Quick filter actions */}
               <div className="mt-4 pt-3 border-t border-border-default">
-                <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-2">
-                  Quick Filters
-                </p>
+                <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-2">Quick Filters</p>
                 <div className="flex flex-wrap gap-1.5">
                   <button
                     onClick={() => {
@@ -1053,7 +1267,7 @@ export default function NetworkClient() {
         </div>
       )}
 
-      {/* Path finder panel (graph view only) */}
+      {/* Path finder panel */}
       {viewMode === 'graph' && showPathFinder && (
         <div className="bg-surface border border-border-default rounded-lg p-4 mb-4">
           <div className="flex items-center gap-2 mb-3">
@@ -1063,32 +1277,20 @@ export default function NetworkClient() {
             </svg>
             <p className="text-sm font-medium text-text-primary">Find Shortest Path Between Entities</p>
             {pathResult && (
-              <button
-                onClick={clearPath}
-                className="ml-auto text-xs text-text-muted hover:text-text-secondary transition-colors"
-              >
+              <button onClick={clearPath} className="ml-auto text-xs text-text-muted hover:text-text-secondary transition-colors">
                 Clear path
               </button>
             )}
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-4">
-            {/* From entity */}
             <div className="flex-1 relative">
               <label className="text-xs text-text-muted mb-1 block">From</label>
               {pathFrom && data ? (
                 <div className="flex items-center gap-2 bg-elevated border border-success/30 rounded px-3 py-1.5">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{ backgroundColor: TIER_COLORS[data.nodes.find((n) => n.id === pathFrom)?.tier ?? 0] ?? DEFAULT_COLOR }}
-                  />
-                  <span className="text-sm text-text-primary truncate">
-                    {data.nodes.find((n) => n.id === pathFrom)?.name}
-                  </span>
-                  <button
-                    onClick={() => { setPathFrom(null); setPathFromSearch('') }}
-                    className="ml-auto shrink-0 text-text-muted hover:text-text-secondary"
-                  >
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[data.nodes.find((n) => n.id === pathFrom)?.tier ?? 0] ?? DEFAULT_COLOR }} />
+                  <span className="text-sm text-text-primary truncate">{data.nodes.find((n) => n.id === pathFrom)?.name}</span>
+                  <button onClick={() => { setPathFrom(null); setPathFromSearch('') }} className="ml-auto shrink-0 text-text-muted hover:text-text-secondary">
                     <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -1111,10 +1313,7 @@ export default function NetworkClient() {
                           onClick={() => { setPathFrom(m.id); setPathFromSearch('') }}
                           className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
                         >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full shrink-0"
-                            style={{ backgroundColor: TIER_COLORS[m.tier ?? 0] ?? DEFAULT_COLOR }}
-                          />
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[m.tier ?? 0] ?? DEFAULT_COLOR }} />
                           <span className="truncate">{m.name}</span>
                           <span className="text-xs text-text-muted ml-auto capitalize shrink-0">{m.entity_type}</span>
                         </button>
@@ -1125,29 +1324,19 @@ export default function NetworkClient() {
               )}
             </div>
 
-            {/* Arrow */}
             <div className="hidden sm:flex items-center pt-5">
               <svg className="w-6 h-6 text-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
               </svg>
             </div>
 
-            {/* To entity */}
             <div className="flex-1 relative">
               <label className="text-xs text-text-muted mb-1 block">To</label>
               {pathTo && data ? (
                 <div className="flex items-center gap-2 bg-elevated border border-success/30 rounded px-3 py-1.5">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{ backgroundColor: TIER_COLORS[data.nodes.find((n) => n.id === pathTo)?.tier ?? 0] ?? DEFAULT_COLOR }}
-                  />
-                  <span className="text-sm text-text-primary truncate">
-                    {data.nodes.find((n) => n.id === pathTo)?.name}
-                  </span>
-                  <button
-                    onClick={() => { setPathTo(null); setPathToSearch('') }}
-                    className="ml-auto shrink-0 text-text-muted hover:text-text-secondary"
-                  >
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[data.nodes.find((n) => n.id === pathTo)?.tier ?? 0] ?? DEFAULT_COLOR }} />
+                  <span className="text-sm text-text-primary truncate">{data.nodes.find((n) => n.id === pathTo)?.name}</span>
+                  <button onClick={() => { setPathTo(null); setPathToSearch('') }} className="ml-auto shrink-0 text-text-muted hover:text-text-secondary">
                     <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -1170,10 +1359,7 @@ export default function NetworkClient() {
                           onClick={() => { setPathTo(m.id); setPathToSearch('') }}
                           className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
                         >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full shrink-0"
-                            style={{ backgroundColor: TIER_COLORS[m.tier ?? 0] ?? DEFAULT_COLOR }}
-                          />
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TIER_COLORS[m.tier ?? 0] ?? DEFAULT_COLOR }} />
                           <span className="truncate">{m.name}</span>
                           <span className="text-xs text-text-muted ml-auto capitalize shrink-0">{m.entity_type}</span>
                         </button>
@@ -1185,7 +1371,6 @@ export default function NetworkClient() {
             </div>
           </div>
 
-          {/* Path result info */}
           {pathFrom && pathTo && (
             <div className="mt-3 pt-3 border-t border-border-default">
               {pathResult ? (
@@ -1205,32 +1390,23 @@ export default function NetworkClient() {
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-warning">
-                  No path found between these entities with current filters.
-                </p>
+                <p className="text-xs text-warning">No path found between these entities with current filters.</p>
               )}
             </div>
           )}
         </div>
       )}
 
-      {/* Tier legend (compact, always visible — clickable to toggle) */}
+      {/* Tier legend */}
       <div className="flex flex-wrap gap-4 mb-4">
         {([1, 2, 3, 4, 5, 6] as const).map((tier) => (
           <button
             key={tier}
             onClick={() => toggleTier(tier)}
-            className={`flex items-center gap-1.5 transition-opacity ${
-              activeTiers.has(tier) ? 'opacity-100' : 'opacity-30'
-            }`}
+            className={`flex items-center gap-1.5 transition-opacity ${activeTiers.has(tier) ? 'opacity-100' : 'opacity-30'}`}
           >
-            <span
-              className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: TIER_COLORS[tier] }}
-            />
-            <span className="text-xs text-text-muted">
-              T{tier}: {TIER_LABELS[tier]}
-            </span>
+            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: TIER_COLORS[tier] }} />
+            <span className="text-xs text-text-muted">T{tier}: {TIER_LABELS[tier]}</span>
           </button>
         ))}
       </div>
@@ -1268,28 +1444,53 @@ export default function NetworkClient() {
         </div>
       )}
 
-      {/* ============================================================
-          GRAPH VIEW
-          ============================================================ */}
+      {/* GRAPH VIEW */}
       {viewMode === 'graph' && !isLoading && filteredData && filteredData.nodes.length > 0 && (
         <>
-          <div
-            ref={containerRef}
-            className="bg-surface border border-border-default rounded-lg overflow-hidden relative min-h-[600px]"
-          >
-            <svg
-              ref={svgRef}
-              width={dimensions.width || '100%'}
-              height={dimensions.height || 500}
-              className="w-full bg-background"
-            />
+          <div ref={containerRef} className="bg-surface border border-border-default rounded-lg overflow-hidden relative min-h-[600px]">
+            <svg ref={svgRef} width={dimensions.width || '100%'} height={dimensions.height || 500} className="w-full bg-background" />
+
+            {/* Legend overlay */}
+            {showLegend && (
+              <div className="absolute bottom-4 left-4 bg-elevated/90 backdrop-blur-sm border border-border-default rounded-lg p-3 z-10">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted">Connections</p>
+                  <button onClick={() => setShowLegend(false)} className="text-text-muted hover:text-text-secondary ml-4">
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="space-y-1.5">
+                  {(Object.entries(EDGE_CATEGORY_COLORS) as [EdgeCategory, string][]).map(([cat, color]) => (
+                    <div key={cat} className="flex items-center gap-2">
+                      <svg width="20" height="6">
+                        <line x1="0" y1="3" x2="20" y2="3" stroke={color} strokeWidth={cat === 'criminal' ? 2 : 1.5} strokeOpacity={0.8} />
+                      </svg>
+                      <span className="text-[10px] text-text-secondary">{EDGE_CATEGORY_LABELS[cat]}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2 pt-2 border-t border-border-default space-y-1">
+                  <p className="text-[9px] text-text-muted">Click node to pin</p>
+                  <p className="text-[9px] text-text-muted">Double-click to view profile</p>
+                </div>
+              </div>
+            )}
+
+            {!showLegend && (
+              <button
+                onClick={() => setShowLegend(true)}
+                className="absolute bottom-4 left-4 bg-elevated/80 backdrop-blur-sm border border-border-default rounded-lg px-2.5 py-1.5 text-[10px] text-text-muted hover:text-text-secondary z-10"
+              >
+                Legend
+              </button>
+            )}
 
             {/* Hover tooltip */}
             {hoveredNode && (
-              <div className="absolute top-4 right-4 bg-elevated border border-border-default rounded-lg p-3 min-w-[180px] pointer-events-none">
-                <p className="font-display text-sm font-semibold text-text-primary">
-                  {hoveredNode.name}
-                </p>
+              <div className="absolute top-4 right-4 bg-elevated border border-border-default rounded-lg p-3 min-w-[180px] pointer-events-none z-10">
+                <p className="font-display text-sm font-semibold text-text-primary">{hoveredNode.name}</p>
                 <div className="flex items-center gap-2 mt-1">
                   {hoveredNode.tier && (
                     <span
@@ -1303,39 +1504,51 @@ export default function NetworkClient() {
                     </span>
                   )}
                   {hoveredNode.category && (
-                    <span className="text-xs text-text-muted capitalize">
-                      {hoveredNode.category.replace(/_/g, ' ')}
-                    </span>
+                    <span className="text-xs text-text-muted capitalize">{hoveredNode.category.replace(/_/g, ' ')}</span>
                   )}
                 </div>
-                <p className="text-xs text-text-muted mt-1.5">Click to view profile</p>
+                <p className="text-xs text-text-muted mt-1.5">Double-click to view profile</p>
+              </div>
+            )}
+
+            {/* Edge tooltip */}
+            {hoveredEdge && !hoveredNode && (
+              <div className="absolute top-4 right-4 bg-elevated border border-border-default rounded-lg p-3 min-w-[200px] pointer-events-none shadow-lg z-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-3 h-0.5 rounded" style={{ backgroundColor: getEdgeColor(hoveredEdge.relationship_type) }} />
+                  <p className="text-xs text-text-primary">
+                    {RELATIONSHIP_LABELS[hoveredEdge.relationship_type] ?? hoveredEdge.relationship_type.replace(/_/g, ' ')}
+                  </p>
+                </div>
+                <p className="text-[10px] text-text-muted">
+                  {data?.nodes.find((n) => n.id === hoveredEdge.entity_a)?.name} → {data?.nodes.find((n) => n.id === hoveredEdge.entity_b)?.name}
+                </p>
+                {hoveredEdge.description && (
+                  <p className="text-[10px] text-text-secondary mt-1 line-clamp-3">{hoveredEdge.description}</p>
+                )}
+                {hoveredEdge.evidence_strength && (
+                  <p className="text-[10px] mt-1" style={{ color: STRENGTH_COLORS[hoveredEdge.evidence_strength] ?? '#6B7280' }}>
+                    {hoveredEdge.evidence_strength}
+                  </p>
+                )}
               </div>
             )}
           </div>
 
-          {/* Stats */}
           <div className="flex gap-6 mt-4">
             <p className="text-xs text-text-muted">
               <span className="text-text-secondary font-medium">{filteredData.nodes.length}</span>
-              {data && filteredData.nodes.length < data.nodes.length
-                ? ` / ${data.nodes.length}`
-                : ''}{' '}
-              entities
+              {data && filteredData.nodes.length < data.nodes.length ? ` / ${data.nodes.length}` : ''} entities
             </p>
             <p className="text-xs text-text-muted">
               <span className="text-text-secondary font-medium">{filteredData.edges.length}</span>
-              {data && filteredData.edges.length < data.edges.length
-                ? ` / ${data.edges.length}`
-                : ''}{' '}
-              connections
+              {data && filteredData.edges.length < data.edges.length ? ` / ${data.edges.length}` : ''} connections
             </p>
           </div>
         </>
       )}
 
-      {/* ============================================================
-          TABLE VIEW
-          ============================================================ */}
+      {/* TABLE VIEW */}
       {viewMode === 'table' && !isLoading && filteredData && filteredData.nodes.length > 0 && (
         <>
           <div className="bg-surface border border-border-default rounded-lg overflow-hidden">
@@ -1343,83 +1556,41 @@ export default function NetworkClient() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border-default">
-                    <SortableHeader
-                      label="Entity A"
-                      sortKey="entity_a"
-                      currentKey={sortKey}
-                      direction={sortDir}
-                      onSort={handleSort}
-                    />
-                    <SortableHeader
-                      label="Relationship"
-                      sortKey="relationship"
-                      currentKey={sortKey}
-                      direction={sortDir}
-                      onSort={handleSort}
-                    />
-                    <SortableHeader
-                      label="Entity B"
-                      sortKey="entity_b"
-                      currentKey={sortKey}
-                      direction={sortDir}
-                      onSort={handleSort}
-                    />
-                    <SortableHeader
-                      label="Evidence"
-                      sortKey="strength"
-                      currentKey={sortKey}
-                      direction={sortDir}
-                      onSort={handleSort}
-                    />
+                    <SortableHeader label="Entity A" sortKey="entity_a" currentKey={sortKey} direction={sortDir} onSort={handleSort} />
+                    <SortableHeader label="Relationship" sortKey="relationship" currentKey={sortKey} direction={sortDir} onSort={handleSort} />
+                    <SortableHeader label="Entity B" sortKey="entity_b" currentKey={sortKey} direction={sortDir} onSort={handleSort} />
+                    <SortableHeader label="Evidence" sortKey="strength" currentKey={sortKey} direction={sortDir} onSort={handleSort} />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-default">
                   {tableRows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="hover:bg-elevated/50 transition-colors"
-                    >
+                    <tr key={row.id} className="hover:bg-elevated/50 transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <Link
-                            href={`/dashboard/entities/${row.entityA!.id}`}
-                            className="text-text-primary hover:text-info transition-colors font-medium"
-                          >
+                          <Link href={`/dashboard/entities/${row.entityA!.id}`} className="text-text-primary hover:text-info transition-colors font-medium">
                             {row.entityA!.name}
                           </Link>
-                          {row.entityA!.tier && (
-                            <TierBadge tier={row.entityA!.tier as Tier} />
-                          )}
+                          {row.entityA!.tier && <TierBadge tier={row.entityA!.tier as Tier} />}
                         </div>
-                        <p className="text-xs text-text-muted capitalize mt-0.5">
-                          {row.entityA!.entity_type}
-                        </p>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="text-text-secondary capitalize">
-                          {RELATIONSHIP_LABELS[row.relationship] ?? formatRelationship(row.relationship)}
-                        </span>
-                        {row.description && (
-                          <p className="text-xs text-text-muted mt-0.5 line-clamp-1">
-                            {row.description}
-                          </p>
-                        )}
+                        <p className="text-xs text-text-muted capitalize mt-0.5">{row.entityA!.entity_type}</p>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <Link
-                            href={`/dashboard/entities/${row.entityB!.id}`}
-                            className="text-text-primary hover:text-info transition-colors font-medium"
-                          >
+                          <span className="w-2.5 h-0.5 rounded shrink-0" style={{ backgroundColor: getEdgeColor(row.relationship) }} />
+                          <span className="text-text-secondary capitalize">
+                            {RELATIONSHIP_LABELS[row.relationship] ?? formatRelationship(row.relationship)}
+                          </span>
+                        </div>
+                        {row.description && <p className="text-xs text-text-muted mt-0.5 line-clamp-1">{row.description}</p>}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <Link href={`/dashboard/entities/${row.entityB!.id}`} className="text-text-primary hover:text-info transition-colors font-medium">
                             {row.entityB!.name}
                           </Link>
-                          {row.entityB!.tier && (
-                            <TierBadge tier={row.entityB!.tier as Tier} />
-                          )}
+                          {row.entityB!.tier && <TierBadge tier={row.entityB!.tier as Tier} />}
                         </div>
-                        <p className="text-xs text-text-muted capitalize mt-0.5">
-                          {row.entityB!.entity_type}
-                        </p>
+                        <p className="text-xs text-text-muted capitalize mt-0.5">{row.entityB!.entity_type}</p>
                       </td>
                       <td className="px-4 py-3">
                         <span
@@ -1429,10 +1600,7 @@ export default function NetworkClient() {
                             backgroundColor: `${STRENGTH_COLORS[row.strength] ?? '#6B7280'}15`,
                           }}
                         >
-                          <span
-                            className="w-1.5 h-1.5 rounded-full"
-                            style={{ backgroundColor: STRENGTH_COLORS[row.strength] ?? '#6B7280' }}
-                          />
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: STRENGTH_COLORS[row.strength] ?? '#6B7280' }} />
                           {row.strength}
                         </span>
                       </td>
@@ -1443,14 +1611,10 @@ export default function NetworkClient() {
             </div>
           </div>
 
-          {/* Stats */}
           <div className="flex gap-6 mt-4">
             <p className="text-xs text-text-muted">
               <span className="text-text-secondary font-medium">{tableRows.length}</span>
-              {filteredData.edges.length !== tableRows.length
-                ? ` / ${filteredData.edges.length}`
-                : ''}{' '}
-              connections
+              {filteredData.edges.length !== tableRows.length ? ` / ${filteredData.edges.length}` : ''} connections
             </p>
             <p className="text-xs text-text-muted">
               <span className="text-text-secondary font-medium">{filteredData.nodes.length}</span> entities
@@ -1508,12 +1672,12 @@ function SortableHeader({
 // -------------------------------------------------------------------
 
 function getNodeRadius(degree: number): number {
-  return Math.max(6, Math.min(20, 6 + degree * 2.5))
+  return Math.max(8, Math.min(28, 8 + Math.sqrt(degree) * 5))
 }
 
 function truncateName(name: string): string {
-  if (name.length <= 18) return name
-  return name.slice(0, 16) + '...'
+  if (name.length <= 20) return name
+  return name.slice(0, 18) + '…'
 }
 
 function formatRelationship(type: string): string {
@@ -1560,11 +1724,7 @@ function findShortestPath(
       const newEdges = [...current.edgeIds, neighbor.edgeId]
 
       if (neighbor.nodeId === toId) {
-        return {
-          nodeIds: new Set(newPath),
-          edgeIds: new Set(newEdges),
-          path: newPath,
-        }
+        return { nodeIds: new Set(newPath), edgeIds: new Set(newEdges), path: newPath }
       }
 
       visited.add(neighbor.nodeId)
