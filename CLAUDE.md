@@ -158,7 +158,8 @@ After completing any task (feature, fix, or refactor):
    - **Real-world developments** (arrests, DOJ actions, legislative events): use `create_public_event` MCP tool
    - **Investigation findings** (document-evidenced events): use `create_event` + `link_entity_to_event`
    - **IMPORTANT: No per-entity duplicate events.** If an event involves multiple entities (e.g., "NPA signed"), create ONE event and link all entities via `link_entity_to_event`. Never create separate copies of the same event for each person involved.
-   - Before creating an event, use `search_events` to check it doesn't already exist.
+   - Before creating an event, use `search_events` or `search_public_events` to check it doesn't already exist.
+   - **Congressional monitoring**: At the start of each session, run a quick web search for recent EFTA/Epstein congressional developments and add any missing events. See `docs/reference/CONGRESSIONAL_MONITORING.md` for the full workflow, source list, and category/tag conventions.
 6. **Context checkpoint** — when approaching ~90% context compaction (system will warn), proactively:
    - Update `docs/TODO.md` with any completed or discovered items
    - Update memory files with new patterns, gotchas, or investigation findings from the session
@@ -183,6 +184,7 @@ Before building any feature, read the relevant reference doc:
 | `docs/reference/WORKFLOW.md` | How data flows: 3 workflows, auto-approve rules, session checklist | Any data import/update work |
 | `docs/reference/LOCATION_INTELLIGENCE.md` | Location tracking, entity sightings, day-view timeline, co-location queries | Timeline, location, sighting features |
 | `docs/reference/INVESTIGATION_CONTEXT.md` | What this investigation is about | Understanding domain |
+| `docs/reference/CONGRESSIONAL_MONITORING.md` | Congressional monitoring workflow, sources, category/tag conventions | Timeline updates, session start |
 | `docs/investigation/data/DS12_SUMMARY.md` | Dataset 12 complete findings | Importing DS12 data |
 | `docs/investigation/archive/LEON_BLACK_CASE.md` | Leon Black prosecution failure | Key investigation thread |
 | `docs/investigation/data/ENTITIES.md` | All identified entities | Entity import/profiles |

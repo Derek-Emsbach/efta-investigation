@@ -363,10 +363,11 @@
 - [x] Public image gallery — `/evidence/images` page with type/tag filters, pagination, public API at `/api/public/images`. ImageGallery component gains `urlPrefix` + `readOnly` props. "Images" tab added to evidence room layout.
 
 ### Additional Data Sources
-- [ ] Giuffre v. Maxwell court records import
+- [x] Giuffre v. Maxwell court records — Option B (key events + cross-refs). 9 public events added covering full case arc: filing (2015), Maxwell deposition (2016), settlement (2017), 2020 partial unsealing, Preska unsealing order (Dec 2023), Jan 2024 batch releases (150 names including Clinton, Prince Andrew, Dershowitz), Prince Andrew settlement (2022), Second Circuit appeal (2025). Sources documented: CourtListener, Epstein Archive, Public Intelligence, Black Vault. Full PDF import deferred to future phase.
+  - **Key sources for future full import**: [CourtListener docket](https://www.courtlistener.com/docket/4355835/giuffre-v-maxwell/), [Epstein Archive](https://www.epsteinarchive.org/docs/giuffre-v-maxwell-unsealed/), [Public Intelligence batches](https://publicintelligence.net/epstein-docs-batch-1/)
 - [ ] House Oversight materials import
 - [ ] FOIA release comparison tools
-- [ ] Congressional oversight monitoring
+- [x] Congressional oversight monitoring — workflow doc at `docs/reference/CONGRESSIONAL_MONITORING.md`, integrated into session bookkeeping in CLAUDE.md. 12 missing events added (Jan 30 – Mar 11, 2026): DOJ fifth/sixth releases, Blanche compliance claims, House Dem surveillance investigation, Friedman redaction findings, bipartisan Comer/Garcia investigation, Clinton testimony, GAO audit request. Total public events now ~57.
 
 ### Photo Album & Image Pipeline
 - [x] Image extraction pipeline stage (Stage 1.5) — PyMuPDF `page.get_images()`, upload to R2 `images/{doc_id}/`, scan detection (skip >85% page coverage)
