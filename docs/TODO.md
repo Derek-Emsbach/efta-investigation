@@ -499,6 +499,9 @@
 - [x] **Les Wexner story** — PUBLISHED (Story 21, "The Source of All His Wealth", 2026-03-16). 13 citations from SDNY prosecution memo, corporate prosecution memo, Financial Trust records, power of attorney, FBI slides, Giuffre interview. Wexner upgraded from T4→T3 with enriched bio, evidence summary, tier justification. `follow-the-money` section now has 5 stories.
 - [ ] **Harvey Weinstein story** — T1, 0 stories, 6 events, 2 connections. Cross-pollination between Epstein and Weinstein networks
 
+### Entity Enrichment
+- [x] **Donald Trump enrichment** — (2026-03-16) Tier 4, all DB writes from Session AJ plan completed. Bio, evidence_summary (6 primary sources, signal-vs-noise note, 3 unresolved questions), tier_justification, profile photo (official White House portrait), external_urls (Wikipedia, Wikimedia). 2 connections (Epstein strength 75, Maxwell strength 50). 6 timeline events (Giuffre recruitment, Vanity Fair quote, falling out, Mark Epstein deposition, Katie Johnson suit, Bondi notification). 5 key document links upgraded with roles + excerpts (EFTA00729910 subject, EFTA01249325 subject, EFTA00105921/EFTA01657683/EFTA01987273 mentioned with notes). 38,000+ corpus mentions (~95% political noise, ~10 substantive docs).
+
 ### Connection Network Gaps
 - [x] Enrich connections for under-connected T1 entities — 33 connections added. Dershowitz 4→10, Weinstein 2→5, Summers 3→5, Minsky 2→4. Also enriched: Marcinkova 1→5, Ross 2→5, Ehud Barak 1→4, Peter Mandelson 1→4, Les Wexner 1→4, Bill Richardson 3→5. Total connections: 114→157.
 - [ ] Add connections for T4 entities with only 1 connection: Dr. Chen, Gerd, KKR, Oaktree, Blackstone, Carlyle
