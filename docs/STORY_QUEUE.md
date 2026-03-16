@@ -26,6 +26,7 @@
 | 15 | the-four-names | The Four Names | the-cover-up | NPA_CO_CONSPIRATORS/Analysis.md | 2026-03 |
 | 16 | the-conveyor-belt | The Conveyor Belt | the-operation | BRUNEL/Analysis.md | 2026-03 |
 | 17 | the-architecture-of-opacity | The Architecture of Opacity | follow-the-money | SHELL_COMPANIES/Analysis.md | 2026-03 |
+| 18 | the-worst-dancer-in-the-world | The Worst Dancer in the World | the-operation | FBI 302s, royal correspondence, SDNY records | 2026-03 |
 
 ## Ready to Write
 
@@ -61,7 +62,7 @@ Each case file covers a distinct investigative topic. When writing a new story, 
 | CF-2026-002 | `dubin-architecture` | Dubin family, beneficiary structure | 4 |
 | CF-2026-003 | `witness-control-mechanisms` | Employment cliff, golden handcuffs, loyalty clause | 1 |
 | CF-2026-004 | `indyke-conflicts-of-interest` | Darren Indyke, 7 roles, amendment gatekeeper | 5 |
-| CF-2026-005 | `prosecutorial-failure` | SDNY prosecution memo, institutional failure, document degradation | 2, 10, 12 |
+| CF-2026-005 | `prosecutorial-failure` | SDNY prosecution memo, institutional failure, document degradation | 2, 10, 12, 18 |
 | CF-2026-006 | `leon-black-prosecution-failure` | Leon Black, $158M payments, prosecution decline | 8 |
 | CF-2026-007 | `deutsche-bank-compliance-failure` | Deutsche Bank, 76 accounts, $150M penalty | 14 |
 | CF-2026-008 | `brunel-modeling-pipeline` | Jean-Luc Brunel, MC2, modeling/trafficking pipeline | 9, 16 |

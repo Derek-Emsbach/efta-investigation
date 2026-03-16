@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 6 case files (44 open questions, 34 entity links). 16 stories (218 citations, 91 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 32 published entities fully enriched.
+> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 11 case files (82 open questions, 65 entity links). 18 stories (244 citations, 98 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 32 published entities fully enriched.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -453,7 +453,7 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 17 stories (233 citations, 95 entity links), **11 case files** (82 open questions, 65 entity links), 178 events, 110 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 120 entities (32 published), 18 stories (244 citations, 98 entity links), **11 case files** (82 open questions, 65 entity links), 178 events, 110 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
@@ -475,7 +475,7 @@
 - [x] Adriana Ross — published, slug set, bio (429 chars), 162 doc links, 2 connections, 2 events
 
 ### Story Coverage Gaps
-- [ ] **Prince Andrew story** — T1, 0 stories, 9 events, 4 connections. Cape Town, flight logs, victim testimony. Would strengthen `the-operation` section (currently weakest with only 2 stories)
+- [x] **Prince Andrew story** — PUBLISHED (Story 18, "The Worst Dancer in the World", 2026-03-15). 11 citations from FBI 302s, internal FBI emails, royal correspondence. Linked to `prosecutorial-failure` case file. `the-operation` section now has 4 stories.
 - [ ] **George Mitchell story** — T1, 0 stories, 5 events, 3 connections. Scheduling evidence, Zorro Ranch connections
 - [ ] **Harvey Weinstein story** — T1, 0 stories, 6 events, 2 connections. Cross-pollination between Epstein and Weinstein networks
 

@@ -2094,6 +2094,109 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  {
+    slug: 'the-worst-dancer-in-the-world',
+    title: 'The Worst Dancer in the World',
+    deck: 'An FBI 302 documents three sexual encounters between Prince Andrew and a seventeen-year-old victim across three countries. Four redaction variants of the same interview survive in the EFTA corpus. The SDNY requested an interview. The FBI sent an MLAT request. No law enforcement agency in any country has questioned him under oath. The documentary record is complete. The accountability is zero.',
+    section: 'the-operation' as const,
+    file: 'the-worst-dancer-in-the-world.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: true,
+    case_file_slug: 'prosecutorial-failure',
+    published_at: '2026-03-15T12:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Buckingham_Palace_%282947066459%29.jpg/1280px-Buckingham_Palace_%282947066459%29.jpg',
+    hero_image_caption:
+      'Buckingham Palace — seat of the British monarchy, whose institutional machinery was used to maintain contact with a convicted sex offender through official royal staff and formal correspondence.',
+    metadata: {
+      source_analysis: 'docs/investigation/sources/PRINCE_ANDREW',
+    },
+    entities: [
+      { name: 'Prince Andrew', mention_count: 25, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 12, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 8, is_primary: true },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA00208128',
+        description:
+          'FBI FD-302 — interview of Virginia Giuffre at U.S. Consulate Sydney, March 17, 2011. Least-redacted variant (Rev. 10-6-95 form). Describes London encounter, Club Tramp, "worst dancer in the world," foot fetish, CBP travel records corroboration.',
+        page_reference: 'Full document (12 pages)',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01688359',
+        description:
+          'FBI FD-302 — same Giuffre interview, heavily redacted variant (Rev. 05-08-10 form). Describes New York encounter at Epstein Manhattan residence, puppet incident with Prince Andrew.',
+        page_reference: 'Full document (12 pages)',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01699638',
+        description:
+          'FBI FD-302 — same Giuffre interview, intermediate redaction variant. Describes third encounter on Little St. James: "was using Xanax heavily at the time," non-English-speaking models on island.',
+        page_reference: 'Full document (12 pages)',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA00147383',
+        description:
+          'Internal FBI email, August 16, 2019 (6 days after Epstein death): "At this point we don\'t have plans to interview Prince Andrew." Prompted by media inquiry from James Beal, U.S. Editor of The Sun.',
+        page_reference: 'Full document (2 pages)',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA00017042',
+        description:
+          'Geoffrey Berman SDNY press conference, January 27, 2020: "Prince Andrew has provided zero cooperation." Federal prosecutor publicly calling out member of British Royal Family.',
+        page_reference: 'pp. 1-3',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA00019885',
+        description:
+          'Blackfords LLP letter, February 14, 2020 — Prince Andrew\'s lawyers accuse SDNY of violating confidentiality: "We cannot advise the Duke to speak to prosecutors who cannot be trusted to deal with him fairly."',
+        page_reference: 'Full document (3 pages)',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA00149613',
+        description:
+          'Internal FBI email, June 2020 — MLAT request status: SDNY submitted formal Mutual Legal Assistance Treaty request to UK. "Nothing new here." UK Home Office later refused to proceed.',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01990003',
+        description:
+          'Prince Andrew Christmas email to Epstein, December 24-25, 2010. Forwarded to jeevacation@gmail.com and eeyacation@gmail.com. Signed "HRH The Duke of York KG."',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA00764698',
+        description:
+          'Amanda Thirsk (Deputy Private Secretary to HRH The Duke of York) invitation to Epstein for Prince Andrew\'s 50th birthday at St. James\'s Palace, February 26, 2010. Issued through Duke of York\'s Office.',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA02415487',
+        description:
+          'Epstein office phone message, October 26, 2010: "Duke of York returned your call. He is on the way to a state banquet dinner... he said he will ring you back on your cell in 3 hours time."',
+        page_reference: 'Full document (1 page)',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA02816521',
+        description:
+          'DOJ release index — docket entries for Giuffre v. Prince Andrew, case 21-cv-06702 (SDNY, filed August 2021). Civil lawsuit settled February 2022 for reported $12 million.',
+        page_reference: 'pp. 197-199',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────
