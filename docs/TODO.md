@@ -287,9 +287,24 @@
 - [x] **Phase E — Corpus cross-reference**: All P1-P3 suspects checked against corpus, John Phelan deprioritized (no corpus evidence)
 - [x] **Totals**: 7 entities published, 1 updated, 23 connections created, 8 public events, 3 suspects added, ~10 suspects updated
 
-### Story 18: "She's Here" (Wexner/Victoria's Secret Financial Pipeline)
+### Story 18: "She's Here" (George Mitchell / FBI 302)
 
-- [x] Story written: `docs/stories/shes-here.md` — section: follow-the-money — ~2,500 words, 13 citations, 6 entity links, 3 inline images + hero image. Full investigation: Wexner as sole source of "virtually all of Epstein's wealth," $66M→$4M→$100K Financial Trust Company collapse, 9 East 71st Street transfer at $35-66M discount, Victoria's Secret as recruitment tool, $100M private settlement (no law enforcement report), FBI NTOC tips re sexual nature of relationship, Giuffre proffer. Pending seed.
+- [x] Story written + seeded: `docs/stories/shes-here.md` — section: the-network — 18 citations, 6 entity links. Seeded 2026-03-18.
+
+### Story 19: "The Worst Dancer in the World" (Prince Andrew)
+
+- [x] Story written + seeded: `docs/stories/the-worst-dancer-in-the-world.md` — section: the-operation — 11 citations, 4 entity links. Seeded 2026-03-18.
+
+### Entity Enrichment & Cleanup (Session BC — 2026-03-18)
+
+- [x] **Ruemmler dedup**: Merged duplicate `51627176` ("Kathy Ruemmler") into primary `3120ba47` ("Kathryn Ruemmler"). 5,000 doc links reassigned, Maxwell connection recreated, duplicate deleted.
+- [x] **Promoted from watchlist**:
+  - [x] Sultan Ahmed bin Sulayem (T4, `7c26c8ad`) — Dubai ports magnate, 10 docs, 5 connections (Epstein, Wexner, Groff, Bannon, Staley). 40+ direct emails, gateway to Sheikh Mohammed.
+  - [x] Howard Lutnick (T3, `2cfa90bf`) — Cantor Fitzgerald CEO, 10 docs, 2 connections. FBI "Prominent Names," island invitations, $10 property sale allegation.
+  - [x] Mona Juul (T3, `904b3f4c`) — Norwegian diplomat, 8 docs, 3 connections (Epstein, Jagland, Eva Dubin). Island flights, passport to Visoski, IPI dinners. Charged by Okokrim 2026.
+  - [x] Richard Branson (T4, `5039161a`) — Virgin Group, 15 docs, 4 connections (Epstein, Gates, Groff, Visoski). Reciprocal island visits, "met once" denial demolished by 15+ docs.
+- [x] Terje Rød-Larsen (T3, `92e21365`) — Norwegian diplomat, IPI president. 13 docs, 6 connections (Epstein, Juul, Jagland, Barak, Allen, Gates). $130K wire instruction, island visit with family, IPI as diplomatic networking hub.
+- [x] **Totals**: 5 entities published, 56 docs linked, 20 connections, 1 dedup (5000 docs migrated). Published count: 50 → 55.
 
 ---
 
