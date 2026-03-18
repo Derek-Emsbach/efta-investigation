@@ -11,7 +11,7 @@ The bank knew. The bank always knew. And for five years, the bank decided that k
 
 ## The $2-4 Million Opportunity
 
-![Deutsche Bank's Wall Street headquarters in Lower Manhattan — where the Epstein relationship was managed from 2013 to 2018](https://upload.wikimedia.org/wikipedia/commons/4/4b/Deutsche_Bank_Wall_Street.jpg)
+![Deutsche Bank's New York headquarters — where the Epstein relationship was managed from 2013 to 2018](https://upload.wikimedia.org/wikipedia/commons/0/00/Deutsche_Bank_New_York.jpg)
 
 In spring 2013, a Deutsche Bank managing director named Paul Morris drafted a proposal. Morris had previously worked on the Epstein account at JPMorgan Chase. Now at Deutsche Bank, he saw an opportunity: "estimated flows of $100-300 [million] overtime... w/ revenue of $2-4 million annually."[CITE:5]
 
@@ -48,8 +48,6 @@ Deutsche Bank's own forensic presentation to SDNY prosecutors — a 52-page docu
 ---
 
 ## The Structuring
-
-![The entrance to 60 Wall Street, Manhattan — Deutsche Bank's Americas headquarters during the Epstein relationship](https://upload.wikimedia.org/wikipedia/commons/5/54/60_Wall_Street.jpg)
 
 The cash withdrawals told their own story.
 

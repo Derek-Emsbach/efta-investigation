@@ -200,7 +200,7 @@ export default async function EntityProfilePage({
       description={typedEntity.bio ?? undefined}
       slug={slug}
     />
-    <div className="mx-auto max-w-7xl px-6 py-12">
+    <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12">
       {/* Breadcrumb + print */}
       <div className="mb-8 flex items-center justify-between">
         <nav className="font-mono text-xs text-text-muted">
@@ -218,7 +218,7 @@ export default async function EntityProfilePage({
       </div>
 
       {/* 2-column layout: main + sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px] gap-10">
         {/* Main column */}
         <div className="space-y-10">
           <EntityHero

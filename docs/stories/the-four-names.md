@@ -11,7 +11,7 @@ Four names. Four women who ran the day-to-day operations of a sex trafficking en
 
 ## The Scheduler
 
-![The Palm Beach County Courthouse, where Epstein's state guilty plea was entered on June 30, 2008, activating the NPA](https://upload.wikimedia.org/wikipedia/commons/d/d9/PB_Courthouse.jpg)
+![The Palm Beach County Courthouse, where Epstein's state guilty plea was entered on June 30, 2008, activating the NPA](https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Palm_Beach_County_Courthouse_%28East_face%29.jpg/1280px-Palm_Beach_County_Courthouse_%28East_face%29.jpg)
 
 Sarah Kellen was the nerve center of the operation.
 
@@ -59,8 +59,6 @@ Marcinkova later changed her name to Nadia Marcinko, obtained an FAA pilot certi
 ---
 
 ## The Evidence Destroyer
-
-![The FBI's Miami Field Office — the field office that conducted the Epstein investigation under case number 31E-MM-108062](https://upload.wikimedia.org/wikipedia/commons/7/7c/FBI_Miami_Field_Office.jpg)
 
 Adriana Ross, née Mucinska, was a former model from Poland who worked under Sarah Kellen's direct supervision. The FBI organizational chart states she "admits during a proffer she was trained by [Kellen] to schedule [Palm Beach] and [New York] massage appointments for Epstein."[CITE:10]
 

@@ -44,7 +44,7 @@ export default async function CaseFilesPage() {
   const archived = allCaseFiles.filter((cf) => cf.status === 'archived')
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12">
+    <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12">
       {/* Breadcrumb */}
       <nav className="mb-8 font-mono text-xs text-text-muted">
         <a href="/" className="hover:text-text-secondary transition-colors">

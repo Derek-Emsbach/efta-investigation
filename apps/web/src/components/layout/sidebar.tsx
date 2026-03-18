@@ -29,6 +29,7 @@ const investigationItems = [
 ];
 
 const adminItems = [
+  { label: "My Desk", href: "/dashboard/stories", icon: "edit" as const },
   { label: "Upload", href: "/dashboard/upload", icon: "upload" as const },
   { label: "Processing", href: "/dashboard/processing", icon: "loader" as const },
   { label: "Review", href: "/dashboard/review", icon: "check-circle" as const },

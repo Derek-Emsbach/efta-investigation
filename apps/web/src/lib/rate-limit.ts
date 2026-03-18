@@ -25,13 +25,19 @@ const LIMITS: Record<Tier, { max: number; windowMs: number }> = {
   auth: { max: 5, windowMs: 60_000 },
 }
 
+// Investigators get 3x the base limit for general and search tiers
+const INVESTIGATOR_MULTIPLIER = 3
+const INVESTIGATOR_ELEVATED: Set<Tier> = new Set(['general', 'search'])
+
 // ---------------------------------------------------------------------------
 // Upstash Redis limiters (one per tier, lazy-initialized)
 // ---------------------------------------------------------------------------
 
-let upstashLimiters: Record<Tier, Ratelimit> | null = null
+type LimiterKey = Tier | `${Tier}:investigator`
 
-function getUpstashLimiters(): Record<Tier, Ratelimit> | null {
+let upstashLimiters: Record<string, Ratelimit> | null = null
+
+function getUpstashLimiters(): Record<string, Ratelimit> | null {
   if (upstashLimiters) return upstashLimiters
 
   const url = process.env.UPSTASH_REDIS_REST_URL
@@ -41,30 +47,34 @@ function getUpstashLimiters(): Record<Tier, Ratelimit> | null {
 
   const redis = new Redis({ url, token })
 
-  upstashLimiters = {
-    general: new Ratelimit({
+  const limiters: Record<string, Ratelimit> = {}
+
+  for (const [tier, config] of Object.entries(LIMITS)) {
+    limiters[tier] = new Ratelimit({
       redis,
-      limiter: Ratelimit.slidingWindow(120, '60 s'),
-      prefix: 'rl:general',
-    }),
-    search: new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(60, '60 s'),
-      prefix: 'rl:search',
-    }),
-    comments: new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(30, '60 s'),
-      prefix: 'rl:comments',
-    }),
-    auth: new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(5, '60 s'),
-      prefix: 'rl:auth',
-    }),
+      limiter: Ratelimit.slidingWindow(config.max, '60 s'),
+      prefix: `rl:${tier}`,
+    })
+
+    // Create elevated investigator variants for applicable tiers
+    if (INVESTIGATOR_ELEVATED.has(tier as Tier)) {
+      limiters[`${tier}:investigator`] = new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(config.max * INVESTIGATOR_MULTIPLIER, '60 s'),
+        prefix: `rl:${tier}:inv`,
+      })
+    }
   }
 
+  upstashLimiters = limiters
   return upstashLimiters
+}
+
+function getLimiterKey(tier: Tier, isInvestigator: boolean): LimiterKey {
+  if (isInvestigator && INVESTIGATOR_ELEVATED.has(tier)) {
+    return `${tier}:investigator`
+  }
+  return tier
 }
 
 // ---------------------------------------------------------------------------
@@ -76,17 +86,21 @@ interface RateLimitEntry {
   resetAt: number
 }
 
-const memoryStores: Record<Tier, Map<string, RateLimitEntry>> = {
-  general: new Map(),
-  search: new Map(),
-  comments: new Map(),
-  auth: new Map(),
+const memoryStores = new Map<string, Map<string, RateLimitEntry>>()
+
+function getMemoryStore(key: string): Map<string, RateLimitEntry> {
+  let store = memoryStores.get(key)
+  if (!store) {
+    store = new Map()
+    memoryStores.set(key, store)
+  }
+  return store
 }
 
 // Clean up expired entries every 5 minutes
 setInterval(() => {
   const now = Date.now()
-  for (const store of Object.values(memoryStores)) {
+  for (const store of memoryStores.values()) {
     for (const [key, entry] of store) {
       if (entry.resetAt < now) {
         store.delete(key)
@@ -98,25 +112,30 @@ setInterval(() => {
 function memoryRateLimit(
   ip: string,
   tier: Tier,
+  isInvestigator: boolean = false,
 ): { success: boolean; remaining: number; resetAt: number } {
-  const store = memoryStores[tier]
-  const config = LIMITS[tier]
+  const limiterKey = getLimiterKey(tier, isInvestigator)
+  const store = getMemoryStore(limiterKey)
+  const baseConfig = LIMITS[tier]
+  const max = (isInvestigator && INVESTIGATOR_ELEVATED.has(tier))
+    ? baseConfig.max * INVESTIGATOR_MULTIPLIER
+    : baseConfig.max
   const now = Date.now()
 
   const entry = store.get(ip)
 
   if (!entry || entry.resetAt < now) {
-    const resetAt = now + config.windowMs
+    const resetAt = now + baseConfig.windowMs
     store.set(ip, { count: 1, resetAt })
-    return { success: true, remaining: config.max - 1, resetAt }
+    return { success: true, remaining: max - 1, resetAt }
   }
 
-  if (entry.count >= config.max) {
+  if (entry.count >= max) {
     return { success: false, remaining: 0, resetAt: entry.resetAt }
   }
 
   entry.count++
-  return { success: true, remaining: config.max - entry.count, resetAt: entry.resetAt }
+  return { success: true, remaining: max - entry.count, resetAt: entry.resetAt }
 }
 
 // ---------------------------------------------------------------------------
@@ -126,9 +145,17 @@ function memoryRateLimit(
 export function rateLimit(
   ip: string,
   tier: Tier = 'general',
+  isInvestigator: boolean = false,
 ): { success: boolean; remaining: number; resetAt: number } {
   // Synchronous path — only used by in-memory fallback
-  return memoryRateLimit(ip, tier)
+  return memoryRateLimit(ip, tier, isInvestigator)
+}
+
+interface RateLimitOptions {
+  /** Which rate limit tier to use. Default: 'general' */
+  tier?: Tier
+  /** Set to true when the caller is an authenticated investigator. Gives 3x limit on general/search tiers. */
+  isInvestigator?: boolean
 }
 
 /**
@@ -136,21 +163,30 @@ export function rateLimit(
  * Returns a Response if rate-limited, or null if the request is allowed.
  *
  * Uses Upstash Redis when configured, falls back to in-memory.
+ * Pass `isInvestigator: true` for elevated limits (3x general/search).
  */
 export async function checkRateLimit(
   request: Request,
-  tier: Tier = 'general',
+  tierOrOptions: Tier | RateLimitOptions = 'general',
 ): Promise<Response | null> {
+  const opts: RateLimitOptions = typeof tierOrOptions === 'string'
+    ? { tier: tierOrOptions }
+    : tierOrOptions
+  const tier = opts.tier ?? 'general'
+  const isInvestigator = opts.isInvestigator ?? false
+
   const ip =
     request.headers.get('x-real-ip') ??
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     'unknown'
 
+  const limiterKey = getLimiterKey(tier, isInvestigator)
   const limiters = getUpstashLimiters()
 
   if (limiters) {
+    const limiter = limiters[limiterKey] ?? limiters[tier]
     // Upstash path — single HTTP round-trip to Redis
-    const { success, limit, remaining, reset } = await limiters[tier].limit(ip)
+    const { success, limit, remaining, reset } = await limiter.limit(ip)
 
     if (!success) {
       const resetMs = reset
@@ -173,7 +209,10 @@ export async function checkRateLimit(
   }
 
   // In-memory fallback
-  const result = memoryRateLimit(ip, tier)
+  const effectiveMax = (isInvestigator && INVESTIGATOR_ELEVATED.has(tier))
+    ? LIMITS[tier].max * INVESTIGATOR_MULTIPLIER
+    : LIMITS[tier].max
+  const result = memoryRateLimit(ip, tier, isInvestigator)
 
   if (!result.success) {
     return new Response(
@@ -183,7 +222,7 @@ export async function checkRateLimit(
         headers: {
           'Content-Type': 'application/json',
           'Retry-After': String(Math.ceil((result.resetAt - Date.now()) / 1000)),
-          'X-RateLimit-Limit': String(LIMITS[tier].max),
+          'X-RateLimit-Limit': String(effectiveMax),
           'X-RateLimit-Remaining': '0',
           'X-RateLimit-Reset': String(Math.ceil(result.resetAt / 1000)),
         },

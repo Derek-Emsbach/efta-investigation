@@ -53,7 +53,7 @@ export default async function EntitiesPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12">
+    <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12">
       {/* Breadcrumb */}
       <nav className="mb-8 font-mono text-xs text-text-muted">
         <a href="/" className="hover:text-text-secondary transition-colors">
@@ -107,7 +107,7 @@ export default async function EntitiesPage() {
                     </p>
                   )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
                     {tierEntities.map((ent) => (
                       <Link
                         key={ent.id}

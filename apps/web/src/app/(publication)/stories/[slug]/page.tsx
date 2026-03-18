@@ -223,7 +223,7 @@ export default async function StoryPage({
       />
       <ReadingProgress />
 
-      <article className="mx-auto max-w-7xl px-6 py-10">
+      <article className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-10">
         {/* Breadcrumb + print */}
         <div className="mb-8 flex items-center justify-between">
           <nav className="font-mono text-xs text-text-muted">
@@ -241,7 +241,7 @@ export default async function StoryPage({
         </div>
 
         {/* 2-column: article + sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] xl:grid-cols-[1fr_320px] gap-12">
           {/* Article */}
           <div>
             {typedStory.hero_image_url && (
@@ -251,7 +251,7 @@ export default async function StoryPage({
                     src={typedStory.hero_image_url}
                     alt={typedStory.title}
                     fill
-                    sizes="(max-width: 1024px) 100vw, 700px"
+                    sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 700px, 900px"
                     className="object-cover"
                     priority
                     unoptimized
@@ -272,8 +272,8 @@ export default async function StoryPage({
               <ShareButtons title={typedStory.title} slug={slug} />
             </div>
 
-            {/* Body */}
-            <div className="story-body">
+            {/* Body — CSS multi-column at xl */}
+            <div className="story-body story-body-columns">
               {bodyNodes}
             </div>
 

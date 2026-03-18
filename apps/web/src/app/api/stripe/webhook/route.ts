@@ -78,38 +78,29 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
     return
   }
 
-  // Record the donation event (idempotent via stripe_event_id unique constraint)
-  await supabase.from('donation_events').upsert(
-    {
-      stripe_event_id: event.id,
-      user_id: userId,
-      stripe_customer_id: stripeCustomerId,
-      event_type: donationType === 'subscription' ? 'subscription_created' : 'one_time_payment',
-      amount_cents: session.amount_total ?? 0,
-      currency: session.currency ?? 'usd',
-      metadata: { session_id: session.id },
-    },
-    { onConflict: 'stripe_event_id' },
-  )
+  const eventType = donationType === 'subscription' ? 'subscription_created' : 'one_time_payment'
+  const amountCents = session.amount_total ?? 0
 
-  // Determine new tier
+  // Record donation + atomically increment total (replay-safe via record_donation RPC)
+  const { data: isNew } = await supabase.rpc('record_donation', {
+    p_stripe_event_id: event.id,
+    p_user_id: userId,
+    p_stripe_customer_id: stripeCustomerId,
+    p_event_type: eventType,
+    p_amount_cents: amountCents,
+    p_currency: session.currency ?? 'usd',
+    p_metadata: { session_id: session.id },
+  })
+
+  // If this event was already processed, skip the tier update
+  if (!isNew) return
+
+  // Determine new tier and update profile
   const newTier = donationType === 'subscription' ? 'investigator' : 'supporter'
-
-  // Fetch existing profile to accumulate donation total and check first_donation_at
-  const { data: existing } = await supabase
-    .from('profiles')
-    .select('first_donation_at, donation_total_cents')
-    .eq('id', userId)
-    .single()
 
   const updateData: Record<string, unknown> = {
     stripe_customer_id: stripeCustomerId,
     subscription_tier: newTier,
-    donation_total_cents: (existing?.donation_total_cents ?? 0) + (session.amount_total ?? 0),
-  }
-
-  if (!existing?.first_donation_at) {
-    updateData.first_donation_at = new Date().toISOString()
   }
 
   if (donationType === 'subscription') {
@@ -140,18 +131,16 @@ async function handleSubscriptionDeleted(event: Stripe.Event) {
     return
   }
 
-  // Record event
-  await supabase.from('donation_events').upsert(
-    {
-      stripe_event_id: event.id,
-      user_id: profile.id,
-      stripe_customer_id: stripeCustomerId,
-      event_type: 'subscription_cancelled',
-      amount_cents: 0,
-      currency: 'usd',
-    },
-    { onConflict: 'stripe_event_id' },
-  )
+  // Record event (replay-safe; amount_cents=0 so no total change)
+  const { data: isNew } = await supabase.rpc('record_donation', {
+    p_stripe_event_id: event.id,
+    p_user_id: profile.id,
+    p_stripe_customer_id: stripeCustomerId,
+    p_event_type: 'subscription_cancelled',
+    p_amount_cents: 0,
+  })
+
+  if (!isNew) return
 
   // Downgrade from investigator to supporter (they still donated once)
   if (profile.subscription_tier === 'investigator') {

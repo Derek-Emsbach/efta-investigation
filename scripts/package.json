@@ -12,9 +12,12 @@
     "seed": "tsx src/seed-dataset.ts",
     "seed:publication": "tsx src/seed-publication.ts",
     "update:efta01266427": "tsx src/update-efta01266427.ts",
-    "seed:entity-photos": "tsx src/seed-entity-photos.ts"
+    "seed:entity-photos": "tsx src/seed-entity-photos.ts",
+    "migrate:images": "tsx src/migrate-wikimedia-to-r2.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.986.0",
+    "@aws-sdk/s3-request-presigner": "^3.986.0",
     "@supabase/supabase-js": "^2",
     "dotenv": "^16"
   },

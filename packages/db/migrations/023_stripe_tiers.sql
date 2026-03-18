@@ -16,7 +16,8 @@ BEGIN
   SELECT conname INTO constraint_name
   FROM pg_constraint
   WHERE conrelid = 'profiles'::regclass
-    AND consrc LIKE '%subscription_tier%';
+    AND contype = 'c'
+    AND pg_get_constraintdef(oid) LIKE '%subscription_tier%';
 
   IF constraint_name IS NOT NULL THEN
     EXECUTE format('ALTER TABLE profiles DROP CONSTRAINT %I', constraint_name);

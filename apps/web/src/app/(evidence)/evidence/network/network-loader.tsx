@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 const EvidenceNetworkClient = dynamic(() => import('./network-client'), {
   ssr: false,
   loading: () => (
-    <div className="mx-auto max-w-7xl px-6 py-8">
+    <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-8">
       <div className="h-8 w-48 bg-surface rounded animate-pulse" />
       <div className="h-4 w-80 bg-surface rounded animate-pulse mt-2" />
       <div className="flex flex-wrap gap-4 mt-6 mb-4">

@@ -91,6 +91,9 @@
   --font-sans: var(--font-dm-sans), "DM Sans", -apple-system, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), "IBM Plex Mono", ui-monospace, "Courier New", monospace;
 
+  /* === Layout: Newspaper === */
+  --max-width-newspaper: 1600px;
+
   /* === Animations === */
   --animate-severity-pulse: severity-pulse 2s ease-in-out infinite;
   --animate-shimmer: shimmer 2s linear infinite;
@@ -218,6 +221,42 @@
     linear-gradient(rgba(42, 48, 64, 0.3) 1px, transparent 1px),
     linear-gradient(90deg, rgba(42, 48, 64, 0.3) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+/* === Newspaper Layout (publication, xl+ / ≥1280px) === */
+[data-theme="publication"] .newspaper-rule-vertical {
+  border-right: 1px solid var(--color-border-default);
+}
+[data-theme="publication"] .newspaper-rule-horizontal {
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+/* Story body: 2-column newspaper text at xl */
+@media (min-width: 1280px) {
+  [data-theme="publication"] .story-body-columns {
+    column-count: 2;
+    column-gap: 2.5rem;
+    column-rule: 1px solid var(--color-border-default);
+  }
+  [data-theme="publication"] .story-body-columns h2,
+  [data-theme="publication"] .story-body-columns h3,
+  [data-theme="publication"] .story-body-columns figure,
+  [data-theme="publication"] .story-body-columns blockquote,
+  [data-theme="publication"] .story-body-columns hr,
+  [data-theme="publication"] .story-body-columns table {
+    column-span: all;
+  }
+  /* Key finding boxes, data callouts, and other block divs span both columns */
+  [data-theme="publication"] .story-body-columns > div {
+    column-span: all;
+  }
+  /* Prevent block elements from being split across columns */
+  [data-theme="publication"] .story-body-columns img,
+  [data-theme="publication"] .story-body-columns blockquote,
+  [data-theme="publication"] .story-body-columns table,
+  [data-theme="publication"] .story-body-columns > div {
+    break-inside: avoid;
+  }
 }
 
 /* === Keyframes === */

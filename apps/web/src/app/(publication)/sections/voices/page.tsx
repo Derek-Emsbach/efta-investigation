@@ -94,7 +94,7 @@ export default async function VoicesPage() {
         stat={{ value: String(totalOpenQuestions), label: 'Unanswered Questions' }}
       />
 
-      <div className="mx-auto max-w-7xl px-6 py-12 space-y-16">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12 space-y-16">
         {/* What We Still Don't Know */}
         <section>
           <div className="flex items-center gap-3 mb-6">

@@ -53,7 +53,7 @@ export function FollowTheMoney({ stories }: FollowTheMoneyProps) {
       </div>
 
       {/* 2/3 + 1/3 grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] border-t border-b border-border-default">
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] xl:grid-cols-[3fr_1fr_1fr] border-t border-b border-border-default">
         {/* Main story */}
         <article className="py-6 lg:pr-6 lg:border-r border-border-default">
           {lead?.hero_image_url && (
@@ -120,14 +120,14 @@ export function FollowTheMoney({ stories }: FollowTheMoneyProps) {
           </div>
         </article>
 
-        {/* Sidebar */}
-        <aside className="py-6 lg:pl-6">
+        {/* Sidebar — stacked on lg, split into 2 cols at xl */}
+        <aside className="py-6 lg:pl-6 xl:border-r xl:border-border-default xl:pr-6">
           <div className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-text-muted pb-2 mb-3.5 border-b-2 border-text-primary">
             Financial Trail
           </div>
           <div className="space-y-5">
             {sidebar.length > 0 ? (
-              sidebar.map((story) => (
+              sidebar.slice(0, 2).map((story) => (
                 <div key={story.id}>
                   <h3 className="font-display text-[17px] font-semibold leading-[1.3] mb-1">
                     <Link
@@ -145,7 +145,43 @@ export function FollowTheMoney({ stories }: FollowTheMoneyProps) {
                 </div>
               ))
             ) : (
-              FALLBACK_SIDEBAR.map((title, i) => (
+              FALLBACK_SIDEBAR.slice(0, 2).map((title, i) => (
+                <div key={i}>
+                  <h3 className="font-display text-[17px] font-semibold leading-[1.3] text-text-primary">
+                    {title}
+                  </h3>
+                </div>
+              ))
+            )}
+          </div>
+        </aside>
+
+        {/* Third column (xl only) — additional sidebar stories */}
+        <aside className="hidden xl:block py-6 pl-6">
+          <div className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-text-muted pb-2 mb-3.5 border-b-2 border-text-primary">
+            Related
+          </div>
+          <div className="space-y-5">
+            {sidebar.length > 2 ? (
+              sidebar.slice(2).map((story) => (
+                <div key={story.id}>
+                  <h3 className="font-display text-[17px] font-semibold leading-[1.3] mb-1">
+                    <Link
+                      href={`/stories/${story.slug}`}
+                      className="text-text-primary no-underline hover:underline hover:underline-offset-[2px] hover:decoration-1"
+                    >
+                      {story.title}
+                    </Link>
+                  </h3>
+                  {story.deck && (
+                    <p className="font-body text-sm text-text-secondary leading-[1.5] line-clamp-2">
+                      {story.deck}
+                    </p>
+                  )}
+                </div>
+              ))
+            ) : (
+              FALLBACK_SIDEBAR.slice(2).map((title, i) => (
                 <div key={i}>
                   <h3 className="font-display text-[17px] font-semibold leading-[1.3] text-text-primary">
                     {title}

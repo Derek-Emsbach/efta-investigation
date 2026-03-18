@@ -130,7 +130,7 @@ export default async function HomePage() {
   return (
     <div>
       {/* Masthead */}
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
         <Masthead />
       </div>
 
@@ -138,7 +138,7 @@ export default async function HomePage() {
       <LatestFindingsTicker />
 
       {/* Hero Section — lead story + sidebar */}
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
         <HeroSection
           leadStory={leadStory}
           sidebarStories={sidebarStories}
@@ -150,7 +150,7 @@ export default async function HomePage() {
       <InvestigationStats stats={stats} />
 
       {/* Section-organized stories (The Network, The Operation, Voices, etc.) */}
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
         {remainingStories.length > 0 ? (
           <SectionStoryGrid stories={remainingStories} />
         ) : (
@@ -185,17 +185,17 @@ export default async function HomePage() {
       <SourceAdSlot variant="inline-banner" seed="homepage-featured" />
 
       {/* Follow the Money — dedicated section (always visible) */}
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
         <FollowTheMoney stories={moneyStories} />
       </div>
 
       {/* The Cover-Up — dedicated section (always visible) */}
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
         <CoverUpSection stories={coverUpStories} />
       </div>
 
       {/* Lower content sections */}
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
         {/* Case files */}
         {caseFiles.length > 0 ? (
           <CaseFilesPreview caseFiles={caseFiles} />
@@ -217,7 +217,7 @@ export default async function HomePage() {
       {/* Cyclops Digital promo (full-width) */}
       <CyclopsPromo variant="inline" />
 
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
         {/* Timeline */}
         <TimelinePreview events={events} />
 

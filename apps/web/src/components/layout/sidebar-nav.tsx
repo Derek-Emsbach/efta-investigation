@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 interface NavItem {
   label: string;
   href: string;
-  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle" | "microscope" | "briefcase" | "image" | "map-pin" | "gauge" | "brain";
+  icon: "home" | "users" | "file-text" | "clock" | "search" | "network" | "sparkles" | "database" | "sitemap" | "upload" | "loader" | "check-circle" | "microscope" | "briefcase" | "image" | "map-pin" | "gauge" | "brain" | "edit";
 }
 
 interface SidebarNavProps {
@@ -171,6 +171,13 @@ function NavIcon({ icon, className }: { icon: NavItem["icon"]; className?: strin
           <path d="M7.5 16.5A2.5 2.5 0 005 19a2.5 2.5 0 002.5 2.5A2.5 2.5 0 0010 19v-2" />
           <path d="M17 16a2.5 2.5 0 00-2.5 2.5V19a2.5 2.5 0 002.5 2.5A2.5 2.5 0 0019.5 19a2.5 2.5 0 00-2.5-2.5" />
           <path d="M12 9v3m0 4v3" />
+        </svg>
+      );
+    case "edit":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
         </svg>
       );
   }

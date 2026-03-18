@@ -20,9 +20,6 @@ const adminSupabase = createAdminClient(
 )
 
 export async function POST(request: Request) {
-  const rateLimited = await checkRateLimit(request, 'comments')
-  if (rateLimited) return rateLimited
-
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -40,6 +37,9 @@ export async function POST(request: Request) {
   if (!canComment(profile?.subscription_tier as SubscriptionTier | null)) {
     return NextResponse.json({ error: 'Subscription required to comment' }, { status: 403 })
   }
+
+  const rateLimited = await checkRateLimit(request, 'comments')
+  if (rateLimited) return rateLimited
 
   const body = await request.json()
   const contentType = body.content_type as CommentContentType

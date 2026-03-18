@@ -48,9 +48,30 @@ const ENTITY_PHOTOS: Record<string, string> = {
   'Judge Loretta Preska':
     'https://upload.wikimedia.org/wikipedia/commons/6/62/Loretta_Preska_%28cropped%29.jpg',
 
+  // Tier 3 — Circumstantial
+  'Ehud Barak':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Ehud_Barak_at_Pentagon%2C_11-2009.jpg/400px-Ehud_Barak_at_Pentagon%2C_11-2009.jpg',
+
+  // Tier 4 — Associated (Ruemmler Network)
+  'Peter Thiel':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Peter_Thiel_TechCrunch50.jpg/400px-Peter_Thiel_TechCrunch50.jpg',
+  'Woody Allen':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Woody_Allen_Cannes_2016.jpg/400px-Woody_Allen_Cannes_2016.jpg',
+  'Bob Kerrey':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Bob_Kerrey.jpg/400px-Bob_Kerrey.jpg',
+  'Bill Gates':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Bill_Gates_2017_%28cropped%29.jpg/400px-Bill_Gates_2017_%28cropped%29.jpg',
+  'Donald Trump':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Donald_Trump_official_portrait.jpg/400px-Donald_Trump_official_portrait.jpg',
+  'Virginia Giuffre':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Virginia_Giuffre_2015.jpg/400px-Virginia_Giuffre_2015.jpg',
+  'Larry Summers':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Lawrence_Summers_2012.jpg/400px-Lawrence_Summers_2012.jpg',
+
   // Entities without freely-licensed Wikimedia photos (skipped):
-  // Leon Black, Prince Andrew, Dan Snyder, Lawrence Summers, Jim Kimsey,
-  // Jean-Luc Brunel, Judge Jed Rakoff, and all "Mr." tier-3 entities
+  // Leon Black, Prince Andrew, Dan Snyder, Jim Kimsey,
+  // Jean-Luc Brunel, Judge Jed Rakoff, Brad Karp, Kathryn Ruemmler,
+  // Peggy Siegal, Dana Chasin, and all "Mr." tier-3 entities
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────

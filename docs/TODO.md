@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Dashboard at `/dashboard/*`. 11 case files (82 open questions, 65 entity links). 20 stories (286 citations, 109 entity links). Entity profiles have Photos + Videos tabs (media expansion). Public document viewer at `/evidence/documents/[bates]`. 33 published entities fully enriched (incl. George Vradenburg III).
+> **Status:** All 8 phases + Evidence Room expansion + Section Pages complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`, `/sections/*`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Mode switch between Newsroom ↔ Evidence Room. Dashboard at `/dashboard/*`. 12 case files (92 open questions, 78 entity links). 30 stories (449 citations, 162 entity links). 4 section landing pages with D3 data visualizations. 42 published entities fully enriched.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -219,6 +219,22 @@
 
 **Phase 12 COMPLETE** — Network graph redesigned from rubber-band ball to elegant, readable visualization with relationship-typed edges, progressive disclosure, spatial clustering, radial layout mode, photo nodes, entity summary panel with walkable graph exploration
 
+### Phase 13: Section Landing Pages + Mode Switch + Stats Audit
+- [x] Mode switch component (`mode-switch.tsx`) — persistent bar at top of both publication and evidence room layouts
+- [x] Homepage stats bar revamp — replaced hardcoded/misleading stats with real queried data
+- [x] Section API route (`/api/public/sections/[section]/route.ts`) — aggregated section data with 5-min cache
+- [x] Shared section components — `section-hero.tsx`, `section-stories.tsx`, `entity-spotlight.tsx`
+- [x] D3 visualizations — `connection-type-chart.tsx`, `event-timeline-chart.tsx`, `location-map.tsx`
+- [x] Case progress grid — `case-progress-grid.tsx` (pure React/CSS)
+- [x] Follow the Money landing page — connection type chart, financial entities spotlight
+- [x] The Cover-Up landing page — DOJ event timeline, case file progress, law enforcement spotlight
+- [x] The Operation landing page — location map (16 properties/airports), operational figures spotlight
+- [x] Voices landing page — investigation coverage stats, case progress, witness spotlight, empty state
+- [x] Nav links updated — section nav → `/sections/*`, "Evidence Room" removed (mode switch handles it)
+- [x] Network graph fix — `evidence_summary` → `bio` across 2 API routes + 3 client files, `resetLinkAttrs` D3 type fix
+
+**Phase 13 COMPLETE** — 4 dedicated section landing pages with D3 data visualizations, mode switch for Newsroom ↔ Evidence Room, homepage stats audit with real data
+
 ### Story Pipeline (Ongoing)
 
 > Stories are written as a natural extension of investigation sessions. See `docs/STORY_QUEUE.md` for the full workflow, quality checklist, and continuation prompt template.
@@ -239,6 +255,41 @@
 - [x] Story 15: "The Four Names" (NPA co-conspirators) — section: the-cover-up — ~2,400 words, 13 citations, 6 entity links, 2 inline images + hero image. Full investigation: corpus sweep (Kellen, Marcinkova, Ross), 10+ documents deep-read, analysis at `docs/investigation/sources/NPA_CO_CONSPIRATORS/Analysis.md`. 3 suspects promoted to T2 entities, 6 connections, 4 events, 23 entity-document links. Seeded 2026-03-14.
 - [x] Story 16: "The Conveyor Belt" (Jean-Luc Brunel / MC2 modeling pipeline) — section: the-operation — ~2,200 words, 14 citations, 4 entity links, 3 inline images + hero image. Full investigation: corpus sweep (19+ documents deep-read), analysis at `docs/investigation/sources/BRUNEL/Analysis.md`. Entity enriched, 2 new entities (Jeffrey Fuller T4, Sergio Cordero T4), 3 new connections + 2 updated, 8 timeline events. Seeded 2026-03-14.
 - [x] Story 17: "The Architecture of Opacity" (Shell company network / 1953 Trust) — section: follow-the-money — ~2,800 words, 15 citations, 4 entity links, 3 inline images + hero image. Full investigation: corpus sweep (25+ documents deep-read, 10+ key docs), analysis at `docs/investigation/sources/SHELL_COMPANIES/Analysis.md`. Maps 30+ shell entities, tree-named property corps, $577M estate, Section 2.5(B) loyalty/intimidation clause, Boris Nikolic successor executor, Deutsche Bank "Southern Financial Relationship." DB entity updates deferred (MCP server down). Seeded 2026-03-14.
+
+### Editorial Pipeline ("My Desk")
+
+- [x] Migration 026: `editorial_status` + `editorial_notes` columns on stories, `story_images` junction table, RLS policies
+- [x] Shared types: `EditorialStatus`, `StoryImageRole`, `StoryImage` interface added to `@efta/shared`
+- [x] 8 API routes at `/api/stories/*` — list (GET with status filter), single GET/PATCH, publish, unpublish, story images CRUD, relevant-images corpus query
+- [x] My Desk page (`/dashboard/stories`) — tabbed list (Review / Draft / Published), story cards with hero thumbnail + counts + notes preview, stats bar, quick status transitions
+- [x] Story Editor (`/dashboard/stories/[id]`) — three-column resizable layout (metadata+images | markdown editor with toolbar | live publication preview with `data-theme="publication"`)
+- [x] Image Picker modal — corpus images from story entities via `image_entities` + `entity_documents`, type/entity filters, Set as Hero / Insert Inline actions
+- [x] Sidebar: "My Desk" nav item (pencil icon) added to admin section
+- [x] Seed script: `--draft` flag seeds stories as `editorial_status: 'review'` instead of published
+- [x] Admin Dashboard link in PublicHeader — visible to admin users on both desktop and mobile, links to `/dashboard`
+
+**⚠️ Migration 026 already deployed.** All existing published stories backfilled with `editorial_status = 'published'`.
+
+### Entity Enrichment & Network Buildout (Session BB — 2026-03-16)
+
+- [x] **Web news sweep**: 8 public events created (Mandelson arrest, Noel testimony demand, Clinton testimony, Lutnick testimony, Noel suspicious activity, Lajčák resignation, Lang resignation, Summers retirement, Khanna/Massie six men)
+- [x] **Phase B — Publish existing entities**:
+  - [x] Ehud Barak (T3, `3fdbbc66`) — enriched bio, 4 connections, published with photo
+  - [x] Peter Mandelson (T3, `eab4e1e6`) — enriched bio, 4 connections, published with photo
+  - [x] Annie Farmer (T5, `cdbb8ab3`) — enriched bio, `is_public=true`, 3 connections, published
+  - [x] Brad Edwards (T6, `f2660867`) — enriched bio, attorney, 3 connections, published
+- [x] **Phase C — Create new entities**:
+  - [x] Juan Alessi (T6, `31eea887`) — Palm Beach house manager, 3 connections, published
+  - [x] Alfredo Rodriguez (T6, `cd52857e`) — butler, stole black book, deceased, 3 connections, published
+  - [x] Steve Bannon (T4, `cdba6600`) — promoted from suspect watchlist, DS9 texts, 2 connections, published
+  - [x] Larry Visoski (T6, `90352d4c`) — already existed, updated bio + enriched, published
+- [x] **Phase D — Suspect watchlist**: 3 new suspects (Mona Juul, Nili Priell Barak, Timothy Routch), ~10 suspects updated with corpus findings, 5 marked `pending_promotion` (Sultan Ahmed bin Sulayem, Howard Lutnick, Mona Juul, Richard Branson)
+- [x] **Phase E — Corpus cross-reference**: All P1-P3 suspects checked against corpus, John Phelan deprioritized (no corpus evidence)
+- [x] **Totals**: 7 entities published, 1 updated, 23 connections created, 8 public events, 3 suspects added, ~10 suspects updated
+
+### Story 18: "She's Here" (Wexner/Victoria's Secret Financial Pipeline)
+
+- [x] Story written: `docs/stories/shes-here.md` — section: follow-the-money — ~2,500 words, 13 citations, 6 entity links, 3 inline images + hero image. Full investigation: Wexner as sole source of "virtually all of Epstein's wealth," $66M→$4M→$100K Financial Trust Company collapse, 9 East 71st Street transfer at $35-66M discount, Victoria's Secret as recruitment tool, $100M private settlement (no law enforcement report), FBI NTOC tips re sexual nature of relationship, Giuffre proffer. Pending seed.
 
 ---
 
@@ -290,14 +341,20 @@
 
 **⚠️ Before deploying Phase 2:** Run migration 020 in Supabase SQL Editor
 
-**Phase 3: Investigator Workspace /investigate**
-- [ ] Migration 021: investigator_notes + user_submissions tables + XP-on-approve trigger
-- [ ] (investigate)/layout.tsx + tab bar (Dashboard, Notes, Detective, Submit, Ranks)
-- [ ] /investigate/notes — personal markdown notes with entity linker
-- [ ] /investigate/detective — quota-gated AI (extract runConversation from admin assistant)
-- [ ] /investigate/submit — submission form + status tracking
-- [ ] /investigate/ranks — public leaderboard
-- [ ] API: /api/investigate/* routes
+**Phase 3: Investigator Workspace /investigate — COMPLETE**
+- [x] Migration 025: investigator_notes + user_submissions tables + XP-on-approve trigger
+- [x] (investigate)/layout.tsx + tab bar (Overview, Notes, Detective, Submit, Ranks)
+- [x] /investigate — overview dashboard (stats grid, quick actions, recent XP)
+- [x] /investigate/notes — personal markdown notes with pin/edit/delete
+- [x] /investigate/detective — quota-gated AI (simplified from admin assistant, daily limit enforcement, 8 read-only tools)
+- [x] /investigate/submit — submission form (4 types: finding/connection/entity/correction) + draft/submit workflow + status tracking
+- [x] /investigate/ranks — rank progression display, XP sources table, progress bar
+- [x] API: /api/investigate/* routes (detective, notes, notes/[id], submissions, submissions/[id], stats, ranks)
+- [x] investigator-prompt.ts — stripped system prompt (no suggestions, encourages submission workflow)
+- [x] investigator-tools.ts — 8 read-only query tools (filtered from ASSISTANT_TOOLS)
+- [x] Rate limiting: investigators get 3x on general/search tiers via Upstash Redis
+
+**⚠️ Before deploying Phase 3:** Run migrations 023, 024, 025 in Supabase SQL Editor
 
 **Phase 4: Admin Moderation + Submission Review**
 - [ ] /dashboard/submissions + /dashboard/moderation pages
@@ -332,12 +389,13 @@
 
 ### Monetization (Stripe + Pro Tier)
 > Full plan: `.claude/plans/hashed-herding-beaver.md` (Phase D)
-- [ ] Stripe integration — `stripe` + `@stripe/stripe-js` packages
-- [ ] Stripe webhook handler (`/api/webhooks/stripe`) — subscription lifecycle events
-- [ ] Checkout route (`/api/billing/checkout`) — create Stripe Checkout session
-- [ ] Billing portal route (`/api/billing/portal`) — manage subscription
-- [ ] AI query metering — check `ai_queries_used` vs `ai_queries_limit` before Claude API calls
-- [ ] Monthly usage reset via `ai_queries_reset_at`
+- [x] Stripe integration — `stripe` + `@stripe/stripe-js` packages
+- [x] Migration 023: stripe_tiers — subscription_tier column, donation_events table, stripe columns on profiles
+- [x] Migration 024: stripe_hardening — atomic record_donation RPC, restrict investigator_stats trigger to investigator-only
+- [x] Stripe webhook handler (`/api/stripe/webhook`) — checkout.session.completed, customer.subscription.deleted
+- [x] Checkout route (`/api/stripe/checkout`) — create Stripe Checkout session
+- [x] AI query metering — daily quota enforcement in /api/investigate/detective (checks investigator_stats.ai_queries_used_today)
+- [ ] Billing portal route — manage subscription via Stripe Customer Portal
 - [ ] Billing settings page — current plan, usage meter, upgrade/manage buttons
 - [ ] Add `estimated_cost` column to `api_usage_log` table
 
@@ -378,7 +436,7 @@
 > The PyMuPDF image extraction pipeline (Stage 1.5) is fully built but has only run on individually-processed documents. Need a batch job to extract images from all ~1.37M PDFs in R2.
 - [x] Batch extraction script — `scripts/batch-extract-images.py` iterates all documents with R2 key, runs `stages/images.py` extraction, uploads to R2 + upserts `document_images`. JSON checkpoint for resume, --skip-existing, --dry-run, --max-docs, --batch-size flags.
 - [x] Progress tracking — checkpoint file with processed/skipped/errored counts, resume from last document_id, periodic progress logging with rate calculation.
-- [ ] Auto-classification pass — after extraction, classify `image_type` (photo vs graphic vs signature vs map) using Qwen2-VL or similar (currently defaults to 'embedded')
+- [x] Auto-classification pass — corpus Qwen2-VL descriptions (92K images) imported into `document_images` as analysis-only records (`r2_key='corpus:pending:...'`), classified via Claude Haiku into photo/signature/map/chart/graphic/embedded types with generated captions. Entity linking via `entity_documents` → `image_entities` junction. Script: `scripts/classify-and-link-images.mjs`. Entity profile Photos tab updated to show corpus evidence as text cards (publication + evidence room themes).
 - [x] Public image gallery — `/evidence/images` page with type/tag filters, pagination, public API at `/api/public/images`. ImageGallery component gains `urlPrefix` + `readOnly` props. "Images" tab added to evidence room layout.
 
 ### Additional Data Sources
@@ -472,7 +530,7 @@
 
 ## Database Audit — March 14, 2026
 
-> Full audit via `scripts/audit-database.mjs`. Snapshot: 121 entities (34 published), 21 stories (299 citations, 116 entity links), **11 case files** (82 open questions, 65 entity links), 188 events, 165 connections, 59,866 entity-document links.
+> Full audit via `scripts/audit-database.mjs`. Snapshot: 121 entities (30 published), 21 stories (299 citations, 116 entity links), **11 case files** (82 open questions, 65 entity links), 188 events, 165 connections, 59,866 entity-document links.
 
 ### Document Linkage Fix — RESOLVED
 - [x] Investigated: all 31/32 published entities have doc links (59,866 total). Only "Gerd" (T4, single-name alias) has 0. Original audit had Supabase pagination bug (PostgREST 1000-row default limit). Verified via `scripts/verify-all-doc-links.mjs`.
@@ -485,7 +543,7 @@
 - [x] Sourced from Wikimedia Commons: Dan Snyder, Glenn Dubin, Larry Summers (3 new photos seeded)
 - [ ] No freely-licensed photos available: Jean-Luc Brunel, Jim Kimsey, Leon Black (3 T1 remaining)
 - [ ] No freely-licensed photos available: Lesley Groff, Sarah Kellen, Nadia Marcinkova, Adriana Ross (4 T2 remaining)
-- T4 entities (people) also missing: Barnaby Mars, Celina Dubin, Dr. Chen, Eva Andersson-Dubin, Karyna Shuliak, Mark Epstein
+- T4 entities (people) also missing: Barnaby Mars, Celina Dubin, Eva Andersson-Dubin, Karyna Shuliak, Mark Epstein (Dr. Chen and Gerd unpublished)
 - T4 corporate entities use initials fallback (appropriate — no photo needed)
 
 ### Publish T2 Entities — COMPLETE
@@ -497,7 +555,9 @@
 - [x] **Prince Andrew story** — PUBLISHED (Story 18, "The Worst Dancer in the World", 2026-03-15). 11 citations from FBI 302s, internal FBI emails, royal correspondence. Linked to `prosecutorial-failure` case file. `the-operation` section now has 4 stories.
 - [x] **George Mitchell story** — PUBLISHED (Story 19, "She's Here", 2026-03-15). 18 citations from FBI 302, scheduling docs, depositions, witness lists, Maxwell trial testimony. 4 connections added (Epstein, Maxwell, Groff, Black). 7 events added. `the-network` section now has 6 stories.
 - [x] **Les Wexner story** — PUBLISHED (Story 21, "The Source of All His Wealth", 2026-03-16). 13 citations from SDNY prosecution memo, corporate prosecution memo, Financial Trust records, power of attorney, FBI slides, Giuffre interview. Wexner upgraded from T4→T3 with enriched bio, evidence summary, tier justification. `follow-the-money` section now has 5 stories.
-- [ ] **Harvey Weinstein story** — T1, 0 stories, 6 events, 2 connections. Cross-pollination between Epstein and Weinstein networks
+- [x] **Harvey Weinstein story** — PUBLISHED (Story 22, "The Other Predator", 2026-03-16). 15 citations from guest lists, Peggy Siegal emails, Cannes scheduling docs, Giuffre journals, Deutsche Bank records. 5 entity links (Weinstein, Epstein, Maxwell, Leon Black, Glenn Dubin). `the-operation` section now has 5 stories.
+- [x] **Alan Dershowitz story** — PUBLISHED (Story 23, "Reversal of Fortune", 2026-03-16). 19 citations from NYT profile, Palm Beach police reports, MySpace evidence packages, USAO meeting records, NPA documents, Giuffre testimony, FBI notes, court filings. 5 entity links (Dershowitz, Epstein, Maxwell, Giuffre, Prince Andrew). `the-cover-up` section now has 6 stories.
+- [x] **Larry Summers story** — PUBLISHED (Story 24, "Power Dinner", 2026-03-16). 19 citations from Groff scheduling emails, dinner/breakfast arrangements, Deutsche Bank consent order ($53K wire to L.H. Summers Economic Consulting LLC), Giuffre victim journals (p.5: "Both he and Larry Summers are fucking disgusting!"), Wigdor Law letter confirming Dana Chasin transportation. 3 entity links (Summers, Epstein, Maxwell). `follow-the-money` section now has 6 stories. All sections balanced at 6.
 
 ### Entity Enrichment
 - [x] **Donald Trump enrichment** — (2026-03-16) Tier 4, all DB writes from Session AJ plan completed. Bio, evidence_summary (6 primary sources, signal-vs-noise note, 3 unresolved questions), tier_justification, profile photo (official White House portrait), external_urls (Wikipedia, Wikimedia). 2 connections (Epstein strength 75, Maxwell strength 50). 6 timeline events (Giuffre recruitment, Vanity Fair quote, falling out, Mark Epstein deposition, Katie Johnson suit, Bondi notification). 5 key document links upgraded with roles + excerpts (EFTA00729910 subject, EFTA01249325 subject, EFTA00105921/EFTA01657683/EFTA01987273 mentioned with notes). 38,000+ corpus mentions (~95% political noise, ~10 substantive docs).
@@ -505,18 +565,63 @@
 
 ### Connection Network Gaps
 - [x] Enrich connections for under-connected T1 entities — 33 connections added. Dershowitz 4→10, Weinstein 2→5, Summers 3→5, Minsky 2→4. Also enriched: Marcinkova 1→5, Ross 2→5, Ehud Barak 1→4, Peter Mandelson 1→4, Les Wexner 1→4, Bill Richardson 3→5. Total connections: 114→157.
-- [ ] Add connections for T4 entities with only 1 connection: Dr. Chen, Gerd, KKR, Oaktree, Blackstone, Carlyle
+- [x] ~~Add connections for T4 entities with only 1 connection: Dr. Chen, Gerd~~ — Both unpublished (2026-03-16). Dr. Chen was a service provider (dentist), Gerd had unclear identity. Neither warranted published profiles.
 
-### T4 Corporate Entity Triage
-- [ ] Evaluate T4 corporate entities (Apollo, KKR, Oaktree, Blackstone, Carlyle) — enrich with events/docs/stories or demote to unpublished. Currently thin shells with no events, no docs, no stories
+### T4 Corporate Entity Triage — COMPLETE
+- [x] **KKR, Oaktree, Blackstone, Carlyle unpublished** (2026-03-16) — empty shells with no events, docs, or stories. Only evidence was "co-founder in contact directory" or "referenced in financial records." Data preserved in dashboard, removed from public site. 4 artificial inter-firm connections to Apollo deleted.
+- [x] **Apollo Global Management enriched** (2026-03-16) — kept published. 2 new connections (Leon Black strength 95, Epstein financial strength 80). 2 new events (CEO resignation 2021-03-22, Dechert $158M disclosure 2021-01). Linked to existing Morgan Stanley event. 3 key documents linked (Senate Finance letter EFTA02731023, corporate prosecution memo EFTA02731018, SDNY prosecution memo EFTA02731082). 2 story_entities links (Stories 8 & 17). Published entity count: 34 → 30.
 
-### T4 Entity Events (10 published entities with 0 events)
-- [ ] Add events for: Barnaby Mars, Celina Edith Dubin, Dr. Chen, Eva Andersson-Dubin, Gerd, Karyna Shuliak, KKR, Oaktree Capital, The Blackstone Group, The Carlyle Group
+### T4 Entity Events & Enrichment — COMPLETE
+- [x] **Dr. Chen and Gerd unpublished** (2026-03-16) — Dr. Chen was an oral surgeon (service provider, not network participant, identity may conflate two people). Gerd had unclear identity (could be Gerd Weber, Gerd Gigerenzer, or AmEx card holder — 3 different people). Published count: 30 → 28.
+- [x] **Eva Andersson-Dubin enriched** (2026-03-16) — linked to 2 existing events (Maxwell/Dubin abuse event, 2014 Trust). Already had 5 connections. Linked to trust document EFTA01266403 as subject (successor trustee).
+- [x] **Celina Edith Dubin enriched** (2026-03-16) — 2 new connections (Epstein financial strength 85, Eva family_of strength 95; Glenn already connected). Linked to 2014 Trust event. Linked to EFTA01266403 as subject (primary beneficiary of entire estate).
+- [x] **Barnaby Mars enriched** (2026-03-16) — Bio corrected (was wrongly listed as pilot; actually a philanthropy strategist who flew AS PASSENGER). Category changed to associate. Aliases added (Barnaby Marsh, B. Marsh). 1 new connection (Epstein strength 70). 2 new events (flight to Nowak's institute 2013-04-01, Woody Allen dinner invite 2015-11-30). 2 document links added.
+- [x] **Karyna Shuliak enriched** (2026-03-16) — 3 new connections (Epstein strength 85, Darren Indyke strength 60, Lesley Groff strength 50). 2 new events (Butterfly Trust $50K wire 2015-02-07, Deutsche Bank KYC review ~2019). 3 document links added (trust accounts, authorized signers).
 
 ### Story Section Balance
-- [ ] `the-operation` needs more stories (currently 4, vs 5 for cover-up, 6 for network, 5 for follow-the-money)
-- [ ] Consider: recruitment mechanics, Cape Town trip, Caribbean island operations, massage protocol, scheduling systems
+- [x] `the-operation` now balanced at 5 stories (cover-up: 5, network: 6, follow-the-money: 5, operation: 5)
+- [x] Dershowitz story brings cover-up to 6. Current balance: cover-up 6, network 6, follow-the-money 5, operation 6.
+- [x] `follow-the-money` now at 6 stories — all sections balanced at 6/6/6/6
+- [x] **"The Rehabilitation" story PUBLISHED** (Story 26, 2026-03-16) — Bill Gates post-conviction relationship. 17 citations from Kosslyn PR scripts, Gates Foundation visitor registration, Nikolic severance authorization, trophy photos, DAF collaboration, name-dropping pattern, Wolff rehabilitation claim. `the-network` section now at 7 stories. Section balance: 7/7/6/6.
+- [ ] Consider additional stories: recruitment mechanics, Caribbean island operations, massage protocol, scheduling systems
+- [ ] **"The Cambridge Corridor"** — potential combined story: Summers + Minsky + Joi Ito + MIT/Harvard institutional complicity. Both Summers and Minsky named in Giuffre journals, both in Epstein's science philanthropy orbit, both connected to Martin Nowak's Program for Evolutionary Dynamics.
+- [x] **"The September Salon"** (Story 29) — Thread 15 story published. Burns, Jagland, Barak, Ruemmler, Thiel, Kerrey, Allen, Black, Summers in one month. 15 citations, 11 entity links. Section: `the-network`.
+- [x] **Bill Burns entity** (T4, `c1b2ed72`) — Created and published. 3 connections, 4 events. Slug: `william-j-burns`.
+- [x] **Thorbjørn Jagland entity** (T4, `d73e6a80`) — Created and published. 2 connections, 4 events. Slug: `thorbjorn-jagland`.
+- [x] **Thread 16: Intelligence Asset Question** — Full investigation into Epstein as intelligence asset. FBI FD-1023 SECRET//NOFORN ("Israeli state-sponsored technology collection and extortion operation"), Acosta "belonged to intelligence," Austrian passport (Marius Fortelni), hidden cameras, Robert Maxwell/Mossad, Barak/Unit 8200/Carbyne, Burns→CIA Director pipeline. 35 source documents. Three hypotheses: CIA, Mossad, multi-agency.
+
+### Dershowitz Entity Enrichment — MOSTLY COMPLETE
+- [x] Timeline events: Dershowitz already has 15 events in DB — all 6 planned events already existed from prior enrichment sessions (MySpace, grand jury, USAO presentation, NPA negotiations, NPA drop-in, defamation suit, settlement). No new events needed.
+- [x] Update "Prosecutorial Failure" thread (THREAD_05) with Dershowitz self-immunization + Reinhart revolving door as Failures 6 and 7 (2026-03-16)
+
+### Summers Entity Enrichment — COMPLETE
+- [x] Add timeline events from Story 24 research — 5 new events created (2026-03-16): breakfast at Summers' home (Apr 2012), Palm Beach lunch with Woody Allen/Soon-Yi (Feb 16, 2013), Little St. James invitation with Ehud Barak (Dec 22, 2013), Deutsche Bank wire $53,750 (Nov 7, 2014), Harvard visit (Sep 17, 2016). All linked to Summers + Epstein entities. Barak linked to island invitation. Summers now has 10 events total.
+- [x] Summers → Jes Staley connection already existed (from prior enrichment session)
+- [ ] Link key documents: EFTA02189210 (Power Dinner email), EFTA01873597 (breakfast schedule), EFTA01681865 p.37 (Deutsche Bank wire), EFTA01941328 (island invitation), EFTA02043934 (2016 Harvard) — pending document UUID resolution (search_documents timeouts)
+
+### Investigation Leads
+- [x] **Judge Reinhart revolving door** — INVESTIGATED (2026-03-16). Thread 11 written (`docs/investigation/threads/THREAD_11_Reinhart_Revolving_Door.md`). AUSA who discussed case strategy with lead prosecutor, left USAO Jan 1 2008, began representing Epstein co-conspirators Jan 2 2008. Office next door to Florida Science Foundation. Filed false affidavit (DOJ admitted it was false). $84K+ in JPMorgan wires from Epstein. OPR investigated, no action. Perjury referral stonewalled. Now U.S. Magistrate Judge. Entity recommended: T6 legal.
+- [x] **Bruce Reinhart entity CREATED + PUBLISHED + STORY** (2026-03-16) — T6 legal entity (`abec8a80`). Published with slug `bruce-reinhart`. Bio, evidence summary, tier justification. 3 connections (Epstein paid_by 80, Kellen attorney_for 75, Dershowitz connected_to 55). 6 events (4 new + linked to NPA and plea deal). Story 25 "The Revolving Door" published in `the-cover-up` section, 10 citations, 4 entity links. Section balance now 7/6/6/6.
+- [x] **Peggy Siegal INVESTIGATED + ENTITY CREATED + PUBLISHED** (2026-03-16) — Thread 13 written (`docs/investigation/threads/THREAD_13_Siegal_Social_Infrastructure.md`). Classification: POST-CONVICTION NETWORK / SOCIAL INFRASTRUCTURE. 8 key findings, 8 open questions, 25 source documents. Entity created T4 (`d52ef9ab`), published with slug `peggy-siegal`. 3 connections (Epstein 80, Gates 40, Weinstein 65). 3 events (dinner guest list curation, Weinstein $90K payment bridge, amfAR Cannes ticket). 50+ corpus docs. Bridge between Epstein and Weinstein social networks. Story potential HIGH — "The Premiere Queen." Published entity count: 32.
+- [x] **Kathryn Ruemmler INVESTIGATED + ENTITY CREATED + PUBLISHED + STORY** (2026-03-17) — Thread 14 written (`docs/investigation/threads/THREAD_14_Ruemmler_White_House_Counsel.md`). Classification: POST-CONVICTION NETWORK / LEGAL-POLITICAL INFRASTRUCTURE. 11 key findings, 7 open questions, 22 source documents. Entity created T4 (`3120ba47`), published with slug `kathryn-ruemmler`. 3 connections (Epstein 90, Bill Gates 45, Eva Andersson-Dubin 40). 5 events (Gates/Four Seasons meeting, Woody Allen dinner, Kerrey/Thiel brunch, AG coaching, 2017 Trust successor trustee). Key findings: (1) Successor trustee of $577M 2017 Trust (Section 7.1, EFTA01266434), (2) Successor executor in Last Will (EFTA01266268), (3) AG nomination coaching by Epstein (video, glasses, body language — EFTA02590624), (4) Dinner with Woody Allen/Peter Thiel Sept 2014, (5) Meeting with Gates at Four Seasons Sept 2014, (6) Introduced Cass Sunstein to Epstein, (7) Gifts: ring, $1,099 TV, spa payment, flowers "per usual," (8) Brad Karp/Paul Weiss recruitment while still WH Counsel, (9) Ehud Barak meeting, (10) David Axelrod CURE email forward, (11) Apartment viewing assistance. Story 28 "The White House Counsel" published in `follow-the-money` section. Published entity count: 33. Section balance: cover-up 7, network 7, money 7, operation 7.
+- [x] **Ruemmler Network Expansion — 5 entities CREATED/PUBLISHED** (2026-03-17) — Peter Thiel T4 (`7d42f463`, 3 connections, 3 events), Woody Allen T4 (`46f77660`, 2 connections, 4 events), Ehud Barak T3 (`3fdbbc66`, 8 connections, 3 events — existing, published + Ruemmler connection added), Brad Karp T4 (`c5fe31fc`, 2 connections, 2 events), Bob Kerrey T4 (`dce2c027`, 2 connections, 2 events). 10 new connections, 7 new events, 22 entity-event links across 9 events. Cross-linked to existing Ruemmler events (Woody Allen dinner, Kerrey/Thiel brunch). Published entity count: 33 → 38.
+- [x] **Dana Chasin PUBLISHED** (2026-03-16) — renamed from "Mr. Dana" to "Dana Chasin." Published with slug `dana-chasin`. Category changed to `associate`. Added Summers connection (strength 65). Created travel event (flew victim to NYC ~2001). Linked to Giuffre journals event. 2 connections, 2 events. Published count: 30.
+- [x] **Bill Gates entity CREATED + ENRICHED + PUBLISHED** (2026-03-16) — T4 associated entity (`701de77d`). Published with slug `bill-gates`. 6,656 corpus documents / 7,856 pages. 3 connections (Epstein 75, Summers 65, Nikolic 70). 11 events spanning Jan 2011–Sept 2014. Key findings: (1) Kosslyn PR rehabilitation scripts — Gates knowingly participated in Epstein reputation laundering (EFTA02030179), (2) Gates Foundation HQ formal visitor registration July 2011 (EFTA02032102), (3) Gates authorized Epstein to negotiate Nikolic severance (EFTA01965179), (4) Nikolic draft resignation with explosive allegations forwarded to Epstein (EFTA01965732), (5) photos of Gates displayed at dining room as social proof (EFTA01844429), (6) Melinda attended dinner at Epstein's Sept 2013, (7) Gates offered to donate in Epstein's name, (8) DAF collaboration as primary financial nexus. Published entity count: 31.
 
 ### Unpublished Entity Pipeline (86 entities)
 - [ ] Review 21 unpublished T3 entities for publishing readiness
 - [ ] Review 61 T6 entities — many are financial/peripheral from Leon Black case; consider bulk cleanup vs selective publishing
+
+### Platform
+- [ ] Stripe/monetization integration — 25 stories with 362 citations provides substantial depth for paid access
+- [x] **Bill Gates investigation thread WRITTEN** (2026-03-16) — Thread 12 at `docs/investigation/threads/THREAD_12_Gates_Post_Conviction.md`. 8 key findings, 10 open questions, 30 source documents cataloged. Classification: POST-CONVICTION NETWORK / INSTITUTIONAL COMPLICITY. Key findings: (1) Kosslyn PR rehabilitation scripts, (2) Gates Foundation HQ visitor registration, (3) Boris Nikolic channel + draft resignation, (4) trophy photos, (5) name-dropping for access, (6) DAF collaboration 2011-2014, (7) Paris visits + Crazy Horse incident, (8) Gates offered donation in Epstein's name. Story potential rated HIGH — suggested title "The Rehabilitation."
+
+### Developer Tooling — Claude Code Agents
+- [x] **5 custom subagents configured** (2026-03-17) — `.claude/agents/` directory created with 5 project-scoped agents:
+  - `editorial-writer.md` — Story assembly: analysis → publication-ready story (citations, entity markup, StoryDef, seed script). Full write access.
+  - `investigator.md` — Read-only corpus analyst: 25+ MCP write tools blocked via `disallowedTools`. Corpus search strategy, redaction analysis, thread format, evidence summary output.
+  - `entity-enricher.md` — Full entity enrichment pipeline: corpus research → bio/tier → DB create/update → document linking → connection proposals. T5 privacy rules hardcoded. T1-T3 require human publish approval.
+  - `frontend-designer.md` — 3-theme design system expert: full Tailwind v4 token rules, anti-patterns list, Server Component architecture, Next.js 16 param rules. No Bash execution (TypeScript check only).
+  - `db-migrator.md` — Safe migration specialist: `tools: Read, Write, Grep, Glob` only (no Bash). Writes SQL files for human review — never runs migrations. UUID/RLS/FTS conventions baked in.
+- [ ] **Congressional Monitor agent** — future: scheduled corpus + web search → `create_public_event` MCP. Needs cron scheduling.
+- [ ] **Connection Discoverer agent** — future: multi-entity co-occurrence + timeline overlap analysis → ranked connection suggestions.

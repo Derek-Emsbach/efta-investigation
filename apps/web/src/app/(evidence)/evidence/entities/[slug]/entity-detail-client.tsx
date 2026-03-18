@@ -191,7 +191,7 @@ export function EntityDetailClient({ slug }: { slug: string }) {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12">
         <div className="space-y-4">
           <div className="h-8 w-64 bg-surface rounded animate-pulse" />
           <div className="h-4 w-96 bg-surface rounded animate-pulse" />
@@ -203,7 +203,7 @@ export function EntityDetailClient({ slug }: { slug: string }) {
 
   if (error || !data) {
     return (
-      <div className="mx-auto max-w-7xl px-6 py-16 text-center">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-16 text-center">
         <p className="text-text-muted font-mono text-sm">{error ?? 'Entity not found'}</p>
         <Link href="/evidence/entities" className="text-critical text-sm mt-4 inline-block hover:underline">
           Back to Entity Directory
@@ -226,7 +226,7 @@ export function EntityDetailClient({ slug }: { slug: string }) {
 
   return (
     <div className="min-h-[calc(100vh-120px)]">
-      <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs text-text-muted font-mono mb-6">
           <Link href="/evidence/entities" className="hover:text-text-secondary transition-colors">
@@ -608,88 +608,166 @@ function StoriesTab({ stories, caseFiles }: { stories: StoryRecord[]; caseFiles:
 function PhotosTab({ photos }: { photos: PhotoRecord[] }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
+  // Split into real images (R2 files) and corpus evidence (analysis-only)
+  const realPhotos = photos.filter((p) => !p.r2_key.startsWith('corpus:pending:'))
+  const corpusEvidence = photos.filter((p) => p.r2_key.startsWith('corpus:pending:'))
+
   if (photos.length === 0) {
     return <EmptyTab message="No photos tagged for this entity" />
   }
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        {photos.map((img, idx) => (
-          <button
-            key={img.id}
-            onClick={() => setLightboxIndex(idx)}
-            className="group relative flex flex-col rounded border border-border-default bg-surface overflow-hidden hover:border-critical/30 transition-all duration-200 text-left"
-          >
-            <div className="relative aspect-square bg-background overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`/api/public/images/${img.id}/thumbnail`}
-                alt={img.caption ?? `Page ${img.page_number + 1}`}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-text-primary"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  <line x1="11" y1="8" x2="11" y2="14" />
-                  <line x1="8" y1="11" x2="14" y2="11" />
-                </svg>
-              </div>
-              {img.is_redacted && (
-                <span className="absolute top-1.5 right-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded bg-critical/90 text-white uppercase tracking-wider">
-                  Redacted
-                </span>
-              )}
-              {img.image_type && img.image_type !== 'embedded' && img.image_type !== 'unknown' && (
-                <span className="absolute top-1.5 left-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded bg-surface/80 text-text-secondary capitalize backdrop-blur-sm">
-                  {img.image_type}
-                </span>
-              )}
-            </div>
-            <div className="px-2 py-1.5 border-t border-border-default">
-              {img.caption ? (
-                <p className="text-[11px] text-text-secondary line-clamp-1">{img.caption}</p>
-              ) : (
-                <p className="text-[10px] font-mono text-text-muted">
-                  p.{img.page_number + 1}
-                  {img.width && img.height && (
-                    <span className="ml-1.5 opacity-60">
-                      {img.width}&times;{img.height}
-                    </span>
-                  )}
-                </p>
-              )}
-            </div>
-            {img.tags.length > 0 && (
-              <div className="px-2 pb-1.5 flex flex-wrap gap-1">
-                {img.tags.slice(0, 3).map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-[9px] font-medium px-1 py-0.5 rounded bg-neon-cyan/10 text-neon-cyan"
+      {/* Real photos with thumbnails */}
+      {realPhotos.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          {realPhotos.map((img, idx) => (
+            <button
+              key={img.id}
+              onClick={() => setLightboxIndex(idx)}
+              className="group relative flex flex-col rounded border border-border-default bg-surface overflow-hidden hover:border-critical/30 transition-all duration-200 text-left"
+            >
+              <div className="relative aspect-square bg-background overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/api/public/images/${img.id}/thumbnail`}
+                  alt={img.caption ?? `Page ${img.page_number + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-text-primary"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
                   >
-                    {tag}
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    <line x1="11" y1="8" x2="11" y2="14" />
+                    <line x1="8" y1="11" x2="14" y2="11" />
+                  </svg>
+                </div>
+                {img.is_redacted && (
+                  <span className="absolute top-1.5 right-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded bg-critical/90 text-white uppercase tracking-wider">
+                    Redacted
                   </span>
-                ))}
+                )}
+                {img.image_type && img.image_type !== 'embedded' && img.image_type !== 'unknown' && (
+                  <span className="absolute top-1.5 left-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded bg-surface/80 text-text-secondary capitalize backdrop-blur-sm">
+                    {img.image_type}
+                  </span>
+                )}
               </div>
-            )}
-          </button>
-        ))}
-      </div>
+              <div className="px-2 py-1.5 border-t border-border-default">
+                {img.caption ? (
+                  <p className="text-[11px] text-text-secondary line-clamp-1">{img.caption}</p>
+                ) : (
+                  <p className="text-[10px] font-mono text-text-muted">
+                    p.{img.page_number + 1}
+                    {img.width && img.height && (
+                      <span className="ml-1.5 opacity-60">
+                        {img.width}&times;{img.height}
+                      </span>
+                    )}
+                  </p>
+                )}
+              </div>
+              {img.tags.length > 0 && (
+                <div className="px-2 pb-1.5 flex flex-wrap gap-1">
+                  {img.tags.slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[9px] font-medium px-1 py-0.5 rounded bg-neon-cyan/10 text-neon-cyan"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
 
       {lightboxIndex !== null && (
         <PhotoLightbox
-          photos={photos}
+          photos={realPhotos}
           initialIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />
+      )}
+
+      {/* Corpus evidence cards (analysis-only, no actual image file) */}
+      {corpusEvidence.length > 0 && (
+        <div className={realPhotos.length > 0 ? 'mt-6' : ''}>
+          {realPhotos.length > 0 && (
+            <h4 className="text-xs font-mono uppercase tracking-wider text-text-muted mb-3">
+              Document imagery analysis ({corpusEvidence.length})
+            </h4>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {corpusEvidence.slice(0, 50).map((img) => {
+              const analysis = img.metadata?.corpus_analysis as Record<string, string> | undefined
+              const batesMatch = img.r2_key.match(/EFTA\d{8}/)
+              const bates = batesMatch ? batesMatch[0] : null
+              const typeColors: Record<string, string> = {
+                photo: 'bg-blue-500/10 text-blue-400',
+                signature: 'bg-purple-500/10 text-purple-400',
+                map: 'bg-green-500/10 text-green-400',
+                chart: 'bg-orange-500/10 text-orange-400',
+                graphic: 'bg-cyan-500/10 text-cyan-400',
+              }
+
+              return (
+                <div
+                  key={img.id}
+                  className="flex gap-3 rounded border border-border-default bg-surface p-3 text-left"
+                >
+                  <div className="flex-shrink-0 mt-0.5">
+                    <svg className="w-4 h-4 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      {img.image_type !== 'embedded' && img.image_type !== 'unknown' && (
+                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded capitalize ${typeColors[img.image_type] ?? 'bg-surface-elevated text-text-muted'}`}>
+                          {img.image_type}
+                        </span>
+                      )}
+                      {bates && (
+                        <a
+                          href={`/evidence/documents/${bates}`}
+                          className="text-[10px] font-mono text-text-muted hover:text-neon-cyan transition-colors"
+                        >
+                          {bates} p.{img.page_number + 1}
+                        </a>
+                      )}
+                    </div>
+                    {img.caption && (
+                      <p className="text-[11px] text-text-secondary leading-relaxed line-clamp-2">
+                        {img.caption}
+                      </p>
+                    )}
+                    {analysis?.people && !analysis.people.toLowerCase().includes('no people') && (
+                      <p className="text-[10px] text-text-muted mt-1 line-clamp-2">
+                        {analysis.people}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          {corpusEvidence.length > 50 && (
+            <p className="text-[10px] font-mono text-text-muted mt-3 text-center">
+              + {corpusEvidence.length - 50} more document images
+            </p>
+          )}
+        </div>
       )}
     </>
   )

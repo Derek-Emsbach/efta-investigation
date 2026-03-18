@@ -62,7 +62,7 @@ export function ImageGalleryClient() {
   const hasActiveFilters = !!(imageType || tagFilter)
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-8">
+    <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-8">
       {/* Header */}
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-text-primary">

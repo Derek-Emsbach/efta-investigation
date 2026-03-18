@@ -30,6 +30,15 @@
 | 19 | shes-here | She's Here | the-network | FBI 302 EFTA02857849, scheduling corpus, Apollo deposition | 2026-03 |
 | 20 | they-use-it-to-find-us | They Use It to Find Us | the-operation | DC/AOL cluster deep-dive, victim journal EFTA02731465 p.6 | 2026-03 |
 | 21 | the-source-of-all-his-wealth | The Source of All His Wealth | follow-the-money | Wexner financial deep-dive — prosecution memo, FTC fee collapse, townhouse transfer | 2026-03 |
+| 22 | the-other-predator | The Other Predator | the-operation | Corpus search: guest lists, Peggy Siegal emails, Cannes scheduling, Giuffre journals | 2026-03 |
+| 23 | reversal-of-fortune | Reversal of Fortune | the-cover-up | Corpus search: NYT profile, police reports, MySpace evidence, USAO records, NPA docs, Giuffre testimony | 2026-03 |
+| 24 | power-dinner | Power Dinner | follow-the-money | Corpus search: Groff scheduling emails, Deutsche Bank wire records, Giuffre journals, Wigdor letter | 2026-03 |
+| 25 | the-revolving-door | The Revolving Door | the-cover-up | Corpus search: CVRA complaint, Villafana testimony, court filings, Miami Herald, JPMorgan wire records, Kellen deposition | 2026-03 |
+| 26 | the-rehabilitation | The Rehabilitation | the-network | Corpus search: 6,656 docs — Kosslyn PR scripts, Gates Foundation visitor registration, Nikolic severance authorization, trophy photos, DAF collaboration, Wolff rehabilitation claim | 2026-03 |
+| 27 | the-premiere-queen | The Premiere Queen | the-operation | Corpus search: 50+ emails — dinner guest lists (25+ names), Weinstein $90K payment bridge, celebrity brokering (Hathaway/Gates coffee), amfAR Cannes ticket, company financials reported to Epstein, Weinstein→Siegal→Epstein intelligence flow | 2026-03 |
+| 28 | the-white-house-counsel | The White House Counsel | follow-the-money | Corpus search: 20+ docs — 2017 Trust successor trustee (Section 7.1), will successor executor, Gates/Four Seasons meeting, Woody Allen/Thiel dinner, AG nomination coaching, ring/TV/spa gifts, Sunstein introduction, Brad Karp/Paul Weiss recruitment, Ehud Barak scheduling | 2026-03 |
+| 29 | the-september-salon | The September Salon | the-network | Thread 15 + Thread 16: Sept 2014 scheduling emails — People To See master list (16+ names), compartmentalized time blocks, Burns "alone time," Jagland Ritz rooms, Austrian passport, hidden cameras, FBI Director refusal to confirm surveillance tapes | 2026-03 |
+| 30 | the-intelligence-question | The Intelligence Question | the-cover-up | Thread 16: Acosta "belonged to intelligence," FBI FD-1023 SECRET//NOFORN ("construct" / "Israeli state-sponsored technology collection and extortion operation"), Austrian passport (Marius Fortelni / Saudi stamps), hidden cameras, Wray Glomar response, Maxwell/Mossad, Barak/Carbyne/Unit 8200, Burns→CIA Director, Nikolic/DARPA. Linked to CF-2026-011. | 2026-03 |
 
 ## Ready to Write
 

@@ -16,6 +16,7 @@ import { resolve } from 'path'
 import { supabase, rootDir } from './utils/supabase-admin.js'
 
 const DRY_RUN = process.argv.includes('--dry-run')
+const SEED_AS_DRAFT = process.argv.includes('--draft')
 const THREADS_DIR = resolve(rootDir, 'docs/investigation/threads')
 const STORIES_DIR = resolve(rootDir, 'docs/stories')
 
@@ -746,6 +747,88 @@ const CASE_FILES: CaseFileDef[] = [
       {
         question:
           'What happened to assets in the 1953 Trust after the 2-year loyalty period expired?',
+        priority: 'medium',
+      },
+    ],
+  },
+  {
+    case_id: 'CF-2026-011',
+    slug: 'intelligence-diplomatic-network',
+    title: 'The Intelligence & Diplomatic Network',
+    summary:
+      'Two investigation threads reveal Epstein operating a post-conviction political influence infrastructure that extended into active intelligence and diplomatic circles. Thread 15 documents a September 2014 convergence of 15+ political, diplomatic, and intelligence figures at his Manhattan townhouse — including the sitting Deputy Secretary of State (later CIA Director), the Secretary General of the Council of Europe, and a former Israeli Prime Minister. Thread 16 investigates the intelligence asset question directly: an FBI FD-1023 classified SECRET//NOFORN describes Epstein as a "construct" running "an Israeli state-sponsored technology collection and extortion operation," corroborated by the U.S. Attorney who gave Epstein his plea deal stating he was told Epstein "belonged to intelligence" and was "above his pay grade." Physical evidence includes an Austrian passport under the false name "Marius Robert Fortelni" with travel stamps from Saudi Arabia, and concealed cameras throughout properties whose recordings the FBI Director refuses to confirm or deny possessing.',
+    file: 'THREAD_15_September_2014_Convergence.md',
+    status: 'active',
+    date_range_start: '2013-03-01',
+    date_range_end: '2024-06-01',
+    docs_reviewed: 55,
+    completion_percentage: 70,
+    methodology_notes:
+      'Corpus full-text search across 1.38M documents using FTS5. Scheduling email reconstruction from Lesley Groff daily schedules and Epstein personal Gmail correspondence. FBI FD-1023 analysis. Austrian passport evidence chain. Congressional hearing transcript analysis. Cross-reference with Robert Maxwell/Mossad reporting. Carbyne/Unit 8200 technology assessment.',
+    entities: [
+      { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'William J. Burns', role: 'subject' },
+      { name: 'Thorbjørn Jagland', role: 'subject' },
+      { name: 'Ehud Barak', role: 'subject' },
+      { name: 'Kathryn Ruemmler', role: 'linked' },
+      { name: 'Peter Thiel', role: 'linked' },
+      { name: 'Boris Nikolic', role: 'linked' },
+      { name: 'Bob Kerrey', role: 'linked' },
+      { name: 'Woody Allen', role: 'linked' },
+      { name: 'Leon Black', role: 'linked' },
+      { name: 'Larry Summers', role: 'linked' },
+      { name: 'Ghislaine Maxwell', role: 'linked' },
+      { name: 'Lesley Groff', role: 'linked' },
+    ],
+    openQuestions: [
+      {
+        question:
+          'Who told Acosta to "leave it alone"? The instruction came from someone with authority over a U.S. Attorney. Was it DOJ leadership, an intelligence agency liaison, or someone in the White House?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'What is on Epstein\'s surveillance tapes? FBI Director Wray\'s refusal to confirm or deny suggests the FBI possesses them. What would require a "neither confirm nor deny" response 5 years after Epstein\'s death?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'Who is the FBI FD-1023 source (EFTA01683612)? The CHS reported from Los Angeles, had been to Epstein\'s residence, and had specific knowledge of the Gates Foundation inner circle. This is someone in the tech/finance world with both Epstein access and FBI trust.',
+        priority: 'critical',
+      },
+      {
+        question:
+          'Was the Austrian passport state-issued? Genuine foreign passports with false names typically require state cooperation. Did Austrian intelligence (BVT) issue the Fortelni passport, and if so, at whose request?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'What was discussed during Epstein\'s required "alone time" with Deputy Secretary of State Burns on September 13, 2014?',
+        priority: 'high',
+      },
+      {
+        question:
+          'What was Epstein\'s role in Carbyne/Reporty beyond investor? Barak\'s emails suggest strategic involvement. Was Carbyne a technology platform with intelligence applications?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Why did Epstein visit Israeli military bases in April 2008 — during the window between his Florida guilty plea and sentencing?',
+        priority: 'high',
+      },
+      {
+        question:
+          'What is the full Boris Nikolic / DARPA / AI thread? His pursuit of DARPA-funded AI investments triggered an FBI FD-1023 filing. Was he a technology collection vector?',
+        priority: 'high',
+      },
+      {
+        question:
+          'What did Jagland mean by "it\'s unbelievable what you have done for me"? What favors did Epstein provide to the Secretary General of the Council of Europe beyond hotel rooms?',
+        priority: 'medium',
+      },
+      {
+        question:
+          'Why has the DOJ OIG never investigated the intelligence angle? The OIG report concluded Epstein "wasn\'t serving as an intelligence asset" but appears to have been scope-limited.',
         priority: 'medium',
       },
     ],
@@ -2672,6 +2755,1303 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  {
+    slug: 'the-other-predator',
+    title: 'The Other Predator',
+    deck: 'EFTA documents reveal Harvey Weinstein and Jeffrey Epstein shared guest lists, social fixers, and geography for years — and Virginia Giuffre\'s authenticated journals place Weinstein inside the trafficking operation. No law enforcement agency ever mapped the overlap.',
+    section: 'the-operation' as const,
+    file: 'the-other-predator.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 9,
+    is_featured: false,
+    case_file_slug: 'prosecutorial-failure',
+    published_at: '2026-03-16T12:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Hotel_du_cap_eden_roc.jpg/1280px-Hotel_du_cap_eden_roc.jpg',
+    hero_image_caption:
+      'The Hotel du Cap-Eden-Roc at Cap d\'Antibes, near Cannes — where Epstein\'s scheduling documents place overlapping social events with Weinstein in May 2012.',
+    metadata: {
+      source_analysis: 'Corpus search: guest lists, Peggy Siegal emails, Cannes scheduling, Giuffre victim journals, Deutsche Bank compliance records',
+    },
+    entities: [
+      { name: 'Harvey Weinstein', mention_count: 20, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 15, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 3, is_primary: false },
+      { name: 'Leon Black', mention_count: 1, is_primary: false },
+      { name: 'Glenn Dubin', mention_count: 1, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA01990615',
+        description:
+          'Epstein scheduling document, Cannes Film Festival May 2012 — lists "Harvey Weinstein and Len Blavatnik lunch on boat" alongside Vanity Fair party and Naomi Campbell fashion show.',
+        page_reference: 'p. 2',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA00758094',
+        description:
+          'Formal RSVP tracking sheet — dinner guest list including "Mr. & Mrs. Harvey Weinstein" alongside Leon Black, Glenn Dubin, Charlie Rose, Martha Stewart, Diane von Furstenberg, Mortimer Zuckerman, Jean Pigozzi. Ghislaine Maxwell listed under "Replied NO."',
+        page_reference: 'pp. 1-3',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01832704',
+        description:
+          'Social event report — "Guests included Harvey Weinstein and family, Nicolas Berggruen, Nat Rothschild, Frederic Fekkai, LA Reid, Russell Simmons, Martha Stewart, Jean Pigozzi."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01421293',
+        description:
+          'Deutsche Bank compliance document — records 2003 New York Magazine bidding war. "Epstein bid to acquire New York magazine... film producer Harvey Weinstein." Both outbid by Bruce Wasserstein.',
+        page_reference: 'p. 17',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01832581',
+        description:
+          'Peggy Siegal email to Epstein from Cannes — "Was on Harvey Weinstein\'s yacht this morning. He made me read all the rave reviews on \'Blue Valentine\' and showed me 10 mins of new film about Marilyn Monroe."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01832862',
+        description:
+          'Email exchange — Peggy Siegal writing directly to Harvey Weinstein about George Lucas, forwarded into Epstein\'s email orbit.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02014290',
+        description:
+          'Peggy Siegal email to Epstein — "At Tribeca Grill waiting to hear Harvey Weinstein speak... what devotion to my work." April 22, 2011.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA02731465',
+        description:
+          'Virginia Giuffre handwritten victim journals — forensically authenticated, contemporaneous entries naming men she was directed by Epstein and Maxwell to have sexual encounters with. Harvey Weinstein among the names.',
+        page_reference: 'Journal entries',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01155017',
+        description:
+          'Handwritten contact list recovered from Epstein\'s files — first-name entries including dozens of figures in Epstein\'s network.',
+        page_reference: 'pp. 1-3',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA02731082',
+        description:
+          'SDNY prosecution memo — documents Epstein\'s employment contracts with "golden handcuffs" provisions: loyalty clauses threatening termination and financial forfeiture for cooperation with law enforcement.',
+        page_reference: 'Employment section',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01681865',
+        description:
+          'Deutsche Bank consent order — $150 million penalty for processing approximately $150 million through 76 Epstein-related accounts while flagging but not reporting suspicious transactions.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA02731082',
+        description:
+          'Weinstein New York conviction, February 24, 2020 — criminal sexual act in the first degree and rape in the third degree. Sentenced to 23 years.',
+        page_reference: 'Public record',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA02731082',
+        description:
+          'New York Court of Appeals overturns Weinstein conviction, April 25, 2024 — ruling trial judge improperly allowed testimony about prior uncharged conduct. Retrial ordered.',
+        page_reference: 'Public record',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA02731082',
+        description:
+          'Weinstein Los Angeles conviction, December 19, 2022 — rape, forced oral copulation, sexual penetration by foreign object. Sentenced to 16 years consecutive to New York sentence.',
+        page_reference: 'Public record',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA01615580',
+        description:
+          'iMessage records — "Harvey Weinstein, like Donald can\'t find anyone to be his lawyer." Preserved in Epstein communications corpus.',
+        page_reference: 'p. 5',
+      },
+    ],
+  },
+  {
+    slug: 'reversal-of-fortune',
+    title: 'Reversal of Fortune',
+    deck: 'EFTA documents reveal that Alan Dershowitz vacationed at Epstein\'s mansion during an active investigation, mined teenage victims\' MySpace profiles to discredit them before prosecutors, helped negotiate blanket immunity for unnamed co-conspirators — and was himself named in authenticated victim testimony as a participant in the abuse.',
+    section: 'the-cover-up' as const,
+    file: 'reversal-of-fortune.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 12,
+    is_featured: false,
+    case_file_slug: 'prosecutorial-failure',
+    published_at: '2026-03-16T14:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Alan_dershowitz_2009_retouched_cropped.jpg/800px-Alan_dershowitz_2009_retouched_cropped.jpg',
+    hero_image_caption:
+      'Alan Dershowitz in 2009 — four years after vacationing at Epstein\'s Palm Beach mansion during an active police investigation, and two years after helping negotiate the Non-Prosecution Agreement.',
+    metadata: {
+      source_analysis: 'Corpus search: NYT profile, Palm Beach police reports, MySpace evidence packages, USAO meeting records, NPA negotiation documents, Giuffre testimony, FBI interview notes, court filings',
+    },
+    entities: [
+      { name: 'Alan Dershowitz', mention_count: 35, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 20, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 2, is_primary: false },
+      { name: 'Virginia Giuffre', mention_count: 5, is_primary: false },
+      { name: 'Prince Andrew', mention_count: 3, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA01368194',
+        description:
+          'New York Times profile "Dershowitz on the Defense" (December 13, 2015) — Dershowitz quotes the Epstein case as "right in my wheelhouse." Documents December 2005 family vacation at Epstein\'s Palm Beach mansion during active police investigation.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01688916',
+        description:
+          'Palm Beach Police Chief Michael Reiter deposition — lists Dershowitz as regular visitor to Epstein\'s Palm Beach property. Documents background checks on police chief and lead detective.',
+        page_reference: 'p. 24',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01681842',
+        description:
+          'Sharon Churcher email (2011) — "Don\'t forget Alan Dershowitz... JE\'s buddy and lawyer — good name for your pitch as he repped Claus von Bulow... We all suspect Alan is a pedo."',
+        page_reference: 'p. 6',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01661603',
+        description:
+          'Investigative compilation — Dershowitz quote: "I proposed to bring in Ken Starr because Jeffrey deserves the best representation possible. Ken Starr happens to be an excellent constitutional lawyer."',
+        page_reference: 'p. 93',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA00723522',
+        description:
+          'New York Post "Billionaire\'s Defense Army" (August 9, 2006) — reports Epstein has "hired a platoon" of elite defense attorneys including Dershowitz, Roy Black, Gerald Lefcourt, and Kenneth Starr.',
+        page_reference: 'p. 37',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01688596',
+        description:
+          'Palm Beach detective investigative report — "Within the package was a letter from Alan Dershowitz and two www.myspace.com profiles" of teenage victims. Grand jury presentation postponed as a result.',
+        page_reference: 'pp. 19-20',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA01682733',
+        description:
+          'Investigative report — "The case originally was going to be presented to the grand jury in February, but was postponed after Dershowitz produced information gleaned from the Web site myspace.com."',
+        page_reference: 'p. 10',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA00745900',
+        description:
+          'Investigative account — "Prosecutors gave greater weight to the details Mr. Dershowitz provided about the girls in an apparent effort to assail their credibility."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01688916',
+        description:
+          'Reiter deposition — Dershowitz "began sending the detective Facebook and MySpace posts to demonstrate that some of these girls were no angels." Background checks alleged on Reiter and Detective Recarey.',
+        page_reference: 'p. 24',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01779732',
+        description:
+          'Daily Mail investigation — "Reiter went up against the entire town of Palm Beach to do what was right but he is not chief any more because of this." Documents political pressure on investigators.',
+        page_reference: 'pp. 6-7',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01659896',
+        description:
+          'USAO records — September 2006 meeting. "Professor Dershowitz and other members of the defense team presented legal and factual arguments against a federal indictment." Team included Roy Black, Gerald Lefcourt, Lilly Ann Sanchez.',
+        page_reference: 'pp. 1, 4',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA01659896',
+        description:
+          'NPA defense team roster — "Epstein\'s defense team included yourself, Ms. Sanchez, and Messrs. Dershowitz, Lefcourt, Lefkowitz, Lewis, Black, and Goldberger." Eight lawyers total.',
+        page_reference: 'p. 4',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA01699841',
+        description:
+          'Miami Herald investigation — "Acosta, in 2011, would explain that he was unduly pressured by Epstein\'s heavy-hitting lawyers — Lefkowitz, Harvard professor Alan Dershowitz, Jack Goldberger, Roy Black, former U.S. Attorney Guy Lewis, Gerald Lefcourt, and Kenneth Starr."',
+        page_reference: 'p. 11',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01657816',
+        description:
+          'USAO timeline — "11/23/2007 — Unscheduled meeting between [AUSA], Alan Dershowitz and [individual]. (Drop in by [individual] and Dershowitz)." During final NPA negotiation week.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA02731465',
+        description:
+          'Virginia Giuffre handwritten victim journals — forensically authenticated, contemporaneous entries naming men she was directed to have sexual encounters with. Alan Dershowitz among the names.',
+        page_reference: 'Journal entries',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA01657683',
+        description:
+          'Recorded attorney interview with Virginia Giuffre — interviewer asks: "Alan Dershowitz." Giuffre responds: "Yes." Same interview confirms Prince Andrew and others.',
+        page_reference: 'p. 26',
+      },
+      {
+        number: 17,
+        bates_number: 'EFTA01656198',
+        description:
+          'FBI investigation notes — "Alan Dershowitz: [witness] stated she gave him a massage on Epstein\'s plane. (not a minor)." FBI categorizing allegations by victim age.',
+        page_reference: 'p. 17',
+      },
+      {
+        number: 18,
+        bates_number: 'EFTA01657803',
+        description:
+          'Giuffre v. Maxwell court filing — lists NPA lobbying by Clinton, Prince Andrew, Dershowitz, Ken Starr, Sanchez, Lefkowitz, and Roy Black. Documents contacts between Judge Reinhart and Epstein-affiliated entities.',
+        page_reference: 'pp. 2, 4',
+      },
+      {
+        number: 19,
+        bates_number: 'EFTA01368204',
+        description:
+          'New York Times reporting on Giuffre v. Dershowitz defamation litigation — "Two lawyers accused Alan Dershowitz of defamation for saying they had made up an accusation that he had sex with a teenager." Settled November 2022.',
+        page_reference: 'Full document',
+      },
+    ],
+  },
+  {
+    slug: 'power-dinner',
+    title: 'Power Dinner',
+    deck: 'Every documented interaction between Larry Summers and Jeffrey Epstein in the EFTA corpus falls after the 2008 conviction. The scheduling emails reveal six years of dinners with Bill Gates, breakfasts at Summers\' home, invitations to Little St. James — and Deutsche Bank payments to Summers\' consulting firm. The victim journals tell a different story.',
+    section: 'follow-the-money' as const,
+    file: 'power-dinner.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 11,
+    is_featured: false,
+    case_file_slug: 'prosecutorial-failure',
+    published_at: '2026-03-16T16:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Lawrence_Summers_Treasury_portrait.jpg/400px-Lawrence_Summers_Treasury_portrait.jpg',
+    hero_image_caption:
+      'Larry Summers in his official Treasury Department portrait — taken during the Clinton administration, years before his documented post-conviction social relationship with Jeffrey Epstein.',
+    metadata: {
+      source_analysis: 'Corpus search: Groff scheduling emails, dinner/breakfast arrangements, Deutsche Bank consent order wire records, Giuffre victim journals, Wigdor Law attorney letter, Epstein social ranking lists',
+    },
+    entities: [
+      { name: 'Larry Summers', mention_count: 30, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 25, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 2, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02189210',
+        description:
+          'Lesley Groff email to household staff — "Bill Gates, Larry Summers and Jes Staley are the attendees at the moment. Power dinner!!" Planning for May 2, 2011 dinner at Epstein\'s Manhattan townhouse.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01844738',
+        description:
+          'Epstein email to Summers, January 8, 2012 — "If you would like, next time in ny we can have dinner with Woody Allen at my house.. He is terrific." Summers replies from Jamaica.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01844414',
+        description:
+          'Epstein email to Summers, January 19, 2012 — "Woody Allen dinner my house 29th?" Follow-up January 27: "dinner with woody moved to the 31st."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01901827',
+        description:
+          'Epstein email, February 2013 — "poppi, Larry Summers, his wife, Woody ALLen and soon yi will be at the house in palm beach tomororw for lunch around 230. why don\'t you bring whoever you want."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA02189226',
+        description:
+          'Groff email to Summers\' office, April 30, 2011 — "Good morning Larry. Jeffrey wanted me to let you know that on Monday night, Bill Gates will have already eaten dinner prior to his arrival."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01844429',
+        description:
+          'Staff email, January 9, 2012 — "IN the dining room there are photos of Bill Gates with Larry Summers taken at the house the other day, should I have someone take them down. or is he ok with competition."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA01873597',
+        description:
+          'Scheduling document — "9:30 BREAKFAST w/Larry Summers at Larry\'s home." Includes Summers\' home address, wife Julie\'s cell number, and Google Maps directions from Charles Hotel in Cambridge.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA02019208',
+        description:
+          'Groff scheduling email — "Reminder Larry can no longer do breakfast on the 15th and is asking if you could meet..." Routine rescheduling of Epstein-Summers meetings.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA02006442',
+        description:
+          'Groff email — "Below from Julie in Larry Summers office re you and Larry have not been able to connect yet... shall I provide the ranch phone number for Larry?" Ranch = Zorro Ranch, New Mexico.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01817477',
+        description:
+          'Epstein social ranking list — handwritten categories of contacts. Summers appears alongside "ehud barak, tony blair, bloomberg" in the top social tier.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA02006674',
+        description:
+          'Epstein email to Boris Nikolic, September 21, 2012 — "you can invite david rubenstein to lunch on monday with LArry summers and ehud barak." Summers used as social bait to attract other power figures.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA02007268',
+        description:
+          'Epstein email to Summers, February 10, 2011 — "ehud will be here for breakfast.. questions?" Inviting Summers to meet former Israeli PM Ehud Barak at Epstein\'s residence.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA01941328',
+        description:
+          'Epstein email to Summers, December 22, 2013 — "ehud is coming to spend time on the island, jan 23-25, want to join?" The island is Little St. James, site of documented trafficking and abuse.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01681865',
+        description:
+          'Deutsche Bank consent order — documents $53,750 wire transfer on 11/7/2014 to "L H Summers Economic Consulting LLC." Wire details read: "Reference Kathy Ruemmler" (former White House counsel who advised Epstein).',
+        page_reference: 'p. 37',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA01285208',
+        description:
+          'Deutsche Bank transaction records — additional wire transfers to "L H Summers Economic Consulting LLC" for "travel expenses." Multiple transactions documented.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA02043934',
+        description:
+          'Groff email, September 13, 2016 — "Good Morning Julie and Sarah! Jeffrey will be up at Harvard this coming Saturday Sept. 17th... he will be meeting with many interesting..." Eight years post-conviction.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 17,
+        bates_number: 'EFTA01916625',
+        description:
+          'Summers email to Epstein, 2014 — "Can we find someone who wants to be humanistic and poetic, or needs to give money to public tv or Harvard ed, to channel in 2 million range." Summers helping Epstein identify donation conduits.',
+        page_reference: 'Full document',
+      },
+      {
+        number: 18,
+        bates_number: 'EFTA02731465',
+        description:
+          'Virginia Giuffre handwritten victim journals — forensically authenticated, contemporaneous entries naming Larry Summers among men she was directed to have sexual encounters with.',
+        page_reference: 'Journal entries',
+      },
+      {
+        number: 19,
+        bates_number: 'EFTA02731420',
+        description:
+          'Giuffre victim journal page 5 — "Both he and Larry Summers are fucking disgusting!" Written in context of being flown to Epstein\'s NYC townhouse by Dana Chasin. Wigdor Law letter (EFTA02731721) confirms: victim\'s family "knew Dana Chasin and that is how [victim] was flown to NYC the first time (where she had sex with Larry Summers)."',
+        page_reference: 'p. 5',
+      },
+    ],
+  },
+  {
+    slug: 'the-revolving-door',
+    title: 'The Revolving Door',
+    deck: 'On January 1, 2008, Bruce Reinhart was a federal prosecutor. On January 2, he was representing Jeffrey Epstein\'s co-conspirators. He set up his office next door to Epstein\'s work-release location, was paid $84,000 from Epstein\'s accounts, and filed a false affidavit that the DOJ later admitted was untrue. The perjury investigation was stonewalled. He became a federal magistrate judge.',
+    section: 'the-cover-up' as const,
+    file: 'the-revolving-door.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: 'prosecutorial-failure',
+    published_at: '2026-03-16T20:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Bruce_Reinhart_%28FL%29.jpg/440px-Bruce_Reinhart_%28FL%29.jpg',
+    hero_image_caption:
+      'Bruce Reinhart — former AUSA turned Epstein defense attorney turned U.S. Magistrate Judge.',
+    metadata: {
+      source_analysis: 'Corpus search: CVRA complaint (EFTA00068215), Villafana testimony (EFTA00225378), court filings (EFTA01657803), Miami Herald investigation (EFTA00798522), JPMorgan wire records (EFTA01578729, EFTA01579090, EFTA01483035, EFTA01483182, EFTA01581347), Kellen deposition (EFTA00729910)',
+    },
+    entities: [
+      { name: 'Bruce Reinhart', mention_count: 25, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 15, is_primary: true },
+      { name: 'Alan Dershowitz', mention_count: 3, is_primary: false },
+      { name: 'Sarah Kellen', mention_count: 4, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA00798522',
+        description:
+          'Miami Herald investigation — "He left the U.S. Attorney\'s Office on Jan. 1, 2008, and went to work representing Epstein\'s employees on Jan. 2, 2008, court records show." Also notes Reinhart is now a U.S. magistrate judge.',
+        page_reference: 'p. 24',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA00068215',
+        description:
+          'Prof. Cassell CVRA complaint — documents Reinhart\'s office location at 250 S. Australian Ave Suite 1400, same building/floor as Goldberger, next door to Florida Science Foundation (Epstein\'s work-release entity).',
+        page_reference: 'pp. 6-7',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA00235751',
+        description:
+          'Victims\' Motion for CVRA Violations — "Reinhart undertook the representation of numerous Epstein employees and pilots... Specifically, he represented [Sarah Kellen], his housekeeper (Louella Ruboyo), his pilots." Representation paid by Epstein.',
+        page_reference: 'p. 21',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA00729910',
+        description:
+          'Kellen deposition record — "At the deposition, she was represented by Bruce Reinhart. She invoked the Fifth on all substantive questions regarding her role in arranging for minor girls to come to Epstein\'s mansion to be sexually abused."',
+        page_reference: 'p. 19',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01578729',
+        description:
+          'JPMorgan Chase wire authorization — $20,000 from Epstein account to "Bruce E Reinhart, PA" at Gulfstream Business Bank. One of multiple documented wires totaling $84,000+. Additional wires at EFTA01579090 ($18,117), EFTA01483035 ($25,000), EFTA01483182 ($11,117), EFTA01581347 ($10,000).',
+        page_reference: 'Full document',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA00225378',
+        description:
+          'AUSA Villafana testimony — "AUSA Reinhart was my office neighbor and colleague. I sought AUSA Reinhart\'s counsel on strategies for how to handle Epstein\'s personal assistants — whether they should be charged or if we should seek immunity for them." Reinhart then said he was "best friends" with Goldberger.',
+        page_reference: 'p. 114',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA00209299',
+        description:
+          'Cassell letter to U.S. Attorney requesting investigation — documents Reinhart\'s sworn declaration ("I never learned any confidential, non-public information") and the government\'s July 2013 admission contradicting it. DE 213-1 at 9.',
+        page_reference: 'pp. 1-3',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA00068221',
+        description:
+          'Cassell March 2014 letter requesting criminal investigation of Reinhart perjury — "it is now clear that former Assistant U.S. Attorney Bruce E. Reinhart has filed a false affidavit in the victims\' CVRA case."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA00068225',
+        description:
+          'Cassell January 2016 letter to U.S. Attorney Puerto Rico — documents the stonewalling: case bounced between 4 AUSAs, five phone calls unreturned, letter unanswered. "It appears obvious that the U.S. Attorney\'s Office is giving us the run-around."',
+        page_reference: 'Full document',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01657803',
+        description:
+          'Court filing — documents DOJ OPR investigation: "The Justice Department\'s Office of Professional Responsibility and/or other Government entities have collected information about: (a) Bruce Reinhart\'s possible involvement in the Epstein matter." Also documents contacts between Reinhart and Epstein-affiliated entities.',
+        page_reference: 'pp. 4-5',
+      },
+    ],
+  },
+  {
+    slug: 'the-rehabilitation',
+    title: 'The Rehabilitation',
+    deck: 'The EFTA corpus documents a four-year relationship between Bill Gates and Jeffrey Epstein — from January 2011 through September 2014. Gates stayed at Epstein\'s Paris apartment, invited Epstein to the Gates Foundation headquarters, authorized Epstein to negotiate his science advisor\'s severance, and participated in a coordinated PR rehabilitation strategy with pre-written talking points. A Stanford professor drafted the scripts. Gates was to be the public face.',
+    section: 'the-network' as const,
+    file: 'the-rehabilitation.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 11,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-16T22:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Bill_Gates_2017_%28cropped%29.jpg/440px-Bill_Gates_2017_%28cropped%29.jpg',
+    hero_image_caption:
+      'Bill Gates at a public event — co-founder of Microsoft and documented participant in Jeffrey Epstein\'s post-conviction rehabilitation strategy.',
+    metadata: {
+      source_analysis: 'Corpus search: 6,656 documents / 7,856 pages referencing Gates. Key documents: EFTA02030179 (Kosslyn PR scripts), EFTA02032102 (Gates Foundation visitor registration), EFTA01965179 (Gates authorizes Epstein to negotiate Nikolic severance), EFTA01844429 (trophy photos), EFTA01960417 (Melinda dinner), EFTA01959043 (donation offer), EFTA01747368 (Wolff rehabilitation claim)',
+    },
+    entities: [
+      { name: 'Bill Gates', mention_count: 30, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 25, is_primary: true },
+      { name: 'Larry Summers', mention_count: 6, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02030179',
+        description:
+          'Stephen Kosslyn email to Epstein — "Two scripts" for Gates and Epstein to use with reporters. Gates script: "Jeffrey Epstein has unquestioned financial expertise... everyone deserves a second chance." Kosslyn adds: "Great to see you last night! Thanks again for getting us invited."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02032102',
+        description:
+          'Gates Foundation official visitor management system email: "Dear Jeffrey Epstein, You have been registered as a visitor to the Bill & Melinda Gates Foundation on 07/15/11, starting at 3:30PM." Address: 500 5th Ave North, Seattle.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01301092',
+        description:
+          'Reference to Richard C. Henriques, Chief Financial Officer of the Bill & Melinda Gates Foundation — contact information in Epstein correspondence.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02102896',
+        description:
+          'Epstein assistant scheduling a call between Epstein and "Connie" (General Counsel of the Gates Foundation), coordinated through Diana Blair, Executive Assistant to the General Counsel. July 2014.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01844429',
+        description:
+          'Epstein email to Tom Barrack: "IN the dining room there are photos of Bill Gates with Larry Summers taken at the house the other day, should I have someone take them down. or is he ok with competition." January 9, 2012.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01797988',
+        description:
+          'Lesley Groff schedule email: "7:30 DINNER WITH BILL GATES AND BORIS NIKOLIC" (Jan 31, 2011). Then: "8:00 Dinner w/Bill Gates, Boris Nikolic and Peter Mandelson" (Feb 1, 2011). Two consecutive nights of dinners at Epstein\'s townhouse.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02189210',
+        description:
+          'Staff email: "dinner Monday night is at 9pm. Bill Gates, Larry Summers and Jes Staley are the attendees at the moment. Power dinner!!" May 2, 2011.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01960417',
+        description:
+          'Schedule: "7:30 BILL & Melinda GATES to arrive the house. 8:00pm DINNER: Bill, Melinda, Terje, Jagbland, JE. Larry & Lisa Summers are invited." September 2013 — Melinda Gates at Epstein\'s home.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01898746',
+        description:
+          'Epstein to multiple contacts: "will have bill gates staying with me in paris, what day can you come." March 2013. Confirmed by EFTA01899812 and EFTA01969029 (June 2013 Paris stay).',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01832859',
+        description:
+          'Epstein coaching Boris Nikolic on job titles within Gates organization: "president Bill Gates investments.. president Bill Gates Interests." February 2011. Also EFTA01939674 confirming Nikolic\'s role as Chief Advisor for Science and Technology.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01965179',
+        description:
+          'Gates emails Epstein: "Larry Cohen is authorized to talk to you about the employment issues with Boris." Direct authorization for Epstein to negotiate Nikolic severance. EFTA01964544: Epstein raises 8 points including "If Melinda wants a divorce, how does Boris protect himself."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA01866351',
+        description:
+          'Epstein to ME Karim Wade (son of Senegal\'s president): "Gates has asked me to do it.. he is coming on Monday the 2nd." April 2011 name-dropping.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA02006672',
+        description:
+          'Epstein to NYT journalist Landon Thomas: "bill gates and I, are going to convene some very small gatherings on new solutions for the financial distress." September 2012. Also EFTA02032000: "boris (bill gates person)" to Moscow contacts.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01843425',
+        description:
+          'Epstein instructs staff to follow up with Jenna Mulhall-Brereton (Gates Foundation Global Health - Policy & Advocacy) about Ivory Coast — "she was at my house with Gates foundation." January 2012.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA01832430',
+        description:
+          'Epstein to Summers: "I talked to Staley regarding the Donor advised fund. You and I are invited to Scene to spend serious time with Bill Gates." February 2011. DAF discussions continued through April 2014 (EFTA01928217: Gates: "I meet on the DAF on April 29"). Also EFTA02021155: Osborne to Epstein\'s island for "Gates donor advised funds."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA01959043',
+        description:
+          'Epstein to Gates and Larry Cohen: "Boris told me of your kind offer to donate money in my name---- a. thank you, lets discuss b. my giving is always anonymous." Same email: "I just organized for a 300 million dollar gift that cost the donor zero." September 2013.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 17,
+        bates_number: 'EFTA01747368',
+        description:
+          'Michael Wolff email: "It is Bill Gates who at the end of the summer began prodding Epstein to begin a process of public rehabilitation." Establishes Gates as the catalyst for rehabilitation strategy.',
+        page_reference: 'p. 1',
+      },
+    ],
+  },
+  {
+    slug: 'the-premiere-queen',
+    title: 'The Premiere Queen',
+    deck: 'Over fifty emails in the EFTA corpus document Peggy Siegal — New York\'s premier movie premiere publicist — as the professional social infrastructure of Jeffrey Epstein\'s post-conviction rehabilitation. She curated his dinner guest lists with network anchors, billionaire financiers, and Hollywood directors. She brokered celebrity introductions on demand. She bridged Epstein\'s network to Harvey Weinstein\'s. And she reported a $90,000 Weinstein payment to Epstein\'s office — not to her own.',
+    section: 'the-operation' as const,
+    file: 'the-premiere-queen.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-17T01:00:00Z',
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Peggy_Siegal_2012_Shankbone.JPG/440px-Peggy_Siegal_2012_Shankbone.JPG',
+    hero_image_caption:
+      'Peggy Siegal at a 2012 event — New York\'s premier movie premiere publicist, who curated Jeffrey Epstein\'s post-conviction guest lists and bridged his network to Harvey Weinstein\'s.',
+    metadata: {
+      source_analysis: 'Corpus search: 50+ emails spanning 2009-2015. Key documents: EFTA01899911 (25-name dinner guest list), EFTA02067532 (Weinstein $90K payment report), EFTA01788816 ("send some goons"), EFTA01763704 (Hathaway/Gates coffee), EFTA02078187 (amfAR Cannes ticket purchase), EFTA01987364 (company financials reported to Epstein), EFTA01832862 (Weinstein→Siegal→Epstein intelligence flow)',
+    },
+    entities: [
+      { name: 'Peggy Siegal', mention_count: 30, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 25, is_primary: true },
+      { name: 'Harvey Weinstein', mention_count: 8, is_primary: false },
+      { name: 'Bill Gates', mention_count: 6, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA01899911',
+        description:
+          'Siegal email "Some ideas" for March 21, 2013 dinner: 25+ names including Brian Williams, Katie Couric, George Stephanopoulos, Walter Isaacson, David Remnick, Woody Allen, Charlie Rose, Matt Lauer, Steve Schwarzman, Leon Black, Leonard Lauder, Barbara Walters. "This is just off the top of my head.... had Al Pacino last night for HBO\'s Spector."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01990853',
+        description:
+          'Siegal\'s office standing instruction to Epstein staff: "Send all screening invites asap. He is in NY." Epstein treated as priority VIP for all major film events.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02006600',
+        description:
+          'Hugh Jackman and Tom Hooper private screening of "Les Misérables" at AMC Lincoln Square. Siegal arranges Epstein attendance, mentions "the day at leon blacks" afterward.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02032496',
+        description:
+          '"The Great Gatsby" screening at MoMA arranged by Siegal for Epstein. Also references Standard Hotel and Anna Wintour lunch.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01763881',
+        description:
+          '"Zero Dark Thirty" screening at Sony arranged by Siegal for Epstein.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01899269',
+        description:
+          'Michael Douglas private screening invitation from Siegal: "There is no press and it\'s for Michael\'s friends. You are my plus one."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA01835262',
+        description:
+          'Epstein to Siegal: "is ann hathaway, in ney on the 31st" — January 2011. Checking celebrity availability through his social director.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01763704',
+        description:
+          'Epstein to Siegal: "Can you bring ann Hathaway to have a coffee with bill gates and me" — February 2013. Celebrity deployment for Gates meeting.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01927179',
+        description:
+          'Epstein to Siegal: "I need 8 great seats to cabaret on May 31 please help." Siegal as personal concierge for cultural events.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01788816',
+        description:
+          'Siegal to Epstein about Weinstein: "as he owes me $90,000.!!! Can you send some goons after him? xoxo Peg" — October 12, 2015.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA02067532',
+        description:
+          'Siegal to Epstein\'s assistant: "Please tell Jeffrey that Harvey Weinstein paid me the 90,000 he owed me for a year. Peggy" — November 16, 2015. Payment reported to Epstein\'s office.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA02014290',
+        description:
+          'Siegal from Tribeca Film Festival: "waiting to hear Harvey Weinstein speak...what devotion to my work." Documents professional relationship with Weinstein.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA01832862',
+        description:
+          'New Year\'s Day 2011 email chain: Siegal emails Weinstein about George Lucas, forwards intelligence to Epstein. Epstein responds: "Good reconnaissance we will make sure." Information flow: Weinstein → Siegal → Epstein.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01901796',
+        description:
+          'Epstein tells Siegal he is "in palm beach, with bill gates at the house." Siegal responds: "Very exciting about Bill Gates. Where is Melinda?"',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA02147469',
+        description:
+          'Siegal seeking Elton John AIDS Foundation Oscar party tickets for Epstein, invoking Boris Nikolic-Gates photo as social proof: "Jenna sent a photo of Boris with Bill Gates at an AIDS benefit in D.C."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA02142824',
+        description:
+          'Lesley Groff to Siegal: "He\'s still meeting with Gates and large group of people" — explaining Epstein\'s unavailability.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 17,
+        bates_number: 'EFTA01987364',
+        description:
+          'Siegal reports company financial structure to Epstein: "Bryan takes 40% of profit after expenses. He has grown the company and it is growing. Is that a lot to pay himself?" August 2011.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 18,
+        bates_number: 'EFTA02032192',
+        description:
+          'Siegal coordinates mother Annette Siegal\'s estate through Epstein\'s attorney Phil Michaels — including sale of $2.1M Alpine, NJ house.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 19,
+        bates_number: 'EFTA01975809',
+        description:
+          'Siegal relays instruction: "Jeffrey Epstein told me to sit tight" regarding estate management matters.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 20,
+        bates_number: 'EFTA02078187',
+        description:
+          'Amanda Skarbnik (Siegal\'s assistant) to amfAR: "Peggy\'s friend, Jeffrey Epstein, is going to purchase a ticket on Peggy\'s behalf." CC\'d to Richard Kahn. May 2015 Cannes gala.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 21,
+        bates_number: 'EFTA02014566',
+        description:
+          'Siegal\'s Cannes dispatch to Epstein: "Sitting next to Brett Ratner...he produced Woody\'s 3 hour documentary that just was shown at Cannes. We are about to see Roman Polanski documentary."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 22,
+        bates_number: 'EFTA02024242',
+        description:
+          'Siegal from Cannes: "Have not stopped running to 2 or 3 films a day and every cockamamie party...changing my outfits 3 times a day."',
+        page_reference: 'p. 1',
+      },
+    ],
+  },
+  {
+    slug: 'the-white-house-counsel',
+    title: 'The White House Counsel',
+    deck: 'The EFTA corpus documents a seven-year relationship between Kathryn Ruemmler — former White House Counsel to President Obama — and convicted sex offender Jeffrey Epstein. She was named successor trustee of his $577 million trust and successor executor of his will. She dined with Woody Allen and Peter Thiel at his home. She met Bill Gates through his office. She introduced Cass Sunstein to his social circle. And when Bloomberg reported her as the leading candidate for Attorney General, it was Epstein who coached her on video presentation, glasses, and body language.',
+    section: 'follow-the-money' as const,
+    file: 'the-white-house-counsel.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 12,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-17T03:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
+    metadata: {
+      source_analysis: 'Corpus research: 20+ unique EFTA documents. Key documents: EFTA01266434 (2017 Trust — successor trustee Section 7.1), EFTA01266268 (Last Will — successor executor), EFTA02590624 (AG nomination coaching), EFTA02098691 (Gates/Four Seasons meeting), EFTA02097572 (Woody Allen dinner), EFTA02097728 (Kerrey/Thiel/Sunstein brunch), EFTA02088962 (ring delivery), EFTA02045273 (spa payment), EFTA01752843 (Brad Karp/Paul Weiss recruitment)',
+    },
+    entities: [
+      { name: 'Kathryn Ruemmler', mention_count: 35, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 30, is_primary: true },
+      { name: 'Bill Gates', mention_count: 6, is_primary: false },
+      { name: 'Eva Andersson-Dubin', mention_count: 5, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02590624',
+        description:
+          'AG nomination email thread: Bloomberg article "Obama Favoring Former White House Counsel Kathryn Ruemmler to Succeed Holder" — Ruemmler sends to Epstein, late-night call arranged, next morning Epstein coaches on video, glasses, body language. "lets hire a video coach. you need to be trained."',
+        page_reference: 'pp. 1-3',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01266434',
+        description:
+          'Jeffrey E. Epstein 2017 Trust (23 pages). Section 7.1 — Successor Trustees: "KATHRYN RUEMMLER shall be appointed the successor trustee." Trust valued at ~$577M at Epstein\'s death.',
+        page_reference: 'p. 18 (Section 7.1)',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01266268',
+        description:
+          'Last Will and Testament of Jeffrey E. Epstein. Article THIRD: "I appoint EVA ANDERSSON DUBIN, as successor Executor, followed by KATHRYN RUEMMLER, as successor Executor." Executed June 2017.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02098691',
+        description:
+          'Google Calendar reminder: "3-3:30pm Meet Kathy Ruemmler at the Four Seasons w/Bill Gates" — September 8, 2014. Four Seasons, 57 East 57th Street.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA02097572',
+        description:
+          'Lesley Groff schedule email: "7:00pm DINNER w/Woody Allen, Soon Yi, Kathy Ruemmler, and MAYBE Peter Thiel" — September 13, 2014.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA02097728',
+        description:
+          'Lesley Groff schedule: "11:00am BRUNCH w/Bob Kerrey, Peter Thiel, Kathy Ruemmler and Cass" — September 14, 2014. Barney Greengrass catering.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA02340944',
+        description:
+          'Ruemmler introduces Cass Sunstein to Epstein: "Thought of a smart person for you to meet: Cass Sunstein. He is in NY now; married to Sam Power. He was POTUS\'s regulatory czar." August 30, 2014.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA02589191',
+        description:
+          'Epstein reply to Sunstein introduction: "Great, also week of 22 many interesting people at house." August 30, 2014.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA02088962',
+        description:
+          'Ring delivery coordination: "Kathy, Jeffrey would like Jojo to deliver your ring to you!!" Leo hand-delivers to Latham & Watkins, 885 Third Avenue. December 5, 2014.',
+        page_reference: 'pp. 1-2',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA02079873',
+        description:
+          'Gift FedEx overnight: "I have a gift for you from Jeffrey that just could not wait!" Sent to Latham & Watkins DC, 555 Eleventh Street NW. April 22, 2015.',
+        page_reference: 'pp. 1-2',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA02045273',
+        description:
+          'Spa payment: "Jeffrey Epstein Amex for Kathy Ruemmler Spa Appt Today (Aug 14, 2016)" — Four Seasons Hotel Washington, DC. Epstein pays with his credit card.',
+        page_reference: 'pp. 1-2',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA02044853',
+        description:
+          'Flower delivery to Ruemmler\'s DC office. Ruemmler: "That is so sweet of Jeffrey and not necessary (per usual). :-)" — the "per usual" indicates recurring pattern. August 19, 2016.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA02067830',
+        description:
+          'Amazon shipment: Samsung UN46C6300 46-inch TV ($1,099) shipped to "Kathryn Ruemmler." Order confirmation forwarded to Epstein\'s email. October 2010.',
+        page_reference: 'pp. 1-3',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA01752843',
+        description:
+          'Epstein to Brad Karp (Chairman, Paul Weiss): "Hope you can convince Kathy Ruemmler." Karp: "Still working on 1." Recruiting sitting White House Counsel to law firm. December 6, 2013.',
+        page_reference: 'pp. 1-2',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA02713278',
+        description:
+          'Ruemmler forwards David Axelrod email about Paul Simon CURE benefit to Epstein. Axelrod: "Thanks again. Means the world to me! xoxo." October 3, 2015.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 16,
+        bates_number: 'EFTA01914482',
+        description:
+          'Eva Fact vs. Fiction breast cancer luncheon invitation: "Please give it to anyone you would like, including Kathryn Ruemmler and Melinda Gates." Mount Sinai, September 29, 2014.',
+        page_reference: 'pp. 1-2',
+      },
+      {
+        number: 17,
+        bates_number: 'EFTA02098445',
+        description:
+          'Staff to Epstein: "Eva is asking for the name and details for the \'woman lawyer who work at the white house\' who is to join her at her Fact Vs. Fiction luncheon. Is this Kathy Ruemmler?" September 9, 2014.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 18,
+        bates_number: 'EFTA02097902',
+        description:
+          'Ehud Barak meeting scheduling: "Might you be available to come see Jeffrey and Ehud Barak at 1pm on Tues Sept 23rd." Ruemmler: "Yes. I can do Tuesday." September 18, 2014.',
+        page_reference: 'p. 1',
+      },
+    ],
+  },
+  {
+    slug: 'the-september-salon',
+    title: 'The September Salon',
+    deck: 'In September 2014, the scheduling apparatus of a convicted sex offender orchestrated meetings at his Manhattan townhouse involving the Deputy Secretary of State (later CIA Director), the Secretary General of the Council of Europe, a former Israeli Prime Minister, a former White House Counsel, a former Treasury Secretary, a billionaire venture capitalist, and a filmmaker accused of child sexual abuse. The EFTA corpus preserves the emails that choreographed it all — including Epstein\'s request for "alone time" with America\'s second-highest diplomat.',
+    section: 'the-network' as const,
+    file: 'the-september-salon.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: null,
+    published_at: '2026-03-17T12:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
+    metadata: {
+      source_analysis: 'Corpus research: 30+ unique EFTA documents from Thread 15 (September 2014 Convergence) and Thread 16 (Intelligence Asset Question). Key documents: EFTA02097661 (Sept 10 proposed schedule with compartmentalized time blocks), EFTA02097678 (People To See master list), EFTA01922017 (Burns as social currency), EFTA02095883/EFTA01748418 (Sept 24 Burns appointment), EFTA01968806/EFTA01970317 (Burns brokering), EFTA01928716 (Jagland Ritz rooms), EFTA01927644 (Jagland gratitude), EFTA01899436 (Jagland Strasbourg residence)',
+    },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 30, is_primary: true },
+      { name: 'William J. Burns', mention_count: 15, is_primary: true },
+      { name: 'Thorbjørn Jagland', mention_count: 10, is_primary: true },
+      { name: 'Peter Thiel', mention_count: 10, is_primary: false },
+      { name: 'Kathryn Ruemmler', mention_count: 8, is_primary: false },
+      { name: 'Ehud Barak', mention_count: 5, is_primary: false },
+      { name: 'Woody Allen', mention_count: 5, is_primary: false },
+      { name: 'Bob Kerrey', mention_count: 4, is_primary: false },
+      { name: 'Leon Black', mention_count: 3, is_primary: false },
+      { name: 'Larry Summers', mention_count: 2, is_primary: false },
+      { name: 'Lesley Groff', mention_count: 3, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02097661',
+        description:
+          'Epstein to Peter Thiel (Sept 10, 2014): "proposed schedule. 2 pm one on one you and I, 3-4 bill burns to join. i will need alone time with him after. 730 woody and kathy ruemmler for dinner." Compartmentalized time blocks revealing operational scheduling pattern.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02097678',
+        description:
+          'Groff schedule email (Sept 22, 2014): "People To See: Jagland, Terje, Thiel, Simon, Kathy, Cass, Woody, Jabor, Ehud, Leon, Stone, Maldives, Mada Kasak, India, Sommers, Boris, Barbro, Bill Burns." Master list of 16+ individuals.',
+        page_reference: 'pp. 1-3',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01922017',
+        description:
+          'Epstein to Thiel (May 21, 2014): "ehud, bill burns (dept sec of state), terje roed-larsen will all be at the house on jun 1." Burns identified by government title as social currency.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02095883',
+        description:
+          'Groff schedule (Sept 24, 2014): "5:00pm Appt w/Bill Burns." Second documented visit by sitting Deputy Secretary of State.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01968806',
+        description:
+          'Epstein to Terje Rød-Larsen: "I suggest you reach out to Bill Burns and tell him you are there if he needs help." Access brokering through diplomatic channels.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01970317',
+        description:
+          'Epstein to Terje: "I think John Kerry might be busy for awhile. they will turn to Bill Burns who will need more help. middle east syria egypt etc." Geopolitical intelligence analysis.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA01615010',
+        description:
+          'Epstein to Steve Bannon (2018): "i suggest you meet bill burns. ask terje." Burns access brokered years after leaving government.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01899436',
+        description:
+          'Jagland to Epstein (March 2013): "Hi Jeff, they can stay in contact with my secretary Valerie Popp-Muess... Bill can come to my residence with his assistant if they want." Secretary General hosting Epstein at official Strasbourg residence.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA01928716',
+        description:
+          'Epstein assistant to Ritz hotel: "Mr. Jagland had to cancel on Friday because he is involved with some negotiations with regards to the Ukraine and Mr. Putin. As such, we do not know when he will be able to use the rooms. Since Mr. Epstein paid for the rooms, can he get a credit..." Three rooms booked and paid by Epstein.',
+        page_reference: 'pp. 1-2',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01899436',
+        description:
+          'Epstein to Jagland (March 2013): "i will land at 1230, i will send you the tail number of the plane, go to bills hotel, I am three, he is two." Private plane arrival at Secretary General residence in Strasbourg.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01927554',
+        description:
+          'Epstein email: "thorbjorn jagland will be on the island for the entire next week, come visit." Secretary General of Council of Europe on Epstein\'s private island.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA01927644',
+        description:
+          'Jagland to Epstein (April 14, 2014): "Dear Jeffrey, it\'s unbelievable what you have done for me despite the fact that I could not come." Extraordinary gratitude for unspecified favors.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA00016172',
+        description:
+          'SDNY prosecutors letter to Judge Berman (July 17, 2019): Austrian passport "contains numerous ingress and egress stamps, including stamps that reflect use of the passport to enter France, Spain, the United Kingdom, and Saudi Arabia in the 1980s."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA00266155',
+        description:
+          'Wikipedia article preserved in corpus: concealed cameras throughout properties, CDs in safe labeled with young women\'s names, Epstein visited Israeli military bases April 2008.',
+        page_reference: 'p. 2',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA01657240',
+        description:
+          'Congressional hearing (June 2024): FBI Director Christopher Wray refuses to confirm or deny whether FBI possesses Epstein\'s surveillance recordings.',
+        page_reference: 'p. 1',
+      },
+    ],
+  },
+  {
+    slug: 'the-intelligence-question',
+    title: 'The Intelligence Question',
+    deck: 'A U.S. Attorney said he was told Epstein "belonged to intelligence." An FBI document classified SECRET//NOFORN describes him as a "construct" running "an Israeli state-sponsored technology collection and extortion operation." An Austrian passport under a false name was found in his safe. Hidden cameras lined his properties. The FBI Director refuses to confirm whether recordings exist. And the future CIA Director had "alone time" in the house where it all happened.',
+    section: 'the-cover-up' as const,
+    file: 'the-intelligence-question.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 12,
+    is_featured: false,
+    case_file_slug: 'intelligence-diplomatic-network',
+    published_at: '2026-03-17T18:00:00Z',
+    hero_image_url: null,
+    hero_image_caption: null,
+    metadata: {
+      source_analysis: 'Thread 16 (Intelligence Asset Question). 35 corpus source documents. Key: EFTA00030182 (Acosta "belonged to intelligence"), EFTA01683612 (FBI FD-1023 SECRET//NOFORN — "construct" / "Israeli state-sponsored technology collection and extortion operation"), EFTA00016172 (Austrian passport stamps), EFTA01656330 (FBI passport investigation), EFTA01689279 (victim hidden cameras), EFTA01657240 (Wray Glomar response), EFTA02507843 (Epstein forwards Maxwell/Mossad article), EFTA01748029 (Barak/Carbyne), EFTA00128843 (Nikolic DARPA FD-1023), EFTA02097661 (Burns "alone time")',
+    },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 35, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 8, is_primary: false },
+      { name: 'Les Wexner', mention_count: 3, is_primary: false },
+      { name: 'Ehud Barak', mention_count: 5, is_primary: false },
+      { name: 'William J. Burns', mention_count: 6, is_primary: false },
+      { name: 'Boris Nikolic', mention_count: 4, is_primary: false },
+      { name: 'Bill Gates', mention_count: 3, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA00030182',
+        description:
+          'Internal SDNY email (July 10, 2019) forwarding Daily Beast article: Acosta told Trump transition team "I was told Epstein belonged to intelligence and to leave it alone" and that Epstein was "above his pay grade." The transition team hired him anyway.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01683612',
+        description:
+          'FBI FD-1023 (Confidential Human Source Reporting Document), classified SECRET//NOFORN. Filed Dec 23, 2021, FBI Los Angeles. Case: "(U) EPSTEIN, JEFFREY; CHILD SEX TRAFFICKING." Source describes Epstein as a "construct" running "an Israeli state-sponsored technology collection and extortion operation." Details Gates Foundation leadership (Desmond-Hellmann), Maxwell/Mossad connection, Wexner benefactor role, hidden recording infrastructure.',
+        page_reference: 'pp. 1-3',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01656330',
+        description:
+          'FBI internal emails re: Austrian passport investigation. Passport in name "MARIUS ROBERT FORTELNI" with Epstein photo, DOB 07/30/1954. Real Fortelni exists in FBI Sentinel/DIVS. Evidence item 1B76, 32 photos taken.',
+        page_reference: 'pp. 1, 4',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA00016172',
+        description:
+          'SDNY prosecutors letter to Judge Berman (July 17, 2019): passport "contains numerous ingress and egress stamps, including stamps that reflect use of the passport to enter France, Spain, the United Kingdom, and Saudi Arabia in the 1980s." Signed by U.S. Attorney Geoffrey S. Berman.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01689279',
+        description:
+          'FBI 302 (witness interview report): victim stated she "felt like there were hidden cameras there."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA00266155',
+        description:
+          'Wikipedia article preserved in corpus documenting: concealed cameras throughout properties, CDs in safe labeled with young women\'s names, Epstein visited Israeli military bases April 2008, considered fleeing to Israel.',
+        page_reference: 'p. 2',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA01657240',
+        description:
+          'Congressional hearing (June 2024): FBI Director Christopher Wray refuses to confirm or deny whether FBI possesses Epstein\'s surveillance recordings. Glomar response.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01582934',
+        description:
+          'Reporting on Robert Maxwell death and Mossad ties. Six serving and former heads of Israeli intelligence attended his state funeral on the Mount of Olives in Jerusalem.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 9,
+        bates_number: 'EFTA02507843',
+        description:
+          'Email forwarded by Epstein (March 15, 2018): "Robert Maxwell threatened Mossad. He told them that unless they gave him £400million to save his crumbling empire, he would expose all he had done for them." Details Maxwell\'s access to Thatcher, Reagan, Kremlin.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 10,
+        bates_number: 'EFTA01748029',
+        description:
+          'Ehud Barak to Epstein email: "Reporty... Good conversation yesterday... I assume that by Monday evening we will be ripe for decision on the investment." Carbyne/Reporty emergency technology startup chaired by Barak, staffed by Unit 8200 alumni.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 11,
+        bates_number: 'EFTA01950294',
+        description:
+          'Epstein forwards Unit 8200 article to Ehud Barak. Unit 8200 is Israel\'s signals intelligence unit (equivalent to NSA). Carbyne founding team included Unit 8200 alumni.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 12,
+        bates_number: 'EFTA00128843',
+        description:
+          'FBI FD-1023 (UNCLASSIFIED), filed Nov 23, 2021, FBI San Francisco. Reports Boris Nikolic pursuing DARPA-funded AI company investments. Notes: "Nikolic was designated a executor of Jeffrey Epstein\'s estate."',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 13,
+        bates_number: 'EFTA02097661',
+        description:
+          'Epstein to Peter Thiel (Sept 10, 2014): Burns at Epstein\'s home with required "alone time." Burns later became CIA Director (March 2021).',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 14,
+        bates_number: 'EFTA00097901',
+        description:
+          'Internal SDNY memo documenting victim Maria Farmer\'s public statement: "He never in a trillion years would have taken his own life. He was an intelligence asset." Farmer reported Epstein to FBI in 1996.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 15,
+        bates_number: 'EFTA01658887',
+        description:
+          'DOJ OIG report concluding Epstein "wasn\'t assisting the federal government in prosecuting Wall Street traders behind the collapse of investment bank Bear Stearns or serving as an intelligence asset." Conclusion appears to have been scope-limited.',
+        page_reference: 'p. 29',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────
@@ -2846,12 +4226,13 @@ async function seedStories(entityUUIDs: Map<string, string>) {
           body_markdown: bodyMarkdown,
           byline: story.byline,
           reading_time_minutes: story.reading_time_minutes,
-          is_published: true,
+          is_published: !SEED_AS_DRAFT,
           is_featured: story.is_featured,
-          published_at: story.published_at,
+          published_at: SEED_AS_DRAFT ? null : story.published_at,
           case_file_id: caseFileId,
           hero_image_url: story.hero_image_url,
           hero_image_caption: story.hero_image_caption,
+          editorial_status: SEED_AS_DRAFT ? 'review' : 'published',
           metadata: story.metadata,
         },
         { onConflict: 'slug' },

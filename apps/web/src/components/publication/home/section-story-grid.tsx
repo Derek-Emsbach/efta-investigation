@@ -68,7 +68,7 @@ export function SectionStoryGrid({ stories }: SectionStoryGridProps) {
   return (
     <div className="space-y-2">
       {orderedSections.map((section) => {
-        const sectionStories = sections.get(section)!.slice(0, 3)
+        const sectionStories = sections.get(section)!.slice(0, 4)
         const color = SECTION_COLORS[section] ?? 'var(--color-text-muted)'
         const label = SECTION_LABELS[section] ?? section
 
@@ -78,7 +78,7 @@ export function SectionStoryGrid({ stories }: SectionStoryGridProps) {
             <SectionHeader label={label} color={color} href={`/sections/${section}`} />
 
             {/* 3-column grid with border dividers */}
-            <div className="grid grid-cols-1 md:grid-cols-3 border-t border-b border-border-default">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 border-t border-b border-border-default">
               {sectionStories.map((story, i) => (
                 <StoryCard
                   key={story.id}
@@ -96,13 +96,13 @@ export function SectionStoryGrid({ stories }: SectionStoryGridProps) {
       {unsectioned.length > 0 && (
         <section>
           <SectionHeader label="Latest" color="var(--color-text-muted)" href="/stories" />
-          <div className="grid grid-cols-1 md:grid-cols-3 border-t border-b border-border-default">
-            {unsectioned.slice(0, 3).map((story, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 border-t border-b border-border-default">
+            {unsectioned.slice(0, 4).map((story, i) => (
               <StoryCard
                 key={story.id}
                 story={story}
                 sectionColor="var(--color-text-muted)"
-                isLast={i === Math.min(unsectioned.length, 3) - 1}
+                isLast={i === Math.min(unsectioned.length, 4) - 1}
               />
             ))}
           </div>
@@ -164,7 +164,7 @@ function StoryCard({
             src={story.hero_image_url}
             alt={story.title}
             fill
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 33vw, 25vw"
             className="object-cover"
             unoptimized
           />

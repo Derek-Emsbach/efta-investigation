@@ -26,7 +26,7 @@ export default function EvidenceRoomPage() {
     <DatasetJsonLd />
     <div className="evidence-grid-bg min-h-[calc(100vh-48px)]">
       {/* Hero */}
-      <div className="mx-auto max-w-5xl px-6 pt-16 pb-10">
+      <div className="mx-auto max-w-5xl xl:max-w-newspaper px-6 pt-16 pb-10">
         <div className="text-center">
           <p className="font-mono text-[11px] font-semibold tracking-[0.3em] text-critical uppercase">
             <span className="inline-block w-1.5 h-1.5 bg-critical mr-2 animate-[pulse_2s_ease-in-out_infinite]" />

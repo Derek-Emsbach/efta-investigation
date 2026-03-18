@@ -67,7 +67,7 @@ export function HeroSection({ leadStory, sidebarStories, openQuestions }: HeroSe
 
   return (
     <section className="pt-10">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] border-b border-border-default">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:grid-cols-[3fr_2fr_1fr] border-b border-border-default">
         {/* Lead story */}
         <article className="lg:pr-10 lg:border-r lg:border-border-default pb-6">
           {/* Kicker */}
@@ -171,11 +171,10 @@ export function HeroSection({ leadStory, sidebarStories, openQuestions }: HeroSe
           </div>
         </article>
 
-        {/* Sidebar */}
-        <aside className="lg:pl-6 pt-6 lg:pt-0">
-          {/* Latest Findings */}
+        {/* Sidebar — Latest Findings (col 2 at xl) */}
+        <div className="lg:pl-6 xl:pl-8 xl:pr-8 xl:border-r xl:border-border-default pt-6 lg:pt-0">
           {sidebarStories.length > 0 && (
-            <div className="pb-5 mb-5 border-b border-border-default">
+            <div className="pb-5 mb-5 border-b border-border-default xl:border-b-0 xl:pb-0 xl:mb-0">
               <div className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-text-muted pb-2 mb-3.5 border-b-2 border-text-primary">
                 Latest Findings
               </div>
@@ -209,8 +208,8 @@ export function HeroSection({ leadStory, sidebarStories, openQuestions }: HeroSe
             </div>
           )}
 
-          {/* Open Questions — always shown with fallback */}
-          <div className={sidebarStories.length === 0 ? '' : ''}>
+          {/* Open Questions — shown inline below findings on mobile/lg, hidden at xl (moves to col 3) */}
+          <div className="xl:hidden">
             <div className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-text-muted pb-2 mb-3.5 border-b-2 border-text-primary">
               Open Questions
             </div>
@@ -223,9 +222,9 @@ export function HeroSection({ leadStory, sidebarStories, openQuestions }: HeroSe
             </div>
           </div>
 
-          {/* Quick links when no stories */}
+          {/* Quick links when no stories (below xl only) */}
           {sidebarStories.length === 0 && (
-            <div className="mt-6 pt-5 border-t border-border-default">
+            <div className="mt-6 pt-5 border-t border-border-default xl:hidden">
               <div className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-text-muted pb-2 mb-3.5 border-b-2 border-text-primary">
                 Explore
               </div>
@@ -242,6 +241,37 @@ export function HeroSection({ leadStory, sidebarStories, openQuestions }: HeroSe
               </div>
             </div>
           )}
+        </div>
+
+        {/* Column 3 — Open Questions + Explore (xl only) */}
+        <aside className="hidden xl:block xl:pl-8 pt-6 xl:pt-0">
+          <div className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-text-muted pb-2 mb-3.5 border-b-2 border-text-primary">
+            Open Questions
+          </div>
+          <div className="space-y-3 mb-6">
+            {displayQuestions.map((q) => (
+              <h3 key={q.id} className="font-display text-[15px] font-semibold leading-[1.3] text-text-primary">
+                {q.question}
+              </h3>
+            ))}
+          </div>
+
+          <div className="pt-5 border-t border-border-default">
+            <div className="font-sans text-[11px] font-bold tracking-[0.15em] uppercase text-text-muted pb-2 mb-3.5 border-b-2 border-text-primary">
+              Explore
+            </div>
+            <div className="space-y-2.5">
+              <Link href="/case-files" className="block font-display text-[15px] font-semibold text-text-primary hover:underline hover:underline-offset-2">
+                Browse Case Files →
+              </Link>
+              <Link href="/entities" className="block font-display text-[15px] font-semibold text-text-primary hover:underline hover:underline-offset-2">
+                Entity Profiles →
+              </Link>
+              <Link href="/evidence" className="block font-display text-[15px] font-semibold text-text-primary hover:underline hover:underline-offset-2">
+                Evidence Room →
+              </Link>
+            </div>
+          </div>
         </aside>
       </div>
     </section>

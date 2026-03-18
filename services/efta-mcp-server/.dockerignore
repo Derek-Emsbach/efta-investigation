@@ -1,0 +1,8 @@
+node_modules
+build
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.gz
+data/*.part_*
+.env

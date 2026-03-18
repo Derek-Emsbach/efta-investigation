@@ -9,6 +9,7 @@ interface AuthState {
   displayName: string | null
   subscriptionTier: SubscriptionTier | null
   rank: string | null
+  role: string | null
 }
 
 const SECTION_NAV = [
@@ -34,7 +35,7 @@ export function PublicHeader({ authState }: { authState: AuthState | null }) {
     <>
       {/* Top bar — dark strip */}
       <div className="hidden md:block bg-ink text-background">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
           <div className="flex items-center justify-between py-1.5">
             <div className="flex items-center gap-1.5 font-sans text-[11px] tracking-[0.05em] uppercase">
               <span className="relative flex h-1.5 w-1.5">
@@ -57,6 +58,14 @@ export function PublicHeader({ authState }: { authState: AuthState | null }) {
               <div className="h-3 w-px bg-background/20" />
               {authState ? (
                 <div className="flex items-center gap-3">
+                  {authState.role === 'admin' && (
+                    <Link
+                      href="/dashboard"
+                      className="rounded bg-background/10 px-1.5 py-0.5 font-sans text-[10px] font-bold tracking-widest uppercase text-background/90 hover:bg-background/20 transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                   {authState.subscriptionTier === 'investigator' && authState.rank && (
                     <span className="rounded bg-accent-gold/20 px-1.5 py-0.5 font-sans text-[10px] font-bold tracking-widest uppercase text-accent-gold">
                       {getRankAbbreviation(authState.rank)}
@@ -95,7 +104,7 @@ export function PublicHeader({ authState }: { authState: AuthState | null }) {
 
       {/* Main navigation — sticky */}
       <nav className="sticky top-0 z-40 border-t border-b border-border-default bg-background/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
           <div className="flex items-center justify-between md:justify-center h-11">
             {/* Desktop: centered section links with dividers */}
             <div className="hidden md:flex items-stretch overflow-x-auto scrollbar-hide">
@@ -166,6 +175,15 @@ export function PublicHeader({ authState }: { authState: AuthState | null }) {
                 <div className="border-t border-border-default mt-2 pt-2 flex items-center gap-3">
                   {authState ? (
                     <>
+                      {authState.role === 'admin' && (
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setMenuOpen(false)}
+                          className="font-sans text-xs font-semibold text-accent-red"
+                        >
+                          Dashboard
+                        </Link>
+                      )}
                       <Link
                         href={authState.subscriptionTier === 'investigator' ? '/investigate' : '/account'}
                         onClick={() => setMenuOpen(false)}

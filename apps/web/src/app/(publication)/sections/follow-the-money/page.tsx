@@ -78,7 +78,7 @@ export default async function FollowTheMoneyPage() {
         stat={{ value: '$158M+', label: 'Documented Payments' }}
       />
 
-      <div className="mx-auto max-w-7xl px-6 py-12 space-y-16">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12 space-y-16">
         {/* Connection Type Chart */}
         {Object.keys(chartData).length > 0 && (
           <section>

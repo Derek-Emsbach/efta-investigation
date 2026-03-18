@@ -97,7 +97,7 @@ export default async function CaseFilePage({
   const questions = (questionsResult.data ?? []) as OpenQuestion[]
 
   return (
-    <div className="mx-auto max-w-[1100px] px-6 py-10">
+    <div className="mx-auto max-w-[1100px] xl:max-w-newspaper px-6 py-10">
       {/* Breadcrumb + print */}
       <div className="mb-6 flex items-center justify-between">
         <nav className="font-mono text-xs text-text-muted">

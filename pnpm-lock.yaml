@@ -125,6 +125,12 @@ importers:
 
   scripts:
     dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.986.0
+        version: 3.986.0
+      '@aws-sdk/s3-request-presigner':
+        specifier: ^3.986.0
+        version: 3.986.0
       '@supabase/supabase-js':
         specifier: ^2
         version: 2.95.3

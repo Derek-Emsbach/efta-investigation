@@ -48,6 +48,8 @@ efta-investigation/
           (legal)/                # Legal pages (minimal layout)
             about/ disclaimer/ terms/ privacy/
           dashboard/              # Auth-protected dashboard (existing dark theme)
+            stories/              # My Desk — editorial pipeline (story list + 3-col editor)
+            stories/[id]/         # Story editor (metadata | markdown | live preview)
             review/               # Document review (3-column: queue | PDF | Archer)
             assistant/            # AI detective assistant
             upload/               # Document upload
@@ -66,6 +68,7 @@ efta-investigation/
               case-files/         # Published case files list + [slug] detail
               evidence/           # Evidence search + stats
               homepage/           # Aggregated homepage data
+            stories/              # Admin: story CRUD, publish/unpublish, images, relevant-images
             review/archer/        # Archer SSE streaming endpoint
             assistant/            # Detective chat endpoint
             upload/               # Presigned URL generation

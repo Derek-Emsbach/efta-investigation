@@ -29,7 +29,34 @@ interface SearchResponse {
   limit: number
 }
 
-type SearchMode = 'database' | 'corpus'
+type SearchMode = 'database' | 'corpus' | 'concordance'
+
+interface ConcordanceResult {
+  efta_number: string
+  bates_begin: string | null
+  bates_end: string | null
+  original_filename: string | null
+  document_extension: string | null
+  original_folder_path: string | null
+  author: string | null
+  custodian: string | null
+  date_sent: string | null
+  email_from: string | null
+  email_to: string | null
+  email_cc: string | null
+  email_subject: string | null
+}
+
+interface ConcordanceSearchResponse {
+  results: ConcordanceResult[]
+  total: number
+  query: string
+  field: string
+  limit: number
+}
+
+type ConcordanceField = 'custodian' | 'author' | 'original_filename' | 'original_folder_path'
+  | 'email_from' | 'email_to' | 'email_cc' | 'email_subject'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -75,9 +102,21 @@ const FILTER_TYPES = ['email', 'fbi_302', 'financial', 'memo', 'court_filing', '
 const FILTER_SEVERITY = ['extreme_critical', 'critical', 'high', 'routine']
 const DATASETS = Array.from({ length: 12 }, (_, i) => i + 1)
 
+const CONCORDANCE_FIELDS: { value: ConcordanceField; label: string; group: 'document' | 'email' }[] = [
+  { value: 'custodian', label: 'Custodian', group: 'document' },
+  { value: 'author', label: 'Author', group: 'document' },
+  { value: 'original_filename', label: 'Filename', group: 'document' },
+  { value: 'original_folder_path', label: 'Folder Path', group: 'document' },
+  { value: 'email_from', label: 'From', group: 'email' },
+  { value: 'email_to', label: 'To', group: 'email' },
+  { value: 'email_cc', label: 'CC', group: 'email' },
+  { value: 'email_subject', label: 'Subject', group: 'email' },
+]
+
 const MODE_DESCRIPTIONS: Record<SearchMode, string> = {
   database: 'Searches document metadata (titles, summaries, Bates numbers)',
   corpus: 'Searches 2.77M pages of OCR-extracted text across all 12 DOJ datasets',
+  concordance: 'Searches DOJ production metadata — custodians, authors, filenames, email headers',
 }
 
 // DOJ PDF URL builder (mirrors corpus-db.ts logic, client-safe)
@@ -126,6 +165,10 @@ export function SearchInterface() {
   const [enrichment, setEnrichment] = useState<Record<string, CorpusEnrichment>>({})
   const [activeDataset, setActiveDataset] = useState<number | null>(null)
 
+  // Concordance mode state
+  const [concordanceResults, setConcordanceResults] = useState<ConcordanceResult[]>([])
+  const [concordanceField, setConcordanceField] = useState<ConcordanceField>('custodian')
+
   const searchDatabase = useCallback(async (searchQuery: string, newOffset: number) => {
     const params = new URLSearchParams({ q: searchQuery, offset: String(newOffset), limit: '20' })
     if (activeType) params.set('type', activeType)
@@ -169,6 +212,30 @@ export function SearchInterface() {
     setTotal(data.total)
   }, [activeDataset])
 
+  const searchConcordance = useCallback(async (searchQuery: string, newOffset: number) => {
+    const params = new URLSearchParams({
+      q: searchQuery,
+      field: concordanceField,
+      limit: '25',
+    })
+
+    const res = await fetch(`/api/public/evidence/concordance?${params}`)
+    if (!res.ok) {
+      const err = await res.json()
+      throw new Error(err.error || 'Concordance search failed')
+    }
+    const data: ConcordanceSearchResponse = await res.json()
+
+    if (newOffset === 0) {
+      setConcordanceResults(data.results)
+    } else {
+      setConcordanceResults((prev) => [...prev, ...data.results])
+    }
+    setResults([])
+    setCorpusResults([])
+    setTotal(data.total)
+  }, [concordanceField])
+
   const search = useCallback(async (searchQuery: string, newOffset = 0) => {
     if (searchQuery.trim().length < 2) return
 
@@ -178,7 +245,9 @@ export function SearchInterface() {
     setError(null)
 
     try {
-      if (mode === 'corpus') {
+      if (mode === 'concordance') {
+        await searchConcordance(searchQuery, newOffset)
+      } else if (mode === 'corpus') {
         await searchCorpus(searchQuery, newOffset)
       } else {
         await searchDatabase(searchQuery, newOffset)
@@ -188,7 +257,7 @@ export function SearchInterface() {
     } finally {
       setIsLoading(false)
     }
-  }, [mode, searchDatabase, searchCorpus])
+  }, [mode, searchDatabase, searchCorpus, searchConcordance])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -201,6 +270,7 @@ export function SearchInterface() {
     setHasSearched(false)
     setResults([])
     setCorpusResults([])
+    setConcordanceResults([])
     setEnrichment({})
     setTotal(0)
     setOffset(0)
@@ -219,13 +289,13 @@ export function SearchInterface() {
     setActiveDataset((prev) => (prev === ds ? null : ds))
   }
 
-  const currentResults = mode === 'corpus' ? corpusResults : results
+  const currentResults = mode === 'concordance' ? concordanceResults : mode === 'corpus' ? corpusResults : results
   const pageSize = 20
 
   return (
     <div>
       {/* Search input */}
-      <form onSubmit={handleSubmit} className="mx-auto max-w-[800px]">
+      <form onSubmit={handleSubmit} className="mx-auto max-w-[800px] xl:max-w-none">
         <div className="flex items-center border border-border-default bg-surface transition-colors focus-within:border-critical">
           <svg className="w-4 h-4 text-text-muted ml-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -234,7 +304,9 @@ export function SearchInterface() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={mode === 'corpus'
+            placeholder={mode === 'concordance'
+              ? `Search by ${CONCORDANCE_FIELDS.find(f => f.value === concordanceField)?.label.toLowerCase() ?? 'field'}...`
+              : mode === 'corpus'
               ? 'Search full corpus text... (supports "exact phrase", AND, OR, NOT)'
               : 'Search documents, Bates numbers, entities...'}
             data-no-focus-ring
@@ -272,6 +344,17 @@ export function SearchInterface() {
             }`}
           >
             Full Corpus
+          </button>
+          <button
+            type="button"
+            onClick={() => switchMode('concordance')}
+            className={`font-mono text-[10px] font-semibold uppercase tracking-wider px-3 py-1.5 border transition-colors ${
+              mode === 'concordance'
+                ? 'bg-critical/20 border-critical text-critical'
+                : 'border-border-default text-text-muted hover:border-text-muted'
+            }`}
+          >
+            Concordance
           </button>
           <span className="font-mono text-[9px] text-text-muted ml-2">
             {MODE_DESCRIPTIONS[mode]}
@@ -312,6 +395,40 @@ export function SearchInterface() {
                 </button>
               ))}
             </>
+          ) : mode === 'concordance' ? (
+            <>
+              <span className="font-mono text-[9px] text-text-muted self-center mr-1">FIELD:</span>
+              {CONCORDANCE_FIELDS.filter(f => f.group === 'document').map((f) => (
+                <button
+                  key={f.value}
+                  type="button"
+                  onClick={() => setConcordanceField(f.value)}
+                  className={`font-mono text-[10px] font-medium uppercase tracking-wider px-2.5 py-1 border transition-colors ${
+                    concordanceField === f.value
+                      ? 'bg-critical/20 border-critical text-critical'
+                      : 'border-border-default text-text-muted hover:border-text-muted'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+              <span className="w-px h-5 bg-border-default self-center mx-1" />
+              <span className="font-mono text-[9px] text-text-muted self-center mr-1">EMAIL:</span>
+              {CONCORDANCE_FIELDS.filter(f => f.group === 'email').map((f) => (
+                <button
+                  key={f.value}
+                  type="button"
+                  onClick={() => setConcordanceField(f.value)}
+                  className={`font-mono text-[10px] font-medium uppercase tracking-wider px-2.5 py-1 border transition-colors ${
+                    concordanceField === f.value
+                      ? 'bg-critical/20 border-critical text-critical'
+                      : 'border-border-default text-text-muted hover:border-text-muted'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </>
           ) : (
             <>
               <button
@@ -346,7 +463,7 @@ export function SearchInterface() {
 
       {/* Error display */}
       {error && (
-        <div className="mt-6 max-w-[800px] mx-auto">
+        <div className="mt-6 max-w-[800px] xl:max-w-none mx-auto">
           <div className="border border-critical/30 bg-critical/5 px-4 py-3">
             <p className="font-mono text-xs text-critical">{error}</p>
           </div>
@@ -355,15 +472,15 @@ export function SearchInterface() {
 
       {/* Results */}
       {hasSearched && !error && (
-        <div className="mt-10 max-w-[800px] mx-auto">
+        <div className="mt-10 max-w-[800px] xl:max-w-none mx-auto">
           {/* Results header */}
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-border-default">
             <span className="font-mono text-xs text-text-muted">
               {isLoading ? 'Searching...' : `${currentResults.length} results`}
             </span>
-            {mode === 'corpus' && !isLoading && currentResults.length > 0 && (
+            {!isLoading && currentResults.length > 0 && (
               <span className="font-mono text-[9px] text-text-muted">
-                Page-level matches from FTS5 corpus
+                {mode === 'concordance' ? 'DOJ production metadata records' : mode === 'corpus' ? 'Page-level matches from FTS5 corpus' : ''}
               </span>
             )}
           </div>
@@ -372,17 +489,28 @@ export function SearchInterface() {
           {currentResults.length === 0 && !isLoading ? (
             <div className="py-16 text-center">
               <p className="font-mono text-sm text-text-muted">
-                {mode === 'corpus' ? 'No pages found.' : 'No documents found.'}
+                {mode === 'concordance' ? 'No records found.' : mode === 'corpus' ? 'No pages found.' : 'No documents found.'}
               </p>
               <p className="mt-2 font-body text-xs text-text-muted">
-                {mode === 'corpus'
+                {mode === 'concordance'
+                  ? 'Try a different search term or field. Concordance searches use partial matching.'
+                  : mode === 'corpus'
                   ? 'Try different search terms. Use quotes for exact phrases: "leon black"'
                   : 'Try different search terms or remove filters.'}
               </p>
             </div>
           ) : (
             <div className="space-y-0 divide-y divide-border-default">
-              {mode === 'corpus'
+              {mode === 'concordance'
+                ? concordanceResults.map((rec, i) => (
+                    <ConcordanceResultCard
+                      key={`${rec.efta_number}-${i}`}
+                      result={rec}
+                      query={query}
+                      searchField={concordanceField}
+                    />
+                  ))
+                : mode === 'corpus'
                 ? corpusResults.map((hit, i) => (
                     <CorpusResultCard
                       key={`${hit.efta_number}-${hit.page_number}-${i}`}
@@ -586,6 +714,152 @@ function CorpusResultCard({
     <a href={dojPdfUrl(hit.efta_number)} target="_blank" rel="noopener noreferrer" className="block">
       {content}
     </a>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Concordance Result Card
+// ---------------------------------------------------------------------------
+
+function ConcordanceResultCard({
+  result,
+  query,
+  searchField,
+}: {
+  result: ConcordanceResult
+  query: string
+  searchField: ConcordanceField
+}) {
+  const isEmail = result.email_from || result.email_to || result.email_subject
+  const fieldColor = isEmail ? '#22d3ee' : '#34d399'
+
+  const content = (
+    <div className="py-4 hover:bg-surface/50 transition-colors">
+      {/* Top row: EFTA + type badge */}
+      <div className="flex items-center gap-2 flex-wrap mb-2">
+        <span className="font-mono text-xs font-semibold text-neon-blue">
+          {result.efta_number}
+        </span>
+        {result.bates_begin && result.bates_begin !== result.bates_end && (
+          <span className="font-mono text-[10px] text-text-muted">
+            {result.bates_begin} → {result.bates_end}
+          </span>
+        )}
+        <span
+          className="font-mono text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 ml-auto"
+          style={{ color: fieldColor, backgroundColor: `${fieldColor}20` }}
+        >
+          {isEmail ? 'EMAIL' : result.document_extension?.toUpperCase() || 'DOC'}
+        </span>
+      </div>
+
+      {/* Primary info based on search field */}
+      {isEmail ? (
+        <div className="space-y-1">
+          {result.email_subject && (
+            <div
+              className="font-body text-[15px] font-semibold text-text-primary"
+              dangerouslySetInnerHTML={{
+                __html: searchField === 'email_subject'
+                  ? highlightTerms(result.email_subject, query)
+                  : escapeHtml(result.email_subject),
+              }}
+            />
+          )}
+          <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px]">
+            {result.email_from && (
+              <span className={searchField === 'email_from' ? 'text-critical' : 'text-text-muted'}>
+                <span className="text-text-muted/60">From:</span>{' '}
+                <span dangerouslySetInnerHTML={{
+                  __html: searchField === 'email_from'
+                    ? highlightTerms(result.email_from, query)
+                    : escapeHtml(result.email_from),
+                }} />
+              </span>
+            )}
+            {result.email_to && (
+              <span className={searchField === 'email_to' ? 'text-critical' : 'text-text-muted'}>
+                <span className="text-text-muted/60">To:</span>{' '}
+                <span dangerouslySetInnerHTML={{
+                  __html: searchField === 'email_to'
+                    ? highlightTerms(result.email_to, query)
+                    : escapeHtml(result.email_to),
+                }} />
+              </span>
+            )}
+            {result.email_cc && (
+              <span className={searchField === 'email_cc' ? 'text-critical' : 'text-text-muted'}>
+                <span className="text-text-muted/60">CC:</span>{' '}
+                <span dangerouslySetInnerHTML={{
+                  __html: searchField === 'email_cc'
+                    ? highlightTerms(result.email_cc, query)
+                    : escapeHtml(result.email_cc),
+                }} />
+              </span>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-1">
+          {result.original_filename && (
+            <div
+              className="font-mono text-[13px] font-medium text-text-primary"
+              dangerouslySetInnerHTML={{
+                __html: searchField === 'original_filename'
+                  ? highlightTerms(result.original_filename, query)
+                  : escapeHtml(result.original_filename),
+              }}
+            />
+          )}
+          {result.original_folder_path && (
+            <div
+              className="font-mono text-[11px] text-text-muted truncate"
+              title={result.original_folder_path}
+              dangerouslySetInnerHTML={{
+                __html: searchField === 'original_folder_path'
+                  ? highlightTerms(result.original_folder_path, query)
+                  : escapeHtml(result.original_folder_path),
+              }}
+            />
+          )}
+        </div>
+      )}
+
+      {/* Meta row */}
+      <div className="mt-2 flex items-center gap-3 flex-wrap text-text-muted font-mono text-[10px]">
+        {result.custodian && (
+          <span className={searchField === 'custodian' ? 'text-critical font-semibold' : ''}>
+            <span className="text-text-muted/60">Custodian:</span>{' '}
+            <span dangerouslySetInnerHTML={{
+              __html: searchField === 'custodian'
+                ? highlightTerms(result.custodian, query)
+                : escapeHtml(result.custodian),
+            }} />
+          </span>
+        )}
+        {result.author && (
+          <span className={searchField === 'author' ? 'text-critical font-semibold' : ''}>
+            <span className="text-text-muted/60">Author:</span>{' '}
+            <span dangerouslySetInnerHTML={{
+              __html: searchField === 'author'
+                ? highlightTerms(result.author, query)
+                : escapeHtml(result.author),
+            }} />
+          </span>
+        )}
+        {result.date_sent && (
+          <span>
+            <span className="text-text-muted/60">Date:</span> {result.date_sent}
+          </span>
+        )}
+      </div>
+    </div>
+  )
+
+  return (
+    <Link href={`/evidence/documents/${result.efta_number}`} className="block">
+      {content}
+    </Link>
   )
 }
 

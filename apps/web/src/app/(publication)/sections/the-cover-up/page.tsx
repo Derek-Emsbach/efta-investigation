@@ -99,7 +99,7 @@ export default async function TheCoverUpPage() {
         stat={{ value: '82', label: 'Open Questions' }}
       />
 
-      <div className="mx-auto max-w-7xl px-6 py-12 space-y-16">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12 space-y-16">
         {/* Event Timeline */}
         {timelineEvents.length > 0 && (
           <section>

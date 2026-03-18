@@ -76,7 +76,7 @@ export function EntityDirectoryClient() {
 
   return (
     <div className="min-h-[calc(100vh-120px)]">
-      <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-display text-2xl font-bold text-text-primary">

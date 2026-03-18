@@ -17,6 +17,9 @@ import cors from 'cors';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { registerTools } from './tools/index.js';
+import { getCorpusDb, getConcordanceDb } from './db/sqlite.js';
+import corpusApi from './api/corpus.js';
+import concordanceApi from './api/concordance.js';
 
 const PORT = parseInt(process.env.PORT || '3001', 10);
 const AUTH_TOKEN = process.env.MCP_AUTH_TOKEN;
@@ -142,6 +145,27 @@ app.delete('/mcp', (_req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
+// REST API — plain JSON endpoints for Vercel proxy (no MCP framing)
+// ---------------------------------------------------------------------------
+const API_TOKEN = process.env.API_AUTH_TOKEN;
+
+if (API_TOKEN) {
+  app.use('/api', (req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'OPTIONS') return next();
+    const token = req.headers['x-api-key'] || req.headers.authorization?.replace('Bearer ', '');
+    if (token !== API_TOKEN) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+    next();
+  });
+  console.error('API auth enabled — X-Api-Key or Bearer token required on /api/*');
+}
+
+app.use('/api/corpus', corpusApi);
+app.use('/api/concordance', concordanceApi);
+
+// ---------------------------------------------------------------------------
 // Health check
 // ---------------------------------------------------------------------------
 app.get('/health', (_req: Request, res: Response) => {
@@ -151,6 +175,10 @@ app.get('/health', (_req: Request, res: Response) => {
     version: '1.0.0',
     transport: 'streamable-http',
     mode: 'stateless',
+    databases: {
+      corpus: !!getCorpusDb(),
+      concordance: !!getConcordanceDb(),
+    },
   });
 });
 
@@ -160,14 +188,12 @@ app.get('/health', (_req: Request, res: Response) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.error(`EFTA MCP server running on http://0.0.0.0:${PORT}`);
   console.error(`MCP endpoint: http://localhost:${PORT}/mcp`);
+  console.error(`REST API:     http://localhost:${PORT}/api/corpus/search?q=...`);
   console.error(`Health check: http://localhost:${PORT}/health`);
   console.error('');
   console.error('Mode: Stateless Streamable HTTP (no sessions)');
-  console.error(`Auth: ${AUTH_TOKEN ? 'Bearer token required' : 'DISABLED (authless)'}`);
-  console.error('');
-  console.error('To add to Claude.ai:');
-  console.error('  Settings → Connectors → Add custom connector');
-  console.error(`  URL: https://your-domain.com/mcp`);
+  console.error(`MCP auth:  ${AUTH_TOKEN ? 'Bearer token required' : 'DISABLED'}`);
+  console.error(`API auth:  ${API_TOKEN ? 'X-Api-Key required' : 'DISABLED'}`);
 });
 
 // Handle shutdown

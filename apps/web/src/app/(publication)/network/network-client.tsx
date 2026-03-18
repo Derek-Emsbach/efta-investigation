@@ -1019,7 +1019,7 @@ export default function NetworkClient() {
   // Render
   // -------------------------------------------------------------------
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
+    <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-10">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>

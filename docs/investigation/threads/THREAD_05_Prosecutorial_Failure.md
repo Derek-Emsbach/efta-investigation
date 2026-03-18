@@ -209,6 +209,34 @@ This is not a technical limitation — it is a policy choice. The DOJ possessed 
 
 **Evidence tier:** ◆ Tier 2 — Observable pattern requiring inference about intent
 
+### Failure 6: The Reinhart Revolving Door (New Finding — March 2026)
+
+Story 25 ("The Revolving Door") and Thread 11 document the passage of AUSA Bruce Reinhart from federal prosecutor to Epstein defense attorney to U.S. Magistrate Judge:
+
+1. **While an AUSA**, Reinhart discussed prosecution strategy with lead prosecutor Villafana — specifically "whether [Epstein's assistants] should be charged or if we should seek immunity for them" (EFTA00225378 p.114)
+2. **Left USAO January 1, 2008** — four months after NPA signed. **Began representing Epstein's co-conspirators January 2, 2008** (EFTA00798522 p.24)
+3. **Office next door** to the Florida Science Foundation — Epstein's work-release location — and same floor as lead defense counsel Goldberger (EFTA00068215)
+4. **Represented Sarah Kellen** (NPA-named co-conspirator #1), housekeeper, 5 pilots. Kellen invoked the Fifth on all substantive questions. Paid by Epstein — $84K+ in JPMorgan wires (EFTA01578729, EFTA01579090, EFTA01483035, EFTA01483182, EFTA01581347)
+5. **Filed false affidavit** (2011): "I never learned any confidential, non-public information about the Epstein matter." **DOJ admitted this was false** (July 2013, DE 213-1 at 9)
+6. **Perjury investigation stonewalled** — referred to Puerto Rico USAO, bounced between 4 AUSAs, victims' calls never returned, CVRA complaint dismissed (EFTA00068215)
+7. **Appointed U.S. Magistrate Judge** in the same district
+
+This is the most completely documented revolving-door failure in the corpus. Every step is evidenced by court filings, bank records, sworn testimony, or government admissions.
+
+**Evidence tier:** ◆ Tier 1 — Direct documentary evidence from court records and bank statements
+
+### Failure 7: Dershowitz Self-Immunization (New Finding — March 2026)
+
+Story 23 ("Reversal of Fortune") documents Alan Dershowitz's triple role:
+
+1. **Defense attorney** who led the eight-lawyer team negotiating the NPA — including the blanket immunity provision covering unnamed co-conspirators
+2. **Active obstructer** who delivered teenage victims' MySpace profiles to prosecutors to discredit them (EFTA01688596), ran background checks on the police chief (EFTA01688916), and made an unscheduled "drop-in" visit to the USAO during NPA negotiations (EFTA01657816)
+3. **Person named in authenticated victim testimony** as a participant in the abuse the NPA was designed to shield (EFTA02731465, EFTA01656198)
+
+The NPA's blanket immunity clause — "any potential co-conspirators" — was negotiated by a man named in victim journals as a co-conspirator. The logical conclusion: a person accused of participating in a sex trafficking operation helped draft the legal instrument that immunized participants in that operation. This represents not just a conflict of interest but a structural capture of the prosecution itself.
+
+**Evidence tier:** ◆ Tier 1 — Direct evidence from NPA text, victim journals, and court filings
+
 ---
 
 ## 3. Timeline: The Institutional Pattern

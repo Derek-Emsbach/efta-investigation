@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """
+LEGACY heuristic image classifier — superseded by classify-and-link-images.mjs
+which uses corpus Qwen2-VL descriptions + Claude Haiku for much higher accuracy.
+Use this only if you need pixel-level analysis on images already in R2.
+
 Auto-classify document images by image_type.
 
 Reads document_images from Supabase, downloads each from R2, analyzes

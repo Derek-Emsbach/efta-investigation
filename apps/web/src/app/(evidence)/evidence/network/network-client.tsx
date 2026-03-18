@@ -1120,7 +1120,7 @@ export default function EvidenceNetworkClient() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-8">
         <div className="h-8 w-48 bg-surface rounded animate-pulse" />
         <div className="w-full h-[600px] bg-surface rounded-lg animate-pulse mt-6" />
       </div>
@@ -1129,14 +1129,14 @@ export default function EvidenceNetworkClient() {
 
   if (!data || data.nodes.length === 0) {
     return (
-      <div className="mx-auto max-w-7xl px-6 py-16 text-center">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-16 text-center">
         <p className="text-text-muted font-mono text-sm">No network data available</p>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-8">
+    <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-8">
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>

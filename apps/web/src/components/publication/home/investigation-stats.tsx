@@ -35,7 +35,7 @@ export function InvestigationStats({ stats }: InvestigationStatsProps) {
 
   return (
     <div className="bg-ink text-background">
-      <div className="mx-auto max-w-7xl px-6 py-5">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-5">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
           {items.map((item, i) => (
             <div

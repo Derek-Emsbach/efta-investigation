@@ -17,12 +17,12 @@ export default async function PublicationLayout({
     data: { user },
   } = await supabase.auth.getUser()
 
-  let authState: { displayName: string | null; subscriptionTier: SubscriptionTier | null; rank: string | null } | null = null
+  let authState: { displayName: string | null; subscriptionTier: SubscriptionTier | null; rank: string | null; role: string | null } | null = null
 
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('display_name, subscription_tier')
+      .select('display_name, subscription_tier, role')
       .eq('id', user.id)
       .single()
 
@@ -40,6 +40,7 @@ export default async function PublicationLayout({
       displayName: profile?.display_name ?? null,
       subscriptionTier: (profile?.subscription_tier as SubscriptionTier) ?? null,
       rank,
+      role: profile?.role ?? null,
     }
   }
 

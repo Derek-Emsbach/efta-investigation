@@ -544,6 +544,41 @@ export interface XpTransaction {
   created_at: string
 }
 
+// ============================================================
+// INVESTIGATOR WORKSPACE
+// ============================================================
+
+export interface InvestigatorNote {
+  id: string
+  user_id: string
+  title: string
+  content: string
+  entity_ids: string[]
+  is_pinned: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type SubmissionType = 'finding' | 'connection' | 'entity' | 'correction'
+export type SubmissionStatus = 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected'
+
+export interface UserSubmission {
+  id: string
+  user_id: string
+  submission_type: SubmissionType
+  title: string
+  body: string
+  evidence_urls: string[]
+  entity_ids: string[]
+  status: SubmissionStatus
+  reviewer_notes: string | null
+  reviewed_by: string | null
+  reviewed_at: string | null
+  xp_awarded: number
+  created_at: string
+  updated_at: string
+}
+
 export interface NotificationAlert {
   id: string
   alert_type: AlertType
@@ -561,6 +596,8 @@ export interface NotificationAlert {
 // PUBLICATION TABLES (The Epstein Record)
 // ============================================================
 
+export type EditorialStatus = 'draft' | 'review' | 'published'
+export type StoryImageRole = 'hero' | 'inline' | 'candidate'
 export type StorySection = 'the-network' | 'follow-the-money' | 'the-cover-up' | 'the-operation' | 'voices'
 export type CaseFileStatus = 'active' | 'complete' | 'archived'
 export type CaseFileClassification = 'public' | 'restricted'
@@ -582,9 +619,21 @@ export interface Story {
   case_file_id: string | null
   hero_image_url: string | null
   hero_image_caption: string | null
+  editorial_status: EditorialStatus
+  editorial_notes: string | null
   metadata: Record<string, unknown>
   created_at: string
   updated_at: string
+}
+
+export interface StoryImage {
+  id: string
+  story_id: string
+  image_id: string
+  role: StoryImageRole
+  sort_order: number
+  caption_override: string | null
+  created_at: string
 }
 
 export interface StoryEntity {

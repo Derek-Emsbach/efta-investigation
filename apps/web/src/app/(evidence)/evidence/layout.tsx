@@ -55,7 +55,7 @@ export default function EvidenceInnerLayout({
     <div>
       {/* Tab navigation */}
       <nav className="border-b border-border-default bg-surface/50 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
           <div className="flex items-center gap-1 overflow-x-auto scrollbar-none -mb-px">
             {TABS.map((tab) => {
               const active = isActive(tab.href)

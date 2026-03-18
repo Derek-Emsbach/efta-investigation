@@ -71,7 +71,7 @@ export default async function TheOperationPage() {
         stat={{ value: String(locations.length), label: 'Mapped Locations' }}
       />
 
-      <div className="mx-auto max-w-7xl px-6 py-12 space-y-16">
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12 space-y-16">
         {/* Property Network */}
         <section>
           <div className="flex items-center gap-3 mb-6">
