@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import MainContent from '@/components/layout/main-content'
 import { PageHeader } from '@/components/ui/page-header'
 import { EmptyState } from '@/components/ui/empty-state'
@@ -98,6 +99,14 @@ export default function PhotosPage() {
       <PageHeader
         title="Photo Album"
         subtitle={`${totalCount.toLocaleString()} extracted images from processed documents`}
+        actions={
+          <Link
+            href="/dashboard/photos/review"
+            className="text-xs font-mono px-3 py-1.5 rounded border border-border text-text-muted hover:text-text-primary hover:border-accent-cyan transition-colors"
+          >
+            Review Tags →
+          </Link>
+        }
       />
 
       {/* Filter bar */}
