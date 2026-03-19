@@ -453,6 +453,17 @@
 - [x] Progress tracking — checkpoint file with processed/skipped/errored counts, resume from last document_id, periodic progress logging with rate calculation.
 - [x] Auto-classification pass — corpus Qwen2-VL descriptions (92K images) imported into `document_images` as analysis-only records (`r2_key='corpus:pending:...'`), classified via Claude Haiku into photo/signature/map/chart/graphic/embedded types with generated captions. Entity linking via `entity_documents` → `image_entities` junction. Script: `scripts/classify-and-link-images.mjs`. Entity profile Photos tab updated to show corpus evidence as text cards (publication + evidence room themes).
 - [x] Public image gallery — `/evidence/images` page with type/tag filters, pagination, public API at `/api/public/images`. ImageGallery component gains `urlPrefix` + `readOnly` props. "Images" tab added to evidence room layout.
+- [x] OCR entity tagging — `scripts/tag-image-entities.mjs` searches corpus SQLite `text_content` + `notable` fields for published entity name mentions. Zero API cost (exact string matching). Result: 803 new `image_entities` links across 32 entities (Epstein 440, Groff 139, Black 70, Maxwell 40, etc.), role='mentioned', confidence='possible'.
+- [x] Tag review UI — `/dashboard/photos/review` admin page + `/api/images/entity-tags` (GET/PATCH/DELETE). Shows pending OCR text-mention tags with corpus description context; actions: ✓ Subject (confirmed/subject), ~ Mentioned (likely/mentioned), ✗ Remove. Pagination at 40/page. "Review Tags →" link added to `/dashboard/photos`.
+- [ ] Real image extraction — corpus:pending records have no image file (original Qwen2-VL images not stored locally). Options: (A) extract from R2 PDFs for priority docs (published entity/story docs), (B) future upload pipeline. Deferred — text-only corpus evidence cards accepted as display format for now.
+- [ ] Classify remaining ~40K unclassified images — still typed 'embedded', awaiting increased Anthropic TPM limits (currently 50K TPM on Haiku). Re-run `scripts/classify-and-link-images.mjs --phase classify` when limits increase.
+
+### Connection Graph Enrichment (Session BD — 2026-03-19)
+- [x] **Connection type upgrade** — all 68 generic `connected_to` edges upgraded to specific semantic types via bulk Supabase update. Zero `connected_to` remaining out of 246 total connections.
+  - Types used: social (10), professional (15), financial (12), associated_with (9), trafficked_for (6), attorney_for (5), employed_by (4), family_of (3), victim_of (2), investigated_by (1), paid_by (1), protected_by (1), referred_by (1 deleted as duplicate)
+  - 1 duplicate `connected_to` (Shuliak→Epstein) deleted — `social` already existed
+- [ ] Connection type audit — review `associated_with` connections (9 remain as catch-all) for possible upgrade to more specific types as evidence improves
+- [ ] Connection strength audit — review all connections with `strength < 30` for potential deprioritization or removal
 
 ### Additional Data Sources
 - [x] Giuffre v. Maxwell court records — Option B (key events + cross-refs). 9 public events added covering full case arc: filing (2015), Maxwell deposition (2016), settlement (2017), 2020 partial unsealing, Preska unsealing order (Dec 2023), Jan 2024 batch releases (150 names including Clinton, Prince Andrew, Dershowitz), Prince Andrew settlement (2022), Second Circuit appeal (2025). Sources documented: CourtListener, Epstein Archive, Public Intelligence, Black Vault. Full PDF import deferred to future phase.
