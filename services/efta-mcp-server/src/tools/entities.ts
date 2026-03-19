@@ -124,11 +124,13 @@ export function registerEntityTools(server: McpServer) {
         category: z.string().optional().describe('Category (e.g. inner_circle, associate, staff, victim, legal, law_enforcement)'),
         bio: z.string().optional().describe('Brief biographical note'),
         evidence_summary: z.string().optional().describe('Summary of evidence supporting tier assignment'),
+        tier_justification: z.string().optional().describe('Bates-cited justification for tier assignment'),
+        slug: z.string().optional().describe('URL slug for public profile (lowercase-hyphenated, e.g. "jeffrey-epstein")'),
         aliases: z.array(z.string()).optional().describe('Known aliases or alternate spellings'),
         external_urls: z.record(z.any()).optional().describe('External research links: { "jmail": "url", "rhowardstone": "url", ... }'),
       },
     },
-    async ({ name, tier, entity_type, category, bio, evidence_summary, aliases, external_urls }) => {
+    async ({ name, tier, entity_type, category, bio, evidence_summary, tier_justification, slug, aliases, external_urls }) => {
       const sb = getSupabase();
 
       // Check for duplicates first
@@ -151,6 +153,8 @@ export function registerEntityTools(server: McpServer) {
           entity_type,
           category,
           bio,
+          tier_justification,
+          slug,
           aliases: aliases ?? [],
           external_urls: external_urls ?? {},
           ...(Object.keys(metadata).length > 0 ? { metadata } : {}),
@@ -180,11 +184,16 @@ export function registerEntityTools(server: McpServer) {
         category: z.string().optional(),
         bio: z.string().optional(),
         evidence_summary: z.string().optional().describe('Will REPLACE existing summary — include all evidence'),
+        tier_justification: z.string().optional().describe('Bates-cited justification for tier assignment'),
+        slug: z.string().optional().describe('URL slug for public profile (lowercase-hyphenated)'),
+        profile_published: z.boolean().optional().describe('Set true to publish entity on public site'),
+        is_public: z.boolean().optional().describe('Victim privacy flag — NEVER set true for T5 without explicit user instruction'),
+        profile_image_url: z.string().optional().describe('URL for entity profile photo'),
         add_aliases: z.array(z.string()).optional().describe('Aliases to ADD to existing list'),
         external_urls: z.record(z.any()).optional().describe('External research links (replaces entire JSONB)'),
       },
     },
-    async ({ entity_id, tier, category, bio, evidence_summary, add_aliases, external_urls }) => {
+    async ({ entity_id, tier, category, bio, evidence_summary, tier_justification, slug, profile_published, is_public, profile_image_url, add_aliases, external_urls }) => {
       const sb = getSupabase();
 
       const update: Record<string, unknown> = {};
@@ -192,6 +201,11 @@ export function registerEntityTools(server: McpServer) {
       if (category !== undefined) update.category = category;
       if (bio !== undefined) update.bio = bio;
       if (external_urls !== undefined) update.external_urls = external_urls;
+      if (tier_justification !== undefined) update.tier_justification = tier_justification;
+      if (slug !== undefined) update.slug = slug;
+      if (profile_published !== undefined) update.profile_published = profile_published;
+      if (is_public !== undefined) update.is_public = is_public;
+      if (profile_image_url !== undefined) update.profile_image_url = profile_image_url;
 
       // evidence_summary stored in metadata JSONB (no dedicated column on entities table)
       if (evidence_summary !== undefined) {
@@ -219,6 +233,90 @@ export function registerEntityTools(server: McpServer) {
         id: data.id,
         data,
         message: `Updated entity: ${data.name} (Tier ${data.tier})`,
+      });
+    },
+  );
+
+  // ── publish_entity ─────────────────────────────────────────────────────────
+  server.registerTool(
+    'publish_entity',
+    {
+      title: 'Publish Entity',
+      description:
+        'Validate and publish an entity to the public site. Runs the publication checklist: bio exists (2+ paragraphs), evidence_summary exists (4+ bullets), tier_justification set, 3+ documents linked, category assigned, slug set. For T1-T3 entities, requires explicit user_confirmed flag. For T5, refuses if is_public would be set without confirmation. Returns checklist results and sets profile_published = true only if all checks pass.',
+      inputSchema: {
+        entity_id: z.string().uuid().describe('Entity UUID to publish'),
+        slug: z.string().optional().describe('URL slug — will be auto-generated from name if not provided'),
+        profile_image_url: z.string().optional().describe('Profile photo URL'),
+        user_confirmed: z.boolean().default(false).describe('Required for T1-T3 entities — confirms human reviewed tier assignment'),
+      },
+    },
+    async ({ entity_id, slug: inputSlug, profile_image_url, user_confirmed }) => {
+      const sb = getSupabase();
+
+      // Fetch entity with linked doc count
+      const [entityRes, docCountRes] = await Promise.all([
+        sb.from('entities').select('*').eq('id', entity_id).single(),
+        sb.from('entity_documents').select('id', { count: 'exact', head: true }).eq('entity_id', entity_id),
+      ]);
+
+      if (entityRes.error || !entityRes.data) {
+        return errorResponse(`Entity not found: ${entity_id}`);
+      }
+
+      const entity = entityRes.data;
+      const docCount = docCountRes.count ?? 0;
+      const meta = (entity.metadata as Record<string, unknown>) ?? {};
+      const evidenceSummary = (meta.evidence_summary as string) ?? '';
+
+      // Run checklist
+      const bioParas = (entity.bio ?? '').split(/\n\n+/).filter((p: string) => p.trim().length > 50);
+      const evidenceBullets = evidenceSummary.split(/\n/).filter((l: string) => l.trim().startsWith('-') || l.trim().startsWith('•'));
+
+      const checks = {
+        bio_exists: bioParas.length >= 2,
+        evidence_summary_exists: evidenceBullets.length >= 4,
+        tier_justification_set: !!entity.tier_justification,
+        documents_linked: docCount >= 3,
+        category_assigned: !!entity.category,
+        slug_available: !!(inputSlug || entity.slug),
+        t1_t3_confirmed: entity.tier > 3 || user_confirmed,
+        t5_safe: entity.tier !== 5 || !entity.is_public,
+      };
+
+      const failures = Object.entries(checks).filter(([, v]) => !v).map(([k]) => k);
+
+      if (failures.length > 0) {
+        return toolResponse({
+          success: false,
+          data: {
+            entity: { id: entity.id, name: entity.name, tier: entity.tier },
+            checklist: checks,
+            failures,
+            doc_count: docCount,
+          },
+          message: `Publication blocked — ${failures.length} check(s) failed: ${failures.join(', ')}`,
+        });
+      }
+
+      // All checks passed — publish
+      const resolvedSlug = inputSlug ?? entity.slug ?? entity.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+      const update: Record<string, unknown> = {
+        profile_published: true,
+        slug: resolvedSlug,
+        updated_at: new Date().toISOString(),
+      };
+      if (profile_image_url) update.profile_image_url = profile_image_url;
+
+      const { data, error } = await sb.from('entities').update(update).eq('id', entity_id).select('id, name, tier, slug, profile_published').single();
+      if (error) return errorResponse(error.message);
+
+      return toolResponse({
+        success: true,
+        id: data.id,
+        data: { ...data, checklist: checks, doc_count: docCount },
+        message: `Published entity: ${data.name} (T${data.tier}) at /entities/${data.slug}`,
       });
     },
   );

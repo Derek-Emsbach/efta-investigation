@@ -68,12 +68,11 @@ mcp__efta__create_entity({
   bio: "...",
   evidence_summary: "...",
   tier: N,
+  tier_justification: "T4 (Associated): EFTA02731082 p.14 names them in calendar...",
   category: "political" | "financial" | "social" | "legal" | "victim" | "operational",
-  is_public: false,  // default — human decides when to publish
-  profile_published: false,
-  metadata: {}
 })
 ```
+Note: `create_entity` and `update_entity` now support `slug`, `tier_justification`, `profile_published`, `is_public`, and `profile_image_url` directly — no need for Supabase REST fallback.
 
 ### Step 7 — Link documents
 ```
@@ -93,15 +92,17 @@ Proposed connections (for human review):
 - [This entity] → [Other entity]: "social_contact" | strength: 2/5 | evidence: EFTA01234567
 ```
 
-### Step 9 — Publication checklist
-Before suggesting publication:
-- [ ] Bio written (2+ paragraphs, sourced)
-- [ ] Evidence summary written (4+ bullets, each with Bates citation)
-- [ ] Tier justified with document citations
-- [ ] At least 3 documents linked
-- [ ] Category assigned
-- [ ] For T1-T3: user confirmed publication approval
-- [ ] For T5: `is_public` NOT set without explicit user instruction
+### Step 9 — Publish via `publish_entity`
+Use the `publish_entity` tool — it validates the full checklist server-side:
+```
+mcp__efta__publish_entity({
+  entity_id: "uuid",
+  slug: "full-name",           // optional if already set
+  profile_image_url: "url",    // optional
+  user_confirmed: true,        // REQUIRED for T1-T3 entities
+})
+```
+The tool checks: bio (2+ paragraphs), evidence_summary (4+ bullets), tier_justification set, 3+ documents linked, category assigned, T1-T3 confirmation, T5 privacy. It will reject publication with a detailed failure report if any check fails.
 
 ## Entity Categories
 
