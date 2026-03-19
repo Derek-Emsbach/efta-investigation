@@ -53,3 +53,9 @@ coverage/
 
 # Investigation data / loadfiles
 loadfiles/
+
+# EFTA volume data (large binary PDFs + load files from torrent downloads)
+docs/volumes/
+
+# Torrent files
+*.torrent

@@ -70,7 +70,7 @@
 
 **Goal:** Transform the platform into a dual-mode app: private dashboard + public investigative publication.
 
-> **Status:** All 8 phases + Evidence Room expansion + Section Pages complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`, `/sections/*`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Mode switch between Newsroom ↔ Evidence Room. Dashboard at `/dashboard/*`. 12 case files (92 open questions, 78 entity links). 30 stories (449 citations, 162 entity links). 4 section landing pages with D3 data visualizations. 42 published entities fully enriched.
+> **Status:** All 8 phases + Evidence Room expansion + Section Pages complete. Publication routes live at `/`, `/entities/[slug]`, `/stories/[slug]`, `/case-files/[slug]`, `/network`, `/sections/*`. Evidence Room workspace at `/evidence` (tabbed: Search, Entities, Images, Network, Timeline). Mode switch between Newsroom ↔ Evidence Room. Dashboard at `/dashboard/*`. 12 case files (92 open questions, 78 entity links). 30 stories (449 citations, 162 entity links). 4 section landing pages with D3 data visualizations. 58 published entities fully enriched.
 
 ### Phase 0: Route Surgery + Foundation
 - [x] Rename `(dashboard)/` → `dashboard/` (URL segment shift)
@@ -305,6 +305,21 @@
   - [x] Richard Branson (T4, `5039161a`) — Virgin Group, 15 docs, 4 connections (Epstein, Gates, Groff, Visoski). Reciprocal island visits, "met once" denial demolished by 15+ docs.
 - [x] Terje Rød-Larsen (T3, `92e21365`) — Norwegian diplomat, IPI president. 13 docs, 6 connections (Epstein, Juul, Jagland, Barak, Allen, Gates). $130K wire instruction, island visit with family, IPI as diplomatic networking hub.
 - [x] **Totals**: 5 entities published, 56 docs linked, 20 connections, 1 dedup (5000 docs migrated). Published count: 50 → 55.
+
+### MCP Server + Investigation Deep-Dive (Session BG — 2026-03-19)
+
+- [x] **MCP server schema drift fix**: Added 5 missing fields to `update_entity` (`slug`, `profile_published`, `tier_justification`, `is_public`, `profile_image_url`), 2 to `create_entity` (`slug`, `tier_justification`). Eliminates Supabase REST API workaround during entity enrichment.
+- [x] **New `publish_entity` tool**: Server-side validation checklist (bio 2+ paras, evidence_summary 4+ bullets, tier_justification, 3+ docs, category, slug, T1-T3 user_confirmed, T5 privacy check). Auto-slug generation. Replaces manual publish workflow.
+- [x] **News sweep**: 6 public events created (Wyden-Blanche dispute, Noel $5K payment, DEA Chain Reaction redaction fight, Nygard sentencing, Brunel lawsuit settlement, bipartisan unredacted release push).
+- [x] **Operation Leap Year timeline**: 11 investigation events covering full OLY arc — FBI case opening (Jul 2006), victim interviews (Oct 2006), Villafana prosecution memo (May 2007), draft 60-count indictment, Acosta one-on-one meeting, NPA signing (Sep 2007), grand jury presentation (Mar 2008), Groff immunity application (Jun 2008), Villafana OPR self-report (Apr 2008), Kuyrkendall sworn declaration (Sep 2013), SDNY case presentation (Jul 2019).
+- [x] **Operation Chain Reaction timeline**: 5 investigation events — DEA case opening (Dec 2010), OCDETF target profile (May 2015), JP Morgan SAR filing (Aug 2008), Deutsche Bank SAR/Indyke admission (Sep 2016), Schwab SARs ($27.6M, Oct 2019).
+- [x] **Thread 18 written**: `docs/investigation/threads/THREAD_18_Operation_Chain_Reaction.md` — Drug trafficking & money laundering. 8 findings, $39M+ documented suspicious activity, 10 open questions. Links to Threads 4, 5, 7, 10.
+- [x] **3 entities created & published**:
+  - [x] A. Marie Villafana (T6, `2163ed8e`) — Lead AUSA on OLY, authored prosecution memo + 60-count indictment, OPR self-report. 15+ docs, 4 aliases.
+  - [x] E. Nesbitt Kuyrkendall (T6, `0e6753f7`) — Lead FBI case agent on OLY, sworn declaration case remained open (2013). 18+ docs, 4 aliases.
+  - [x] Jay Lefkowitz (T6, `cc3d2961`) — Kirkland & Ellis NPA negotiator, former Acosta partner, "keep this from becoming public" request. 25+ docs.
+- [x] **Watchlist additions**: Todd Blanche (P2, blocking unredacted release), Peter Nygard (P3, parallel case), Bella Klein (P3, Iran wire reference).
+- [x] **Totals**: 3 entities published (55→58), 16+ investigation events, 6 public events, 3 watchlist suspects, 1 investigation thread. MCP server now 59 tools.
 
 ---
 
@@ -662,9 +677,9 @@
 - [x] **7 new timeline events** — Hilton Head abuse (~1980), Trump assault (~1982), blackmail imprisonment (~1984), Trump appoints Acosta (2017-03-22), FBI hotline call (2019-07-10), Interview #4 (2019-10-16), NTOC compilation (2025-08-06). All entity-linked.
 - [x] **4 Trump stories written** — "Fresh Meat" (Story 31), "Let Me Teach You" (Story 32), "The Mar-a-Lago Connection" (Story 33), "The Acosta Deal" (Story 34). All in `trump` section with StoryDefs in seed script.
 - [x] **Trump section page** — `apps/web/src/app/(publication)/sections/trump/page.tsx`. Nav updated. CSS token `--color-section-trump: #1a3a5c`. Section color/label maps updated in 9 component files.
-- [ ] **Run migration 027** in Supabase SQL Editor
-- [ ] **Run `pnpm seed:publication`** to seed stories 31-34
+- [x] **Run migration 027** in Supabase SQL Editor — confirmed 2026-03-19
+- [x] **Run `pnpm seed:publication`** — 34 stories, 471 citations, 174 entity links, CF-2026-012 created. Fixed file path (→ THREAD_17) + entity name (Bradley Edwards → Brad Edwards).
 - [ ] **Publish Trump entity** — currently `is_public: false`. Need to verify T3 designation with editorial review before publishing.
-- [ ] **Create case file CF-2026-012** "trump-epstein-connection" — title, entities, open questions, findings markdown
+- [x] **Case file CF-2026-012** "trump-epstein-connection" — seeded with 5 entity links, 7+ open questions
 - [ ] **Jim Atkins** — publish decision pending. No independent corpus corroboration. Name is phonetic.
 - [ ] **PACER verification** — Search for mother's federal embezzlement conviction, Columbia SC, ~1983-1986. Single most important remaining external verification.
