@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import { Masthead } from '@/components/publication/home/masthead'
-import { LatestFindingsTicker } from '@/components/publication/home/breaking-ticker'
 import { HeroSection } from '@/components/publication/home/hero-section'
 import { SectionStoryGrid } from '@/components/publication/home/section-story-grid'
 import { FeaturedInvestigation } from '@/components/publication/home/featured-investigation'
@@ -133,9 +132,6 @@ export default async function HomePage() {
       <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
         <Masthead />
       </div>
-
-      {/* Breaking News Ticker (full-width) */}
-      <LatestFindingsTicker />
 
       {/* Hero Section — lead story + sidebar */}
       <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">

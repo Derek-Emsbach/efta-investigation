@@ -39,6 +39,7 @@ efta-investigation/
             entities/[slug]/      # Public entity dossier profiles
             stories/[slug]/       # Editorial story articles
             case-files/[slug]/    # Manila-themed case file reports
+            sections/trump/       # Trump section landing page (deep navy #1a3a5c)
           (evidence)/             # Public evidence room (dark theme, no auth)
             evidence/             # Tabbed workspace (inner layout with Search/Entities/Network/Timeline tabs)
               entities/           # Entity directory (filterable table)

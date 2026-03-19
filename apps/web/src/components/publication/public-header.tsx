@@ -18,6 +18,7 @@ const SECTION_NAV = [
   { label: 'Follow the Money', href: '/sections/follow-the-money' },
   { label: 'The Cover-Up', href: '/sections/the-cover-up' },
   { label: 'The Operation', href: '/sections/the-operation' },
+  { label: 'Trump', href: '/sections/trump' },
   { label: 'Voices', href: '/sections/voices' },
   { label: 'The Case Files', href: '/case-files' },
 ]

@@ -9,7 +9,7 @@ const KOFI_URL = `https://ko-fi.com/${KOFI_USERNAME}`
 export const metadata: Metadata = {
   title: 'Support — The Epstein Crimes',
   description:
-    'Support the independent investigation of 1.38 million EFTA documents. Donations unlock Supporter and Investigator perks.',
+    'Support the independent investigation of 1.38 million EFTA documents. Donations unlock Supporter perks.',
   openGraph: {
     title: 'Support The Epstein Crimes',
     description:
@@ -19,39 +19,12 @@ export const metadata: Metadata = {
   },
 }
 
-const TIERS = [
-  {
-    id: 'supporter' as const,
-    badge: 'SUPPORTER',
-    name: 'Supporter',
-    tagline: 'One-time donation',
-    description: 'Make any one-time donation to earn permanent Supporter status.',
-    features: [
-      'Supporter badge on your profile',
-      'Comment on stories and case files',
-      'Like and boost articles',
-      'Flag potential inaccuracies for review',
-      'Personal case notes workspace',
-    ],
-    borderColor: 'border-accent-gold/60',
-    badgeColor: 'bg-accent-gold/10 text-accent-gold',
-  },
-  {
-    id: 'investigator' as const,
-    badge: 'INVESTIGATOR',
-    name: 'Investigator',
-    tagline: 'Monthly subscription',
-    description: 'Subscribe monthly to unlock the full investigation toolkit.',
-    features: [
-      'Everything in Supporter, plus:',
-      'AI detective with 10 queries/day',
-      'Submit findings and case files for review',
-      'Earn XP and detective ranks',
-      'Early access to new investigation tools',
-    ],
-    borderColor: 'border-accent-red/60',
-    badgeColor: 'bg-accent-red/10 text-accent-red',
-  },
+const SUPPORTER_FEATURES = [
+  'Supporter badge on your profile',
+  'Comment on stories and case files',
+  'Like and boost articles',
+  'Flag potential inaccuracies for review',
+  'Personal case notes workspace',
 ]
 
 export default async function SupportPage() {
@@ -69,6 +42,8 @@ export default async function SupportPage() {
       .single()
     currentTier = profile?.subscription_tier ?? null
   }
+
+  const isSupporter = currentTier === 'supporter' || currentTier === 'investigator'
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
@@ -92,83 +67,50 @@ export default async function SupportPage() {
         <div className="mt-4 h-[3px] w-16 mx-auto bg-accent-red" />
         <p className="mt-6 font-body text-lg text-text-secondary leading-relaxed max-w-xl mx-auto">
           This platform is completely free. No paywalls. Every document,
-          every story, every entity profile is accessible to everyone. Donations
-          unlock bonus features and keep the investigation going.
+          every story, every entity profile is accessible to everyone. Your
+          contribution keeps the investigation going.
         </p>
       </header>
 
-      {/* Tier cards */}
+      {/* Supporter card */}
       <section className="mb-14">
-        <h2 className="font-display text-2xl font-bold text-text-primary mb-2">
-          Choose Your Level
-        </h2>
-        <p className="font-body text-sm text-text-muted mb-8">
-          All content stays free. These tiers unlock participation features.
-        </p>
+        <div className={`relative border-2 border-accent-gold/60 bg-surface p-8 ${isSupporter ? 'ring-2 ring-accent-gold/30' : ''}`}>
+          {isSupporter && (
+            <span className="absolute -top-3 right-4 bg-accent-gold text-ink text-[10px] font-bold uppercase tracking-wider px-2 py-0.5">
+              Active
+            </span>
+          )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {TIERS.map((tier) => {
-            const isCurrentTier = currentTier === tier.id
-            const isUpgrade = tier.id === 'investigator' && currentTier === 'supporter'
-            const isDowngrade = tier.id === 'supporter' && currentTier === 'investigator'
+          <span className="mb-3 inline-block text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 bg-accent-gold/10 text-accent-gold">
+            SUPPORTER
+          </span>
+          <h2 className="font-display text-2xl font-bold text-text-primary">
+            Become a Supporter
+          </h2>
+          <p className="mb-4 font-body text-sm text-text-secondary leading-relaxed">
+            Any donation — one-time or monthly — earns permanent Supporter status
+            and unlocks participation features.
+          </p>
 
-            return (
-              <div
-                key={tier.id}
-                className={`relative border-2 ${tier.borderColor} bg-surface p-6 transition-all ${
-                  isCurrentTier ? 'ring-2 ring-accent-gold/30' : ''
-                }`}
-              >
-                {isCurrentTier && (
-                  <span className="absolute -top-3 right-4 bg-accent-gold text-ink text-[10px] font-bold uppercase tracking-wider px-2 py-0.5">
-                    Current
-                  </span>
-                )}
-                <span
-                  className={`mb-3 inline-block text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 ${tier.badgeColor}`}
-                >
-                  {tier.badge}
-                </span>
-                <h3 className="font-display text-xl font-bold text-text-primary">
-                  {tier.name}
-                </h3>
-                <p className="mb-1 font-mono text-[11px] text-text-muted uppercase tracking-wider">
-                  {tier.tagline}
-                </p>
-                <p className="mb-4 font-body text-sm text-text-secondary leading-relaxed">
-                  {tier.description}
-                </p>
-                <ul className="mb-6 space-y-1.5">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
-                      <span className="mt-0.5 text-accent-gold shrink-0">&#10003;</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+          <ul className="mb-8 space-y-1.5">
+            {SUPPORTER_FEATURES.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
+                <span className="mt-0.5 text-accent-gold shrink-0">&#10003;</span>
+                {f}
+              </li>
+            ))}
+          </ul>
 
-                {isCurrentTier ? (
-                  <div className="w-full text-center font-sans text-sm font-bold uppercase tracking-[0.08em] border border-accent-gold/40 text-accent-gold px-8 py-3.5">
-                    Active
-                  </div>
-                ) : isDowngrade ? (
-                  <div className="w-full text-center font-sans text-xs text-text-muted py-3.5">
-                    Included in your Investigator tier
-                  </div>
-                ) : (
-                  <StripeButton
-                    type={tier.id}
-                    isAuthenticated={!!user}
-                  />
-                )}
-                {isUpgrade && (
-                  <p className="mt-2 text-center text-[11px] text-text-muted">
-                    Upgrade from Supporter
-                  </p>
-                )}
-              </div>
-            )
-          })}
+          {isSupporter ? (
+            <div className="text-center font-sans text-sm text-text-muted py-2">
+              Thank you for your support! Your Supporter status is active.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <StripeButton type="supporter" isAuthenticated={!!user} />
+              <StripeButton type="supporter_monthly" isAuthenticated={!!user} />
+            </div>
+          )}
         </div>
       </section>
 

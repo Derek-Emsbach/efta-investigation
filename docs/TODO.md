@@ -640,3 +640,20 @@
   - `db-migrator.md` — Safe migration specialist: `tools: Read, Write, Grep, Glob` only (no Bash). Writes SQL files for human review — never runs migrations. UUID/RLS/FTS conventions baked in.
 - [ ] **Congressional Monitor agent** — future: scheduled corpus + web search → `create_public_event` MCP. Needs cron scheduling.
 - [ ] **Connection Discoverer agent** — future: multi-entity co-occurrence + timeline overlap analysis → ranked connection suggestions.
+
+### Trump Investigation Deep-Dive (2026-03-19)
+- [x] **Thread 17 created + updated** — FD-302 Protect Source: Hilton Head Victim, Trump Assault, Atkins Blackmail. Version 2.0: 13 primary documents, 4 interviews mapped, NTOC compilation, external corroboration (Rick James Oct 1981/July 1982, Trump Tower Feb 1983), 5 resolved + 8 open questions. Corroboration upgraded to Moderate.
+- [x] **Trump-Epstein Timeline created** — Comprehensive chronological document at `docs/investigation/data/TRUMP_EPSTEIN_TIMELINE.md`. Pre-1980 through 2026, cross-referenced with EFTA corpus evidence. Pattern match table (3 sources: oral sex → biting → striking). 15 key documents indexed.
+- [x] **Migration 027** — `packages/db/migrations/027_trump_section.sql` adds 'trump' to stories section CHECK constraint.
+- [x] **Trump upgraded T4 → T3** — Justified by FBI FD-302 victim account, dedicated Interview #4, NTOC 15+ accusers, Katie Johnson suit, Edwards Affidavit 7-point basis. New bio (comprehensive), new evidence_summary (Phase 1 deep-dive).
+- [x] **Jim Atkins entity CREATED** — T3, `c3a15e8e`. Ohio university official, co-perpetrator, blackmail scheme architect. Name is phonetic. Connection to Epstein (co_conspirator, strength 80).
+- [x] **Connections updated** — Trump→Epstein upgraded to 85, Trump→Maxwell upgraded to 60. New: Trump→Acosta (political_appointment, 70). New: Atkins→Epstein (co_conspirator, 80).
+- [x] **7 new timeline events** — Hilton Head abuse (~1980), Trump assault (~1982), blackmail imprisonment (~1984), Trump appoints Acosta (2017-03-22), FBI hotline call (2019-07-10), Interview #4 (2019-10-16), NTOC compilation (2025-08-06). All entity-linked.
+- [x] **4 Trump stories written** — "Fresh Meat" (Story 31), "Let Me Teach You" (Story 32), "The Mar-a-Lago Connection" (Story 33), "The Acosta Deal" (Story 34). All in `trump` section with StoryDefs in seed script.
+- [x] **Trump section page** — `apps/web/src/app/(publication)/sections/trump/page.tsx`. Nav updated. CSS token `--color-section-trump: #1a3a5c`. Section color/label maps updated in 9 component files.
+- [ ] **Run migration 027** in Supabase SQL Editor
+- [ ] **Run `pnpm seed:publication`** to seed stories 31-34
+- [ ] **Publish Trump entity** — currently `is_public: false`. Need to verify T3 designation with editorial review before publishing.
+- [ ] **Create case file CF-2026-012** "trump-epstein-connection" — title, entities, open questions, findings markdown
+- [ ] **Jim Atkins** — publish decision pending. No independent corpus corroboration. Name is phonetic.
+- [ ] **PACER verification** — Search for mother's federal embezzlement conviction, Columbia SC, ~1983-1986. Single most important remaining external verification.

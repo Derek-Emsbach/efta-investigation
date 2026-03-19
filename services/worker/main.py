@@ -23,7 +23,7 @@ import sys
 import time
 import traceback
 
-from config import POLL_INTERVAL
+from config import POLL_INTERVAL, AUTO_REVIEW_ENABLED, AUTO_REVIEW_MIN_SCORE
 from db import (
     claim_next_queued,
     complete_queue_item,
@@ -41,6 +41,7 @@ from stages.redactions import run_redactions
 from stages.crossref import run_crossref
 from stages.classify import run_classify
 from stages.diff import run_diff
+from stages.auto_review import run_auto_review
 
 
 def should_run_advanced(document: dict, extract_results: dict) -> bool:
@@ -71,7 +72,13 @@ def process_document(queue_item: dict) -> None:
     queue_id = queue_item["id"]
     document = queue_item["documents"]
     document_id = document["id"]
-    file_url = document.get("file_url", "")
+    file_url = document.get("file_url") or ""
+
+    if not file_url:
+        raise ValueError(
+            f"Document {document.get('bates_number', document_id)} has no file_url — "
+            f"PDF was never uploaded to R2. Re-run bulk-import.py without --skip-upload."
+        )
 
     # Extract R2 key from file_url
     # URLs look like: https://{account}.r2.cloudflarestorage.com/{bucket}/{key}
@@ -180,16 +187,42 @@ def process_document(queue_item: dict) -> None:
         else:
             print(f"    No significant changes")
 
+    # ── Stage 9: Auto-Review (conditional) ──────────────────────
+
+    auto_review_results = None
+    score = classify_results.get("score", 0)
+
+    if AUTO_REVIEW_ENABLED and score >= AUTO_REVIEW_MIN_SCORE:
+        print(f"  Stage 9: Auto-Review (score={score})")
+        update_queue_step(queue_id, "auto_review")
+        auto_review_results = run_auto_review(
+            document_id, r2_key,
+            entity_results, redaction_results, classify_results,
+        )
+        update_queue_step(queue_id, "auto_review", {"auto_review": auto_review_results})
+
+        if auto_review_results.get("skipped"):
+            print(f"    Skipped: {auto_review_results.get('reason')}")
+        else:
+            applied = auto_review_results.get("auto_applied", 0)
+            pending_e = len(auto_review_results.get("pending_entities", []))
+            pending_r = len(auto_review_results.get("pending_redactions", []))
+            print(f"    Auto-applied: {applied}, Pending review: {pending_e} entities, {pending_r} redactions")
+    elif AUTO_REVIEW_ENABLED:
+        print(f"  Stage 9: Skipped (score={score} < {AUTO_REVIEW_MIN_SCORE})")
+
     # ── Complete ─────────────────────────────────────────────────
 
     needs_review = classify_results.get("needs_review", True)
     # Re-processed docs always go to needs_review so reviewer can see diff
     if is_reprocess:
         needs_review = True
+    # Auto-review with pending items forces review
+    if auto_review_results and auto_review_results.get("has_pending"):
+        needs_review = True
     final_status = "needs_review" if needs_review else "extracted"
     complete_queue_item_with_status(queue_id, document_id, final_status)
 
-    score = classify_results.get("score", 0)
     severity = classify_results.get("severity", "routine")
     reprocess_tag = " [re-processed]" if is_reprocess else ""
     print(f"  Done — score={score}, severity={severity}, status={final_status}{reprocess_tag}")
@@ -201,6 +234,8 @@ def main():
     print("EFTA Document Processing Worker")
     print(f"Poll interval: {POLL_INTERVAL}s")
     print("Stages: 1-3 (all docs) + 4-7 (Tier B gated)")
+    print(f"Auto-Review (Stage 9): {'ENABLED' if AUTO_REVIEW_ENABLED else 'disabled'}"
+          + (f" (min score: {AUTO_REVIEW_MIN_SCORE})" if AUTO_REVIEW_ENABLED else ""))
     print("=" * 60)
     print()
 

@@ -29,6 +29,7 @@ const SECTION_LABELS: Record<string, string> = {
   'follow-the-money': 'Follow the Money',
   'the-operation': 'The Operation',
   'voices': 'Voices',
+  'trump': 'Trump',
 }
 
 export function StoryPreview({

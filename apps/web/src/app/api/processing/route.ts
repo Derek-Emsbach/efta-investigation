@@ -62,6 +62,22 @@ export async function GET(request: Request) {
       query = query.eq('status', statusFilter)
     }
 
+    // Optional dataset filter (filters through the joined documents relation)
+    const datasetId = searchParams.get('dataset_id')
+    if (datasetId) {
+      // Two-step: get document IDs for this dataset, then filter queue items
+      const { data: dsDocIds } = await supabase
+        .from('documents')
+        .select('id')
+        .eq('dataset_id', datasetId)
+        .limit(10000)
+      if (dsDocIds && dsDocIds.length > 0) {
+        query = query.in('document_id', dsDocIds.map((d) => d.id))
+      } else {
+        return NextResponse.json({ items: [], stats, page, limit, totalCount: 0 })
+      }
+    }
+
     const rangeStart = (page - 1) * limit
     const rangeEnd = page * limit - 1
     const { data, error, count } = await query.range(rangeStart, rangeEnd)

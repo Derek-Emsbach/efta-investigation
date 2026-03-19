@@ -74,6 +74,7 @@
   --color-section-coverup: #4a1a2a;
   --color-section-operation: #3a2a1a;
   --color-section-voices: #2a2a4a;
+  --color-section-trump: #1a3a5c;
 
   /* === Colors: Neon (evidence room) === */
   --color-neon-green: #34d399;
@@ -132,6 +133,7 @@
   --color-section-coverup: #4a1a2a;
   --color-section-operation: #3a2a1a;
   --color-section-voices: #2a2a4a;
+  --color-section-trump: #1a3a5c;
   /* Tier colors (publication palette) */
   --color-tier-1: #c62828;
   --color-tier-1-bg: #fce4ec;

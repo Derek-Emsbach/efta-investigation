@@ -26,7 +26,7 @@ interface StoryDef {
   slug: string
   title: string
   deck: string
-  section: 'the-network' | 'follow-the-money' | 'the-cover-up' | 'the-operation' | 'voices'
+  section: 'the-network' | 'follow-the-money' | 'the-cover-up' | 'the-operation' | 'voices' | 'trump'
   file: string
   byline: string
   reading_time_minutes: number
@@ -829,6 +829,65 @@ const CASE_FILES: CaseFileDef[] = [
       {
         question:
           'Why has the DOJ OIG never investigated the intelligence angle? The OIG report concluded Epstein "wasn\'t serving as an intelligence asset" but appears to have been scope-limited.',
+        priority: 'medium',
+      },
+    ],
+  },
+  {
+    case_id: 'CF-2026-012',
+    slug: 'trump-epstein-connection',
+    title: 'The Trump-Epstein Connection',
+    summary:
+      'A document-by-document examination of the relationship between Donald Trump and Jeffrey Epstein, reconstructed entirely from civil litigation records, sworn depositions, and FBI investigative files. The record includes: 14 phone numbers in Epstein\'s personal directory; physical message pads showing calls to the Palm Beach mansion during the abuse period; a sworn deposition by Epstein\'s own brother placing Trump on the plane; Mar-a-Lago as the documented site where Virginia Giuffre was recruited at age 15; a 7-point affidavit by victims\' attorney Brad Edwards laying out grounds for a deposition; the Mar-a-Lago ban sourced to Epstein sexually assaulting an underage girl at the club; and an FBI FD-302 recording a victim who was introduced to Trump by Epstein and Maxwell. The deposition Edwards sought was never taken.',
+    file: 'THREAD_17_FD302_Protect_Source_Trump_Hilton_Head.md',
+    status: 'active',
+    date_range_start: '1987-01-01',
+    date_range_end: '2025-11-01',
+    docs_reviewed: 15,
+    completion_percentage: 70,
+    methodology_notes:
+      'Full-text extraction from civil litigation records, sworn depositions (Mark Epstein Sept 2009), Edwards Affidavit (April 2010), FBI FD-302 interviews (Aug-Oct 2019), FBI NTOC compilation (Aug 2025), and contemporaneous news archives produced in discovery.',
+    entities: [
+      { name: 'Donald Trump', role: 'subject' },
+      { name: 'Jeffrey Epstein', role: 'subject' },
+      { name: 'Ghislaine Maxwell', role: 'linked' },
+      { name: 'Virginia Giuffre', role: 'victim-witness' },
+      { name: 'Brad Edwards', role: 'attorney' },
+    ],
+    openQuestions: [
+      {
+        question:
+          'Did Trump report the alleged assault of an underage girl at Mar-a-Lago to Palm Beach police when he banned Epstein?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'Were the 14 phone numbers in Epstein\'s directory ever formally analyzed by the SDNY trafficking investigation?',
+        priority: 'critical',
+      },
+      {
+        question:
+          'What did the physical message pad entries say — were they calls only, or did they record conversation content?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Why was Trump\'s deposition successfully blocked? What legal arguments did Epstein\'s lawyers use?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Did the SDNY trafficking investigation formally assess the civil litigation record on the Trump-Epstein relationship?',
+        priority: 'high',
+      },
+      {
+        question:
+          'What is the identity of "Jim Atkins" (phonetic) referenced in the FBI NTOC compilation as having introduced the 3501.045 victim to Epstein?',
+        priority: 'high',
+      },
+      {
+        question:
+          'Why did AG Bondi order investigation of Epstein\'s ties to Trump\'s political opponents but not a symmetric investigation of Epstein\'s ties to Trump?',
         priority: 'medium',
       },
     ],
@@ -4049,6 +4108,295 @@ const STORIES: StoryDef[] = [
         description:
           'DOJ OIG report concluding Epstein "wasn\'t assisting the federal government in prosecuting Wall Street traders behind the collapse of investment bank Bear Stearns or serving as an intelligence asset." Conclusion appears to have been scope-limited.',
         page_reference: 'p. 29',
+      },
+    ],
+  },
+  // ─── Story 31: Fresh Meat (Hilton Head PROTECT SOURCE) ───────────────────────
+  {
+    slug: 'fresh-meat',
+    title: 'Fresh Meat',
+    deck: 'A thirteen-year-old girl answered a babysitting ad on a South Carolina island in the early 1980s. The man who called had no wife, no child, and no intention of paying her. Over the following years, Jeffrey Epstein drugged her systematically, photographed her, had her assaulted by associates, used the photographs to blackmail her mother into prison, and made her recruit other girls. She called the FBI four days after his arrest in 2019.',
+    section: 'trump' as const,
+    file: 'fresh-meat.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: 'trump-epstein-connection',
+    published_at: new Date().toISOString(),
+    hero_image_url: null,
+    hero_image_caption: null,
+    metadata: {
+      source_documents: [
+        'EFTA01245620 (FD-302 Interview #1, 07/24/2019)',
+        'EFTA02858481 (FD-302 Interview #2, 08/07/2019)',
+        'EFTA02858491 (FD-302 Interview #3, 08/20/2019)',
+        'EFTA01245635 (EC 3501.045-013, FBI hotline origin, 07/19/2019)',
+      ],
+      case_number: '31E-NY-3027571',
+      serials: ['216', '252', '264', '159'],
+      protect_source: true,
+    },
+    entities: [
+      { name: 'Jeffrey Epstein', mention_count: 38, is_primary: true },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA01245620',
+        description:
+          'FD-302 Interview #1 (3501.045-001, 07/24/2019): Sea Pines Plantation babysitting ad, first encounter with Epstein, cocaine/alcohol/marijuana simultaneously, forced oral sex, Polaroid photographs in drawer, anal rape ("being nosy isn\'t good for you"), recruitment demand ("young fresh meat girls. Virgins."), "Don\'t bring me any niggers," group assault and "This is why fresh meat is good, you can do whatever you want."',
+        page_reference: 'pp. 1-9',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02858481',
+        description:
+          'FD-302 Interview #2 (3501.045-003, 08/07/2019): Polaroid photographs (tripod, breasts/face/full body), "probably given drugs on almost every interaction," Rick James concert in Savannah GA, Jim Atkins introduced (white male, gray hair, big ears, ~50s, Ohio university official), Atkins sexually assaulted victim multiple times, accountant "Cecil" (Black male) helps fix real estate books, blackmail of mother using explicit photographs, Epstein discloses childhood abuse by a boy in his family and possibly his aunt.',
+        page_reference: 'pp. 1-10',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02858491',
+        description:
+          'FD-302 Interview #3 (3501.045-005, 08/20/2019): Mother served approximately two years in federal prison in Columbia, SC (embezzlement conviction connected to Epstein/Atkins blackmail). Victim called Atkins at Ohio university: "I don\'t give a shit if you end up in the gutter. Don\'t ever contact me again. Your mother knows what will happen." Decades of threatening phone calls follow.',
+        page_reference: 'pp. 1-4',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01245635',
+        description:
+          'EC 3501.045-013 (07/19/2019): FBI hotline origin. Victim called July 10, 2019, four days after Epstein\'s July 6 arrest. "Occurred in the 1980s when the caller was approximately 13 to 15 years old and resided in the [island] area of South Carolina." Seattle FO assigned for in-person interview.',
+        page_reference: 'pp. 1-2',
+      },
+    ],
+  },
+
+  // ─── Story 32: Let Me Teach You (Trump assault, NTOC pattern match) ──────────
+  {
+    slug: 'let-me-teach-you',
+    title: 'Let Me Teach You',
+    deck: 'An FBI Protect Source victim named Donald Trump as her assailant in three recorded interviews. A fourth session was dedicated solely to her account. She declined to proceed, asking \u201cwhat\u2019s the point?\u201d The FBI then catalogued 15+ additional complainants \u2014 and concluded it lacked predicate to investigate.',
+    section: 'trump' as const,
+    file: 'let-me-teach-you.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 8,
+    is_featured: false,
+    case_file_slug: 'trump-epstein-connection',
+    published_at: new Date().toISOString(),
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Donald_Trump_official_portrait.jpg/400px-Donald_Trump_official_portrait.jpg',
+    hero_image_caption:
+      'Donald Trump, official White House portrait. Trump is named by a Protect Source victim in three FBI interviews (2019), by a corroborating NTOC complainant (2025), and in a civil complaint by Katie Johnson (2016), dismissed after the plaintiff reported threats.',
+    metadata: {
+      source_docs: [
+        'EFTA02858481',
+        'EFTA02858491',
+        'EFTA02858495',
+        'EFTA01660651',
+        'EFTA01655527',
+      ],
+    },
+    entities: [
+      { name: 'Donald Trump', mention_count: 28, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 12, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 2, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02858481',
+        description:
+          'FD-302 Interview #2, 3501.045-003 (08/07/2019) — Protect Source victim names Trump as assailant in NYC/NJ high-rise. "Introduced to someone with money, money... It was Donald Trump." Trump: "Let me teach you how little girls are supposed to be." Victim bites him. Trump: "get this little bitch the hell out of here." Blonde woman tip about bra. "Fresh meat," "untainted," "not jaded." Trump jealous of Epstein. Illegal building permits and casino money laundering. Two additional interactions victim declines to describe.',
+        page_reference: 'pp. 7–8',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02858491',
+        description:
+          'FD-302 Interview #3, 3501.045-005 (08/20/2019) — Trump "pulled [her] hair and punched [her] on the side of [her] head." Threatening calls over decades. "If it was not EPSTEIN, maybe it was the \'other one\'" — victim names Trump. Interstate 5 Oregon road incidents. "When he was running... more tracks to cover."',
+        page_reference: 'pp. 1–3',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02858495',
+        description:
+          'FD-302 Interview #4, 3501.045-007 (10/16/2019) — FBI schedules session dedicated to Trump allegations. Names Trump as "(current U.S. President) DONALD TRUMP." Victim asks "what\'s the point?" Cites statute of limitations. Declines to detail contacts. Interview ends.',
+        page_reference: 'pp. 1–2',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA01660651',
+        description:
+          'FBI NTOC compilation (Aug 6–7, 2025) — Internal email cataloguing 15+ Trump complainants. Complainant 1: friend (age 13–14, NJ, ~35 years ago) forced oral sex on Trump, bit him, Trump hit her face — pattern match with 3501.045 victim. WFO dispatched to conduct interview.',
+        page_reference: 'pp. 1–2',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01655527',
+        description:
+          'FBI Daily News Briefing (Nov 17, 2025) — Reports July 2025 internal memo: "We did not uncover evidence that could predicate an investigation against uncharged third parties." Nov 2025: AG Bondi orders investigation of Epstein\'s ties to Trump\'s political opponents (Clinton, Summers, Hoffman).',
+        page_reference: 'p. 3',
+      },
+    ],
+  },
+  // ─── Story 33: The Mar-a-Lago Connection (civil litigation evidence) ──────────
+  {
+    slug: 'the-mar-a-lago-connection',
+    title: 'The Mar-a-Lago Connection',
+    deck: 'Fourteen phone numbers. Message pads showing calls during the abuse period. A flight on Epstein\u2019s plane. A 15-year-old recruited from the spa. A sworn affidavit laying out seven grounds for deposition. The documented relationship between Donald Trump and Jeffrey Epstein, told entirely through civil litigation records.',
+    section: 'trump' as const,
+    file: 'the-mar-a-lago-connection.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 10,
+    is_featured: false,
+    case_file_slug: 'trump-epstein-connection',
+    published_at: new Date().toISOString(),
+    hero_image_url: null,
+    hero_image_caption: null,
+    metadata: {
+      source_docs: [
+        'EFTA01187465',
+        'EFTA02803362',
+        'EFTA01249325',
+        'EFTA00105921',
+        'EFTA00158636',
+        'EFTA00208310',
+        'EFTA01657683',
+      ],
+    },
+    entities: [
+      { name: 'Donald Trump', mention_count: 22, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 18, is_primary: true },
+      { name: 'Ghislaine Maxwell', mention_count: 5, is_primary: false },
+      { name: 'Virginia Giuffre', mention_count: 4, is_primary: false },
+      { name: 'Brad Edwards', mention_count: 6, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA01187465',
+        description:
+          'Bradley Edwards Affidavit (April 2010) \u2014 7-point basis for deposing Trump: 14 phone numbers in Epstein\u2019s directory, message pads showing calls, plane flights, Mar-a-Lago ban, Jane Doe 102 recruitment, Palm Beach visits, "younger side" quote.',
+        page_reference: 'pp. 6\u20138',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA02803362',
+        description:
+          'Florida Bulldog article + Edwards Affidavit exhibit. Trump on 2017 Palm Beach witness list. Scarola: Trump "had a relationship with Epstein that would have at least exposed them potentially to what was going on inside Epstein\u2019s Palm Beach home."',
+        page_reference: 'pp. 1\u20134',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01249325',
+        description:
+          'Mark Epstein deposition (Sept 21, 2009) pp.49-51. Trump flew on Epstein\u2019s smaller plane, FL to NY, late 1990s. "They were good friends."',
+        page_reference: 'pp. 49\u201351',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA00105921',
+        description:
+          'Rodriguez affidavit p.3. Epstein\u2019s butler listed Trump among celebrities at Palm Beach home.',
+        page_reference: 'p. 3',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA00158636',
+        description:
+          'FD-302: Separate victim (~20-22 years old) introduced to Trump by Epstein and Maxwell. "TRUMP was polite."',
+        page_reference: 'p. 4',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01657683',
+        description:
+          'Virginia Giuffre sworn telephone interview (April 7, 2011). Details of recruitment from Mar-a-Lago spa by Maxwell at age 15.',
+        page_reference: 'pp. 2\u20133',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA00208310',
+        description:
+          'Palm Beach Daily News (March 1, 2011). Virginia Roberts (Giuffre) goes public. Lawsuit says Maxwell recruited her at The Mar-A-Lago Club where she worked as a changing room assistant.',
+        page_reference: 'p. 1',
+      },
+    ],
+  },
+  // ─── Story 34: The Acosta Deal (NPA, appointment, intelligence claim) ─────────
+  {
+    slug: 'the-acosta-deal',
+    title: 'The Acosta Deal',
+    deck: "In 2017, Trump appointed the prosecutor who gave Epstein immunity — after that prosecutor told the transition team Epstein \"belonged to intelligence.\" In 2025, the same administration weaponized the files as opposition research while the FBI's own review found no predicate to investigate anyone.",
+    section: 'trump' as const,
+    file: 'the-acosta-deal.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 7,
+    is_featured: false,
+    case_file_slug: 'trump-epstein-connection',
+    published_at: new Date().toISOString(),
+    hero_image_url:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Donald_Trump_official_portrait.jpg/400px-Donald_Trump_official_portrait.jpg',
+    hero_image_caption:
+      "Donald Trump, official White House portrait. Trump appointed Alexander Acosta — the prosecutor who negotiated Epstein's 2007 immunity agreement — as Secretary of Labor in 2017, after Acosta told the transition team Epstein \"belonged to intelligence.\"",
+    metadata: {
+      source_docs: [
+        'EFTA00023059',
+        'EFTA00030182',
+        'EFTA01266434',
+        'EFTA02590624',
+        'EFTA00147443',
+        'EFTA01655527',
+      ],
+    },
+    entities: [
+      { name: 'Donald Trump', mention_count: 12, is_primary: true },
+      { name: 'Alexander Acosta', mention_count: 14, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 10, is_primary: true },
+      { name: 'Kathryn Ruemmler', mention_count: 5, is_primary: false },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA00023059',
+        description:
+          "OPR report on the Epstein NPA — formal finding that Acosta \"agreed to several unusual and problematic terms in the NPA without the consideration required under the circumstances.\" Documents failure to notify victims as required by the Crime Victims' Rights Act.",
+        page_reference: 'p. 11',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA00030182',
+        description:
+          "Internal SDNY email (July 10, 2019) forwarding Daily Beast article — Acosta told Trump transition team: \"I was told Epstein 'belonged to intelligence' and to leave it alone.\" Acosta described Epstein as \"above his pay grade.\" Transition team accepted this explanation and hired Acosta.",
+        page_reference: 'Full document',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA01266434',
+        description:
+          'Epstein 2017 Trust — Section 7.1 names Kathryn Ruemmler as successor trustee: "In the event a Trustee resigns, is removed, becomes incapacitated or is unwilling or is unable to serve, KATHRYN RUEMMLER shall be appointed the successor trustee."',
+        page_reference: 'p. 17, Section 7.1',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02590624',
+        description:
+          "Email exchange between Epstein and Kathryn Ruemmler (Oct 14–15, 2014) — Epstein coaches Ruemmler on Attorney General nomination preparation: \"Let's hire a video coach. You need to be trained... No hand movement or head tilting or nodding. Blinking. You will need to get the right glasses. You have two months from today.\"",
+        page_reference: 'Full document',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA00147443',
+        description:
+          "ECPAT-USA letter to White House calling for Acosta's resignation (July 9, 2019) — documents Epstein arrest on July 6, 2019, and that Acosta's deal \"allowed him to dodge federal charges.\" Acosta resigned July 19, 2019 — thirteen days after the arrest.",
+        page_reference: 'Full document',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA01655527',
+        description:
+          "FBI Daily News Briefing (Nov 17, 2025) — Reports FBI internal memo from July 2025: \"We did not uncover evidence that could predicate an investigation against uncharged third parties.\" Also reports that AG Bondi, at Trump's urging, ordered Manhattan U.S. Attorney to investigate Epstein's ties to Clinton, Summers, and Reid Hoffman.",
+        page_reference: 'p. 3',
       },
     ],
   },

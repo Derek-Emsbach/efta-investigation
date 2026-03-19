@@ -37,3 +37,9 @@ export function getInvestigatorPriceId(): string {
   if (!id) throw new Error('STRIPE_PRICE_INVESTIGATOR is not set')
   return id
 }
+
+export function getSupporterMonthlyPriceId(): string {
+  const id = process.env.STRIPE_PRICE_SUPPORTER_MONTHLY
+  if (!id) throw new Error('STRIPE_PRICE_SUPPORTER_MONTHLY is not set')
+  return id
+}

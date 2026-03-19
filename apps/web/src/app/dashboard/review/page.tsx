@@ -9,7 +9,8 @@ import ArcherPanel from '@/components/review/archer-panel'
 import { EmptyState } from '@/components/ui/empty-state'
 import { ShortcutHelpOverlay } from '@/components/review/shortcut-help-overlay'
 import { useReviewShortcuts } from '@/hooks/use-review-shortcuts'
-import { QueueControls } from '@/components/review/queue-controls'
+import { QueueControls, emptyFilters, type ReviewFilters } from '@/components/review/queue-controls'
+import { AutoReviewPanel } from '@/components/review/auto-review-panel'
 import { multiColumnSort, type SortState } from '@/components/ui/data-table'
 import type { ArcherDocument } from '@/lib/ai/archer-prompt'
 
@@ -34,6 +35,15 @@ interface ClassifyResult {
   is_reprocess?: boolean
 }
 
+interface AutoReviewResult {
+  auto_applied: number
+  applied_links: { name: string; role: string }[]
+  pending_entities: { name: string; tier: number; category: string; context: string }[]
+  pending_redactions: { page: number; current_category: string; proposed_category: string; reason: string }[]
+  has_pending: boolean
+  summary: string
+}
+
 interface ReviewDocument {
   id: string
   bates_number: string | null
@@ -51,6 +61,7 @@ interface ReviewDocument {
   review_notes: string | null
   dataset_id: string | null
   classify: ClassifyResult | null
+  auto_review: AutoReviewResult | null
 }
 
 const DOC_TYPES = [
@@ -110,7 +121,9 @@ export default function ReviewPage() {
 
   // Queue sort/filter state
   const [queueSort, setQueueSort] = useState<SortState[]>([])
-  const [typeFilter, setTypeFilter] = useState<string[]>([])
+  const [filters, setFilters] = useState<ReviewFilters>(emptyFilters)
+  const [totalCount, setTotalCount] = useState(0)
+  const [queuePage, setQueuePage] = useState(1)
 
   // Review form collapse state
   const [formExpanded, setFormExpanded] = useState(false)
@@ -137,12 +150,27 @@ export default function ReviewPage() {
     toastTimerRef.current = setTimeout(() => setToast(null), 3000)
   }, [])
 
-  const fetchQueue = useCallback(async () => {
+  const fetchQueue = useCallback(async (f: ReviewFilters, page: number) => {
     try {
-      const res = await fetch('/api/review')
+      setLoading(true)
+      const params = new URLSearchParams()
+      params.set('page', String(page))
+      params.set('limit', '100')
+      if (f.severityFilter.length > 0) params.set('severity', f.severityFilter.join(','))
+      if (f.classificationFilter.length > 0) params.set('classification', f.classificationFilter.join(','))
+      if (f.typeFilter.length > 0) params.set('document_type', f.typeFilter.join(','))
+      if (f.datasetId) params.set('dataset_id', f.datasetId)
+      if (f.entityId) params.set('entity_id', f.entityId)
+      if (f.dateFrom) params.set('date_from', f.dateFrom)
+      if (f.dateTo) params.set('date_to', f.dateTo)
+      if (f.minPages) params.set('min_pages', f.minPages)
+      if (f.maxPages) params.set('max_pages', f.maxPages)
+
+      const res = await fetch(`/api/review?${params.toString()}`)
       if (!res.ok) throw new Error('Failed to fetch')
       const data = await res.json()
       setDocuments(data.documents)
+      setTotalCount(data.totalCount ?? data.documents.length)
     } catch {
       // Silently handle
     } finally {
@@ -150,9 +178,16 @@ export default function ReviewPage() {
     }
   }, [])
 
+  // Debounced fetch on filter/page changes
+  const filterTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   useEffect(() => {
-    fetchQueue()
-  }, [fetchQueue])
+    if (filterTimerRef.current) clearTimeout(filterTimerRef.current)
+    filterTimerRef.current = setTimeout(() => {
+      fetchQueue(filters, queuePage)
+    }, 300)
+    return () => { if (filterTimerRef.current) clearTimeout(filterTimerRef.current) }
+  }, [filters, queuePage, fetchQueue])
 
   const selectDocument = useCallback((doc: ReviewDocument) => {
     setSelected(doc)
@@ -254,17 +289,13 @@ export default function ReviewPage() {
     }
   }, [])
 
-  // Client-side sort + filter on the queue
+  // Client-side sort only (filtering is server-side now)
   const filteredDocs = useMemo(() => {
-    let result = documents
-    if (typeFilter.length > 0) {
-      result = result.filter((d) => d.document_type !== null && typeFilter.includes(d.document_type))
-    }
     return multiColumnSort(
-      result as unknown as Record<string, unknown>[],
+      documents as unknown as Record<string, unknown>[],
       queueSort,
     ) as unknown as ReviewDocument[]
-  }, [documents, queueSort, typeFilter])
+  }, [documents, queueSort])
 
   useReviewShortcuts({
     documents: filteredDocs,
@@ -300,7 +331,7 @@ export default function ReviewPage() {
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-border-default shrink-0">
               {!queueCollapsed && (
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider">
-                  Queue ({filteredDocs.length}{typeFilter.length > 0 ? `/${documents.length}` : ''})
+                  Queue ({documents.length}{totalCount > documents.length ? `/${totalCount}` : ''})
                 </p>
               )}
               <button
@@ -323,8 +354,10 @@ export default function ReviewPage() {
               <QueueControls
                 sortStack={queueSort}
                 onSortChange={setQueueSort}
-                typeFilter={typeFilter}
-                onTypeFilterChange={setTypeFilter}
+                filters={filters}
+                onFiltersChange={(f) => { setFilters(f); setQueuePage(1) }}
+                totalCount={totalCount}
+                filteredCount={documents.length}
               />
             )}
 
@@ -343,14 +376,36 @@ export default function ReviewPage() {
                     className="py-10"
                   />
                 )}
-                {!loading && documents.length > 0 && filteredDocs.length === 0 && (
+                {!loading && documents.length === 0 && totalCount > 0 && (
                   <div className="p-4 text-center">
-                    <p className="text-xs text-text-muted">No documents match the current filter.</p>
+                    <p className="text-xs text-text-muted">No documents match the current filters.</p>
                     <button
-                      onClick={() => setTypeFilter([])}
+                      onClick={() => setFilters(emptyFilters)}
                       className="text-xs text-info hover:underline mt-1"
                     >
-                      Clear filter
+                      Clear filters
+                    </button>
+                  </div>
+                )}
+                {/* Pagination */}
+                {totalCount > 100 && (
+                  <div className="flex items-center justify-between px-3 py-1.5 border-b border-border-default bg-elevated/30">
+                    <button
+                      onClick={() => setQueuePage((p) => Math.max(1, p - 1))}
+                      disabled={queuePage <= 1}
+                      className="text-[10px] text-info hover:underline disabled:text-text-muted disabled:no-underline"
+                    >
+                      Prev
+                    </button>
+                    <span className="text-[10px] text-text-muted tabular-nums">
+                      Page {queuePage} of {Math.ceil(totalCount / 100)}
+                    </span>
+                    <button
+                      onClick={() => setQueuePage((p) => p + 1)}
+                      disabled={queuePage * 100 >= totalCount}
+                      className="text-[10px] text-info hover:underline disabled:text-text-muted disabled:no-underline"
+                    >
+                      Next
                     </button>
                   </div>
                 )}
@@ -403,6 +458,11 @@ export default function ReviewPage() {
                         )}
                         {doc.classify?.is_reprocess && (
                           <span className="text-[10px] text-info">re-proc</span>
+                        )}
+                        {doc.auto_review?.has_pending && (
+                          <span className="text-[10px] text-amber-400">
+                            {(doc.auto_review.pending_entities?.length ?? 0) + (doc.auto_review.pending_redactions?.length ?? 0)} AI
+                          </span>
                         )}
                       </div>
                       {doc.classify?.review_reasons && doc.classify.review_reasons.length > 0 && (
@@ -499,6 +559,17 @@ export default function ReviewPage() {
                     Open detail
                   </Link>
                 </div>
+
+                {/* Auto-review panel — shown when AI suggestions exist */}
+                {selected.auto_review && (selected.auto_review.has_pending || selected.auto_review.auto_applied > 0) && (
+                  <div className="px-4 py-2 border-b border-border-default shrink-0">
+                    <AutoReviewPanel
+                      documentId={selected.id}
+                      data={selected.auto_review}
+                      onUpdate={() => fetchQueue(filters, queuePage)}
+                    />
+                  </div>
+                )}
 
                 {/* Score breakdown — shown when classify data exists */}
                 {selected.classify?.reasons && selected.classify.reasons.length > 0 && (

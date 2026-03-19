@@ -24,6 +24,7 @@ const SECTION_COLORS: Record<string, string> = {
   'the-cover-up': 'var(--color-section-coverup)',
   'the-operation': 'var(--color-section-operation)',
   'voices': 'var(--color-section-voices)',
+  'trump': 'var(--color-section-trump)',
 }
 
 const SECTION_LABELS: Record<string, string> = {
@@ -32,6 +33,7 @@ const SECTION_LABELS: Record<string, string> = {
   'the-cover-up': 'The Cover-Up',
   'the-operation': 'The Operation',
   'voices': 'Voices',
+  'trump': 'Trump',
 }
 
 export function StoryGrid({ stories }: StoryGridProps) {

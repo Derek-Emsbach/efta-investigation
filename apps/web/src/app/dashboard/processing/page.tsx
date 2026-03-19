@@ -56,6 +56,8 @@ export default function ProcessingPage() {
   const [items, setItems] = useState<QueueItem[]>([])
   const [stats, setStats] = useState<QueueStats | null>(null)
   const [statusFilter, setStatusFilter] = useState('all')
+  const [datasetFilter, setDatasetFilter] = useState('')
+  const [datasets, setDatasets] = useState<{ id: string; number: number; name: string }[]>([])
   const [page, setPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -68,6 +70,7 @@ export default function ProcessingPage() {
     try {
       const params = new URLSearchParams()
       if (statusFilter !== 'all') params.set('status', statusFilter)
+      if (datasetFilter) params.set('dataset_id', datasetFilter)
       params.set('page', String(page))
       params.set('limit', String(PAGE_SIZE))
       const res = await fetch(`/api/processing?${params.toString()}`)
@@ -82,7 +85,7 @@ export default function ProcessingPage() {
     } finally {
       setLoading(false)
     }
-  }, [statusFilter, page])
+  }, [statusFilter, datasetFilter, page])
 
   // Initial fetch + polling
   useEffect(() => {
@@ -91,10 +94,18 @@ export default function ProcessingPage() {
     return () => clearInterval(interval)
   }, [fetchQueue])
 
+  // Fetch dataset list
+  useEffect(() => {
+    fetch('/api/datasets')
+      .then((r) => r.json())
+      .then((d) => setDatasets(d.data ?? []))
+      .catch(() => {})
+  }, [])
+
   // Clear selection when filter/page changes
   useEffect(() => {
     setSelected(new Set())
-  }, [statusFilter, page])
+  }, [statusFilter, datasetFilter, page])
 
   // Auto-dismiss toast
   useEffect(() => {
@@ -240,6 +251,24 @@ export default function ProcessingPage() {
             {s === 'all' ? 'All' : STATUS_STYLES[s]?.label ?? s}
           </button>
         ))}
+
+        {datasets.length > 0 && (
+          <>
+            <span className="text-xs text-text-muted ml-2">Dataset:</span>
+            <select
+              value={datasetFilter}
+              onChange={(e) => { setDatasetFilter(e.target.value); setPage(1) }}
+              className="text-xs bg-elevated border border-border-default rounded px-2 py-1 text-text-primary focus:border-info focus:outline-none"
+            >
+              <option value="">All</option>
+              {datasets.map((ds) => (
+                <option key={ds.id} value={ds.id}>
+                  DS{ds.number}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
 
         {/* Bulk action buttons — right side */}
         <div className="ml-auto flex items-center gap-2">

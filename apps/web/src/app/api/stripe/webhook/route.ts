@@ -71,14 +71,15 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
 
   const userId = session.metadata?.user_id
   const stripeCustomerId = session.customer as string
-  const donationType = session.metadata?.donation_type as 'one_time' | 'subscription' | undefined
+  const donationType = session.metadata?.donation_type as 'one_time' | 'supporter_monthly' | 'subscription' | undefined
 
   if (!userId) {
     console.error('Checkout session missing user_id in metadata:', session.id)
     return
   }
 
-  const eventType = donationType === 'subscription' ? 'subscription_created' : 'one_time_payment'
+  const isRecurring = donationType === 'subscription' || donationType === 'supporter_monthly'
+  const eventType = isRecurring ? 'subscription_created' : 'one_time_payment'
   const amountCents = session.amount_total ?? 0
 
   // Record donation + atomically increment total (replay-safe via record_donation RPC)
@@ -96,6 +97,7 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
   if (!isNew) return
 
   // Determine new tier and update profile
+  // supporter_monthly stays at supporter tier — it's just recurring financial support
   const newTier = donationType === 'subscription' ? 'investigator' : 'supporter'
 
   const updateData: Record<string, unknown> = {
@@ -103,7 +105,7 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
     subscription_tier: newTier,
   }
 
-  if (donationType === 'subscription') {
+  if (isRecurring) {
     updateData.stripe_subscription_id = session.subscription as string
     updateData.subscription_started_at = new Date().toISOString()
     updateData.subscription_cancelled_at = null
@@ -142,12 +144,21 @@ async function handleSubscriptionDeleted(event: Stripe.Event) {
 
   if (!isNew) return
 
-  // Downgrade from investigator to supporter (they still donated once)
+  // Downgrade investigator → supporter, or clear subscription fields for monthly supporters
   if (profile.subscription_tier === 'investigator') {
     await supabase
       .from('profiles')
       .update({
         subscription_tier: 'supporter',
+        stripe_subscription_id: null,
+        subscription_cancelled_at: new Date().toISOString(),
+      })
+      .eq('id', profile.id)
+  } else if (profile.subscription_tier === 'supporter') {
+    // Monthly supporter cancelled — keep supporter tier, just clear subscription fields
+    await supabase
+      .from('profiles')
+      .update({
         stripe_subscription_id: null,
         subscription_cancelled_at: new Date().toISOString(),
       })

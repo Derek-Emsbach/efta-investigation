@@ -32,6 +32,7 @@ const SECTION_COLORS: Record<string, string> = {
   'the-cover-up': 'var(--color-section-coverup, #4a1a2a)',
   'the-operation': 'var(--color-section-operation, #3a2a1a)',
   'voices': 'var(--color-section-voices, #2a2a4a)',
+  'trump': 'var(--color-section-trump, #1a3a5c)',
 }
 
 const SECTION_LABELS: Record<string, string> = {
@@ -40,6 +41,7 @@ const SECTION_LABELS: Record<string, string> = {
   'the-cover-up': 'The Cover-Up',
   'the-operation': 'The Operation',
   'voices': 'Voices',
+  'trump': 'Trump',
 }
 
 /* Fallback content when no stories are published yet */

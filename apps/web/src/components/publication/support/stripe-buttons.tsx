@@ -2,16 +2,22 @@
 
 import { useState } from "react"
 
+type DonationType = "supporter" | "supporter_monthly" | "investigator"
+
 interface StripeButtonProps {
-  type: "supporter" | "investigator"
+  type: DonationType
   isAuthenticated: boolean
+}
+
+const LABELS: Record<DonationType, string> = {
+  supporter: "Make a Donation",
+  supporter_monthly: "Subscribe Monthly",
+  investigator: "Subscribe Monthly",
 }
 
 export function StripeButton({ type, isAuthenticated }: StripeButtonProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  const isSubscription = type === "investigator"
 
   async function handleClick() {
     if (!isAuthenticated) {
@@ -53,11 +59,7 @@ export function StripeButton({ type, isAuthenticated }: StripeButtonProps) {
         disabled={loading}
         className="w-full font-sans text-sm font-bold uppercase tracking-[0.08em] bg-accent-gold text-ink px-8 py-3.5 hover:bg-accent-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading
-          ? "Redirecting..."
-          : isSubscription
-            ? "Subscribe Monthly"
-            : "Make a Donation"}
+        {loading ? "Redirecting..." : LABELS[type]}
       </button>
       {error && (
         <p className="mt-2 text-xs text-accent-red">{error}</p>

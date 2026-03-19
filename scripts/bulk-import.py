@@ -4,9 +4,16 @@ Bulk import script for EFTA litigation load files (DAT + OPT + PDFs).
 Parses Concordance DAT and Opticon OPT files, uploads PDFs to R2,
 creates document records in Supabase, and queues them for processing.
 
+Features:
+  - Parallel R2 uploads via ThreadPoolExecutor (--workers)
+  - Batch Supabase inserts (100 records per API call)
+  - Resume capability (--resume skips already-imported Bates numbers)
+  - Backfill mode for docs with missing file_url
+
 Usage:
     cd services/worker && source .venv/bin/activate && cd ../..
     python scripts/bulk-import.py --volume /path/to/VOL00011 --dataset 11 --limit 100
+    python scripts/bulk-import.py --volume /path/to/VOL00011 --dataset 11 --limit 0 --workers 20 --resume
 """
 
 import argparse
@@ -14,6 +21,8 @@ import csv
 import os
 import sys
 import time
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 # Add worker dir to path so we can reuse config
@@ -29,12 +38,38 @@ from config import (
 )
 
 import boto3
+from botocore.config import Config as BotoConfig
 from supabase import create_client
 
 # ── Constants ──────────────────────────────────────────────
 
 THORN = "\u00fe"  # þ — Concordance field delimiter
 DC4 = "\x14"      # Text qualifier
+BATCH_SIZE = 100  # Supabase insert batch size
+
+# ── Thread-local clients ──────────────────────────────────
+
+_thread_local = threading.local()
+
+
+def get_thread_s3():
+    """Get a thread-local boto3 S3 client (thread-safe pattern)."""
+    if not hasattr(_thread_local, "s3"):
+        session = boto3.Session(
+            aws_access_key_id=R2_ACCESS_KEY_ID,
+            aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+        )
+        _thread_local.s3 = session.client(
+            "s3",
+            endpoint_url=R2_ENDPOINT,
+            region_name="auto",
+            config=BotoConfig(
+                max_pool_connections=50,
+                retries={"max_attempts": 3, "mode": "adaptive"},
+            ),
+        )
+    return _thread_local.s3
+
 
 # ── Parsers ────────────────────────────────────────────────
 
@@ -101,18 +136,66 @@ def parse_dat(dat_path: str) -> list[dict]:
     return records
 
 
-# ── Import Logic ───────────────────────────────────────────
+# ── Upload Logic ──────────────────────────────────────────
 
-def upload_to_r2(s3_client, local_path: str, r2_key: str) -> str:
-    """Upload a file to R2 and return the public URL."""
-    s3_client.upload_file(
+def upload_one(local_path: str, r2_key: str) -> str:
+    """Upload a single file to R2 using a thread-local client."""
+    client = get_thread_s3()
+    client.upload_file(
         local_path,
         R2_BUCKET_NAME,
         r2_key,
         ExtraArgs={"ContentType": "application/pdf"},
     )
-    return f"{R2_ENDPOINT}/{R2_BUCKET_NAME}/{r2_key}"
+    return r2_key
 
+
+# ── Resume: pre-fetch existing Bates numbers ─────────────
+
+def fetch_existing_bates(supabase, dataset_id: str) -> dict[str, dict]:
+    """Fetch all existing Bates numbers for a dataset in bulk.
+
+    Returns {bates_number: {"id": uuid, "file_url": str|None}}.
+    Paginates in chunks of 1000 (Supabase default limit).
+    """
+    existing = {}
+    offset = 0
+    page_size = 1000
+
+    while True:
+        result = (
+            supabase.table("documents")
+            .select("id, bates_number, file_url")
+            .eq("dataset_id", dataset_id)
+            .range(offset, offset + page_size - 1)
+            .execute()
+        )
+        for row in result.data:
+            existing[row["bates_number"]] = {
+                "id": row["id"],
+                "file_url": row.get("file_url"),
+            }
+        if len(result.data) < page_size:
+            break
+        offset += page_size
+
+    return existing
+
+
+# ── Batch insert helpers ──────────────────────────────────
+
+def batch_insert_documents(supabase, records: list[dict]) -> list[dict]:
+    """Insert a batch of document records, return inserted rows with IDs."""
+    result = supabase.table("documents").insert(records).execute()
+    return result.data
+
+
+def batch_insert_queue(supabase, entries: list[dict]):
+    """Insert a batch of processing_queue entries."""
+    supabase.table("processing_queue").insert(entries).execute()
+
+
+# ── Main Import ───────────────────────────────────────────
 
 def run_import(
     volume_dir: str,
@@ -120,6 +203,8 @@ def run_import(
     limit: int = 100,
     dry_run: bool = False,
     skip_upload: bool = False,
+    workers: int = 10,
+    resume: bool = False,
 ):
     volume_path = Path(volume_dir)
     data_dir = volume_path / "DATA"
@@ -140,6 +225,8 @@ def run_import(
     print(f"DAT file: {dat_path or 'not found'}")
     print(f"Dataset: {dataset_number}")
     print(f"Limit: {limit}")
+    print(f"Workers: {workers}")
+    print(f"Resume: {resume}")
     print(f"Dry run: {dry_run}")
     print()
 
@@ -178,18 +265,8 @@ def run_import(
             )
         return
 
-    # Connect to services
+    # Connect to Supabase
     supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
-
-    s3_client = None
-    if not skip_upload:
-        s3_client = boto3.client(
-            "s3",
-            endpoint_url=R2_ENDPOINT,
-            aws_access_key_id=R2_ACCESS_KEY_ID,
-            aws_secret_access_key=R2_SECRET_ACCESS_KEY,
-            region_name="auto",
-        )
 
     # Get or create dataset
     ds_result = supabase.table("datasets").select("id").eq("number", dataset_number).execute()
@@ -206,87 +283,230 @@ def run_import(
         dataset_id = ds_insert.data[0]["id"]
         print(f"Created dataset {dataset_number} (ID: {dataset_id})")
 
-    # Import documents
+    # ── Resume: pre-fetch existing records ────────────────
+    existing_map = {}
+    if resume:
+        print("Fetching existing records for resume...")
+        existing_map = fetch_existing_bates(supabase, dataset_id)
+        print(f"  Found {len(existing_map)} existing documents in dataset {dataset_number}")
+
+    # ── Phase 1: Upload PDFs to R2 (parallel) ─────────────
     imported = 0
     skipped = 0
+    backfilled = 0
     errors = 0
+    upload_errors = 0
     start_time = time.time()
 
-    for i, doc in enumerate(documents):
+    # Separate documents into: new (need upload + insert), backfill (need upload only), skip
+    to_upload = []      # (doc, pdf_path, r2_key, file_size, end_bates) — new docs
+    to_backfill = []    # (doc, pdf_path, r2_key, existing_id) — existing docs missing file_url
+
+    print("\nScanning documents...")
+    for doc in documents:
         bates = doc["bates_number"]
-        end_bates = dat_ranges.get(bates)
-        pdf_relative = doc["pdf_relative_path"]
-        pdf_path = volume_path / pdf_relative
-        page_count = doc["page_count"]
+        pdf_path = volume_path / doc["pdf_relative_path"]
 
-        # Progress
-        if (i + 1) % 10 == 0:
-            elapsed = time.time() - start_time
-            rate = (i + 1) / elapsed if elapsed > 0 else 0
-            print(f"  [{i+1}/{len(documents)}] {bates} ({rate:.1f} docs/sec)")
-
-        # Check if already imported
-        existing = supabase.table("documents").select("id").eq("bates_number", bates).execute()
-        if existing.data:
-            skipped += 1
+        if resume and bates in existing_map:
+            ex = existing_map[bates]
+            if not ex.get("file_url") and not skip_upload and pdf_path.exists():
+                r2_key = f"documents/{bates}.pdf"
+                to_backfill.append((doc, str(pdf_path), r2_key, ex["id"]))
+            else:
+                skipped += 1
             continue
 
-        # Check PDF exists locally
+        if not resume:
+            # Non-resume mode: check individually (slower, but works without dataset_id pre-fetch)
+            existing = supabase.table("documents").select("id, file_url").eq("bates_number", bates).execute()
+            if existing.data:
+                ex = existing.data[0]
+                if not ex.get("file_url") and not skip_upload and pdf_path.exists():
+                    r2_key = f"documents/{bates}.pdf"
+                    to_backfill.append((doc, str(pdf_path), r2_key, ex["id"]))
+                else:
+                    skipped += 1
+                continue
+
         if not pdf_path.exists():
             print(f"  WARNING: PDF missing for {bates}: {pdf_path}")
             errors += 1
             continue
 
         file_size = pdf_path.stat().st_size
+        end_bates = dat_ranges.get(bates)
+        r2_key = f"documents/{bates}.pdf"
+        to_upload.append((doc, str(pdf_path), r2_key, file_size, end_bates))
 
-        # Upload to R2
-        file_url = None
-        if s3_client:
-            r2_key = f"documents/{bates}.pdf"
+    print(f"  New documents to import: {len(to_upload)}")
+    print(f"  Backfill (upload PDF only): {len(to_backfill)}")
+    print(f"  Skipped (already complete): {skipped}")
+    if errors:
+        print(f"  Missing PDFs: {errors}")
+
+    # ── Upload new + backfill PDFs in parallel ────────────
+    # Maps r2_key → uploaded file_url (or error)
+    upload_results = {}  # r2_key → True (success) or Exception
+
+    if not skip_upload and (to_upload or to_backfill):
+        all_uploads = []
+        for item in to_upload:
+            all_uploads.append((item[1], item[2]))  # (local_path, r2_key)
+        for item in to_backfill:
+            all_uploads.append((item[1], item[2]))  # (local_path, r2_key)
+
+        print(f"\nUploading {len(all_uploads)} PDFs to R2 with {workers} workers...")
+        upload_start = time.time()
+        completed = 0
+
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = {
+                executor.submit(upload_one, local_path, r2_key): r2_key
+                for local_path, r2_key in all_uploads
+            }
+            for future in as_completed(futures):
+                r2_key = futures[future]
+                completed += 1
+                try:
+                    future.result()
+                    upload_results[r2_key] = True
+                except Exception as e:
+                    upload_results[r2_key] = e
+                    upload_errors += 1
+
+                if completed % 100 == 0 or completed == len(all_uploads):
+                    elapsed = time.time() - upload_start
+                    rate = completed / elapsed if elapsed > 0 else 0
+                    print(f"  [{completed}/{len(all_uploads)}] {rate:.1f} uploads/sec")
+
+        upload_elapsed = time.time() - upload_start
+        success_count = sum(1 for v in upload_results.values() if v is True)
+        print(f"  Upload complete: {success_count} OK, {upload_errors} failed ({upload_elapsed:.1f}s)")
+
+    # ── Process backfill results ──────────────────────────
+    for doc, local_path, r2_key, existing_id in to_backfill:
+        bates = doc["bates_number"]
+        if skip_upload or upload_results.get(r2_key) is True:
             try:
-                upload_to_r2(s3_client, str(pdf_path), r2_key)
-                file_url = r2_key
+                supabase.table("documents").update({"file_url": r2_key}).eq("id", existing_id).execute()
+                backfilled += 1
             except Exception as e:
-                print(f"  ERROR uploading {bates}: {e}")
+                print(f"  ERROR updating backfill {bates}: {e}")
+                errors += 1
+        elif r2_key in upload_results:
+            print(f"  ERROR uploading backfill {bates}: {upload_results[r2_key]}")
+            errors += 1
+
+    if backfilled:
+        print(f"  Backfilled {backfilled} documents with file_url")
+
+    # ── Phase 2: Batch insert new documents ───────────────
+    if to_upload:
+        print(f"\nInserting {len(to_upload)} document records in batches of {BATCH_SIZE}...")
+        insert_start = time.time()
+
+        # Build records for docs that uploaded successfully (or skip_upload mode)
+        pending_records = []
+        pending_meta = []  # parallel list tracking (doc, r2_key) for each record
+
+        for doc, local_path, r2_key, file_size, end_bates in to_upload:
+            bates = doc["bates_number"]
+
+            # Check upload succeeded (or skip_upload mode)
+            if not skip_upload and upload_results.get(r2_key) is not True:
+                if r2_key in upload_results:
+                    print(f"  SKIP {bates}: upload failed ({upload_results[r2_key]})")
                 errors += 1
                 continue
 
-        # Create document record
-        try:
-            doc_record = {
+            file_url = r2_key if not skip_upload else None
+            pending_records.append({
                 "bates_number": bates,
                 "dataset_id": dataset_id,
                 "title": f"{bates}" + (f"–{end_bates}" if end_bates and end_bates != bates else ""),
-                "page_count": page_count,
+                "page_count": doc["page_count"],
                 "file_size_bytes": file_size,
                 "file_url": file_url,
                 "processing_status": "queued",
                 "forensic_metadata": {},
-            }
+            })
+            pending_meta.append((doc, r2_key))
 
-            result = supabase.table("documents").insert(doc_record).execute()
-            doc_id = result.data[0]["id"]
+        # Insert in batches
+        total_inserted = 0
+        all_doc_ids = []
 
-            # Queue for processing
-            supabase.table("processing_queue").insert({
-                "document_id": doc_id,
-                "status": "queued",
-                "priority": 5,
-            }).execute()
+        for batch_start in range(0, len(pending_records), BATCH_SIZE):
+            batch = pending_records[batch_start:batch_start + BATCH_SIZE]
+            try:
+                inserted = batch_insert_documents(supabase, batch)
+                for row in inserted:
+                    all_doc_ids.append(row["id"])
+                total_inserted += len(inserted)
 
-            imported += 1
+                if total_inserted % 500 == 0 or batch_start + BATCH_SIZE >= len(pending_records):
+                    elapsed = time.time() - insert_start
+                    rate = total_inserted / elapsed if elapsed > 0 else 0
+                    print(f"  [{total_inserted}/{len(pending_records)}] {rate:.1f} inserts/sec")
 
-        except Exception as e:
-            print(f"  ERROR inserting {bates}: {e}")
-            errors += 1
+            except Exception as e:
+                # If batch fails, try one-by-one to identify the bad record
+                print(f"  Batch insert failed at offset {batch_start}: {e}")
+                print(f"  Falling back to individual inserts...")
+                for i, record in enumerate(batch):
+                    try:
+                        result = supabase.table("documents").insert(record).execute()
+                        all_doc_ids.append(result.data[0]["id"])
+                        total_inserted += 1
+                    except Exception as e2:
+                        bates = record["bates_number"]
+                        print(f"    ERROR inserting {bates}: {e2}")
+                        errors += 1
 
+        imported = total_inserted
+        print(f"  Inserted {total_inserted} documents ({time.time() - insert_start:.1f}s)")
+
+        # ── Phase 3: Batch insert processing queue entries ─
+        if all_doc_ids:
+            print(f"\nQueuing {len(all_doc_ids)} documents for processing...")
+            queue_entries = [
+                {"document_id": doc_id, "status": "queued", "priority": 5}
+                for doc_id in all_doc_ids
+            ]
+            queue_inserted = 0
+            for batch_start in range(0, len(queue_entries), BATCH_SIZE):
+                batch = queue_entries[batch_start:batch_start + BATCH_SIZE]
+                try:
+                    batch_insert_queue(supabase, batch)
+                    queue_inserted += len(batch)
+                except Exception as e:
+                    print(f"  Queue batch failed at offset {batch_start}: {e}")
+                    # Individual fallback
+                    for entry in batch:
+                        try:
+                            supabase.table("processing_queue").insert(entry).execute()
+                            queue_inserted += 1
+                        except Exception as e2:
+                            print(f"    ERROR queuing {entry['document_id']}: {e2}")
+                            errors += 1
+            print(f"  Queued {queue_inserted} documents")
+
+    # ── Summary ───────────────────────────────────────────
     elapsed = time.time() - start_time
-    print(f"\n=== Import Complete ===")
-    print(f"  Imported: {imported}")
+    print(f"\n{'=' * 60}")
+    print(f"  Import Complete")
+    print(f"  {'─' * 56}")
+    print(f"  New documents imported: {imported}")
+    print(f"  Backfilled (PDF upload): {backfilled}")
     print(f"  Skipped (already exists): {skipped}")
-    print(f"  Errors: {errors}")
-    print(f"  Time: {elapsed:.1f}s")
-    print(f"  Rate: {(imported / elapsed if elapsed > 0 else 0):.1f} docs/sec")
+    print(f"  Upload errors: {upload_errors}")
+    print(f"  Other errors: {errors}")
+    print(f"  {'─' * 56}")
+    print(f"  Total time: {elapsed:.1f}s")
+    total_processed = imported + backfilled + skipped
+    if elapsed > 0 and total_processed > 0:
+        print(f"  Rate: {total_processed / elapsed:.1f} docs/sec")
+    print(f"{'=' * 60}")
 
 
 # ── CLI ────────────────────────────────────────────────────
@@ -298,12 +518,21 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int, default=100, help="Max documents to import (0 = all)")
     parser.add_argument("--dry-run", action="store_true", help="Parse files and show what would be imported")
     parser.add_argument("--skip-upload", action="store_true", help="Skip R2 upload (metadata only)")
+    parser.add_argument("--workers", type=int, default=10, help="Parallel upload workers (default 10, max 50)")
+    parser.add_argument("--resume", action="store_true", help="Resume interrupted import (bulk-fetch existing records)")
 
     args = parser.parse_args()
+
+    if args.workers > 50:
+        print("WARNING: Clamping workers to 50 (max)")
+        args.workers = 50
+
     run_import(
         volume_dir=args.volume,
         dataset_number=args.dataset,
         limit=args.limit,
         dry_run=args.dry_run,
         skip_upload=args.skip_upload,
+        workers=args.workers,
+        resume=args.resume,
     )

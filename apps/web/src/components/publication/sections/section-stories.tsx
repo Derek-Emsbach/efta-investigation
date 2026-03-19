@@ -7,6 +7,7 @@ const SECTION_LABELS: Record<string, string> = {
   'the-cover-up': 'The Cover-Up',
   'the-operation': 'The Operation',
   'voices': 'Voices',
+  'trump': 'Trump',
 }
 
 interface StoryPreview {

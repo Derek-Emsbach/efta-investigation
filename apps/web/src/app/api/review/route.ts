@@ -2,26 +2,113 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/supabase/require-admin'
 
-/** GET: Fetch documents that need review, enriched with pipeline classify results */
-export async function GET() {
+/** GET: Fetch documents that need review, enriched with pipeline classify results.
+ *
+ * Query params (all optional):
+ *  severity        — comma-separated: extreme_critical,critical,high,routine
+ *  classification  — comma-separated: high,medium,low
+ *  document_type   — comma-separated: fbi_302,email,court_filing,...
+ *  dataset_id      — UUID
+ *  entity_id       — UUID (filters to docs linked to this entity)
+ *  date_from       — ISO date (original_date >=)
+ *  date_to         — ISO date (original_date <=)
+ *  min_pages       — integer
+ *  max_pages       — integer
+ *  page            — pagination page (default 1)
+ *  limit           — items per page (default 100, max 500)
+ */
+export async function GET(request: Request) {
   try {
     const supabase = await createClient()
+    const { searchParams } = new URL(request.url)
 
-    const { data, error } = await supabase
+    // Pagination
+    const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10))
+    const limit = Math.min(500, Math.max(1, parseInt(searchParams.get('limit') ?? '100', 10)))
+    const from = (page - 1) * limit
+    const to = from + limit - 1
+
+    // Entity filter: two-step lookup (entity_documents → document IDs)
+    let entityDocIds: string[] | null = null
+    const entityId = searchParams.get('entity_id')
+    if (entityId) {
+      const { data: entityDocs } = await supabase
+        .from('entity_documents')
+        .select('document_id')
+        .eq('entity_id', entityId)
+      entityDocIds = (entityDocs ?? []).map((ed) => ed.document_id)
+      if (entityDocIds.length === 0) {
+        return NextResponse.json({ documents: [], totalCount: 0, page, limit })
+      }
+    }
+
+    // Build query
+    const selectFields = 'id, bates_number, title, document_type, original_date, page_count, file_size_bytes, severity, classification, processing_status, forensic_metadata, extracted_text, flags, review_notes, dataset_id'
+
+    let query = supabase
       .from('documents')
-      .select('id, bates_number, title, document_type, original_date, page_count, file_size_bytes, severity, classification, processing_status, forensic_metadata, extracted_text, flags, review_notes, dataset_id')
+      .select(selectFields, { count: 'exact' })
       .in('processing_status', ['needs_review', 'extracted'])
       .order('created_at', { ascending: true })
-      .limit(100)
+      .range(from, to)
+
+    // Apply filters
+    const severity = searchParams.get('severity')
+    if (severity) {
+      query = query.in('severity', severity.split(','))
+    }
+
+    const classification = searchParams.get('classification')
+    if (classification) {
+      query = query.in('classification', classification.split(','))
+    }
+
+    const documentType = searchParams.get('document_type')
+    if (documentType) {
+      query = query.in('document_type', documentType.split(','))
+    }
+
+    const datasetId = searchParams.get('dataset_id')
+    if (datasetId) {
+      query = query.eq('dataset_id', datasetId)
+    }
+
+    if (entityDocIds) {
+      query = query.in('id', entityDocIds)
+    }
+
+    const dateFrom = searchParams.get('date_from')
+    if (dateFrom) {
+      query = query.gte('original_date', dateFrom)
+    }
+
+    const dateTo = searchParams.get('date_to')
+    if (dateTo) {
+      query = query.lte('original_date', dateTo)
+    }
+
+    const minPages = searchParams.get('min_pages')
+    if (minPages) {
+      query = query.gte('page_count', parseInt(minPages, 10))
+    }
+
+    const maxPages = searchParams.get('max_pages')
+    if (maxPages) {
+      query = query.lte('page_count', parseInt(maxPages, 10))
+    }
+
+    const { data, error, count } = await query
 
     if (error) {
       throw new Error(`Failed to fetch review queue: ${error.message}`)
     }
 
     const docs = data ?? []
+    const totalCount = count ?? 0
 
-    // Fetch classify results from the most recent completed queue entry per document
-    let classifyMap: Record<string, Record<string, unknown>> = {}
+    // Fetch classify + auto-review results from the most recent completed queue entry per document
+    const classifyMap: Record<string, Record<string, unknown>> = {}
+    const autoReviewMap: Record<string, Record<string, unknown>> = {}
     if (docs.length > 0) {
       const docIds = docs.map((d) => d.id)
       const { data: queueItems } = await supabase
@@ -40,17 +127,23 @@ export async function GET() {
             ...classify,
             is_reprocess: item.is_reprocess ?? false,
           }
+          // Surface auto-review results if present
+          const autoReview = results.auto_review as Record<string, unknown> | undefined
+          if (autoReview && !autoReview.skipped) {
+            autoReviewMap[item.document_id] = autoReview
+          }
         }
       }
     }
 
-    // Merge classify data into each document
+    // Merge classify + auto-review data into each document
     const enriched = docs.map((doc) => ({
       ...doc,
       classify: classifyMap[doc.id] ?? null,
+      auto_review: autoReviewMap[doc.id] ?? null,
     }))
 
-    return NextResponse.json({ documents: enriched })
+    return NextResponse.json({ documents: enriched, totalCount, page, limit })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json({ error: message }, { status: 500 })
