@@ -2,8 +2,9 @@
 dockerfilePath = "Dockerfile"
 
 [deploy]
+startCommand = "sh -c 'if [ ! -f /data/full_text_corpus.db ]; then echo Downloading corpus databases... && cd /data && bash /app/data/download.sh; fi && node build/index.js'"
 healthcheckPath = "/health"
-healthcheckTimeout = 30
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 
