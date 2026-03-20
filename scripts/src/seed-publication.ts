@@ -4400,6 +4400,97 @@ const STORIES: StoryDef[] = [
       },
     ],
   },
+  // ─── Story 35: Two More Interactions (Gaps in the Record) ──────────────────
+  {
+    slug: 'two-more-interactions',
+    title: 'Two More Interactions',
+    deck: 'On page eight of an FBI 302, after describing an assault by Donald Trump, a protected victim told agents she had two additional interactions with him — then asked to move on. Those interactions were never recorded. The agent interview notes that might have captured stray details are absent from the public corpus. The photographs are redacted. This is a story about what isn\'t in the file.',
+    section: 'trump' as const,
+    file: 'two-more-interactions.md',
+    byline: 'EFTA Investigation Team',
+    reading_time_minutes: 9,
+    is_featured: false,
+    case_file_slug: 'trump-epstein-connection',
+    published_at: new Date().toISOString(),
+    hero_image_url: null,
+    hero_image_caption: null,
+    metadata: {
+      source_documents: [
+        'EFTA02858481 (FD-302 Interview #2, 3501.045-003, 08/07/2019)',
+        'EFTA01245620 (FD-302 Interview #1, 3501.045-001, 07/24/2019)',
+        'EFTA02858495 (FD-302 Interview #4, 3501.045-007, 10/16/2019)',
+        'EFTA02858491 (FD-302 Interview #3, 3501.045-005, 08/20/2019)',
+        'EFTA01245635 (EC 3501.045-013, FBI Lead to Seattle, 07/19/2019)',
+        'EFTA00095751 (Production manifest, 3501.045 series index)',
+        'EFTA01245629-631 (Photograph stubs, fully redacted)',
+        'EFTA01660651 (FBI NTOC compilation, Aug 2025)',
+      ],
+      case_number: '31E-NY-3027571',
+      protect_source: true,
+    },
+    entities: [
+      { name: 'Donald Trump', mention_count: 22, is_primary: true },
+      { name: 'Jeffrey Epstein', mention_count: 14, is_primary: true },
+    ],
+    citations: [
+      {
+        number: 1,
+        bates_number: 'EFTA02858481',
+        description:
+          'FD-302 Interview #2 (3501.045-003, 08/07/2019): Trump encounter — "Let me teach you how little girls are supposed to be." Forced oral sex, victim bit Trump, Trump struck her. "Get this little bitch the hell out of here." Blonde woman\'s bra remark. "II stated she had two additional interactions with TRUMP, but she asked that the interview move on to a different subject for the time being." Shared "fresh meat/untainted/not jaded" language. Blackmail and money laundering discussions overheard.',
+        page_reference: 'pp. 7-8',
+      },
+      {
+        number: 2,
+        bates_number: 'EFTA01245620',
+        description:
+          'FD-302 Interview #1 (3501.045-001, 07/24/2019): Witness recognized Epstein in photograph sent by friend; cropped image to show only Epstein. Agents recognized uncropped original as "widely distributed photograph of JEFFREY EPSTEIN and current United States President DONALD TRUMP." Witness said the other person was "someone she had met."',
+        page_reference: 'pp. 7-8',
+      },
+      {
+        number: 3,
+        bates_number: 'EFTA02858495',
+        description:
+          'FD-302 Interview #4 (3501.045-007, 10/16/2019): FBI scheduled dedicated session for Trump allegations. Victim attended but declined to proceed, citing statute of limitations: "What\'s the point?"',
+        page_reference: 'pp. 1-2',
+      },
+      {
+        number: 4,
+        bates_number: 'EFTA02858491',
+        description:
+          'FD-302 Interview #3 (3501.045-005, 08/20/2019): Clarified Trump struck victim — "pulled her hair and punched her on the side of her head." Threatening calls: "Fuck you. You better keep your mouth closed." "When he was running... more tracks to cover." Under her breath: "if it was not EPSTEIN, maybe it was the \'other one\'... Trump." I-5 vehicular assault attempts.',
+        page_reference: 'pp. 2-4',
+      },
+      {
+        number: 5,
+        bates_number: 'EFTA01245635',
+        description:
+          'EC 3501.045-013 (07/19/2019): FBI hotline intake — woman reported being victim of sexual exploitation by Epstein in the 1980s when approximately 13-15 years old, residing in the island area of South Carolina. New York office routed lead to Seattle Field Office.',
+        page_reference: 'pp. 1-2',
+      },
+      {
+        number: 6,
+        bates_number: 'EFTA00095751',
+        description:
+          'Production manifest (witness index): Lists all 15 sub-documents in the 3501.045 series — 4 FD-302s, 3 sets of interview notes, 3 photographs, 2 intake reports, 1 electronic communication, 1 law enforcement report, 1 license record. Notes and photographs not accessible in corpus.',
+        page_reference: 'p. 7',
+      },
+      {
+        number: 7,
+        bates_number: 'EFTA01245629',
+        description:
+          'Photograph stub (3501.045-008): Single-page cover sheet, fully redacted. One of three photographs submitted as part of the witness case file. No descriptive text accessible.',
+        page_reference: 'p. 1',
+      },
+      {
+        number: 8,
+        bates_number: 'EFTA01660651',
+        description:
+          'FBI NTOC compilation (Aug 2025): 15+ complainants naming Trump in connection with sexual assault allegations. Complainant 1 matches 3501.045 victim pattern — friend (age 13-14, NJ), forced oral sex on Trump, bit him, Trump struck her face. WFO dispatched.',
+        page_reference: 'Full document',
+      },
+    ],
+  },
 ]
 
 // ─── Content Extraction ───────────────────────────────────────────────────────

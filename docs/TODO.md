@@ -679,7 +679,10 @@
 - [x] **Trump section page** — `apps/web/src/app/(publication)/sections/trump/page.tsx`. Nav updated. CSS token `--color-section-trump: #1a3a5c`. Section color/label maps updated in 9 component files.
 - [x] **Run migration 027** in Supabase SQL Editor — confirmed 2026-03-19
 - [x] **Run `pnpm seed:publication`** — 34 stories, 471 citations, 174 entity links, CF-2026-012 created. Fixed file path (→ THREAD_17) + entity name (Bradley Edwards → Brad Edwards).
-- [ ] **Publish Trump entity** — currently `is_public: false`. Need to verify T3 designation with editorial review before publishing.
+- [x] **Publish Trump entity** — T3, `profile_published=true`, `is_public=true`, tier_justification corrected. Live at `/entities/donald-trump`. 65 published entities total.
 - [x] **Case file CF-2026-012** "trump-epstein-connection" — seeded with 5 entity links, 7+ open questions
+- [x] **Story 35 written** — "Two More Interactions" (gaps in the record). 3501.045 sub-document search completed: notes (-002, -004, -006) absent from corpus, 3 photograph stubs fully redacted, 2 additional Trump interactions permanently unrecorded. 8 citations, 2 entity links. Seeded.
+- [x] **Run `pnpm seed:publication`** — 35 stories, 479 citations, 177 entity links.
+- [x] **Brad Edwards enrichment + published** — T6 legal, bio rewritten (3 paras), evidence summary (7 bullets), 6 connections (new: Edwards→Trump legal_adversary), 128 docs linked. Published at `/entities/brad-edwards`. 66 entities total.
 - [ ] **Jim Atkins** — publish decision pending. No independent corpus corroboration. Name is phonetic.
 - [ ] **PACER verification** — Search for mother's federal embezzlement conviction, Columbia SC, ~1983-1986. Single most important remaining external verification.

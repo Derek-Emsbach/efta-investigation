@@ -43,6 +43,7 @@
 | 32 | let-me-teach-you | Let Me Teach You | trump | FBI FD-302 3501.045 series (EFTA02858481/91/95): Protect Source victim names Trump, dedicated fourth interview, "what's the point?"; FBI NTOC compilation EFTA01660651 (15+ accusers, Complainant 1 pattern match, WFO dispatched); FBI "no predicate" memo EFTA01655527 vs. Bondi political investigation. Cross-references Katie Johnson SDNY 2016 civil complaint. | 2026-03-19 |
 | 33 | the-mar-a-lago-connection | The Mar-a-Lago Connection | trump | Civil litigation records — Edwards Affidavit (14 phone numbers, 7-point deposition basis), Mark Epstein deposition, Rodriguez affidavit, Giuffre sworn testimony, flight logs. | 2026-03-19 |
 | 34 | the-acosta-deal | The Acosta Deal | trump | OPR report (EFTA00023059), Acosta "belonged to intelligence" SDNY email (EFTA00030182), 2017 Trust Section 7.1 (EFTA01266434), Ruemmler AG coaching email (EFTA02590624), ECPAT-USA resignation letter (EFTA00147443), FBI "no predicate" / Bondi investigation (EFTA01655527). | 2026-03-19 |
+| 35 | two-more-interactions | Two More Interactions | trump | Gaps in the record — production manifest (EFTA00095751) lists 15 sub-documents in 3501.045 series; notes (-002, -004, -006) absent from corpus; 3 photograph stubs fully redacted; 2 additional Trump interactions permanently unrecorded. NTOC pattern match (EFTA01660651). | 2026-03-20 |
 
 ## Ready to Write
 
