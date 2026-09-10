@@ -11,6 +11,7 @@ interface StoryPreview {
   reading_time_minutes: number | null
   is_featured: boolean
   published_at: string | null
+  updated_at?: string | null
   hero_image_url?: string | null
 }
 
@@ -96,6 +97,12 @@ export function StoryGrid({ stories }: StoryGridProps) {
                     year: 'numeric',
                   })}
                 </span>
+              </>
+            )}
+            {featured.updated_at && featured.published_at && (new Date(featured.updated_at).getTime() - new Date(featured.published_at).getTime()) > 86_400_000 && (
+              <>
+                <span className="text-border-default">|</span>
+                <span className="text-accent-gold">Updated {new Date(featured.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
               </>
             )}
           </div>

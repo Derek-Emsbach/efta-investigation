@@ -10,6 +10,7 @@ interface StoryPreview {
   byline: string
   reading_time_minutes: number | null
   published_at: string | null
+  updated_at?: string | null
   hero_image_url?: string | null
 }
 
@@ -205,6 +206,12 @@ function StoryCard({
               year: 'numeric',
             })}
           </span>
+        )}
+        {story.updated_at && story.published_at && (new Date(story.updated_at).getTime() - new Date(story.published_at).getTime()) > 86_400_000 && (
+          <>
+            <span className="text-border-default">·</span>
+            <span className="text-accent-gold">Updated {new Date(story.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          </>
         )}
         {story.reading_time_minutes && (
           <>
