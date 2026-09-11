@@ -59,3 +59,5 @@ docs/volumes/
 
 # Torrent files
 *.torrent
+# Local MCP client config — carries the bearer token, never commit
+.mcp.json
