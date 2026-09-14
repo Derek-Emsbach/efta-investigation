@@ -2,8 +2,8 @@
 type: investigation_thread
 thread_id: "17"
 thread_name: "FD-302 Protect Source: Hilton Head Victim, Trump Assault, Atkins Blackmail"
-version: "2.0"
-date: "2026-03-19"
+version: "2.1"
+date: "2026-09-13"
 last_updated: "2026-03-19"
 classification: "UNRESTRICTED — PUBLIC ANALYSIS"
 sensitivity: contains_victim_account_details
@@ -314,11 +314,13 @@ The most significant independent corroboration of the Trump-Epstein relationship
 5. ~~[RESOLVED] Does the "1992 Mar-a-Lago party video" exist in the corpus?~~
    **Answer:** No. EFTA00263107 is a Wikipedia printout, not a party video. The earliest known Trump-Epstein video footage is NBC archival footage from 1992 at Mar-a-Lago (publicly available via NBC News archive, not in EFTA corpus).
 
-### OPEN
+### RESOLVED (2026-09-13 — External Web Verification, see Update section below)
 
-6. [Priority: CRITICAL] Is the victim's account of her mother's federal embezzlement conviction independently verifiable? The conviction would have been approximately 1983-1986, in the Federal District of South Carolina (Columbia). PACER records from this period should be searchable. The victim's brother is also named in the documents as a potential corroborating witness. **This is the single most important external verification remaining** — if confirmed, it corroborates the entire Hilton Head framework.
+6. ~~[Priority: CRITICAL] Is the victim's account of her mother's embezzlement conviction independently verifiable?~~
+   **Answer: SUBSTANTIALLY CONFIRMED, with one correction.** The *Post and Courier* (Marilyn W. Thompson & Mitchell Black, 3/29/2026) independently identified the mother's case: charged with embezzling $22,000 (~$70,000 today), ordered to pay restitution, imprisoned in Columbia, SC for two years after falling behind on payments. **Correction to the FD-302 characterization:** the newspaper's own reporting describes this as a **local/state** law-enforcement matter ("Atkins turned in the woman to local law enforcement"), not a federal conviction as the victim recalled to the FBI. Time span (2 years) and location (Columbia) match; the "federal" detail does not — flagged as a discrepancy, not a refutation, since the victim was a minor at the time and civil/criminal court distinctions are exactly the kind of detail a decades-old childhood memory would blur. PACER itself was not directly queried (no case name/number in hand and no PACER account in this environment); this finding came from independent journalism that had access to state court/local records the corpus does not contain. **OQ-06 (Cecil's identity) remains open.**
 
-7. [Priority: HIGH] Who is Jim Atkins (phonetic)? Ohio university officials (Dean or financial officer) who visited Hilton Head Island, SC in the early 1980s and were in their 50s at the time. The "phonetic" qualifier suggests the agents were uncertain. Possible alternate spellings: Adkins, Akins, Atkinson. No independent corpus corroboration found — 184 "Atkins" hits in corpus are all unrelated. He would be ~90-95 if still living.
+7. ~~[Priority: HIGH] Who is Jim Atkins (phonetic)?~~
+   **Answer: IDENTIFIED — Jimmy Lee Atkins**, an Ohio-based for-profit education entrepreneur. President of the **Ohio College of Business and Technology** (Cincinnati); ran a chain of for-profit trade schools/colleges including a Kentucky cosmetology academy and a college for blind students. In 1985 he "assumed control of Harbour Realty" and bought Hilton Head property in **Wexford Plantation** ($84,150 for land + Slip 28 marina dock space) plus a residential lot near Coligny Beach. Physical description matches: grey hair, "big ears," was "portly" before a liposuction procedure. **Died 2003 (age ~68-73) of coronary disease in Indiana; buried Fort Mitchell, KY** (headstone notes Korean War service) — he is not living, resolving the "~90-95 if still living" note above. Full detail in Update section below. A third-party aggregator (epstein-data.com) independently names him via a **1986 Island Packet article** ("Jimmy L. Atkins of Ohio," owner of "Fort Mitchell Co.") and **Florida corporate filings** for Betz College Inc./Betz Business School Inc. (Cincinnati, 1977-1981) — treated as supplementary/unverified pending direct primary-source check, and flagged as possibly conflating his burial place (Fort Mitchell, KY) with a company name ("Fort Mitchell Co.") — needs a direct look at the Island Packet source before relying on it.
 
 8. [Priority: HIGH] What is the identity of "Cecil" — Atkins's Black male accountant — who helped fix the victim's mother's books? An accountant linked to an Ohio university in the early 1980s.
 
@@ -340,11 +342,11 @@ The most significant independent corroboration of the Trump-Epstein relationship
 |-------|------------------|---------------|--------|
 | Victim met Epstein at Hilton Head, age ~13, early 1980s | **Strong** | Internally consistent across 4 interviews; FBI hotline record; Sea Pines Plantation identified; Rick James concert dates (Oct 1981 / July 1982) narrow timeline | ↑ Concert dating |
 | Systematic drugging, blackmail photography, recruitment coercion | **Strong** | Detailed and consistent across interviews; consistent with documented Epstein MO in other cases | — |
-| Mother's embezzlement conviction — Epstein/Atkins blackmail | **Strong** | Consistent across 4 interviews; independently verifiable via PACER (not yet verified) | — |
+| Mother's embezzlement conviction — Epstein/Atkins blackmail | **Strong** | Consistent across 4 interviews; **independently confirmed by Post and Courier reporting (2026-09 verification)** — $22K charge, 2 years in Columbia, SC, restitution failure; "federal" characterization not confirmed (reporting describes local/state charge) | ↑ Confirmed (with correction) |
 | Trump sexually assaulted the victim in a NYC/NJ high-rise | **Moderate** | Single direct source (3501.045 victim); NTOC Complainant 1 (EFTA01660651) reports matching pattern (oral sex → biting → striking, NJ, age 13-14); Katie Johnson lawsuit alleges same behavioral pattern (force → striking → age 13); FBI dedicated Interview #4 to this allegation (took it seriously); Trump Tower timeline confirmed consistent | **↑ Upgraded from Weak-Moderate** |
 | Trump and Epstein used "fresh meat/untainted/not jaded" together | Weak-Moderate | Single source for joint use; "fresh meat" confirmed as Epstein's term in Interview #1; corroborated by Jack O'Donnell account of Trump-Epstein relationship at casino | ↑ O'Donnell |
 | Trump discussed illegal building permits and casino money laundering | Weak | Single source; no corroborating EFTA document found | — |
-| Jim Atkins — Ohio university official, co-abuser, blackmail participant | Moderate | Internally consistent across 4 interviews; no independent corpus corroboration; 184 "Atkins" hits all unrelated | — |
+| Jim Atkins — Ohio university official, co-abuser, blackmail participant | **Strong** | **IDENTIFIED as Jimmy Lee Atkins** (Post and Courier, 3/29/2026): confirmed Ohio for-profit college president, Hilton Head property owner (Wexford Plantation, 1985), physical description match, direct link to mother's embezzlement charge. Assault allegation itself still uncorroborated (P&C: "No direct evidence has been uncovered supporting the assault claims") | ↑↑ Identified |
 | Trump-Epstein documented relationship (independent corroboration) | **Strong** | Edwards Affidavit: 14 phone entries, message pad calls, plane flights; Jane Doe 102 at Mar-a-Lago; EFTA00158636 (separate victim introduced to Trump); O'Donnell "best friend" account; NTOC compilation (15+ complainants) | ↑ Multiple new sources |
 | Trump banned Epstein from Mar-a-Lago for assaulting underage girl | Moderate | Edwards Affidavit ("I learned through a source") — hearsay; repeated in multiple EFTA documents | — |
 | FBI took Trump allegations seriously | **Strong (NEW)** | FBI dedicated Interview #4 solely to Trump allegations (EFTA02858495); FBI NTOC compiled 15+ Trump accusers (EFTA01660651); Washington Field Office dispatched for Complainant 1 follow-up | NEW |
@@ -387,9 +389,10 @@ The most significant independent corroboration of the Trump-Epstein relationship
 - [x] ~~Retrieve EFTA01660651 (NTOC compilation)~~ — **DONE.** 15+ Trump accusers. Complainant 1 pattern match identified.
 - [x] ~~Date the Rick James concert~~ — **DONE.** Oct 8, 1981 or July 8, 1982, Savannah Civic Center.
 - [x] ~~Identify building~~ — **DONE.** Trump Tower (Feb 1983) most consistent match.
-- [ ] **Search PACER for mother's embezzlement conviction** — Federal District of South Carolina, Columbia, ~1983-1986. This is the single most important remaining verification.
-- [ ] **Identify Jim Atkins** — Ohio university official, Dean or financial officer, ~50s in early 1980s. Alternate spellings: Adkins, Akins, Atkinson. Check Ohio university archives, board records.
-- [ ] **Identify "Cecil"** — Atkins's accountant, Black male. Ohio-based, early 1980s.
+- [x] ~~Search PACER for mother's embezzlement conviction~~ — **DONE (2026-09-13), via external journalism rather than direct PACER query.** See Update section — Post and Courier independently confirmed the case (2 years, Columbia SC, $22K, restitution failure), with a correction (local/state charge, not federal).
+- [x] ~~Identify Jim Atkins~~ — **DONE (2026-09-13).** Jimmy Lee Atkins, Ohio College of Business and Technology president. See Update section. Deceased 2003.
+- [ ] **Identify "Cecil"** — Atkins's accountant, Black male. Ohio-based, early 1980s. Not found in Post and Courier reporting or epstein-data.com aggregation — still open.
+- [ ] **Human decision needed:** publish the existing Jim Atkins entity (T3, `c3a15e8e`) now that his identity has independent corroboration? Corpus still shows zero independent corroboration for the *assault* allegation itself — only for his biography/background. Flagged for Derek.
 - [ ] **Determine NTOC Complainant 1 interview outcome** — Did Washington Field Office interview succeed? What did they find?
 - [ ] Create entity records: Jim Atkins (T3), Protect Source 3501.045 (T5, is_public=false)
 - [ ] Upgrade Trump entity to Tier 3 (justified by THREAD_17 + NTOC + Katie Johnson + Edwards Affidavit)
@@ -415,3 +418,44 @@ The most significant independent corroboration of the Trump-Epstein relationship
 ### Existing (Verify/Upgrade)
 - Trump → Epstein: currently strength 75, **upgrade to 85** based on new evidence volume
 - Trump → Maxwell: currently strength 50, **upgrade to 60** based on Mar-a-Lago recruitment evidence
+
+---
+
+## Update — 2026-09-13: External Verification (Web Research, No MCP Corpus Access)
+
+**Context:** This session's local MCP corpus server could not be started (esbuild native-binary platform mismatch in the sandboxed shell — the repo's `node_modules` were built for `darwin-arm64`, the session shell is `linux-arm64`). No corpus queries, DB writes, or entity/connection changes were possible. Per standing instructions, this update was done via `WebSearch`/`WebFetch` against the two CRITICAL/HIGH open questions from Phase 1 (OQ #6, #7) that are answerable by outside reporting rather than corpus search. **No database changes were made** — this is a documentation-only update pending a corpus-connected session to action the "Recommended Next Steps" below.
+
+### Finding 1: Jim Atkins identified as Jimmy Lee Atkins
+
+**Primary source:** Marilyn W. Thompson & Mitchell Black, "Three years on Hilton Head leave trail of mysteries in alleged Jeffrey Epstein affair," *The Post and Courier*, March 29, 2026. [postandcourier.com/news/hilton-head-sc-jeffrey-epstein-files-jimmy-atkins](https://www.postandcourier.com/news/hilton-head-sc-jeffrey-epstein-files-jimmy-atkins/article_817ad76a-a297-46ca-a41b-439aaa5438c5.html)
+
+- Jimmy Lee Atkins: Ohio-based "education entrepreneur," ran a network of for-profit trade schools/colleges (a Kentucky cosmetology academy, a college for blind students), and was **president of the Ohio College of Business and Technology** in Cincinnati.
+- The newspaper states directly: *"The former Hilton Head teen correctly told the FBI that Atkins was affiliated with a college in Ohio, perhaps as a dean or 'money guy.'"* and *"She also provided other details that panned out, including his age, hair color and direct association with her mother's embezzlement charge."* — i.e., this is the FBI's/newspaper's own corroboration of the victim's account, not just our inference.
+- In 1985 Atkins "assumed control of Harbour Realty" and bought Hilton Head property in Wexford Plantation ($84,150 for land + marina Slip 28) plus an unbuilt residential lot near Coligny Beach, financed via Kentucky/Florida lenders.
+- Physical description match: grey hair, "big ears," described by a colleague (accounting professor Tom Mahany) as initially "portly" before a liposuction procedure — consistent with the FD-302 description.
+- Atkins **died in 2003** (~15 years after the alleged events), age approximately 68-73, of coronary disease, in Indiana. Buried in Fort Mitchell, KY; headstone notes Korean War service. His attorney, quoted as "Berger," said: *"I thought he was a gentleman and always nice to be around. I didn't know there was a potential dark side."*
+- The article explicitly does **not** corroborate the assault allegation itself: *"No direct evidence has been uncovered supporting the assault claims."* Only his background/identity/blackmail-participant role is confirmed by outside reporting — not the sexual assault.
+- **Secondary, lower-confidence source:** a third-party document aggregator, epstein-data.com ("The Ohio Node: Jim Atkins, the Columbus Network, and Maxwell's Weyerhaeuser Position"), separately names him via a claimed **1986 *Island Packet* article** ("Jimmy L. Atkins of Ohio," owner of "Fort Mitchell Co.," a real-estate company where the victim's mother worked) and **Florida corporate filings** for Betz College Inc. / Betz Business School Inc. (Cincinnati, 1977-1981). This is treated as supplementary and unverified — the site's "Fort Mitchell Co." (company) may be a confusion with "Fort Mitchell, KY" (Post and Courier's stated burial location), and we have not independently confirmed the Island Packet article or the Florida filings ourselves. **Do not cite the epstein-data.com claims as primary without independently pulling the underlying Island Packet article and Florida Division of Corporations records first.**
+
+### Finding 2: Mother's embezzlement case — confirmed, with a correction
+
+**Same primary source (Post and Courier, 3/29/2026):** *"Atkins turned in the woman to local law enforcement, which charged her with embezzling $22,000, equivalent to about $70,000 today. She was ordered to pay restitution. When she fell behind in payments, she went to prison in Columbia for two years."*
+
+- **Matches the FD-302:** two years, Columbia SC, embezzlement, timing consistent with victim being "17 or 18."
+- **Does not match the FD-302:** the victim recalled this to the FBI as "**federal** prison" — the newspaper's own research describes it as a **local/state** charge ("local law enforcement"). This is flagged as a discrepancy requiring a note in the corroboration table (done above), not treated as debunking — a childhood memory of "prison in Columbia" over 35+ years is exactly the kind of detail that would blur federal/state distinctions, especially since Columbia hosts both a federal courthouse and South Carolina Department of Corrections facilities.
+- **A second Post and Courier article** — "An Epstein victim's rocky path from Hilton Head to the West Coast" ([link](https://www.postandcourier.com/news/special_reports/south-carolina-epstein-hilton-head/article_ea4c66c4-6336-4f46-a4e2-9b0f6a704116.html)) — describes the mother's record differently: *"In 1984, she was arrested for fraud, and years later charged with breach of trust and six counts of forgery,"* plus a 1996 burglary allegation, and does **not** mention the $22K embezzlement or the two-year Columbia sentence at all. This is the same newspaper, same overall investigation, but the two pieces don't fully reconcile on the mother's record — possibly because the 1985 embezzlement/restitution matter and the 1984 fraud arrest / later breach-of-trust-and-forgery charges are genuinely separate cases against the same person (plausible for someone under sustained financial pressure and blackmail across the 1980s-90s), or possibly one piece is incomplete. **Not resolved — flagged as an open sub-question below.** Neither Post and Courier piece names the mother; her identity is being withheld to protect the victim (also unnamed).
+- **No direct PACER query was performed.** No case name or docket number is in hand, and this environment has no PACER account. The confirmation above comes from the newspaper's own record-pulling (which likely did include local Beaufort/Richland County court records and/or SC Department of Corrections records), not from us independently pulling a docket.
+
+### New / Updated Open Questions
+
+- **OQ-06 (was #8):** Identity of "Cecil," Atkins's Black accountant — still completely open. Neither Post and Courier piece nor epstein-data.com mentions a "Cecil."
+- **OQ-14 (NEW):** Do the two Post and Courier accounts of the mother's criminal record (2/1985 embezzlement + Columbia sentence vs. 1984 fraud arrest + breach of trust/forgery charges + 1996 burglary allegation) describe the same case, overlapping cases, or is one article's account incomplete? Needs a direct read of both full articles side by side (only summarized via WebFetch here) and, ideally, actual state court record lookup (Beaufort County / Richland County, SC) once available.
+- **OQ-15 (NEW):** Independently verify the epstein-data.com claims (1986 *Island Packet* article naming "Jimmy L. Atkins of Ohio" as owner of "Fort Mitchell Co."; Florida corporate filings for Betz College Inc. / Betz Business School Inc.) against primary sources before citing them in any published entity profile or story.
+- **OQ-16 (NEW):** Since Atkins died in 2003, is there any accessible probate record, obituary, or local Ohio/Kentucky press coverage from his lifetime that would independently corroborate (or complicate) the "blackmail scheme architect" characterization? He cannot be interviewed; documentary record is now the only path.
+
+### Recommended Next Steps (added to TODO.md)
+
+1. Human review + `user_confirmed` decision on publishing the existing Jim Atkins T3 entity (`c3a15e8e`) now that his biographical identity has independent press corroboration, while the assault allegation itself remains uncorroborated. This needs a corpus-connected session (entity-enricher) to action — DB was not touched this session.
+2. Once corpus access is restored: search the corpus for "Ohio College of Business and Technology," "Harbour Realty," "Wexford Plantation," and "Betz College" to see if any of these terms appear anywhere in the 2.9M-page corpus (would be a major independent cross-corroboration if they do).
+3. Consider this thread's Jim Atkins material, combined with the Post and Courier reporting, as "Ready to Write" story material for `docs/STORY_QUEUE.md` — angle: "the man the FBI could never find" / independent journalism succeeding where the corpus search stalled. Not drafted this session (kept scope to verification + documentation).
+

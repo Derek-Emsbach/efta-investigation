@@ -321,6 +321,16 @@
 - [x] **Watchlist additions**: Todd Blanche (P2, blocking unredacted release), Peter Nygard (P3, parallel case), Bella Klein (P3, Iran wire reference).
 - [x] **Totals**: 3 entities published (55→58), 16+ investigation events, 6 public events, 3 watchlist suspects, 1 investigation thread. MCP server now 59 tools.
 
+### Publication Polish (Session — 2026-09-10)
+
+- [x] **Hero images added to 6 stories** — the-mar-a-lago-connection, two-more-interactions, fresh-meat, the-intelligence-question, the-september-salon, the-white-house-counsel. All sourced from Wikimedia Commons with proper captions.
+- [x] **De-duplicated 3 reused hero images** — the-man-who-held-every-key, the-golden-handcuffs, the-heirs-with-the-most-to-hide now have unique, story-specific hero images replacing shared/generic ones.
+- [x] **Updated `updated_at` timestamps** on 9 modified stories to trigger "Updated" display on story cards.
+- [x] **Copyright year added to public footer** — dynamic year display in PublicFooter component.
+- [x] **"Updated [date]" badge on story cards** — `section-story-grid.tsx` and `story-grid.tsx` now show "Updated [relative date]" when `updated_at` differs from `published_at`.
+- [x] **Data queries updated** — homepage, stories page, and public APIs now include `updated_at` field in story queries.
+- [x] **Code committed to main** — pending push for Vercel deploy.
+
 ---
 
 ## Future Phases (Backlog)
@@ -667,6 +677,20 @@
 - [ ] **Congressional Monitor agent** — future: scheduled corpus + web search → `create_public_event` MCP. Needs cron scheduling.
 - [ ] **Connection Discoverer agent** — future: multi-entity co-occurrence + timeline overlap analysis → ranked connection suggestions.
 
+## Session Note — 2026-09-14 (background/unattended research session)
+
+**MCP corpus server successfully started this session** (run via `corepack pnpm dev` directly on Derek's Mac through the device bridge — `pnpm` itself isn't on PATH in the bridge's shell, but `corepack pnpm` works). Full corpus/concordance/Supabase access confirmed. Note for future unattended sessions: background processes started with `nohup ... & disown` do NOT survive between separate device_bash calls in this environment — each call is an isolated shell. Workaround used: `setsid nohup ... < /dev/null > log 2>&1 &` plus running the server-start + all queries needed against it inside a *single* device_bash call/timeout window, rather than assuming the server stays up across calls.
+
+**Jim Atkins entity (`c3a15e8e`, T3) enriched — publish decision still needs Derek.** With corpus access restored, re-ran the "Atkins" search (184 hits, zero matches, alternate spellings Adkins/Akins/Atkinson also zero) to confirm the corpus genuinely has no independent corroboration — consistent with the prior web-only session's finding. Updated the DB record directly via Supabase REST (service role key, read from `.env` in-shell — never surfaced to the assistant's own context):
+- Added `tier_justification` (previously null) citing EFTA02858481/EFTA02858491/EFTA00095751 and the corpus-negative search.
+- Appended the Post and Courier identification (Jimmy Lee Atkins, Ohio College of Business and Technology president, deceased 2003) to `bio` and `metadata.evidence_summary`, clearly separated from the original FD-302-sourced material.
+- Added aliases: "Jimmy Lee Atkins", "Jimmy L. Atkins".
+- Fixed `external_urls` to match the documented schema shape (`{"other": [...]}`) with both Post and Courier article URLs.
+- **Did NOT touch `profile_published`/`is_public`/`user_confirmed`** — per the hard gate, that decision stays with Derek. Also did NOT change `category` ("associate" doesn't match the 6 documented categories in `entity-enricher.md` but I didn't want to guess a reclassification without more context).
+- **New blocker found for publication readiness:** the entity's 3 linked `entity_documents` rows are weak — one is Interview #1 (EFTA01245620, which the excerpt itself notes doesn't mention Atkins), and two are fuzzy false-positive matches to "Jim Harkins" (a defense investigator, not Atkins). **The actual evidentiary documents — EFTA02858481 (Interview #2) and EFTA02858491 (Interview #3), the only two that actually name Atkins — are NOT in the `documents` table at all.** They exist in the corpus/citation record (cited in THREAD_17 and in the already-published "Two More Interactions" story) but haven't been ingested as `documents` rows, so they can't be properly linked via `entity_documents`. This means the entity currently fails the "3+ genuinely relevant documents linked" publish-readiness bar even setting aside the T3 confirmation question. **Needs:** either ingest EFTA02858481/91 into `documents` (if the pipeline can do a targeted single-document ingest) or manually create `documents` rows for them, then replace the two fuzzy "Jim Harkins" links with real links to those two.
+
+**Story drafted (not seeded):** "The Man the FBI Could Never Find" — `docs/stories/the-man-the-fbi-could-never-find.md`, section `trump`, ~1800 words, 5 citations (3 EFTA Bates + 2 Post and Courier). Per hard-stop instructions, **NOT added to `scripts/src/seed-publication.ts`** and **`pnpm seed:publication` NOT run**. StoryDef prepared in `docs/STORY_QUEUE.md` for whoever does the human read-through. Marked "Drafted — pending review" in the queue, not "Published."
+
 ### Trump Investigation Deep-Dive (2026-03-19)
 - [x] **Thread 17 created + updated** — FD-302 Protect Source: Hilton Head Victim, Trump Assault, Atkins Blackmail. Version 2.0: 13 primary documents, 4 interviews mapped, NTOC compilation, external corroboration (Rick James Oct 1981/July 1982, Trump Tower Feb 1983), 5 resolved + 8 open questions. Corroboration upgraded to Moderate.
 - [x] **Trump-Epstein Timeline created** — Comprehensive chronological document at `docs/investigation/data/TRUMP_EPSTEIN_TIMELINE.md`. Pre-1980 through 2026, cross-referenced with EFTA corpus evidence. Pattern match table (3 sources: oral sex → biting → striking). 15 key documents indexed.
@@ -684,5 +708,16 @@
 - [x] **Story 35 written** — "Two More Interactions" (gaps in the record). 3501.045 sub-document search completed: notes (-002, -004, -006) absent from corpus, 3 photograph stubs fully redacted, 2 additional Trump interactions permanently unrecorded. 8 citations, 2 entity links. Seeded.
 - [x] **Run `pnpm seed:publication`** — 35 stories, 479 citations, 177 entity links.
 - [x] **Brad Edwards enrichment + published** — T6 legal, bio rewritten (3 paras), evidence summary (7 bullets), 6 connections (new: Edwards→Trump legal_adversary), 128 docs linked. Published at `/entities/brad-edwards`. 66 entities total.
-- [ ] **Jim Atkins** — publish decision pending. No independent corpus corroboration. Name is phonetic.
-- [ ] **PACER verification** — Search for mother's federal embezzlement conviction, Columbia SC, ~1983-1986. Single most important remaining external verification.
+- [x] **Jim Atkins IDENTIFIED (2026-09-13, web verification session)** — Jimmy Lee Atkins, president of Ohio College of Business and Technology (Cincinnati); confirmed via *Post and Courier* investigative report (3/29/2026, Thompson & Black). Bought Hilton Head property (Wexford Plantation) 1985. Died 2003 (coronary disease). See `THREAD_17` v2.1 Update section for full sourcing. **Assault allegation itself still uncorroborated** — P&C: "No direct evidence has been uncovered supporting the assault claims." No DB changes made (MCP server unreachable this session — see Session Note below). **Publish decision now needs a corpus-connected session**: human + entity-enricher should decide whether the T3 entity (`c3a15e8e`) gets `user_confirmed` publication given the identity is now press-corroborated even though the crime allegation isn't.
+- [x] **PACER verification RESOLVED-BY-PROXY (2026-09-13)** — Direct PACER query wasn't possible (no case name/docket, no PACER account in this environment), but *Post and Courier*'s own reporting independently confirms the core of the mother's embezzlement case: $22K charge, restitution ordered, 2 years in prison in Columbia SC after falling behind on payments. **One correction to flag**: P&C describes this as a local/state charge ("local law enforcement"), not federal as the victim recalled to the FBI — noted as a discrepancy, not a refutation. A second P&C article describes a seemingly different set of charges against the mother (1984 fraud arrest, later breach of trust + 6 forgery counts, 1996 burglary allegation) that doesn't obviously reconcile with the embezzlement/Columbia account — flagged as new open question OQ-14 in THREAD_17.
+- [ ] **NEW (2026-09-13): Verify epstein-data.com's supplementary Jim Atkins claims** (1986 Island Packet article, Florida corporate filings for Betz College Inc.) against primary sources before using them in any entity profile or story — the aggregator may have confused his burial location (Fort Mitchell, KY) with a company name ("Fort Mitchell Co.").
+- [ ] **NEW (2026-09-13): Reconcile the two Post and Courier accounts** of the victim's mother's criminal record (OQ-14 in THREAD_17) — same case described two ways, or two different cases?
+- [ ] **NEW (2026-09-13): Story candidate** — Jim Atkins identification + Post and Courier corroboration is solid "Ready to Write" material (angle: independent journalism succeeding where corpus search stalled). Added to `docs/STORY_QUEUE.md` Ready to Write list; not drafted this session.
+
+---
+
+## Session Note — 2026-09-13 (background/unattended research session)
+
+**MCP corpus server could not be started.** `services/efta-mcp-server` runs via `tsx`/`esbuild`, but this session's sandboxed shell is `linux-arm64` while the repo's installed `node_modules` (esbuild's native binary) were built for `darwin-arm64` — classic cross-platform `node_modules` mismatch from a Mac-native install being accessed from a Linux execution context. `corepack pnpm dev` in `services/efta-mcp-server` fails immediately with esbuild's `TransformError`. **Did not attempt to fix by reinstalling** — reinstalling `node_modules` from this session's Linux shell would leave Linux-platform binaries in Derek's actual macOS project folder and likely break his normal local development. Left node_modules untouched. **Whoever picks this up locally on the Mac should just confirm `pnpm dev` still works there** (it should — the mismatch is an artifact of the sandboxed cross-platform bridge, not a real repo problem) — no action needed on Derek's own machine.
+
+Given no corpus/DB access, this session did external web-research verification instead (see `docs/investigation/threads/THREAD_17_FD302_Protect_Source_Trump_Hilton_Head.md` v2.1): resolved the two outstanding CRITICAL/HIGH open questions from the Trump/Hilton Head thread (Jim Atkins identity, mother's embezzlement conviction) using `WebSearch`/`WebFetch` against *Post and Courier* investigative reporting. No entities, connections, or documents were created/modified in the database — this is a documentation-only update. Everything actionable from this session is queued above under Trump Investigation Deep-Dive for whoever next has corpus access.

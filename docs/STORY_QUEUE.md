@@ -49,6 +49,7 @@
 
 | Pri | Suggested Title | Section | Source Material | Key Angle |
 |-----|-----------------|---------|-----------------|-----------|
+| 1 | The Man the FBI Could Never Find | trump | THREAD_17 v2.1 Update (2026-09-13) + Post and Courier (3/29/2026, Thompson & Black) | Corpus search for "Jim Atkins" turned up nothing (184 unrelated hits); independent journalism identified him in months as Jimmy Lee Atkins, a deceased Ohio for-profit college president, via property records and physical description — while the assault allegation against him remains uncorroborated by anyone. **DRAFTED — PENDING REVIEW (2026-09-14).** Markdown at `docs/stories/the-man-the-fbi-could-never-find.md` (~1800 words). NOT seeded — StoryDef below needs a human read-through, then append to `scripts/src/seed-publication.ts` and run `pnpm --filter @efta/scripts seed:publication`. |
 | ~~1~~ | ~~The Scheduler~~ | ~~the-network~~ | ~~LESLEY_GROFF_Analysis.md~~ | **PUBLISHED** (Story 7, 2026-03-12) |
 | ~~2~~ | ~~The Billion-Dollar Blind Eye~~ | ~~follow-the-money~~ | ~~LEON_BLACK/Analysis.md~~ | **PUBLISHED** (Story 8, 2026-03-12) |
 | ~~3~~ | ~~The Recruitment Trip~~ | ~~the-operation~~ | ~~DS12_EXPANSION (Cape Town)~~ | **PUBLISHED** (Story 9, 2026-03-12) |
@@ -65,6 +66,88 @@
 | ~~NPA co-conspirators (Kellen, Ross)~~ | ~~Only Groff deeply analyzed~~ | **PUBLISHED** (Story 15, 2026-03-14) |
 | ~~Financial shell companies~~ | ~~Jeepers Inc, other entities not fully mapped~~ | **PUBLISHED** (Story 17, 2026-03-14) |
 | ~~Jean-Luc Brunel / modeling pipeline~~ | ~~Entity exists but no deep document analysis~~ | **PUBLISHED** (Story 16, 2026-03-14) |
+
+---
+
+## Drafted — Pending Review
+
+### "The Man the FBI Could Never Find" (2026-09-14)
+
+Markdown: `docs/stories/the-man-the-fbi-could-never-find.md`. Section: `trump`. ~1800 words. NOT in seed script yet — human read-through required first (per session hard-stop: draft only, never seed). Copy the StoryDef below into the `STORIES` array in `scripts/src/seed-publication.ts` once approved, then run `pnpm --filter @efta/scripts seed:publication`.
+
+```ts
+{
+  slug: 'the-man-the-fbi-could-never-find',
+  title: 'The Man the FBI Could Never Find',
+  deck: 'A federal witness told the FBI in 2019 about a co-abuser and blackmailer she knew only as "Atkins" — a name so uncertain agents flagged it as phonetic. A search of 3.5 million pages of DOJ disclosure turns up 184 hits for "Atkins" and not one match. A newspaper found him in months, using property records instead of a document corpus: Jimmy Lee Atkins, a deceased Ohio for-profit college president. His identity is now confirmed. The assault allegation against him is not.',
+  section: 'trump' as const,
+  file: 'the-man-the-fbi-could-never-find.md',
+  byline: 'EFTA Investigation Team',
+  reading_time_minutes: 9,
+  is_featured: false,
+  case_file_slug: 'trump-epstein-connection',
+  published_at: new Date().toISOString(),
+  hero_image_url: null,
+  hero_image_caption: null,
+  metadata: {
+    source_documents: [
+      'EFTA02858481 (FD-302 Interview #2, 3501.045-003, 08/07/2019)',
+      'EFTA02858491 (FD-302 Interview #3, 3501.045-005, 08/20/2019)',
+      'EFTA01245620 (FD-302 Interview #1, 3501.045-001, 07/24/2019)',
+      'EFTA00095751 (Production manifest, 3501.045 series index)',
+    ],
+    external_sources: [
+      'Marilyn W. Thompson & Mitchell Black, "Three years on Hilton Head leave trail of mysteries in alleged Jeffrey Epstein affair," The Post and Courier, 3/29/2026',
+      '"An Epstein victim\'s rocky path from Hilton Head to the West Coast," The Post and Courier',
+    ],
+    case_number: '31E-NY-3027571',
+    related_entity: 'Jim Atkins (c3a15e8e, T3, not yet published)',
+  },
+  entities: [
+    { name: 'Jeffrey Epstein', mention_count: 1, is_primary: false },
+    { name: 'Donald Trump', mention_count: 1, is_primary: false },
+  ],
+  citations: [
+    {
+      number: 1,
+      bates_number: 'EFTA02858481',
+      description:
+        'FD-302 Interview #2 (3501.045-003, 08/07/2019): Atkins introduced as Ohio university official/associate of Epstein; assaulted victim on multiple occasions; helped alter mother\'s real estate books then reported her to the Real Estate Commission himself.',
+      page_reference: 'pp. 2-3',
+    },
+    {
+      number: 2,
+      bates_number: 'EFTA02858491',
+      description:
+        'FD-302 Interview #3 (3501.045-005, 08/20/2019): Confirms mother\'s ~2-year imprisonment in Columbia, SC. Records Atkins\'s response when victim called seeking help: "I don\'t give a shit if you end up in the gutter. Don\'t ever contact me again. Your mother knows what will happen."',
+      page_reference: 'p. 1',
+    },
+    {
+      number: 3,
+      bates_number: 'EFTA00095751',
+      description:
+        'Production manifest, 3501.045 series index — confirms the full sub-document series and the FBI\'s own repeated phonetic-spelling caveat on "Atkins."',
+      page_reference: 'p. 7',
+    },
+    {
+      number: 4,
+      bates_number: null,
+      description:
+        'Marilyn W. Thompson & Mitchell Black, "Three years on Hilton Head leave trail of mysteries in alleged Jeffrey Epstein affair," The Post and Courier, 3/29/2026 — https://www.postandcourier.com/news/hilton-head-sc-jeffrey-epstein-files-jimmy-atkins/article_817ad76a-a297-46ca-a41b-439aaa5438c5.html. Identifies Jim Atkins as Jimmy Lee Atkins; Ohio College of Business and Technology president; Wexford Plantation property purchase (1985); physical description match; death 2003; states no direct evidence supports the assault claims.',
+      page_reference: 'n/a (web)',
+    },
+    {
+      number: 5,
+      bates_number: null,
+      description:
+        '"An Epstein victim\'s rocky path from Hilton Head to the West Coast," The Post and Courier — https://www.postandcourier.com/news/special_reports/south-carolina-epstein-hilton-head/article_ea4c66c4-6336-4f46-a4e2-9b0f6a704116.html. Independently confirms mother\'s embezzlement/restitution/Columbia SC imprisonment; describes it as a local/state charge rather than federal.',
+      page_reference: 'n/a (web)',
+    },
+  ],
+},
+```
+
+**Before seeding:** confirm the entity/document citation conventions above match how `seed-publication.ts` actually handles a `bates_number: null` citation (this is the first story here citing non-EFTA press sources — prior stories only cite EFTA Bates numbers). If the seed script or `story_citations` display logic assumes a non-null `bates_number`, adjust the citation `description` to carry the full attribution instead and confirm the public story page still renders it sensibly.
 
 ---
 
