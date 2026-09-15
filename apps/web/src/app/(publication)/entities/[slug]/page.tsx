@@ -158,10 +158,17 @@ export default async function EntityProfilePage({
   ])
 
   // Merge connections
-  const connections = [
+  // Publication guard: entity_connections is not filtered by the queries above,
+  // so an unpublished entity would otherwise surface by name on a published
+  // page. Drop any connection whose far end is missing or unpublished.
+  // Added 2026-07-31 — records deliberately withheld (private individuals,
+  // unresolved-identity records) were reachable this way.
+  const connections = ([
     ...(connectionsAsAResult.data ?? []),
     ...(connectionsAsBResult.data ?? []),
-  ] as (EntityConnection & { connected_entity: Entity })[]
+  ] as (EntityConnection & { connected_entity: Entity | null })[]).filter(
+    (c) => c.connected_entity?.profile_published === true,
+  ) as (EntityConnection & { connected_entity: Entity })[]
 
   // Sort events by date
   const events = ((eventsResult.data ?? []) as (EntityEvent & { event: Event })[]).sort(

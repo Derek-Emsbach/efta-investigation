@@ -12,6 +12,34 @@ const ADMIN_PATHS = [
   '/dashboard/moderation',
 ]
 
+// ---------------------------------------------------------------------------
+// Internal API surface — authentication required.
+//
+// These routes existed before /api/public/* and return UNFILTERED database
+// rows: every entity regardless of profile_published, including records that
+// are deliberately unpublished (private individuals, unresolved-identity
+// records, and entities withheld pending review). The page-level publication
+// gate does not apply to them.
+//
+// Every caller in this codebase lives under /dashboard, which already requires
+// auth, so requiring auth here changes no legitimate behaviour. Public traffic
+// must use /api/public/*, which filters on profile_published.
+//
+// Added 2026-07-31 after an audit found /api/network and /api/entities served
+// the complete entity table — including `metadata` — to unauthenticated callers.
+// ---------------------------------------------------------------------------
+const PROTECTED_API_PREFIXES = [
+  '/api/entities',
+  '/api/network',
+  '/api/search',
+  '/api/stats',
+  '/api/review',
+  '/api/admin',
+  '/api/assistant',
+  '/api/documents',
+  '/api/events',
+]
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -41,6 +69,15 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
+
+  // Internal APIs: 401 JSON rather than a redirect, so fetch() callers get a
+  // usable error instead of an HTML login page.
+  if (!user && PROTECTED_API_PREFIXES.some((p) => pathname.startsWith(p))) {
+    return NextResponse.json(
+      { error: 'Authentication required. Public data is available under /api/public/*.' },
+      { status: 401 },
+    )
+  }
 
   // /dashboard/* and /account/* require authentication
   const requiresAuth =
