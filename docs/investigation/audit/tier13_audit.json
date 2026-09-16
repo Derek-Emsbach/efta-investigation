@@ -1,0 +1,657 @@
+[
+ {
+  "name": "Ghislaine Maxwell",
+  "db_tier": 1,
+  "db_category": "abuser",
+  "db_published": true,
+  "actual_legal_status": "CONVICTED. United States v. Maxwell, S2 20-cr-330 (SDNY). Jury verdict 29 Dec 2021, guilty on counts 1, 3, 4, 5, 6; acquitted count 2. Sentenced 28 Jun 2022 to 240 months. 2d Cir. affirmed; Supreme Court denied certiorari 6 Oct 2025. A commutation application to the Trump administration was reported Nov 2025; no clemency granted as of Aug 2026. She is the only person criminally convicted in connection with the Epstein network.",
+  "tier_correct": true,
+  "recommended_tier": 1,
+  "category_correct": true,
+  "recommended_category": "abuser",
+  "uncited_claims": [
+   "'internal SDNY documents identify Maxwell as primary target alongside \"[redacted]\" and Lesley Groff' - no EFTA number given",
+   "'Photograph evidence - Maxwell photographed with Giuffre and Prince Andrew at Maxwell's London townhouse (2001)' - no source",
+   "'Financial records - payments from Epstein entities, property transfers, trust beneficiary designations' - no source; note the $10M bequest appears only in the 8 Aug 2019 instrument",
+   "'Epstein contact directory - Maxwell listed with extensive contact information' - no source",
+   "'keys to all Epstein properties' - no source",
+   "source_docs field is empty [] despite eight enumerated evidence items"
+  ],
+  "false_or_unsupportable_statements": [
+   "'Currently incarcerated at FCI Tallahassee (BOP #02879-509)' - FALSE as of mid-2026. Maxwell was transferred to FPC Bryan, a minimum-security federal prison camp in Bryan, Texas, on 1 Aug 2025.",
+   "'Maxwell was the ONLY Epstein associate criminally charged post-death' - false as written. Jean-Luc Brunel was arrested and charged in France in Dec 2020; in 2026 Peter Mandelson and Andrew Mountbatten-Windsor were arrested in the UK and Mona Juul, Terje Rod-Larsen and Thorbjorn Jagland were charged in Norway. The defensible claim is that she is the only person charged by US federal prosecutors post-death.",
+   "Record text is truncated mid-sentence ('referencing additional investigat')"
+  ],
+  "npa_error": false,
+  "safe_to_publish": true,
+  "required_corrections": [
+   "Correct the custody location to FPC Bryan, Texas (transferred 1 Aug 2025); verify BOP register number against the current BOP inmate locator.",
+   "Add the 6 Oct 2025 Supreme Court cert denial and the pending commutation application.",
+   "Narrow the 'ONLY associate charged' claim to 'only person charged by US federal prosecutors after Epstein's death'.",
+   "Populate source_docs and attach EFTA numbers with page references to items 3, 6, 7, 8.",
+   "Restore the truncated final paragraph."
+  ],
+  "reasoning": "This is the one record in the set whose Tier 1 / abuser classification is unambiguously correct, because Maxwell is actually convicted. The defects are currency and sourcing, not classification. The custody statement is factually wrong as of mid-2026 and the 'only associate charged' line has been overtaken by the 2026 arrests and charges in the UK, France and Norway. Publication risk is minimal given a final conviction, so it stays safe to publish, but the two factual errors should be fixed."
+ },
+ {
+  "name": "Glenn Dubin",
+  "db_tier": 1,
+  "db_category": "alleged_abuser",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED, NEVER CONVICTED. No criminal charge in any jurisdiction. Named by Virginia Giuffre in a 2016 deposition (unsealed 2019) as one of the men Maxwell directed her to have sex with; the Dubins' former household manager gave testimony about a teenage girl at their home. Dubin has consistently and explicitly denied the allegations and his spokesman stated he supplied flight records to disprove them. USVI announced a subpoena in Sept 2020 in the civil investigation; no charges resulted. He retired from Highbridge in Jan 2020.",
+  "tier_correct": false,
+  "recommended_tier": 3,
+  "category_correct": false,
+  "recommended_category": "alleged_abuser (Tier 3, allegation denied)",
+  "uncited_claims": [
+   "source_docs field is empty [] even though the body cites EFTA01266403",
+   "'all four major properties (NYC, Little St. James, Zorro Ranch, Paris)' - no page reference",
+   "'$20M operating funds' - no page reference",
+   "'100% residuary estate' - no page reference",
+   "'~$500M+ estate' valuation - no source",
+   "The record contains NO citation, and in fact no mention at all, of the Giuffre allegation that is the only actual evidentiary basis for the 'alleged_abuser' label"
+  ],
+  "false_or_unsupportable_statements": [
+   "'Daughter Celina Edith Dubin is primary beneficiary of the entire Epstein 2014 Trust' stated in the present tense - materially misleading. Public reporting on the estate documents shows Celina Dubin was named in the 2014 trust, removed in 2015, reinstated Jan 2019, made largest beneficiary by the 4 Feb 2019 amendment, and then removed entirely from the instruments signed 8 Aug 2019, two days before Epstein's death. The properties went to Karyna Shuliak and 43 pro rata beneficiaries. The record presents a superseded instrument as if operative.",
+   "The property list and dollar figures conflict with public reporting, which describes Zorro Ranch, Little St. James and Great St. James plus a $10M operating fund (approx. $60M+), not NYC and Paris plus $20M and a $500M+ residuary.",
+   "'The testamentary bequest ... demonstrates a relationship far deeper than social acquaintance' - this is the record's own inference, and it is the SOLE stated basis for a Tier 1 'alleged_abuser' classification. An estate document naming a third party's daughter is not evidence that the father abused anyone."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Downgrade to Tier 3. Dubin has never been charged; Tier 1 on this project's own scale means convicted or charged.",
+   "Either cite the Giuffre 2016 deposition allegation (with the unsealing date) as the basis for 'alleged_abuser', or drop the category to 'associate'. As written the record labels him an alleged abuser on evidence that contains no abuse allegation.",
+   "Add Dubin's explicit denial and the flight-records rebuttal in the record body, adjacent to any allegation.",
+   "Correct the trust narrative: state the 2014 designation was superseded and Celina Dubin was removed from the 8 Aug 2019 instruments.",
+   "Reconcile or remove the property list, the $20M figure and the '$500M+' valuation, or cite EFTA01266403 by page.",
+   "UNPUBLISH until corrected."
+  ],
+  "reasoning": "This is the textbook version of the failure mode the prior audit found: a person filed at Tier 1 as an alleged abuser on the strength of a document that contains no abuse allegation whatsoever. The entire evidence_summary is an estate-planning fact plus an inference the author drew from it. Compounding this, the estate fact itself is stated in a superseded form - Celina Dubin was removed from the operative instruments two days before Epstein died, which the record omits. Dubin is a living billionaire who has publicly and specifically denied the underlying allegation; publishing a Tier 1 'alleged_abuser' record with no cited allegation and no denial is the single clearest defamation exposure among the living non-charged subjects."
+ },
+ {
+  "name": "Jean-Luc Brunel",
+  "db_tier": 1,
+  "db_category": "abuser",
+  "db_published": true,
+  "actual_legal_status": "CHARGED, NEVER TRIED, DECEASED. Arrested in France Dec 2020 and placed under formal investigation (mise en examen) for rape of minors over 15 and sexual harassment; later further investigated for trafficking of minors for sexual exploitation. Found dead in La Sante prison, Paris, 19 Feb 2022, ruled suicide. The proceedings were extinguished by his death; he was never tried or convicted and the presumption of innocence was never displaced.",
+  "tier_correct": true,
+  "recommended_tier": 1,
+  "category_correct": false,
+  "recommended_category": "alleged_abuser (charged, died before trial)",
+  "uncited_claims": [
+   "'CBS 60 Minutes 1988: nearly two dozen models reported sexual assault' - no episode date, no link, no EFTA number; media-only claim presented alongside primary sources",
+   "'Arrested Dec 2020, charged with rape of minors and trafficking of minors' - no source cited for the charge itself",
+   "source_docs lists only EFTA02731662, but the body cites nine other EFTA numbers that are not in the field",
+   "Items (1), (7), (8), (9) carry EFTA numbers but no page references"
+  ],
+  "false_or_unsupportable_statements": [
+   "The flat category 'abuser' asserts as established fact a matter that was never adjudicated. Brunel died before trial; French law and US practice both treat him as un-convicted.",
+   "Item (5) attributes to Virginia Giuffre a quote 'directed by Maxwell to engage in sexual activities with... Jean-Luc Brunel' via EFTA00263917 with no page reference; the ellipsis conceals what else was in the list."
+  ],
+  "npa_error": false,
+  "safe_to_publish": true,
+  "required_corrections": [
+   "Change category to 'alleged_abuser' or annotate 'abuser' with 'charged, died before trial, never convicted'. Tier 1 is correct because he was charged.",
+   "Add page references to items 1, 5, 7, 8, 9 and move all cited EFTA numbers into source_docs.",
+   "Cite or remove the 1988 60 Minutes claim.",
+   "Add the explicit statement that the French proceedings terminated on his death without adjudication."
+  ],
+  "reasoning": "Tier 1 is correctly assigned here because Brunel was in fact criminally charged, which is exactly what the project's scale requires. The problem is the category: 'abuser' states as fact something no tribunal ever found. He is deceased, which sharply reduces legal exposure, so the record can remain published, but the sourcing is loose - ten EFTA numbers in the body and one in source_docs, most without page references, which is the same citation defect the prior audit flagged across the sibling records."
+ },
+ {
+  "name": "Jeffrey Epstein",
+  "db_tier": 1,
+  "db_category": "abuser",
+  "db_published": true,
+  "actual_legal_status": "CONVICTED (state, 2008) and CHARGED (federal, 2019), DECEASED. Pleaded guilty June 2008 in Florida state court to solicitation of prostitution and procuring a minor for prostitution; 18-month sentence, served approx. 13 months with work release. Indicted SDNY July 2019 (19 Cr. 490 (RMB)) on sex trafficking of minors and conspiracy covering 2002-2005; indictment dismissed on his death 10 Aug 2019.",
+  "tier_correct": true,
+  "recommended_tier": 1,
+  "category_correct": true,
+  "recommended_category": "abuser",
+  "uncited_claims": [
+   "source_docs field is empty [] for the central subject of the entire investigation",
+   "'Flight logs - Boeing 727 and Gulfstream records documenting hundreds of flights' - no EFTA number",
+   "'Contact directory - 1,571 names ... Multiple victim names marked with circled annotations' - no source",
+   "'Property portfolio ... Each location documented as abuse site' - no source",
+   "'$62.5M USVI settlement' - no source (and this was Leon Black's settlement with USVI, not an Epstein estate item)"
+  ],
+  "false_or_unsupportable_statements": [
+   "'Victim journals - Virginia Giuffre's handwritten journals naming 30+ men ... Forensically authenticated (gel pen analysis, contemporaneous dating).' This is false on two counts. (a) MISATTRIBUTION: the Dataset 12 journals are the Doe v. Black plaintiff's, not Virginia Giuffre's. (b) FALSE AUTHENTICATION: the court-appointed examiner could not date the entries and Judge Rakoff denied the authentication claim on 31 Jul 2024; on 24 Apr 2026 Judge Jessica Clarke (SDNY, Doe v. Black, 1:23-cv-06418) found the plaintiff FALSIFIED sonogram images inside those journals, precluded the falsified portions from trial and ordered a jury instruction that portions were falsified. 'Contemporaneous dating' is the precise finding the courts rejected.",
+   "'$158M to Leon Black' listed under Epstein's financial records reverses the direction of payment - Black paid Epstein approximately $158M, not the other way round.",
+   "'2007 NPA - unprecedented blanket immunity to unnamed co-conspirators' omits the dispositive limitation: the co-conspirator clause named four women (Kellen, Ross, Groff, Marcinkova) and bound only the Southern District of Florida. It was never national.",
+   "Record text is truncated mid-sentence ('neither ')"
+  ],
+  "npa_error": true,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "DELETE the 'forensically authenticated' claim entirely, or replace it with the actual procedural history: examiner could not date entries; Rakoff denied the claim 31 Jul 2024; Clarke found falsification 24 Apr 2026.",
+   "Reattribute the Dataset 12 journals from Virginia Giuffre to the Doe v. Black plaintiff.",
+   "Correct '$158M to Leon Black' to 'from Leon Black'; remove or reattribute the $62.5M USVI figure.",
+   "Add the SDFL-only limitation and the four named women to the NPA description; delete 'blanket'.",
+   "Populate source_docs; add EFTA numbers to items 3, 4, 6.",
+   "Restore the truncated text.",
+   "UNPUBLISH until the journal and NPA statements are corrected - this record is the upstream source of the same errors in every downstream profile."
+  ],
+  "reasoning": "Epstein's own Tier 1 / abuser classification is obviously correct and carries no defamation risk since he is dead and was convicted. But this record is the propagation point for the two errors that contaminate the whole database: it asserts the journals are Giuffre's and are forensically authenticated, both of which the courts have specifically rejected, most recently and most damagingly in Judge Clarke's April 2026 falsification finding. It also restates the NPA as 'blanket immunity to unnamed co-conspirators' with no district limitation, which is the framing that lets downstream records wrongly extend NPA immunity to people it never covered. Fixing this record is a prerequisite to fixing the others."
+ },
+ {
+  "name": "Jes Staley",
+  "db_tier": 1,
+  "db_category": "abuser",
+  "db_published": true,
+  "actual_legal_status": "NEVER CRIMINALLY CHARGED anywhere. Regulatory only: the FCA banned him from senior UK financial services roles and fined him; on 26 Jun 2025 the Upper Tribunal UPHELD the prohibition and recalculated the penalty to approx. GBP 1.1m, finding he acted RECKLESSLY and with a lack of integrity in approving a letter that misrepresented the closeness of his relationship with Epstein. The Tribunal made NO finding of sexual abuse or any criminal conduct. Civil: JPMorgan filed a third-party complaint against him in 2023 (settled Sept 2023, terms undisclosed, no admission). A Jane Doe alleged in a March 2023 deposition that he sexually assaulted her; Staley has consistently and repeatedly denied it; the allegation was never tried or adjudicated. He testified voluntarily before the House Oversight Committee on 23 Jul 2026 - an interview, not a charge.",
+  "tier_correct": false,
+  "recommended_tier": 3,
+  "category_correct": false,
+  "recommended_category": "financial_enabler / associate",
+  "uncited_claims": [
+   "The ENTIRE evidence_summary is uncited relative to its own source_docs: the body cites EFTA01266403 while source_docs lists EFTA02731662 and EFTA02731737 - none of which match",
+   "'Signed as trustee of Epstein 2014 Trust under oath in New York, May 2015' - no page reference",
+   "'Entitled to $250,000/year trustee compensation' - no page reference",
+   "'Broad fiduciary powers over all Epstein trust assets' - no page reference",
+   "'No resignation document found in 1.38M-document EFTA corpus' - an argument from absence, with no search methodology stated",
+   "'UK FCA/PRA regulations require disclosure of material fiduciary relationships' - no regulation cited"
+  ],
+  "false_or_unsupportable_statements": [
+   "The category 'abuser' is asserted with ZERO supporting content. The record's entire body concerns a trusteeship and a regulatory disclosure argument. There is not one word of abuse allegation in it. This is a bare defamatory label attached to a living, litigious individual who has never been charged with anything and who has publicly denied the one civil allegation ever made against him.",
+   "Tier 1 is asserted for a man who has never been charged or convicted of any offence in any jurisdiction. The only adverse adjudication against him is a UK regulatory finding about the honesty of a letter.",
+   "The source_docs / body citation mismatch means no reader can verify a single claim in the record.",
+   "The record implies regulatory wrongdoing ('UK FCA/PRA regulations require disclosure') while omitting that the actual FCA/Upper Tribunal proceeding was about misdescribing his relationship with Epstein, not about an undisclosed trusteeship - a materially different finding."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "IMMEDIATELY change category from 'abuser'. Nothing in this record supports it.",
+   "Downgrade Tier 1 to Tier 3 at most. Never charged criminally.",
+   "Fix the citation mismatch: either move EFTA01266403 into source_docs or correct the body.",
+   "If the Jane Doe deposition allegation is to be relied on, state it explicitly with its source, its unadjudicated status, and Staley's denial - do not smuggle 'abuser' in as a bare category.",
+   "State the actual Upper Tribunal finding (26 Jun 2025, prohibition upheld, approx. GBP 1.1m, recklessness and lack of integrity regarding statements to the regulator) and state expressly that no sexual-misconduct or criminal finding was made.",
+   "Add the 23 Jul 2026 House Oversight appearance.",
+   "UNPUBLISH until corrected."
+  ],
+  "reasoning": "Staley is the most acute live-defamation risk in the set. He is labelled a Tier 1 'abuser' - the top of the scale, reserved for the convicted or charged - on a record whose entire text is about a trust document and a regulatory disclosure theory, containing no abuse allegation at all. What he was actually found to have done was found by the UK Upper Tribunal in June 2025, in a regulatory forum, and it was recklessly approving a letter that downplayed his friendship with Epstein. No criminal charge, ever, anywhere. The one sexual-assault allegation against him sits in an unadjudicated civil deposition that he denies and that settled without admission. The record's own source_docs do not even match the document it quotes."
+ },
+ {
+  "name": "Leon Black",
+  "db_tier": 1,
+  "db_category": "abuser",
+  "db_published": true,
+  "actual_legal_status": "NEVER CRIMINALLY CHARGED. SDNY reviewed and declined; DANY investigated 2021-2024 without charging. Civil: Ganieva v. Black - Black prevailed on the defamation appeal. Doe v. Black, 1:23-cv-06418 (SDNY) remains PENDING before Judge Jessica G. L. Clarke; on 23-24 Apr 2026 Judge Clarke issued a 76-page sanctions opinion finding the plaintiff FALSIFIED sonogram images in the personal journals her amended complaint relies on, and that her former counsel Jeanne Christensen of Wigdor LLP 'lied repeatedly' to the court and directed the plaintiff to destroy a relevant social media account. Clarke DENIED case-terminating sanctions - the rape claim proceeds to trial - but precluded the falsified journal material, ordered a jury instruction that portions were falsified by the plaintiff, permitted a spoliation presentation, and ordered Christensen and Wigdor to pay Black's fees. Separately settled with USVI for $62.5m with no admission of liability.",
+  "tier_correct": false,
+  "recommended_tier": 3,
+  "category_correct": false,
+  "recommended_category": "alleged_abuser (civil claim pending, allegations denied)",
+  "uncited_claims": [
+   "source_docs field is empty [] - not a single citation for any claim in the record",
+   "'3+ victims with corroborating accounts of identical signature sexual violence' - no source",
+   "'Bank records: $15K-$167K wire payments from Leon J. Black, J. Black Trust, E Trust (through 2021)' - no source",
+   "'Text messages between Black and victim' - no source",
+   "'Medical records (OB-GYN 2011, 2019 documenting sexual assault injuries)' - no source",
+   "'Video evidence reported' - no source, and 'reported' is not an evidentiary standard",
+   "'FBI 302s' - no EFTA number",
+   "'Minor victim (16yo) trafficked from Virginia to NYC, rectal tearing, denied medical care' - no source",
+   "'original AUSA never wrote formal assessment (admitted May 2023)' - no source",
+   "'CRU formal decline Jul 2023, DTC Aug 2023' - no source"
+  ],
+  "false_or_unsupportable_statements": [
+   "'Forensically authenticated handwritten journals (gel pen, no fabrication - court-ordered exam by Judge Rakoff).' Every element of this is now contradicted. The court-appointed examiner could not date the entries; Judge Rakoff denied the authentication claim 31 Jul 2024; and on 24 Apr 2026 Judge Clarke found the plaintiff FALSIFIED sonogram images inside these very journals and ordered them partly precluded with a falsification jury instruction. The parenthetical 'no fabrication' is now the exact opposite of a judicial finding on the record.",
+   "The category 'abuser', unqualified, for a man never criminally charged, whose sole live claim is an unadjudicated civil suit in which the judge has just found the plaintiff falsified supporting evidence.",
+   "'not_investigated' as the status field is contradicted by the record's own next sentence describing an SDNY review, a formal decline and a DANY investigation.",
+   "'Senate Finance Committee investigation into ... $1B+ estate tax avoidance scheme' stated as fact with no citation."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "DELETE the 'forensically authenticated ... no fabrication' sentence. It is the single most dangerous statement in the database.",
+   "Add Judge Clarke's 24 Apr 2026 findings in full: falsified sonograms, preclusion, falsification jury instruction, spoliation, Wigdor/Christensen sanctions, AND that case-terminating sanctions were denied and the claim proceeds.",
+   "Downgrade Tier 1 to Tier 3; change category to 'alleged_abuser' with 'civil, unadjudicated, denied'.",
+   "Correct the status field from 'not_investigated' - he was investigated by SDNY and DANY and not charged.",
+   "Attach a source to every one of the ten uncited factual assertions or delete them.",
+   "Add Black's denials and the Ganieva defamation appeal outcome in his favour.",
+   "Note the $62.5m USVI settlement contained no admission of liability.",
+   "UNPUBLISH immediately."
+  ],
+  "reasoning": "This record asserts as forensically established the exact proposition a federal judge rejected three months ago. Judge Clarke's April 2026 opinion found the Doe v. Black plaintiff falsified sonogram images inside the journals this record calls fabrication-free, sanctioned her counsel for lying to the court, and ordered the jury be told portions were falsified. The record also carries ten separate grave factual allegations - medical records, video evidence, a 16-year-old trafficked with rectal tearing - with an empty source_docs field and not one citation. Black has never been criminally charged and prevailed on the Ganieva appeal. A published Tier 1 'abuser' record built on judicially-discredited evidence against a living billionaire with active counsel is the highest-consequence item in this audit."
+ },
+ {
+  "name": "Adriana Ross",
+  "db_tier": 2,
+  "db_category": "operational",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED, NEVER CONVICTED. Named as one of four potential co-conspirators in the co-conspirator clause of the 2007 Non-Prosecution Agreement, which bound only the Southern District of Florida. Invoked the Fifth Amendment in civil deposition. Named in civil filings and subpoenas; no publicly reported adverse civil judgment. No criminal charge in any jurisdiction as of Aug 2026.",
+  "tier_correct": true,
+  "recommended_tier": 2,
+  "category_correct": true,
+  "recommended_category": "operational (NPA-named co-conspirator, never charged)",
+  "uncited_claims": [
+   "source_docs field is empty [] - every claim in this record is uncited",
+   "'organized predatory sessions per court filings' - no filing identified, no case, no docket, no quote",
+   "'flight logs with Clinton' - no source",
+   "'invoked 5th Amendment when questioned about Prince Andrew' - no deposition date or case cited",
+   "'lived at 66th St building' - no source",
+   "'recruitment organizer' - no source",
+   "'Polish origin connects to Eastern European recruitment pipeline' - no source; this is an inference, not evidence",
+   "'DS9 emails; flight logs; Polish recruitment pipeline' cross-references name no documents"
+  ],
+  "false_or_unsupportable_statements": [
+   "'organized predatory sessions per court filings' - a serious criminal characterisation of a living, never-charged person with no identified filing. Unsupportable as written.",
+   "'Polish origin connects to Eastern European recruitment pipeline' - reasoning from nationality to criminal role. This is inference dressed as evidence and should not appear in a published record.",
+   "'Investigation Notes: ... Should be Tier 2 entity' - unedited internal drafting note left in a published field."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Add the SDFL-only limitation to the NPA reference; the co-conspirator clause named exactly four women and bound only the Southern District of Florida.",
+   "Cite the specific court filing behind 'organized predatory sessions' or delete the phrase.",
+   "Cite the deposition (case, date) for the Fifth Amendment invocation.",
+   "Delete the nationality-to-pipeline inference.",
+   "Strip the internal drafting note from the published field.",
+   "State expressly that she has never been charged.",
+   "UNPUBLISH until at least the criminal-characterisation claims are sourced."
+  ],
+  "reasoning": "Tier 2 and 'operational' are correct - she genuinely is one of the four women named in the NPA co-conspirator clause, so the NPA claim here is legitimate. The failure is sourcing: source_docs is empty and the record makes a specific criminal accusation, 'organized predatory sessions', attributed vaguely to 'court filings' that are never identified. It also reasons from her Polish nationality to a trafficking pipeline role, which is not evidence. She is alive and has never been charged, so a published record needs every criminal characterisation to be traceable to a document."
+ },
+ {
+  "name": "Lesley Groff",
+  "db_tier": 2,
+  "db_category": "staff",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED, NEVER CONVICTED. One of the four women named in the 2007 NPA co-conspirator clause (SDFL only). Interviewed by FBI in the original investigation; reverse proffer 18 Jul 2019; formal proffer agreement 23 Jul 2021. SDNY took the position the NPA did not bind it, and still did not charge her. Named in civil suits including the Araoz matter, which was discontinued by agreement with the Epstein estate; her attorneys asserted she made no settlement contribution. No criminal charge as of Aug 2026.",
+  "tier_correct": true,
+  "recommended_tier": 2,
+  "category_correct": true,
+  "recommended_category": "staff / operational (NPA-named co-conspirator, never charged)",
+  "uncited_claims": [
+   "source_docs field is empty [] even though the body carries twelve EFTA numbers with page references",
+   "'Attorney: Michael Bachner' - no source",
+   "'CORPUS FOOTPRINT: 153,379 documents / 167,873 pages across name variants' - no methodology stated for the count"
+  ],
+  "false_or_unsupportable_statements": [
+   "'NPA IMMUNITY: Named as one of four co-conspirators in 2007 NPA' is correct on the facts but omits that the agreement bound only the Southern District of Florida - the scope limitation that explains why SDNY was free to proceed against her and why the record's own next sentence is true.",
+   "No statement anywhere in the record that Groff has never been charged. A reader encountering the proffer agreements and the victim testimony could reasonably infer a prosecution occurred."
+  ],
+  "npa_error": false,
+  "safe_to_publish": true,
+  "required_corrections": [
+   "Add the SDFL-only scope limitation to the NPA paragraph.",
+   "Add an explicit legal-status line: never charged, never convicted, as of Aug 2026.",
+   "Move the twelve cited EFTA numbers into source_docs.",
+   "Cite or remove the attorney identification and state the methodology behind the corpus-footprint counts.",
+   "Add the civil-suit outcome (Araoz discontinued; no settlement contribution asserted)."
+  ],
+  "reasoning": "This is by a wide margin the best-sourced record in the set - direct quotations with EFTA numbers and page references, which is precisely what the other eighteen lack. Tier 2 is right because she is genuinely one of the four NPA-named women, and the conservative 'staff' category is defensible even though the cited victim testimony describes an operational role. The remaining defects are the missing SDFL scope limitation and, more importantly, the absence of any statement that she was never charged, which a reader could easily miss amid the proffer detail."
+ },
+ {
+  "name": "Nadia Marcinkova",
+  "db_tier": 2,
+  "db_category": "operational",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED, NEVER CONVICTED. One of the four women named in the 2007 NPA co-conspirator clause (SDFL only). Invoked the Fifth Amendment in civil deposition; named in civil complaints and Palm Beach police reports. Legally changed her name and pursued an aviation career. No criminal charge in any jurisdiction as of Aug 2026. Materially, she is also credibly described in the source record as having been brought to the US as a minor and abused by Epstein - i.e. she has a dual victim/participant status.",
+  "tier_correct": true,
+  "recommended_tier": 2,
+  "category_correct": false,
+  "recommended_category": "operational / possible victim (dual status - NPA-named, never charged)",
+  "uncited_claims": [
+   "source_docs field is empty [] - every claim uncited",
+   "'victim testimony describes participation in abuse' - no victim, no document, no case",
+   "'allegedly purchased from family in Slovakia by Epstein' - no source",
+   "'FAA-certified pilot of Lolita Express' - no source",
+   "'CNN: may be both victim and accomplice' - outlet named but no article, date or link",
+   "'lived at Mark Epstein's 66th St building' - no source",
+   "'Aviloop CEO' - no source",
+   "'Born in eastern Czechoslovakia (now Slovakia)' - no source"
+  ],
+  "false_or_unsupportable_statements": [
+   "'Reported missing since early Jan 2024' - unsupportable as written. There is no verified police missing-person report; what the reporting describes is that she withdrew from public view and her digital footprint went quiet. 'Reported missing' asserts an official status that does not exist.",
+   "'allegedly purchased from family in Slovakia by Epstein' - a grave and contested claim traceable largely to Epstein's own characterisations, published with no source.",
+   "The category 'operational', without qualification, resolves a genuinely unresolved victim/participant question against her. The record's own text concedes she 'may be both victim and accomplice'.",
+   "'Investigation Notes: ... Should be Tier 2 entity' - unedited internal drafting note in a published field."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Replace 'Reported missing since early Jan 2024' with an accurate statement (no verified public whereabouts; no missing-person report identified).",
+   "Add the SDFL-only limitation to the NPA reference.",
+   "Qualify the category to reflect the dual victim/participant status the record itself acknowledges; if she was a minor brought to the US by Epstein, Tier 5 protections may also attach.",
+   "Source or delete the 'purchased from her family' claim.",
+   "Supply the CNN citation and all other sources, or delete the assertions.",
+   "State expressly that she has never been charged.",
+   "Strip the internal drafting note.",
+   "UNPUBLISH until the 'missing' and 'purchased' claims are fixed."
+  ],
+  "reasoning": "Tier 2 is correct because she is one of the four genuinely NPA-named women. But this is the record where a possible victim is published as an operator on zero citations. The 'reported missing' line asserts an official status that does not exist, and the 'purchased from her family in Slovakia' line is a grave claim published with no source at all. The record itself concedes she may be both victim and accomplice, then files her flatly as operational anyway, which is the kind of unresolved question a published database should carry openly rather than decide."
+ },
+ {
+  "name": "Sarah Kellen",
+  "db_tier": 2,
+  "db_category": "operational",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED, NEVER CONVICTED. One of the four women named in the 2007 NPA co-conspirator clause (SDFL only). Named extensively at the Maxwell trial and in civil complaints as a scheduler/coordinator; deposed in civil matters. No criminal charge in any jurisdiction as of Aug 2026.",
+  "tier_correct": true,
+  "recommended_tier": 2,
+  "category_correct": true,
+  "recommended_category": "operational (NPA-named co-conspirator, never charged)",
+  "uncited_claims": [
+   "source_docs field is empty [] - every claim uncited",
+   "'80+ mentions in Maxwell trial' - no transcript citation",
+   "'364 flight legs' - no source for the count",
+   "\"Judge Nathan: 'knowing participant in criminal conspiracy' and 'criminally responsible participant'\" - no opinion, docket number, date or page cited for a direct judicial quotation",
+   "'shared 58 flights with Groff, 38 with Giuffre, 21 with Dershowitz, 10 with Glenn Dubin, 5 with Leon Black' - no source for any of the five counts",
+   "'married NASCAR driver Brian Vickers (divorced 2025)' - no source",
+   "'Interior designer in Miami/NYC post-Epstein' - no source"
+  ],
+  "false_or_unsupportable_statements": [
+   "Quoting a federal judge as calling a never-charged living person a 'knowing participant in criminal conspiracy' with no citation is the most serious sourcing failure in this record. If the quotation comes from a Rule 801(d)(2)(E) co-conspirator ruling in the Maxwell case it must be cited as such, with the crucial caveat that such a finding is an evidentiary ruling made on a preponderance standard for admissibility purposes and is not a determination of criminal guilt.",
+   "'Investigation Notes: ... Critical gap - should be Tier 2 entity' - unedited internal drafting note in a published field.",
+   "The flight-leg co-travel counts implicitly link named third parties (Dubin, Black, Dershowitz) to her without any source."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Cite the Judge Nathan quotation to a specific opinion, docket entry, date and page, and add the caveat that an evidentiary co-conspirator finding is not a finding of criminal guilt - or delete the quotation.",
+   "Add the SDFL-only limitation to the NPA reference.",
+   "Source the flight-leg counts or delete them, particularly the counts naming third parties.",
+   "State expressly that she has never been charged.",
+   "Strip the internal drafting note.",
+   "Source or remove the marriage/divorce and current-occupation claims."
+  ],
+  "reasoning": "Tier 2 and 'operational' are correct - Kellen is one of the four NPA-named women, so the NPA claim is legitimate here. The disqualifying problem for publication is the uncited direct quotation of a federal judge calling a never-charged living person criminally responsible. Even if that quotation is real, it almost certainly comes from an admissibility ruling on a preponderance standard, which is a very different thing from a guilt determination, and publishing it bare invites exactly the wrong inference. Every other number in the record - 80+ mentions, 364 legs, five co-travel counts - is also unsourced."
+ },
+ {
+  "name": "Bill Richardson",
+  "db_tier": 3,
+  "db_category": "associate",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED, NEVER SUED in connection with Epstein. DECEASED - died 1 September 2023, aged 75. Named by Virginia Giuffre in a 2016 deposition (unsealed 2019) among men Maxwell allegedly directed her to; his office denied it, stating he had never met Giuffre. No criminal investigation of the allegation was ever opened. Withdrew from the Commerce Secretary nomination in January 2009 over an unrelated pay-to-play inquiry that later closed without charges.",
+  "tier_correct": true,
+  "recommended_tier": 3,
+  "category_correct": true,
+  "recommended_category": "associate",
+  "uncited_claims": [
+   "'Never investigated, questioned, or publicly confronted with this evidence' - an argument from absence with no source",
+   "'a shell entity named after the ranch, controlled by Epstein and managed by attorneys Darren Indyke and Richard Kahn' - the Indyke/Kahn management claim carries no page reference",
+   "Item 3's characterisation of Groff as the person 'who also arranged victims' travel' is asserted inside the Richardson entry without a citation of its own"
+  ],
+  "false_or_unsupportable_statements": [
+   "'Died August 28, 2023' - FALSE. Bill Richardson died on 1 September 2023.",
+   "Item 4 is speculation presented as a numbered evidence stream: 'The word \"another\" distinguishes this official from Bill Clinton, identified elsewhere. Richardson was the sitting NM Governor in 2004.' The complaint does not name Richardson. Inferring his identity from the adjective 'another' plus his office is conjecture and must be labelled as such under the project's own no-unflagged-speculation rule.",
+   "The record OMITS the single most significant fact about Richardson and Epstein - Giuffre's sworn 2016 allegation naming him - and equally omits his categorical denial. Presenting four weaker circumstantial streams while omitting both the actual allegation and the actual denial misrepresents the record in both directions."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Correct the death date to 1 September 2023.",
+   "Relabel item 4 explicitly as SPECULATION / unconfirmed inference, or remove it.",
+   "Add the Giuffre 2016 deposition allegation with its source AND Richardson's denial in the same paragraph.",
+   "Add page references to the Zorro Trust / Indyke / Kahn claims.",
+   "Soften 'Never investigated, questioned, or publicly confronted' to what the corpus actually shows, or cite it."
+  ],
+  "reasoning": "Tier 3 and 'associate' are defensible - there is a sworn victim allegation naming him, which is what Tier 3 contemplates, and the record commendably states up front that there is no direct evidence of trafficking participation. But the record gets his death date wrong, dresses a conjecture about the word 'another' up as a numbered evidence stream, and omits both the actual Giuffre allegation and his denial. He is deceased, which materially reduces legal exposure, but the speculation and the missing denial still fail the project's own standards."
+ },
+ {
+  "name": "Donald Trump",
+  "db_tier": 3,
+  "db_category": "associate",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED and never criminally investigated to charge in connection with Epstein. Sitting President of the United States. The Katie Johnson suit (SDNY 1:16-cv-07673, filed Sept 2016) was voluntarily withdrawn by the plaintiff on 4 Nov 2016 - dropped, never adjudicated on the merits. Reporting on the 2026 EFTA releases records FBI tips alleging misconduct by Trump but notes investigators questioned their credibility, and DOJ has stated it did not uncover evidence predicating an investigation of uncharged third parties. He denies all allegations.",
+  "tier_correct": true,
+  "recommended_tier": 3,
+  "category_correct": true,
+  "recommended_category": "associate",
+  "uncited_claims": [
+   "source_docs field is empty [] despite eleven enumerated EFTA documents in the body",
+   "'Multiple independent sources describe consistent behavioral patterns' - a synthesis with no source",
+   "Item 4's 'pattern match with 3501.045 victim' - this is the record author's own inference, not an FBI conclusion, and is not attributed",
+   "Item 6's list (14 phone numbers, message pads, Mar-a-Lago ban, 'younger side' quote) has an EFTA number but no page references",
+   "Items 8, 9, 10 lack page references"
+  ],
+  "false_or_unsupportable_statements": [
+   "The heading 'PRIMARY SOURCE DOCUMENTS - DIRECT ALLEGATIONS' overstates. FD-302s are records of what an interviewee said; they are allegation, not corroboration. The record nowhere notes that FBI personnel questioned the credibility of the Trump tips, which is a material omission from the same corpus.",
+   "Item 4's 'pattern match' between Complainant 1 and the 3501.045 victim is presented in the FBI's voice. Unless the FBI document itself states the match, this must be relabelled as the analyst's inference.",
+   "'Dismissed Nov 4, 2016 after threats' understates: the plaintiff voluntarily withdrew the suit; there was no adjudication of any kind, and the same complaint had been filed and dismissed previously in California. The record should say withdrawn, not dismissed.",
+   "The record contains no statement of Trump's denial anywhere.",
+   "Record text is truncated mid-item ('11. EFTA01')"
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Add Trump's denial, prominently.",
+   "Add the FBI's own credibility caveat on the Trump tips and the DOJ statement that no predicate for investigating uncharged third parties was found.",
+   "Relabel the 'pattern match' as analyst inference unless the source document states it.",
+   "Change 'Dismissed' to 'voluntarily withdrawn by plaintiff, never adjudicated', and note the earlier California filing history.",
+   "Retitle 'DIRECT ALLEGATIONS' to 'ALLEGATIONS RECORDED IN FBI INTERVIEW REPORTS'.",
+   "Populate source_docs and add page references throughout.",
+   "Restore the truncated item 11.",
+   "UNPUBLISH pending the denial and the credibility caveat."
+  ],
+  "reasoning": "Tier 3 is actually defensible on the project's own definitions, because Tier 3 contemplates victim allegations and there are FD-302s recording them, and the record does correctly state that no criminal charges were filed. The problems are one-sidedness and framing rather than tier. It labels FBI interview reports 'DIRECT ALLEGATIONS', presents the analyst's own pattern-match inference in the Bureau's voice, describes a voluntarily withdrawn lawsuit as 'dismissed', omits the FBI's recorded doubts about the tips' credibility, and nowhere states Trump's denial. For the sitting President, published, with an empty source_docs field, that is not a publishable posture."
+ },
+ {
+  "name": "Ehud Barak",
+  "db_tier": 3,
+  "db_category": "political",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED, NEVER SUED in connection with Epstein, in any jurisdiction. Faced substantial press scrutiny in Feb 2026 following the EFTA releases documenting a long friendship, apartment stays and business dealings; he publicly stated he regrets having known Epstein. No criminal or civil proceeding.",
+  "tier_correct": false,
+  "recommended_tier": 4,
+  "category_correct": true,
+  "recommended_category": "political",
+  "uncited_claims": [
+   "source_docs field is empty [] despite roughly 25 EFTA numbers in the body",
+   "No page references on any of the cited documents",
+   "'~200 corpus mentions ... concentrated in ~40 primary source documents' - no methodology"
+  ],
+  "false_or_unsupportable_statements": [
+   "No false statement identified. The record is descriptive and document-anchored; it does not allege criminal conduct.",
+   "The Tier 3 assignment itself is the unsupportable element. Tier 3 in this project means 'Suspicious/Concerning Conduct ... documentary evidence raising serious questions' about criminal participation. Nothing in this record alleges criminal participation - it documents correspondence, apartment stays, dinners, and geopolitical brokering. That is the definition of Tier 4: 'documented contact but no evidence of criminal participation.'"
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Downgrade to Tier 4. The record's own content contains no allegation of criminal participation.",
+   "Populate source_docs and add page references.",
+   "Add an explicit legal-status line: never charged, never sued.",
+   "Add his Feb 2026 public response.",
+   "Republish once re-tiered - the content itself is sound."
+  ],
+  "reasoning": "This is a well-constructed association record filed at the wrong tier. Every item is documentary - emails, apartment stays, dinner guest lists, Putin-access brokering - and none of it alleges a crime. The project's own tier definitions put that squarely at Tier 4. Publishing a living former head of government at Tier 3, a tier explicitly labelled 'Suspicious/Concerning Conduct', on evidence that is entirely social and professional, attaches a criminal implication the underlying documents do not carry. Fix the tier and this record is fine."
+ },
+ {
+  "name": "Howard Lutnick",
+  "db_tier": 3,
+  "db_category": "financial",
+  "db_published": true,
+  "actual_legal_status": "NEVER CHARGED, NEVER SUED in connection with Epstein. Sitting US Secretary of Commerce. Interviewed by the House Oversight Committee for over four hours on 6 May 2026; the transcript released 13 May 2026 showed he backed away from his earlier 'greatest blackmailer ever' characterisation and downplayed his contact with Epstein, prompting Democratic calls for his resignation. That is a political consequence, not a legal one. No criminal or civil proceeding.",
+  "tier_correct": false,
+  "recommended_tier": 4,
+  "category_correct": true,
+  "recommended_category": "financial",
+  "uncited_claims": [
+   "source_docs field is empty [] despite thirteen EFTA numbers in the body",
+   "'Epstein sold Lutnick a home for $10 later sold for millions' - carried on the FBI summary citation but with no independent verification and no page beyond p.17",
+   "Most email items have EFTA numbers and dates but no page references"
+  ],
+  "false_or_unsupportable_statements": [
+   "'Reports allege Lutnick made money through Ponzi schemes and money laundering' is reproduced as a bullet point with no caveat. The cited source (EFTA01656198 p.17) is an FBI 'Prominent Names' slide compiling ANONYMOUS, UNEVALUATED tips - the same document type the Wexner record correctly frames as 'Numerous anonymous NTOC's were received with allegations'. Reproducing an unevaluated anonymous tip of financial crime against a sitting cabinet secretary, without that framing, is unsupportable.",
+   "'contradicted by years of documented voluntary contact post-conviction' - editorial conclusion inserted into an evidence list. The record should present the contact record and let the reader draw that inference; asserting the contradiction is analysis, not evidence.",
+   "Tier 3 is unsupported. The record documents scheduling calls, holiday coordination and a term sheet. There is no allegation of criminal participation in trafficking anywhere in it. Project definitions put that at Tier 4."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Add the anonymous-unevaluated-tip caveat to the Ponzi/money-laundering line, matching the framing used in the Wexner record, or delete the line.",
+   "Downgrade to Tier 4.",
+   "Move the 'contradicted by' editorial into a clearly marked analysis section.",
+   "Add an explicit legal-status line: never charged, never sued.",
+   "Add the 6 May 2026 House Oversight interview and the 13 May 2026 transcript release.",
+   "Populate source_docs; add page references.",
+   "UNPUBLISH until the Ponzi tip is caveated."
+  ],
+  "reasoning": "The evidentiary content here is scheduling emails and island lunch invitations - documented association, which is Tier 4 by the project's own definition, not Tier 3. The publication-blocking defect is the first bullet, which relays an anonymous, unevaluated FBI tip accusing a sitting Commerce Secretary of Ponzi schemes and money laundering with no caveat at all. The project's Wexner record handles the identical document type correctly, quoting the 'numerous anonymous NTOC's' framing, which shows the correct treatment was available and simply not applied here."
+ },
+ {
+  "name": "Jim Atkins",
+  "db_tier": 3,
+  "db_category": "associate",
+  "db_published": false,
+  "actual_legal_status": "UNIDENTIFIED PERSON - legal status indeterminable. The name is an FBI PHONETIC rendering from FD-302 interviews; the spelling is unverified and no individual has been identified. The record itself states 184 corpus hits for 'Atkins' are all unrelated and that alternate spellings were searched without result. No charge, no suit, no investigation recorded. If the described person existed and was in his fifties in the early 1980s he would be roughly 90-95 now.",
+  "tier_correct": true,
+  "recommended_tier": 3,
+  "category_correct": false,
+  "recommended_category": "unidentified_alleged_perpetrator",
+  "uncited_claims": [
+   "source_docs field is empty [] despite two EFTA numbers with page references in the body",
+   "'Would be ~90-95 if still living' - derived from the record's own age estimate, itself an estimate",
+   "'ACCOUNTANT: \"Cecil\" (LNU), Black male, assisted in fixing real estate books' - carries no page reference in this record"
+  ],
+  "false_or_unsupportable_statements": [
+   "No false statement identified. Importantly, this record is NOT contaminated by the journal alias. It rests solely on the two Hilton Head FD-302s and makes no reference to the victim journals.",
+   "The category 'associate' materially understates the record's own content, which describes sexual assault of a minor and participation in a blackmail scheme - the mismatch runs in the safe direction but is still a mismatch.",
+   "'Name is phonetic' appears only at the end of the tier justification; it belongs at the top as a hard caveat."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Keep published=false. This is correct and should not change while the person is unidentified.",
+   "Move the PHONETIC / UNIDENTIFIED caveat to the head of the record.",
+   "Change category to reflect the allegation accurately while flagging non-identification.",
+   "Move the two EFTA numbers into source_docs.",
+   "Add an explicit non-linkage note: a surname match exists with the journal alias 'Mr. Atkins', which a victim journal declared a FALSE name; the corpus draws no link and none should be inferred. Recording the non-link prevents a future editor from merging the records."
+  ],
+  "reasoning": "I checked this specifically and the record is clean on the contamination question: it cites only EFTA02858481 and EFTA02858491, the Hilton Head FD-302s, and never invokes the journals. The separate journal record correctly documents that 'Mr. Atkins' appears in the list a victim declared were 'not who they say' - a false name - and the project's own working notes already state that no link should be inferred. The right fix is to write that non-linkage into this record so it cannot be merged later by mistake, and to keep it unpublished, which it already is."
+ },
+ {
+  "name": "Les Wexner",
+  "db_tier": 3,
+  "db_category": "associated",
+  "db_published": true,
+  "actual_legal_status": "NEVER CRIMINALLY CHARGED. Subpoenaed by the House Oversight Committee (subpoena authorised 7-8 Jan 2026, issued 23 Jan 2026) and deposed for nearly five hours on 18 Feb 2026, where he said Epstein 'duped' him and denied wrongdoing; the transcript was released publicly. CIVIL DEFENDANT as of 2026: Epstein survivors filed suits against Wexner and the Wexner Foundation alleging he enabled and helped fund Epstein's crimes (filings around Apr 2026, subsequently consolidated into one case). Those suits are pending and unadjudicated. He settled nothing criminally and has admitted no liability.",
+  "tier_correct": true,
+  "recommended_tier": 3,
+  "category_correct": true,
+  "recommended_category": "associated",
+  "uncited_claims": [
+   "source_docs field is empty [] despite five enumerated documents with page references in the body",
+   "'Victoria's Secret brand weaponized as recruitment tool' - NO citation anywhere in the record",
+   "'FBI co-conspirator chart listing' - NO citation. The only FBI document actually cited (EFTA01656152) is described in the record's own body as a PROFFERS slide and a PROMINENT NAMES slide, neither of which is a co-conspirator chart.",
+   "'Granted power of attorney enabling Epstein's financial empire' in the tier justification is unsourced there, though supported later by item 1"
+  ],
+  "false_or_unsupportable_statements": [
+   "'FBI co-conspirator chart listing' - unsupportable. Nothing in the record's cited documents is a co-conspirator chart. Asserting that a living, never-charged man appears on an FBI co-conspirator chart, with no citation, is the most exposed line in this record.",
+   "'Victoria's Secret brand weaponized as recruitment tool' - a serious enabling allegation against a public company and its founder with no source in the record.",
+   "Item 4 is handled correctly and should be the template: it quotes the source's own framing, 'Numerous anonymous NTOC's were received with allegations against prominent individuals', which properly marks the tip as unevaluated.",
+   "Record text is truncated mid-quote ('but I don't think he'l')",
+   "The record is stale - it predates the Jan-Feb 2026 subpoena and deposition and the Apr 2026 civil suits, which are now the most significant facts about his legal position."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Delete the 'FBI co-conspirator chart listing' claim or cite the specific chart, document and page.",
+   "Cite or delete the Victoria's Secret recruitment-tool claim.",
+   "Add the Jan 2026 House Oversight subpoena, the 18 Feb 2026 deposition and his 'duped' denial.",
+   "Add the 2026 survivor civil suits against Wexner and the Wexner Foundation, flagged as pending and unadjudicated.",
+   "Add an explicit line: never criminally charged.",
+   "Populate source_docs; restore the truncated quotation.",
+   "UNPUBLISH until the co-conspirator-chart claim is sourced or removed."
+  ],
+  "reasoning": "Tier 3 holds up - there is a victim statement to the FBI and the prosecution memo material is real and page-cited, which is more than most records in this set manage. Two claims in the tier justification are nonetheless uncited and severe: an FBI co-conspirator chart listing that none of the cited documents supports, and a Victoria's Secret weaponisation claim with no source at all. The record is also badly out of date, missing the congressional subpoena and deposition and the 2026 survivor suits that now define his actual legal exposure."
+ },
+ {
+  "name": "Mona Juul",
+  "db_tier": 3,
+  "db_category": "political",
+  "db_published": true,
+  "actual_legal_status": "CHARGED (Norwegian 'siktet'). On 8 Feb 2026 Okokrim, Norway's economic crime authority, charged Juul with serious/aggravated corruption in connection with favours allegedly received tied to her diplomatic positions, reportedly including a 2018 real-estate transaction and travel. She resigned as ambassador and was placed on administrative leave. IMPORTANT: 'siktet' is formal suspicion under Norwegian procedure, a step short of indictment (tiltale); the investigation is ongoing and no trial has occurred. The charge is CORRUPTION, not any sexual offence - no sexual-offence allegation has been made against her.",
+  "tier_correct": false,
+  "recommended_tier": 1,
+  "category_correct": true,
+  "recommended_category": "political (charged - corruption, not abuse)",
+  "uncited_claims": [
+   "source_docs field is empty [] despite roughly fifteen EFTA numbers in the body",
+   "'Epstein's will reportedly named Juul and Rod-Larsen's children for $10M' - hedged with 'reportedly' and carrying no citation at all",
+   "'Rod-Larsen received $130,000 personal loan from Epstein; resigned as IPI president after Norwegian Business Daily investigation' - no citation in this record",
+   "No page references on any cited document"
+  ],
+  "false_or_unsupportable_statements": [
+   "The record is materially out of date. It omits the single most important fact about her legal status: she was charged with aggravated corruption by Okokrim on 8 Feb 2026 and resigned her ambassadorship. A published record on a charged individual that does not mention the charge is defective.",
+   "'CHILDREN IN WILL: Epstein's will reportedly named ... children for $10M' - 'reportedly' with no source is exactly the standard the project's own rules prohibit.",
+   "The record contains no allegation of criminal participation in trafficking, and no such allegation exists publicly."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Add the 8 Feb 2026 Okokrim charge, with a source, and state plainly that it is a CORRUPTION charge with no sexual-offence component.",
+   "Explain that Norwegian 'siktet' is formal suspicion, not indictment, and that no trial has occurred.",
+   "Re-tier to 1 on the project's own 'convicted or charged' scale, but annotate the tier so no reader infers an abuse charge - otherwise leave at 3 with the charge disclosed. Do not leave it at 3 silently.",
+   "Add her resignation as ambassador and administrative leave.",
+   "Cite or delete the will and loan claims.",
+   "Populate source_docs; add page references.",
+   "UNPUBLISH until the 2026 charge is reflected."
+  ],
+  "reasoning": "This record has the opposite problem from most of the set: it understates rather than overstates, and it is simply stale. Juul was charged with aggravated corruption by Okokrim in February 2026 and resigned her post, and the record says nothing about it. On the project's own scale, where Tier 1 means charged, she now qualifies - but the tier must be annotated, because the charge concerns corruption and favours, not abuse, and a bare Tier 1 in a trafficking database would imply something no prosecutor has alleged. The uncited 'reportedly' claim about the children in the will also has to go."
+ },
+ {
+  "name": "Peter Mandelson",
+  "db_tier": 3,
+  "db_category": "political",
+  "db_published": true,
+  "actual_legal_status": "ARRESTED, NOT CHARGED. Sacked as UK Ambassador to the United States in September 2025 over his Epstein ties. Resigned from the Labour Party in February 2026. ARRESTED 23 February 2026 by British police on suspicion of MISCONDUCT IN PUBLIC OFFICE, in connection with allegedly sharing sensitive trade-related government documents with Epstein, and released on bail. No charge has been brought as of Aug 2026. The Prime Minister publicly stated Mandelson 'lied repeatedly' about the relationship during vetting. There is no sexual-offence allegation against him.",
+  "tier_correct": true,
+  "recommended_tier": 3,
+  "category_correct": true,
+  "recommended_category": "political",
+  "uncited_claims": [
+   "source_docs field is empty [] despite roughly twenty EFTA numbers in the body",
+   "No page references on any cited document except EFTA01526256 p.15",
+   "The 'UNRESOLVED' items ('What confidential government information was shared') are open questions, appropriately flagged, but sit in a published record without that status being obvious to a reader"
+  ],
+  "false_or_unsupportable_statements": [
+   "\"'Svet' scheduling: EFTA02006696 - young woman and friend arranged for Mandelson's evening arrival\" is the most dangerous line in the record. It insinuates procurement of a woman for him without stating any allegation, without a page reference, without any indication of who 'Svet' is or her age, and without his response. Innuendo of this kind against a living UK public figure, published, is acutely exposed under English defamation law, where the burden of proving truth falls on the publisher.",
+   "'UNRESOLVED: ... (3) What confidential government information was shared' presupposes that confidential information WAS shared. That is the very question now under police investigation and it should be framed conditionally.",
+   "The record is materially out of date: it omits the September 2025 sacking, the February 2026 Labour resignation, and the 23 February 2026 arrest - the three most significant facts about him."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Rewrite or delete the 'Svet' line. Either state precisely what the document says, with a page reference and no implication beyond it, or remove it.",
+   "Reframe UNRESOLVED item 3 conditionally: 'whether confidential government information was shared'.",
+   "Add the Sept 2025 dismissal, the Feb 2026 Labour resignation, and the 23 Feb 2026 arrest on suspicion of misconduct in public office, with sources.",
+   "State expressly that he has been arrested but NOT charged, and that the suspicion concerns misconduct in public office, not any sexual offence.",
+   "Populate source_docs; add page references.",
+   "UNPUBLISH until the 'Svet' insinuation is resolved and the record is brought current."
+  ],
+  "reasoning": "Tier 3 is right - he has been arrested but not charged, which is precisely the 'documentary evidence raising serious questions' band rather than Tier 1. The record nonetheless fails on two fronts. It is a year out of date, missing his sacking, his party resignation and his arrest. And it carries a bare insinuation about a 'young woman and friend arranged for Mandelson's evening arrival' with no allegation attached, no page reference and no response from him, which is the highest-risk sentence in the record given English defamation law places the burden of truth on the publisher."
+ },
+ {
+  "name": "Terje Rød-Larsen",
+  "db_tier": 3,
+  "db_category": "political",
+  "db_published": true,
+  "actual_legal_status": "CHARGED (Norwegian 'siktet'). On 8 Feb 2026 Okokrim charged Rod-Larsen as an accessory to / with contributing to serious aggravated corruption, alongside his wife Mona Juul. Authorities reportedly raided properties. He had already resigned as President of the International Peace Institute in 2020 after Norwegian press revealed the Epstein loan. As with Juul, 'siktet' is formal suspicion, short of indictment; no trial has occurred. The charge is CORRUPTION - there is no sexual-offence allegation against him.",
+  "tier_correct": false,
+  "recommended_tier": 1,
+  "category_correct": true,
+  "recommended_category": "political (charged - corruption, not abuse)",
+  "uncited_claims": [
+   "source_docs field is empty [] despite roughly twenty-five EFTA numbers in the body",
+   "No page references on any cited document",
+   "The final VACATION PLANNING item is truncated mid-word ('Febru')"
+  ],
+  "false_or_unsupportable_statements": [
+   "The record is materially out of date and omits the 8 Feb 2026 Okokrim corruption charge and the property raids - the most consequential facts about his current legal status.",
+   "No false statement identified in the documentary body itself; the loan, repayment and IPI items are specific, dated and document-anchored, which is a genuine strength.",
+   "The last item, 'Epstein arranged Puerto Rico resort recommendations for terje and kids, each 11 year olds for Easter', juxtaposes children's ages with an Epstein arrangement in a trafficking database without any accompanying allegation. Absent a stated allegation this is insinuation by adjacency and should either carry an explicit statement of what it is thought to show, or be presented neutrally as travel logistics."
+  ],
+  "npa_error": false,
+  "safe_to_publish": false,
+  "required_corrections": [
+   "Add the 8 Feb 2026 Okokrim charge, with a source, stating expressly that it is a corruption charge with no sexual-offence component and that 'siktet' is formal suspicion, not indictment.",
+   "Re-tier to 1 under the project's 'convicted or charged' definition, annotated so no reader infers an abuse charge - or leave at 3 with the charge fully disclosed. Do not leave it at 3 silently.",
+   "Add his 2020 IPI resignation and the reported property raids.",
+   "Neutralise or explain the 'each 11 year olds' vacation item.",
+   "Populate source_docs; add page references; restore the truncated final item.",
+   "UNPUBLISH until the 2026 charge is reflected."
+  ],
+  "reasoning": "The documentary core of this record is among the better work in the set - the $130,000 loan, the repayment request, the missing promissory note and the IPI briefings are all specific, dated and traceable. Its failure is currency: he was charged with contributing to aggravated corruption by Okokrim in February 2026 and the record does not mention it, which on the project's own 'Tier 1 = charged' scale means the tier is wrong too. The tier must be annotated when corrected, because a bare Tier 1 in a trafficking database would imply an abuse charge that no prosecutor has brought."
+ }
+]

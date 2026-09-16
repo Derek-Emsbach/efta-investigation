@@ -1,0 +1,1900 @@
+[
+ {
+  "name": "Virginia Giuffre",
+  "entity_type": "person",
+  "db_tier": 5,
+  "db_category": "victim",
+  "db_published": true,
+  "is_victim": true,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": true,
+  "recommended_category": "victim",
+  "uncited_claims": [
+   "'Handwritten victim journals (EFTA02731420, EFTA02731465)' attributed to Giuffre — no citation establishes her authorship",
+   "'Forensically authenticated' — no citation; the LaPorte report is not in the corpus",
+   "'Constitute strongest direct evidence category in corpus' — evaluative claim, no source",
+   "'naming 30+ men including AOL executives, DC figures, academics' — no page/folio cite, no quoted text",
+   "Status field is null though she died in April 2025"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete the journal attribution entirely: EFTA02731420/02731465 are Dataset 12 (Leon Black file) and belong to the Doe v. Black plaintiff (1:23-cv-06418), NOT Giuffre — per the project's own Journal Provenance Audit v1.0",
+   "Remove 'forensically authenticated': examiner Gerald LaPorte could NOT date the entries; Rakoff denied the claim 31 Jul 2024",
+   "Add Judge Clarke's 23 Apr 2026 findings (three sonograms falsified; third-party names ordered redacted) wherever journals are referenced",
+   "Set status = deceased (April 2025)",
+   "Do not publish third-party abuser names sourced to the journals"
+  ],
+  "reasoning": "The record is published and repeats the exact two errors the project's own URGENT journal audit retracted: it misattributes another woman's journals to Giuffre and inverts LaPorte's non-finding into 'forensic authentication.' The misattribution also double-counts Giuffre's separate sworn testimony as corroboration of the journals. Her name being public does not make these claims safe."
+ },
+ {
+  "name": "Annie Farmer",
+  "entity_type": "person",
+  "db_tier": 5,
+  "db_category": "victim",
+  "db_published": true,
+  "is_victim": true,
+  "is_private_individual": false,
+  "safe_to_publish": true,
+  "publication_risk": "low",
+  "category_correct": true,
+  "recommended_category": "victim",
+  "uncited_claims": [
+   "'KEY EVENTS' block (Zorro Ranch abuse 1996, civil complaint 2019) carries no citation of its own",
+   "Status field is null"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Remove or de-emphasise the pointer to 'EFTA01660689 p.2 (subpoena records with DOB)' — a published record should not signpost where a victim's date of birth sits",
+   "Populate status (living; clinical psychologist and public survivor-advocate)"
+  ],
+  "reasoning": "Publication of her name is consistent with the project rule — she asked the court to speak in her true name at the 2019 bail hearing and testified openly at the Maxwell trial, so she is a self-identified public survivor. The defects are a PII signpost to her DOB and an empty status field, not the naming itself."
+ },
+ {
+  "name": "Dr. Chen",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "witness",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "unidentified_reference — do not treat as an entity",
+  "uncited_claims": [
+   "'Referenced in EFTA witness testimony and documents' — zero document numbers anywhere in the record",
+   "'appears in multiple documents related to Epstein network' — no citations",
+   "'Witness testimony — referenced in connection with medical/professional services' — no source"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Unpublish immediately",
+   "Either supply document numbers or delete the record",
+   "Reconcile with the 'Erica' record, which shows the only trace is a single October 2017 request to arrange a phone call while Epstein was in Paris"
+  ],
+  "reasoning": "A published record about an unidentified person the record itself says 'may refer to different individuals,' with not one citation. Its claim of appearing in 'multiple documents' is contradicted by the sibling 'Erica' record. Publishing an unidentified doctor inside an Epstein network database implies involvement that no evidence supports."
+ },
+ {
+  "name": "Gerd (Epstein associate)",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "witness",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "unidentified_reference — do not treat as an entity",
+  "uncited_claims": [
+   "'Referenced in witness testimony as an Epstein associate' — no document number, no witness named",
+   "Entire record contains zero citations"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Unpublish immediately",
+   "Supply the underlying document or delete"
+  ],
+  "reasoning": "A first-name-only, admittedly unidentified individual is published as an 'Epstein associate' on the strength of no cited document at all. Any real person named Gerd in Epstein's orbit is exposed by a record that cannot say which document mentions him."
+ },
+ {
+  "name": "Barnaby Mars",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "associate",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "associate",
+  "uncited_claims": [
+   "'Social/philanthropy network connection through Joi Ito and Martin Nowak' — characterisation not tied to a cited document"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Correct the name to Barnaby Marsh before any further publication — the record itself notes 'Barnaby Mars' is an OCR artifact",
+   "Do not publish a network record under a name the record admits is wrong"
+  ],
+  "reasoning": "The record is published under a name its own NOTE field says is an OCR error. Publishing an association record under a misspelled name is a misidentification hazard — it can attach to the wrong person entirely while failing to identify the right one."
+ },
+ {
+  "name": "Celina Edith Dubin",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "associate",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "third_party_beneficiary (not an associate)",
+  "uncited_claims": [
+   "'The bequest of essentially the entire Epstein fortune to the daughter of an alleged abuser raises serious questions about the nature of the Epstein-Dubin relationship' — pure inference, no source",
+   "Father's Tier 1 status imported as context with only a bare 'EFTA02731082' pointer"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Unpublish",
+   "Remove the innuendo sentence",
+   "Reclassify: being named in someone else's trust instrument is not association with a network"
+  ],
+  "reasoning": "A private individual, a young woman who was a child or barely an adult during the relevant period, is published in a sex-trafficking entity database solely because a third party named her in a trust document she had no part in drafting. The record then attaches an insinuation about 'the nature of the relationship.' She did nothing; she has done nothing."
+ },
+ {
+  "name": "Eva Andersson-Dubin",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "associate",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "associate — with the participation language removed",
+  "uncited_claims": [
+   "'the Dubin family's role in the Epstein network was financial, fiduciary, and — per the prosecution memo — potentially participatory' — 'potentially participatory' is the record's own conclusion, not the memo's",
+   "'Eva Dubin present during a directed massage' quoted with a page pointer only (EFTA02731082 p57) and no surrounding context"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Strike 'potentially participatory' or state precisely what the memo says",
+   "Do not bootstrap a Tier 4 record's severity from a spouse's Tier 1 status"
+  ],
+  "reasoning": "A published Tier 4 record makes what reads as an allegation of participation in abuse against a named woman, resting on one clause pulled from a prosecution memo plus her husband's tier. Tier 4 is defined as documented contact without evidence of criminal participation; the text contradicts the tier it sits in."
+ },
+ {
+  "name": "Karyna Shuliak",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "associate",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "partner/beneficiary — victim status unassessed",
+  "uncited_claims": [
+   "'Named as intended recipient of separate pre-death trust' — no document cited",
+   "'Total potential inheritance exceeds $300M' — arithmetic conclusion, no source",
+   "'Relationship with Epstein documented in trust agreement and estate filings' — filings not identified"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Unpublish pending an assessment of whether she should be treated as a victim rather than an associate",
+   "Cite the pre-death trust claim or delete it"
+  ],
+  "reasoning": "A private individual — Epstein's long-term partner, never charged, and the record concedes 'no evidence of involvement in criminal activity' — is published as a network associate with a headline dollar figure. Nobody has assessed whether a woman drawn into Epstein's orbit young belongs in the victim column instead; publishing before that question is answered is the wrong order of operations."
+ },
+ {
+  "name": "Mark Epstein",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "associate",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "family associate",
+  "uncited_claims": [
+   "'Mark Epstein's Manhattan apartment (301 E. 66th St.) allegedly used by Jeffrey Epstein for encounters' — 'allegedly' by whom, no source",
+   "'Grand jury testimony — testified in Jeffrey Epstein criminal proceedings' — no source",
+   "'Real estate transactions — business dealings connected to Jeffrey Epstein's property network' — no source",
+   "'potential knowledge of his brother's activities' — speculation flagged as significance"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Correct or drop the grand jury claim — the corpus elsewhere cites EFTA01249325, a 2009 civil deposition, not grand jury testimony",
+   "Cite the apartment allegation or remove it"
+  ],
+  "reasoning": "Every substantive assertion in this published record is uncited, and the one that is checkable appears wrong: the DB's own Trump record cites a Mark Epstein deposition, not grand jury testimony. The record simultaneously says he is not accused of anything and speculates about his knowledge."
+ },
+ {
+  "name": "Sultan Ahmed bin Sulayem",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "financial",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "unknown — record has no content",
+  "uncited_claims": [
+   "Entire evidence body is the string 'See entity evidence_summary field' — the record contains no facts and no citations"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Unpublish immediately",
+   "Populate with sourced evidence or delete the record"
+  ],
+  "reasoning": "A named foreign business figure and head of a state-linked enterprise is published in an Epstein trafficking database with literally zero evidence text and zero citations. This is the clearest publish-first-verify-never failure in the set."
+ },
+ {
+  "name": "Bill Gates",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "associate",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "associate",
+  "uncited_claims": [
+   "'smoking gun proving Gates participated in Epstein's reputation laundering' — the characterisation of EFTA02030179 is the analyst's conclusion, presented as proof",
+   "'containing explosive allegations about Gates' (EFTA01965732) — allegations never stated, so unverifiable",
+   "'DAF (Donor Advised Fund) collaboration as primary financial nexus' — no citation",
+   "'6,656 documents / 7,856 pages reference Gates' — count method unstated"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Replace 'smoking gun proving' with what the document actually shows",
+   "State the content of the 'explosive allegations' or delete the phrase"
+  ],
+  "reasoning": "A published Tier 4 record uses proof language ('smoking gun proving') for an inference, and references unspecified 'explosive allegations' the reader cannot evaluate. Tier 4 is documented contact; the prose reaches past it."
+ },
+ {
+  "name": "Kathryn Ruemmler",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "legal",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "legal/social contact",
+  "uncited_claims": [
+   "'Named in two legal instruments (2017 Trust, Last Will)' — no EFTA number for either instrument, and no document number appears anywhere in the record",
+   "'20+ unique EFTA source documents' — none listed",
+   "'Epstein coached her on presentation for AG nomination (Oct 2014)' — no source"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Supply the trust and will citations or withdraw the claim — being named in Epstein's will is a specific, damaging and checkable assertion",
+   "List the 20+ documents"
+  ],
+  "reasoning": "A record about a named lawyer at a major institution asserts she appears in Epstein's will and a trust, with no document number for either. The DB's own Boris Nikolic record cites EFTA00027979 for will contents; this one cites nothing."
+ },
+ {
+  "name": "Brad Karp",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "legal",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "legal/social contact",
+  "uncited_claims": [
+   "'Epstein explicitly tasked Karp with recruiting White House Counsel Ruemmler' — 'tasked' and 'recruiting' are the analyst's framing of the quoted fragments",
+   "'2019 Bannon/Augusta National discussion suggests post-arrest relationship' — 'suggests' flagged as evidence"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Replace 'recruiting' — in a trafficking database the word carries a meaning the underlying emails (a law-firm hiring approach) do not support",
+   "Quote enough context that 'Hope you can convince Kathy Ruemmler' and 'Still working on 1' are interpretable"
+  ],
+  "reasoning": "Two clipped quotes are built into a claim that a named law firm chair was 'tasked with recruiting' someone. Recruitment is the central criminal concept in this database; using the word for an apparent professional hiring conversation is a framing error with real consequences for a published record."
+ },
+ {
+  "name": "Richard Branson",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "financial",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "associate",
+  "uncited_claims": [
+   "EFTA01779732 is cited for three mutually incompatible things — a Branson spokesman's press statement, Branson's presence in Epstein's contacts book, and (in the Mandelson record) an island visit",
+   "'directly contradicted by documentary record' — conclusion asserted, not shown"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Resolve the EFTA01779732 collision; at least two of the three uses are misattributed",
+   "Category 'financial' is wrong — no financial transaction with Branson is documented in the record"
+  ],
+  "reasoning": "The same document number is doing three unrelated jobs across two records, which is the signature of copy-paste source misattribution. The record is published and uses that source to call a named person a liar."
+ },
+ {
+  "name": "William J. Burns",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "political",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": true,
+  "publication_risk": "low",
+  "category_correct": true,
+  "recommended_category": "political contact",
+  "uncited_claims": [
+   "'Epstein personally managed Burns's schedule slots with compartmentalized timing' — 'compartmentalized' is inference, no source",
+   "'10+ corpus documents' — seven listed"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Drop 'compartmentalized' or show the scheduling document that supports it"
+  ],
+  "reasoning": "Otherwise a clean, well-sourced contact record; the single defect is an inference word that implies concealment where the citations show only calendar entries."
+ },
+ {
+  "name": "Jeffrey Fuller",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "associate",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "business associate",
+  "uncited_claims": [
+   "'MC2 was confirmed by Brunel's business partner Cordero as a trafficking front' — EFTA01657299 is an FBI tip relaying what a tipster said Cordero said; that is not confirmation",
+   "'Fuller's knowledge of trafficking activities undetermined but operational role documented' — 'operational role' overstates a 15% ownership stake and credit-line correspondence"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Downgrade 'confirmed' to 'a June 2010 FBI tip reported that…'",
+   "Keep unpublished — a private businessman is being placed adjacent to trafficking on double hearsay"
+  ],
+  "reasoning": "The load-bearing word is 'confirmed,' and the cited document does not confirm anything — it records an uncorroborated tip. A minority shareholder's routine finance emails are then labelled an 'operational role.'"
+ },
+ {
+  "name": "Sergio Cordero",
+  "entity_type": "person",
+  "db_tier": 4,
+  "db_category": "associate",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "informant/source (not associate)",
+  "uncited_claims": [
+   "'Confirmed to FBI tipster (June 2010)' — the document records a tipster's account of Cordero's statements; Cordero himself is not shown speaking to the FBI",
+   "All four assertions rest on the single document EFTA01657299"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep unpublished",
+   "Reclassify — the record's own last line says his role as participant versus informant is unclear, which is incompatible with categorising him as an associate of the network"
+  ],
+  "reasoning": "A private individual is tiered as a network associate on one document that, on the record's own reading, may show him reporting trafficking rather than participating in it. Single-source, double-hearsay, and internally contradictory."
+ },
+ {
+  "name": "Apollo Global Management LLC",
+  "entity_type": "organization",
+  "db_tier": 4,
+  "db_category": "financial",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "financial — Leon Black's employer, no institutional finding",
+  "uncited_claims": [
+   "'Apollo's financial relationship with Epstein included advisory fees, trust structures, and tax optimization schemes totaling $158 million in payments' — no citation, and it is wrong",
+   "Entire record contains zero document numbers"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Correct the core fact: the $158M was paid by Leon Black PERSONALLY, from his own and family funds. The Dechert review commissioned by Apollo (January 2021) found Apollo never retained Epstein and no Apollo fund money was involved",
+   "Rewrite to separate the institution from the individual",
+   "Unpublish until corrected"
+  ],
+  "reasoning": "This is the textbook institution-versus-employee conflation, and it is live on a public platform. A publicly traded company is described as having paid $158M to Epstein for 'tax optimization schemes' when the payments were an executive's personal ones. No citation supports any of it."
+ },
+ {
+  "name": "The Carlyle Group LP",
+  "entity_type": "organization",
+  "db_tier": 4,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "no established Epstein connection — candidate for deletion",
+  "uncited_claims": [
+   "'Appears in EFTA financial documents as part of Epstein's investment network' — no document number anywhere in the record",
+   "'part of the private equity ecosystem Epstein leveraged for credibility' — no source",
+   "'Washington D.C. nexus — D.C.-based firm in same geographic cluster as several journal-named individuals' and 'Carlyle's well-documented ties to political establishment overlap with Epstein's cultivation of political figures'"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Produce the EFTA document numbers or delete the record",
+   "Check whether the only appearance is as a comparable company in the April 1, 2015 Morgan Stanley research report on Apollo that generated ~30 other spurious org records in this database",
+   "Remove guilt-by-adjacency reasoning (executive in the contact book; shared city; shared industry)"
+  ],
+  "reasoning": "A named firm is filed in a sex-trafficking entity database with no cited document, on reasoning that amounts to an executive appearing in a contact book or the firm sharing an industry or a city with people under scrutiny. The Carlyle entry goes furthest, tying a company to 'journal-named individuals' by geography alone."
+ },
+ {
+  "name": "The Blackstone Group LP",
+  "entity_type": "organization",
+  "db_tier": 4,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "no established Epstein connection — candidate for deletion",
+  "uncited_claims": [
+   "'Appears in EFTA financial documents as part of Epstein's investment network' — no document number anywhere in the record",
+   "'part of the private equity ecosystem Epstein leveraged for credibility' — no source",
+   "'Epstein contact directory — Stephen Schwarzman listed with contact information' used as institutional evidence"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Produce the EFTA document numbers or delete the record",
+   "Check whether the only appearance is as a comparable company in the April 1, 2015 Morgan Stanley research report on Apollo that generated ~30 other spurious org records in this database",
+   "Remove guilt-by-adjacency reasoning (executive in the contact book; shared city; shared industry)"
+  ],
+  "reasoning": "A named firm is filed in a sex-trafficking entity database with no cited document, on reasoning that amounts to an executive appearing in a contact book or the firm sharing an industry or a city with people under scrutiny. The Carlyle entry goes furthest, tying a company to 'journal-named individuals' by geography alone."
+ },
+ {
+  "name": "KKR & Co. L.P.",
+  "entity_type": "organization",
+  "db_tier": 4,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "no established Epstein connection — candidate for deletion",
+  "uncited_claims": [
+   "'Appears in EFTA financial documents as part of Epstein's investment network' — no document number anywhere in the record",
+   "'part of the private equity ecosystem Epstein leveraged for credibility' — no source",
+   "'Epstein contact directory — Henry Kravis listed with contact information' used as institutional evidence"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Produce the EFTA document numbers or delete the record",
+   "Check whether the only appearance is as a comparable company in the April 1, 2015 Morgan Stanley research report on Apollo that generated ~30 other spurious org records in this database",
+   "Remove guilt-by-adjacency reasoning (executive in the contact book; shared city; shared industry)"
+  ],
+  "reasoning": "A named firm is filed in a sex-trafficking entity database with no cited document, on reasoning that amounts to an executive appearing in a contact book or the firm sharing an industry or a city with people under scrutiny. The Carlyle entry goes furthest, tying a company to 'journal-named individuals' by geography alone."
+ },
+ {
+  "name": "Oaktree Capital Group, LLC",
+  "entity_type": "organization",
+  "db_tier": 4,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "no established Epstein connection — candidate for deletion",
+  "uncited_claims": [
+   "'Appears in EFTA financial documents as part of Epstein's investment network' — no document number anywhere in the record",
+   "'part of the private equity ecosystem Epstein leveraged for credibility' — no source",
+   "'part of the alternative investment ecosystem Epstein navigated'"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Produce the EFTA document numbers or delete the record",
+   "Check whether the only appearance is as a comparable company in the April 1, 2015 Morgan Stanley research report on Apollo that generated ~30 other spurious org records in this database",
+   "Remove guilt-by-adjacency reasoning (executive in the contact book; shared city; shared industry)"
+  ],
+  "reasoning": "A named firm is filed in a sex-trafficking entity database with no cited document, on reasoning that amounts to an executive appearing in a contact book or the firm sharing an industry or a city with people under scrutiny. The Carlyle entry goes furthest, tying a company to 'journal-named individuals' by geography alone."
+ },
+ {
+  "name": "Bruce Reinhart",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "legal",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "legal — defence counsel; note current judicial office",
+  "uncited_claims": [
+   "'contradicting his sworn declaration' — the perjury implication is the analyst's inference, not a finding by any tribunal",
+   "'Victims' perjury referral (Prof. Cassell, 18 USC § 1621) stonewalled across 4 AUSAs in Puerto Rico' — no citation for 'stonewalled'",
+   "'Office at 250 S. Australian Ave Suite 1400, same floor as Epstein defense counsel Goldberger, next door to Florida Science Foundation' — offered as evidence with no source and no stated relevance",
+   "'17 source documents cataloged in Thread 11' — an internal pointer, not a citation"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Unpublish immediately and rewrite",
+   "State plainly that DOJ OPR investigated and took no action, and that no tribunal has found he made a false statement — the record currently buries this",
+   "Explain that the $84K in payments were legal fees for representing employees Epstein had agreed to indemnify — an employer paying employees' counsel is lawful and ordinary",
+   "Disclose that the subject has been a United States Magistrate Judge (S.D. Fla.) since 2018",
+   "Remove the office-location material"
+  ],
+  "reasoning": "This is the most legally dangerous record in the set. A sitting federal magistrate judge is published with an implied accusation of perjury, with lawful legal-fee payments recast as suspicious, and with shared office-floor geography offered as evidence. Doing a job as defence counsel — even in a case people are angry about — is not a crime, and every affirmative finding here belongs to a tribunal that declined to make it."
+ },
+ {
+  "name": "Alexander Acosta",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "law_enforcement",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "legal — federal prosecutor/DOJ official",
+  "uncited_claims": [
+   "'OPR found he agreed to unusual and problematic terms without required consideration' — no citation, and it compresses the OPR finding",
+   "'gave blanket immunity without victim notification' — no citation and imprecise as to the immunity's scope",
+   "'Architect of the NPA' — conclusion, no source",
+   "Entire record has zero document numbers; fields are labelled 'Public Sources' and 'Investigation Notes' with nothing cited"
+  ],
+  "npa_error": true,
+  "required_corrections": [
+   "State the OPR finding accurately: the November 2020 OPR report concluded Acosta exercised 'poor judgment' and did NOT find professional misconduct",
+   "Correct the immunity description: the NPA's co-conspirator clause named four women — Kellen, Ross, Groff, Marcinkova — and bound only the Southern District of Florida. 'Blanket immunity' with no scope stated overstates it",
+   "Change category from law_enforcement to legal — he was the U.S. Attorney, not an investigator",
+   "Add citations or unpublish"
+  ],
+  "reasoning": "A published record about a named former cabinet officer contains not one document citation, mischaracterises the OPR outcome, and describes the NPA's immunity without its limiting terms. The category also mislabels a prosecutor as law enforcement, which matters because this DB uses those categories to sort who did what."
+ },
+ {
+  "name": "Richard D. Kahn",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "inner_circle",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "legal/financial professional",
+  "uncited_claims": [
+   "'Ran HBRK Associates managing all Epstein entities' — no citation",
+   "'Corresponded with Jeff Fuller about MC2 Model Management financial operations' — no citation"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Change category from 'inner_circle' immediately — the record's own text says 'Tier 6 (financial)' and 'No criminal charges'",
+   "The category contradicts the tier and imputes membership of the criminal core to an accountant/executor"
+  ],
+  "reasoning": "A published record files a professional fiduciary under the category 'inner_circle' while its own body says Tier 6 and no criminal charges. In a database whose stated purpose is to keep operators separate from everyone else, that single word does exactly the damage the tier system exists to prevent."
+ },
+ {
+  "name": "Lawrence Visoski",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "staff",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "staff — cooperating witness",
+  "uncited_claims": [
+   "'ROLE: Chief pilot, corporate front, cooperating witness' — 'corporate front' is the analyst's characterisation",
+   "'Fraudulent Transfers: EFTA00222389 (4 vehicles + 1 boat in Visoski's name)' — the heading asserts fraud; the cited document is a list of titled assets"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Remove 'corporate front' and the 'Fraudulent Transfers' heading, or attribute the fraud characterisation to whoever actually made it",
+   "Note that he was the government's first witness at the Maxwell trial and has never been charged"
+  ],
+  "reasoning": "A cooperating government witness who has never been accused of anything is labelled a 'corporate front' and given a section heading asserting fraudulent transfers. Holding title to an employer's vehicles is not fraud absent a finding, and none is cited."
+ },
+ {
+  "name": "Juan Alessi",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "staff",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "staff — prosecution witness",
+  "uncited_claims": [
+   "'ROLE: Prosecution witness. Detailed testimony about daily operations' — fine, but the record republishes Epstein's smear 'the thief... terminated from this position' (EFTA00798576) without stating it was an attempt to discredit a witness",
+   "Name inconsistency: the cited police interview reads 'Jose Alessi' while the record is headed 'Juan Alessi'"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Frame the 'thief' quote explicitly as Epstein's discrediting attempt in the same sentence, not as a bare quotation",
+   "Resolve Juan/Jose"
+  ],
+  "reasoning": "A household employee, never charged, is published with a derogatory allegation sourced to the man he testified against. His trial testimony is public so the naming itself is defensible, but republishing the smear without immediate context is gratuitous harm to a private person."
+ },
+ {
+  "name": "Alfredo Rodriguez",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "staff",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": true,
+  "publication_risk": "low",
+  "category_correct": true,
+  "recommended_category": "staff — prosecution witness",
+  "uncited_claims": [
+   "'\"golden nugget\" (HOUSE_OVERSIGHT_010486) — names of hundreds of girls... abused by Epstein' — the quoted characterisation is not attributed to a speaker"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Consider removing the cause of death (mesothelioma) — a deceased household employee's medical cause of death serves no investigative purpose",
+   "Attribute the 'golden nugget' quote"
+  ],
+  "reasoning": "Naming him is defensible: his obstruction conviction and sentencing are public court records and he was an AUSA witness. The residual issue is the publication of a private employee's cause of death and an unattributed quoted characterisation."
+ },
+ {
+  "name": "Brad Edwards",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "legal",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": true,
+  "publication_risk": "low",
+  "category_correct": true,
+  "recommended_category": "legal — victims' counsel",
+  "uncited_claims": [
+   "'In June 2008, at age thirty-two, he took on his first Epstein victims — three young women' — no source",
+   "'a 2017 Florida Supreme Court ruling allowed Edwards' malicious prosecution counterclaim to proceed to trial' — no citation, court and year unverified",
+   "'the definitive first-person account' — editorial"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Fix the case number: the CVRA action Jane Doe 1 and Jane Doe 2 v. United States is 9:08-cv-80736 (S.D. Fla.), as the Villafana, Lefkowitz and Cassell records in this same database all correctly state. This record says 9:08-cv-80119",
+   "Cite or drop the Florida Supreme Court claim"
+  ],
+  "reasoning": "Content is favourable and low-risk, but the record carries a wrong case number for the single most important piece of litigation it describes, contradicted by three sibling records. A citation error that visible undermines the whole database's reliability."
+ },
+ {
+  "name": "Jay Lefkowitz",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "legal",
+  "db_published": true,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": true,
+  "publication_risk": "low",
+  "category_correct": true,
+  "recommended_category": "legal — defence counsel",
+  "uncited_claims": [
+   "'This prior relationship raised concerns about improper influence on the prosecution' — raised by whom, no source",
+   "'Kirkland & Ellis continued to represent Epstein interests in post-NPA proceedings' — cited, but 'Epstein interests' is vague"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Attribute the 'raised concerns' sentence to a named source or delete it — passive voice is doing accusatory work"
+  ],
+  "reasoning": "The record is careful and largely well cited, and it correctly concludes his conduct was within legal representation. The one defect is an unattributed insinuation about improper influence sitting inside an otherwise disciplined entry."
+ },
+ {
+  "name": "Alissa Wimmer",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "prosecutor",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": true,
+  "recommended_category": "prosecutor",
+  "uncited_claims": [
+   "The entire record is the one-line descriptor 'DANY ADA — name leaked through redaction failure' — no conduct, no evidence, no finding",
+   "No basis stated for including the person in an entity database at all"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep permanently unpublished",
+   "Consider deletion: these are line prosecutors whose identities exist in this database only because a DOJ redaction failed. Republishing what redaction was meant to withhold is the mirror image of the asymmetric-redaction abuse this project exists to document",
+   "If retained, state explicitly that no wrongdoing is alleged"
+  ],
+  "reasoning": "A junior public servant is entered in a sex-trafficking entity database with no allegation and no evidence, solely because a production error exposed her name. There is no investigative product here — only a person's identity that the government intended to withhold."
+ },
+ {
+  "name": "Leah Saxtein",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "prosecutor",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": true,
+  "recommended_category": "prosecutor",
+  "uncited_claims": [
+   "The entire record is the one-line descriptor 'DANY ADA' — no conduct, no evidence, no finding",
+   "No basis stated for including the person in an entity database at all"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep permanently unpublished",
+   "Consider deletion: these are line prosecutors whose identities exist in this database only because a DOJ redaction failed. Republishing what redaction was meant to withhold is the mirror image of the asymmetric-redaction abuse this project exists to document",
+   "If retained, state explicitly that no wrongdoing is alleged"
+  ],
+  "reasoning": "A junior public servant is entered in a sex-trafficking entity database with no allegation and no evidence, solely because a production error exposed her name. There is no investigative product here — only a person's identity that the government intended to withhold."
+ },
+ {
+  "name": "Vanessa Puzio",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "prosecutor",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": true,
+  "recommended_category": "prosecutor",
+  "uncited_claims": [
+   "The entire record is the one-line descriptor 'DANY ADA — name leaked through redaction failure' — no conduct, no evidence, no finding",
+   "No basis stated for including the person in an entity database at all"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep permanently unpublished",
+   "Consider deletion: these are line prosecutors whose identities exist in this database only because a DOJ redaction failed. Republishing what redaction was meant to withhold is the mirror image of the asymmetric-redaction abuse this project exists to document",
+   "If retained, state explicitly that no wrongdoing is alleged"
+  ],
+  "reasoning": "A junior public servant is entered in a sex-trafficking entity database with no allegation and no evidence, solely because a production error exposed her name. There is no investigative product here — only a person's identity that the government intended to withhold."
+ },
+ {
+  "name": "Lauren Phillips",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "prosecutor",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": true,
+  "recommended_category": "prosecutor",
+  "uncited_claims": [
+   "The entire record is the one-line descriptor 'SDNY AUSA — name leaked through email header' — no conduct, no evidence, no finding",
+   "No basis stated for including the person in an entity database at all"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep permanently unpublished",
+   "Consider deletion: these are line prosecutors whose identities exist in this database only because a DOJ redaction failed. Republishing what redaction was meant to withhold is the mirror image of the asymmetric-redaction abuse this project exists to document",
+   "If retained, state explicitly that no wrongdoing is alleged"
+  ],
+  "reasoning": "A junior public servant is entered in a sex-trafficking entity database with no allegation and no evidence, solely because a production error exposed her name. There is no investigative product here — only a person's identity that the government intended to withhold."
+ },
+ {
+  "name": "Jane (first name only)",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "prosecutor",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "not an entity — delete",
+  "uncited_claims": [
+   "Record consists of 'SDNY CRU AUSA — name leaked in email sign-off'; the entity is a first name with no surname, no conduct and no evidence"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete — a bare first name from an email sign-off is not an identifiable entity and cannot be published without risking attachment to the wrong person",
+   "Keep unpublished under all circumstances"
+  ],
+  "reasoning": "This is not a record, it is a fragment of a redaction failure. Publishing 'Jane, SDNY AUSA' would either identify nobody or, worse, the wrong somebody."
+ },
+ {
+  "name": "Ion",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "witness",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "unidentified individual — possible victim, do not publish",
+  "uncited_claims": [
+   "'Unidentified guest at Epstein's Paris apartment October 17-25, 2017' — no document number",
+   "'Lesley Groff coordinated apartment reshuffling to accommodate Ion's arrival' — no citation",
+   "Category 'witness' asserted with nothing showing this person witnessed anything"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep permanently unpublished",
+   "Assess victim status before anything else: an unidentified guest whose stay at an Epstein property was arranged by Epstein's scheduler is at least as likely to be a victim as a witness",
+   "Recategorise from 'witness' to unidentified"
+  ],
+  "reasoning": "This is the highest-risk misfiling in the Tier 6 set. An unnamed person whose accommodation at Epstein's Paris apartment was arranged by the assistant documented elsewhere in this database as scheduling victims is filed as a 'witness' with no evidence. If Ion is a victim, publishing this record would expose one."
+ },
+ {
+  "name": "Erica",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "staff",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "staff — third party, not network-related",
+  "uncited_claims": [
+   "'Assistant or gatekeeper for Dr. Chen' — the record cannot say which, and cites no document",
+   "'Received urgent communication request from Epstein's assistant in October 2017' — no citation"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep unpublished",
+   "Consider deletion — a first-name-only assistant to a third party who received one phone message is not an entity in this investigation"
+  ],
+  "reasoning": "A private individual, first name only, whose entire documented connection is fielding one call request. Being an assistant to someone Epstein wanted to phone is not participation in anything."
+ },
+ {
+  "name": "Valdson Cotrin",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "staff",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "staff — courier",
+  "uncited_claims": [
+   "'Paris-based staff or courier for Jeffrey Epstein' — the record cannot say which",
+   "'Communicated in French, used Samsung Galaxy device' — no citation, no investigative relevance",
+   "'One day before Epstein's urgent Dr. Chen call request' — juxtaposition implying significance with none established"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep permanently unpublished",
+   "Delete or reduce to a logistics note — this is a named private person recorded for delivering a FedEx package"
+  ],
+  "reasoning": "A low-level courier is given a permanent named record in a trafficking database for a single 2017 package delivery, complete with his handset model and the insinuating adjacency to another event. Being a bad man's courier is not a public matter."
+ },
+ {
+  "name": "Assistant to Jeffrey Epstein (October 2017, signature redacted)",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "staff",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": true,
+  "publication_risk": "low",
+  "category_correct": true,
+  "recommended_category": "staff — unidentified",
+  "uncited_claims": [
+   "'Identity and signature deliberately redacted from email' — 'deliberately' is an inference about intent with no basis stated",
+   "No document number anywhere in the record"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Drop 'deliberately' or support it",
+   "Add the document number"
+  ],
+  "reasoning": "The record is appropriately unpublished and does not name anyone, but it asserts intent behind a redaction it cannot see and cites no document."
+ },
+ {
+  "name": "Simone",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "staff",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "third party — settlement fund administrator",
+  "uncited_claims": [
+   "'JPMC settlement fund administrator' — one line, no supporting detail beyond the source doc reference"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep unpublished — a first-name-only administrator of a victims' compensation fund sits directly adjacent to claimant identities",
+   "Either establish who she is and why she is an entity, or delete"
+  ],
+  "reasoning": "A first-name-only person whose only role is administering victim settlement money is stored as an entity. There is nothing here to publish, and adjacency to claimant data makes publication actively hazardous."
+ },
+ {
+  "name": "Tazia Smith",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "bank employee — no finding against her",
+  "uncited_claims": [
+   "'the conduit who brought the Epstein relationship from JPMorgan to Deutsche Bank' — characterisation, not a finding",
+   "'Her email ... was used to bypass normal EDD protocols' — passive construction assigning her responsibility for an institutional control failure",
+   "The NYDFS consent order (EFTA00151495) describes conduct by role, not by named individual employees — the name attribution needs verifying"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep unpublished",
+   "Verify that the cited consent order actually names her rather than describing an unnamed relationship manager",
+   "Rewrite so the compliance failure attaches to the institution that owned the control, not to one employee"
+  ],
+  "reasoning": "A named mid-level banker is held out as the person who let Epstein into Deutsche Bank. Regulatory findings in this matter ran against the institution; individual attribution needs a source, and the record's own citation may not contain her name."
+ },
+ {
+  "name": "Paul Morris",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "bank employee — no finding against him",
+  "uncited_claims": [
+   "'Initiated Epstein onboarding, oversaw 76-account structure, approved Butterfly Trust without compliance review' — attributed to a named individual; the cited NYDFS consent order made findings against Deutsche Bank as an institution",
+   "No page or paragraph pointer within the cited documents"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep unpublished",
+   "Verify individual naming in the cited sources before any publication",
+   "Attribute compliance failures to the bank unless a source names the person"
+  ],
+  "reasoning": "Named private-sector employees are assigned personal responsibility for a bank's AML failures on the strength of a consent order that, as far as the record shows, made findings against the bank. Institution-versus-employee conflation again, this time pointed at people with no public profile."
+ },
+ {
+  "name": "Stewart Oldfield",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "bank employee — no finding against him",
+  "uncited_claims": [
+   "'second relationship manager communicating with Kahn' — attributed to a named individual; the cited NYDFS consent order made findings against Deutsche Bank as an institution",
+   "No page or paragraph pointer within the cited documents"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep unpublished",
+   "Verify individual naming in the cited sources before any publication",
+   "Attribute compliance failures to the bank unless a source names the person"
+  ],
+  "reasoning": "Named private-sector employees are assigned personal responsibility for a bank's AML failures on the strength of a consent order that, as far as the record shows, made findings against the bank. Institution-versus-employee conflation again, this time pointed at people with no public profile."
+ },
+ {
+  "name": "Harry Beller",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": true,
+  "recommended_category": "financial professional",
+  "uncited_claims": [
+   "'Deutsche Bank ARRC member — chaired risk reviews with no minutes kept' — no citation for this sentence while the rest of the record is cited"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Cite the minutes claim or delete it"
+  ],
+  "reasoning": "Mostly a cited fiduciary record for a private individual, correctly unpublished. One uncited sentence implies concealment through absent record-keeping."
+ },
+ {
+  "name": "Jeanne Christensen",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "attorney",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": true,
+  "recommended_category": "legal — plaintiffs' counsel",
+  "uncited_claims": [
+   "'Wigdor LLP partner, representing 10+ Black victims' — the entire record; no citation"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Add the material fact the record omits: Judge Jessica Clarke sanctioned Christensen in Doe v. Black (23 April 2026), finding counsel lied repeatedly to the court and to opposing counsel and directed the plaintiff to destroy a social media account, with a fee award against her and Wigdor LLP",
+   "Rewrite '10+ Black victims' — it reads as a racial descriptor when it means victims of Leon Black",
+   "Cross-link: she is the person who decoded the journal name attributions this database relies on"
+  ],
+  "reasoning": "The omission runs the wrong way from most defects here — the record is too kind, not too harsh. The attorney who produced the journal name attributions underpinning multiple Tier 1 entries was judicially sanctioned for dishonesty, and this record does not mention it. The phrasing is also badly ambiguous."
+ },
+ {
+  "name": "Douglas Wigdor",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "attorney",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": true,
+  "recommended_category": "legal — plaintiffs' counsel",
+  "uncited_claims": [
+   "'Wigdor LLP partner' — the entire record"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Note the April 2026 sanctions and fee award against Wigdor LLP in Doe v. Black, which bear on the reliability of material this database sources to the firm"
+  ],
+  "reasoning": "A three-word record for a name-partner whose firm was sanctioned in the very litigation that produced this database's journal evidence. Materially incomplete."
+ },
+ {
+  "name": "Liston Abramson",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "attorney",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": false,
+  "recommended_category": "organization — law firm",
+  "uncited_claims": [
+   "'Prior victim attorney' — no name of an individual attorney, no citation"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Correct entity_type: Liston Abramson LLP is a law firm, not a person",
+   "Identify the individual attorney if one is meant"
+  ],
+  "reasoning": "A law firm is stored as a natural person. Small, but it means the database cannot distinguish organisations from individuals — the same failure mode that produced the Apollo institution/employee error."
+ },
+ {
+  "name": "Horowitz",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "attorney",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "unidentified — surname only",
+  "uncited_claims": [
+   "'Prior victim attorney before Wigdor' — surname only, no first name, no firm, no citation beyond a bare source doc"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Keep unpublished — a surname-only attorney record is a misidentification waiting to happen",
+   "Identify or delete"
+  ],
+  "reasoning": "A common surname with no first name, no firm and no evidence is stored as a person in a trafficking database. Published, it would attach to whichever Horowitz a reader guessed at."
+ },
+ {
+  "name": "AllianceBernstein Holding L.P.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking/market making",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Ares Management, L.P.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking compensation",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "BlackRock Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking business",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Federated Investors, Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — compensation for products and services",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Franklin Resources Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking services",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Invesco",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking relationships",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Janus Capital Group Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — compensation for products and services",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Legg Mason Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking services",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "LPL Investment Holdings Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking services",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "OM Asset Management Plc",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking compensation",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "T. Rowe Price Group, Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking/market making",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Virtus Investment Partners Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking/market making",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Waddell & Reed Financial Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — investment banking/market making",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "WisdomTree Investments, Inc.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "The record's own text states the sole basis is appearance in Morgan Stanley's regulatory disclosure page — 1% beneficial ownership as of 27 Feb 2015",
+   "No EFTA document number",
+   "No connection to Epstein, his associates, his finances or his conduct is asserted anywhere"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete, or move to a non-investigative 'corpus noise' holding area",
+   "Never publish — inclusion in an Epstein entity database is itself the defamatory implication, regardless of the neutral text"
+  ],
+  "reasoning": "This company exists in the database only because its name appears in the boilerplate disclosure pages of a single April 1, 2015 Morgan Stanley equity research report on Apollo that happens to sit in the corpus. It has no relationship to the investigation. Roughly thirty such false-positive entities are polluting the entity set."
+ },
+ {
+  "name": "Athene",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "Sole basis is that the company is named in the Apollo research report as a potential IPO candidate and sub-advisory relationship in a Morgan Stanley research report",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete",
+   "Never publish"
+  ],
+  "reasoning": "A portfolio company or commercial counterparty of Apollo, picked up from an equity research report in the corpus. Its only path to this database is Apollo, whose own record misattributes Leon Black's personal payments to the firm. Compounding error."
+ },
+ {
+  "name": "Brit Insurance",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "Sole basis is that the company is named as an Apollo portfolio company announced for sale in 1Q2015 in a Morgan Stanley research report",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete",
+   "Never publish"
+  ],
+  "reasoning": "A portfolio company or commercial counterparty of Apollo, picked up from an equity research report in the corpus. Its only path to this database is Apollo, whose own record misattributes Leon Black's personal payments to the firm. Compounding error."
+ },
+ {
+  "name": "Great Wolf Resorts",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "Sole basis is that the company is named as an Apollo portfolio company announced for sale in 1Q2015 in a Morgan Stanley research report",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete",
+   "Never publish"
+  ],
+  "reasoning": "A portfolio company or commercial counterparty of Apollo, picked up from an equity research report in the corpus. Its only path to this database is Apollo, whose own record misattributes Leon Black's personal payments to the firm. Compounding error."
+ },
+ {
+  "name": "CNS",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "Sole basis is that the company is named as a company whose monitoring fee to Apollo expired in 4Q2014 in a Morgan Stanley research report",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete",
+   "Never publish"
+  ],
+  "reasoning": "A portfolio company or commercial counterparty of Apollo, picked up from an equity research report in the corpus. Its only path to this database is Apollo, whose own record misattributes Leon Black's personal payments to the firm. Compounding error."
+ },
+ {
+  "name": "Sprouts",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "Sole basis is that the company is named as an Apollo portfolio exit held in Fund VI escrow in a Morgan Stanley research report",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete",
+   "Never publish"
+  ],
+  "reasoning": "A portfolio company or commercial counterparty of Apollo, picked up from an equity research report in the corpus. Its only path to this database is Apollo, whose own record misattributes Leon Black's personal payments to the firm. Compounding error."
+ },
+ {
+  "name": "Oppenheimer Funds",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "not an entity in this investigation — delete",
+  "uncited_claims": [
+   "Sole basis is that the company is named as having a sub-advised relationship with Apollo in a Morgan Stanley research report",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete",
+   "Never publish"
+  ],
+  "reasoning": "A portfolio company or commercial counterparty of Apollo, picked up from an equity research report in the corpus. Its only path to this database is Apollo, whose own record misattributes Leon Black's personal payments to the firm. Compounding error."
+ },
+ {
+  "name": "Morgan Stanley & Co. LLC",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "document provenance metadata — not an entity",
+  "uncited_claims": [
+   "Sole basis is that the firm is the author of the research report",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete or convert to a document-provenance field on the research report itself",
+   "Never publish"
+  ],
+  "reasoning": "The publisher of a document found in the corpus has been converted into an investigative entity. Authorship of a document in a 3.5-million-page production is not a relationship with Epstein."
+ },
+ {
+  "name": "Morgan Stanley C.T.V.M. S.A.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "document provenance metadata — not an entity",
+  "uncited_claims": [
+   "Sole basis is that the firm is an affiliate listed in the report's disclosure section",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete or convert to a document-provenance field on the research report itself",
+   "Never publish"
+  ],
+  "reasoning": "The publisher of a document found in the corpus has been converted into an investigative entity. Authorship of a document in a 3.5-million-page production is not a relationship with Epstein."
+ },
+ {
+  "name": "Morgan Stanley Canada Limited",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "document provenance metadata — not an entity",
+  "uncited_claims": [
+   "Sole basis is that the firm is an affiliate listed in the report's disclosure section",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete or convert to a document-provenance field on the research report itself",
+   "Never publish"
+  ],
+  "reasoning": "The publisher of a document found in the corpus has been converted into an investigative entity. Authorship of a document in a 3.5-million-page production is not a relationship with Epstein."
+ },
+ {
+  "name": "Morgan Stanley Mexico, Casa de Bolsa SA de C.V.",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "moderate",
+  "category_correct": false,
+  "recommended_category": "document provenance metadata — not an entity",
+  "uncited_claims": [
+   "Sole basis is that the firm is an affiliate listed in the report's disclosure section",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete or convert to a document-provenance field on the research report itself",
+   "Never publish"
+  ],
+  "reasoning": "The publisher of a document found in the corpus has been converted into an investigative entity. Authorship of a document in a 3.5-million-page production is not a relationship with Epstein."
+ },
+ {
+  "name": "MSCI",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": false,
+  "recommended_category": "not an entity — delete",
+  "uncited_claims": [
+   "Sole basis is that the name appears as an index provider cited as a benchmark source in the report's methodology section",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete — an index, an exchange and a data vendor are not participants in anything"
+  ],
+  "reasoning": "A stock index or data vendor has been ingested as an entity from a research report's methodology boilerplate. This is an extraction bug, not a finding, and it inflates the entity count with noise."
+ },
+ {
+  "name": "S&P 500",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": false,
+  "recommended_category": "not an entity — delete",
+  "uncited_claims": [
+   "Sole basis is that the name appears as a market benchmark index named in the report's methodology section",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete — an index, an exchange and a data vendor are not participants in anything"
+  ],
+  "reasoning": "A stock index or data vendor has been ingested as an entity from a research report's methodology boilerplate. This is an extraction bug, not a finding, and it inflates the entity count with noise."
+ },
+ {
+  "name": "TOPIX",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": false,
+  "recommended_category": "not an entity — delete",
+  "uncited_claims": [
+   "Sole basis is that the name appears as a stock index named as the Japan benchmark in the report's methodology section",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete — an index, an exchange and a data vendor are not participants in anything"
+  ],
+  "reasoning": "A stock index or data vendor has been ingested as an entity from a research report's methodology boilerplate. This is an extraction bug, not a finding, and it inflates the entity count with noise."
+ },
+ {
+  "name": "NYSE",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": false,
+  "recommended_category": "not an entity — delete",
+  "uncited_claims": [
+   "Sole basis is that the name appears as a stock exchange named in the report's ratings-distribution disclosure",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete — an index, an exchange and a data vendor are not participants in anything"
+  ],
+  "reasoning": "A stock index or data vendor has been ingested as an entity from a research report's methodology boilerplate. This is an extraction bug, not a finding, and it inflates the entity count with noise."
+ },
+ {
+  "name": "Thomson Reuters",
+  "entity_type": "organization",
+  "db_tier": 6,
+  "db_category": "media",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": false,
+  "recommended_category": "not an entity — delete",
+  "uncited_claims": [
+   "Sole basis is that the name appears as a data provider cited as the source of consensus EPS estimates",
+   "No EFTA document number",
+   "No asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete — an index, an exchange and a data vendor are not participants in anything"
+  ],
+  "reasoning": "A stock index or data vendor has been ingested as an entity from a research report's methodology boilerplate. This is an extraction bug, not a finding, and it inflates the entity count with noise."
+ },
+ {
+  "name": "NASD",
+  "entity_type": "agency",
+  "db_tier": 6,
+  "db_category": "government",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": false,
+  "safe_to_publish": false,
+  "publication_risk": "low",
+  "category_correct": false,
+  "recommended_category": "not an entity — delete; also defunct",
+  "uncited_claims": [
+   "'Financial industry regulatory authority mentioned in disclosure requirements for stock ratings distribution' — sole basis is research-report boilerplate",
+   "No EFTA document number; no asserted connection to Epstein"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete",
+   "Note if retained: NASD ceased to exist in 2007, when it was consolidated into FINRA — it could not have had any role in events after that date"
+  ],
+  "reasoning": "A defunct self-regulatory body appears as a Tier 6 government agency because its name is in a research report's ratings-distribution disclaimer. Both the inclusion and the entity itself are stale."
+ },
+ {
+  "name": "Michael J. Cyprys",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "document author — not an entity",
+  "uncited_claims": [
+   "Sole basis is that he is Morgan Stanley research analyst who authored the April 1, 2015 report on Apollo",
+   "No EFTA document number",
+   "No asserted connection to Epstein, and none exists"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete immediately",
+   "Never publish — a named private individual whose only link is having written a stock research note that ended up in a DOJ production has no business in an Epstein entity database"
+  ],
+  "reasoning": "A working equity analyst is filed as a Tier 6 entity in a sex-trafficking investigation because he wrote a research report that happens to sit in the corpus. Publication would be a straightforward defamatory implication against a private person with zero connection to the subject matter."
+ },
+ {
+  "name": "Nicholas Stelzner",
+  "entity_type": "person",
+  "db_tier": 6,
+  "db_category": "financial",
+  "db_published": false,
+  "is_victim": false,
+  "is_private_individual": true,
+  "safe_to_publish": false,
+  "publication_risk": "severe",
+  "category_correct": false,
+  "recommended_category": "document author — not an entity",
+  "uncited_claims": [
+   "Sole basis is that he is Morgan Stanley research analyst who co-authored the April 1, 2015 report on Apollo",
+   "No EFTA document number",
+   "No asserted connection to Epstein, and none exists"
+  ],
+  "npa_error": false,
+  "required_corrections": [
+   "Delete immediately",
+   "Never publish — a named private individual whose only link is having written a stock research note that ended up in a DOJ production has no business in an Epstein entity database"
+  ],
+  "reasoning": "A working equity analyst is filed as a Tier 6 entity in a sex-trafficking investigation because he wrote a research report that happens to sit in the corpus. Publication would be a straightforward defamatory implication against a private person with zero connection to the subject matter."
+ }
+]
