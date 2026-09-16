@@ -61,3 +61,6 @@ docs/volumes/
 *.torrent
 # Local MCP client config — carries the bearer token, never commit
 .mcp.json
+
+# git push credential file (kept outside repo; never commit)
+.efta-git-credentials
