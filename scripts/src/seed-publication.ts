@@ -1459,7 +1459,7 @@ const STORIES: StoryDef[] = [
   {
     slug: 'the-washington-list',
     title: 'The Washington List',
-    deck: 'Four men from one city, one company, one social circle — AOL\'s founding CEO, CEO, vice chairman, and SVP for policy — all named in the same victim\'s authenticated journals alongside the owner of the Washington NFL franchise. Deutsche Bank client records, Edge Foundation guest lists, and USVI property records independently place them in Epstein\'s orbit. None investigated. None charged.',
+    deck: 'Four men from one city, one social circle — AOL\'s founding CEO, its CEO, its vice chairman, and the owner of the Washington NFL franchise — all named in the same victim\'s authenticated journals. Deutsche Bank client records, Edge Foundation guest lists, and USVI property records independently place them in Epstein\'s orbit. None investigated. None charged.',
     section: 'the-network' as const,
     file: 'the-washington-list.md',
     byline: 'EFTA Investigation Team',
@@ -1479,7 +1479,7 @@ const STORIES: StoryDef[] = [
       { name: 'Dan Snyder', mention_count: 5, is_primary: true },
       { name: 'Jeffrey Epstein', mention_count: 10, is_primary: true },
       { name: 'Ghislaine Maxwell', mention_count: 2, is_primary: false },
-      { name: 'George Vradenburg III', mention_count: 3, is_primary: false },
+      { name: 'Mr. Vradenberg', mention_count: 3, is_primary: false },
       { name: 'Alan Dershowitz', mention_count: 1, is_primary: false },
       { name: 'Larry Summers', mention_count: 1, is_primary: false },
       { name: 'Marvin Minsky', mention_count: 1, is_primary: false },
@@ -1496,14 +1496,14 @@ const STORIES: StoryDef[] = [
         number: 2,
         bates_number: 'EFTA02731082',
         description:
-          'SDNY prosecution memo — Epstein contact directory ("black book") with 1,571 names, multiple entries for D.C.-area figures including all four AOL executives',
+          'SDNY prosecution memo — Epstein contact directory ("black book") with 1,571 names, multiple entries for D.C.-area figures including all three AOL executives',
         page_reference: 'Evidence inventory section',
       },
       {
         number: 3,
         bates_number: 'EFTA02731465',
         description:
-          'Victim handwritten scrapbook journal #2 (8 pages), marked "CONFIDENTIAL FOR ATTORNEY\'S EYES ONLY." Contains George Vradenburg reference and AOL platform accusation.',
+          'Victim handwritten scrapbook journal #2 (8 pages), marked "CONFIDENTIAL FOR ATTORNEY\'S EYES ONLY." Contains the unidentified "Mr. vradenberg" reference and AOL platform accusation.',
         page_reference: 'p. 5',
       },
       {
@@ -2570,7 +2570,7 @@ const STORIES: StoryDef[] = [
   {
     slug: 'they-use-it-to-find-us',
     title: 'They Use It to Find Us',
-    deck: 'A teenage victim pasted AOL clippings into her journal and wrote seven words never publicly reported: "They use it to find us." Four of AOL\'s top five executives appear in the same journals as men she was directed to have sexual encounters with. The company\'s SVP for policy — the executive most responsible for child safety — is named among those who "dont care if this happens." This is the only accusation in the EFTA corpus that implicates a technology platform as an instrument of the trafficking operation.',
+    deck: 'A teenage victim pasted AOL clippings into her journal and wrote seven words never publicly reported: "They use it to find us." Three of AOL\'s top executives appear in the same journals as men she was directed to have sexual encounters with. This is the only accusation in the EFTA corpus that implicates a technology platform as an instrument of the trafficking operation.',
     section: 'the-operation' as const,
     file: 'they-use-it-to-find-us.md',
     byline: 'EFTA Investigation Team',
@@ -2605,7 +2605,7 @@ const STORIES: StoryDef[] = [
         number: 2,
         bates_number: 'EFTA02731420',
         description:
-          'Victim handwritten scrapbook journal #1 (13 pages), marked "CONFIDENTIAL FOR ATTORNEY\'S EYES ONLY." Names 30+ men including four AOL executives.',
+          'Victim handwritten scrapbook journal #1 (13 pages), marked "CONFIDENTIAL FOR ATTORNEY\'S EYES ONLY." Names 30+ men including three AOL executives.',
         page_reference: 'Full document (13 pages)',
       },
       {
@@ -2661,7 +2661,7 @@ const STORIES: StoryDef[] = [
         number: 10,
         bates_number: 'EFTA02731465',
         description:
-          'Victim journal #2 — George Vradenburg III listed among those who "dont care if this happens." Vradenburg was AOL\'s SVP for Global and Strategic Policy, overseeing child safety.',
+          'Victim journal #2 — unidentified "Mr. vradenberg" listed among those who "dont care if this happens." Earlier identification as George Vradenburg III withdrawn (surname match only, no corroboration).',
         page_reference: 'p. 5',
       },
       {

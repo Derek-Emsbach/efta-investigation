@@ -662,7 +662,7 @@
 ### Unpublished Entity Pipeline (86 entities)
 - [ ] Review 21 unpublished T3 entities for publishing readiness (15 confirmed remaining as of 2026-09-15 — 6 already resolved/published since the "21" count was taken)
   - [x] **"Federal Worker" (`82abc412`) corpus-verified 2026-09-15** — see Session Note below. Bio/tier_justification/evidence_summary corrected, entity_documents fixed (6 false-positive links removed, 1 real link added). Identity still unresolved — NOT publish-ready, no `user_confirmed` change made.
-  - [x] **"Mr. Vradenberg" (`b6dd8bdd`, renamed from "George Vradenburg III") corpus-verified 2026-09-16 — URGENT, see Session Note below.** The real identification is NOT established; entity record corrected. **Two live published stories still assert the identification as fact — needs Derek's review.**
+  - [x] **"Mr. Vradenberg" (`b6dd8bdd`, renamed from "George Vradenburg III") corpus-verified 2026-09-16 — URGENT, see Session Note below.** The real identification is NOT established; entity record corrected. **Two live published stories still assert the identification as fact — needs Derek's review.** **UPDATE 2026-09-16: corrections drafted and committed (stories + seed-publication.ts StoryDefs/decks/citations, "four AOL execs" premise reduced to three throughout). NOT re-seeded — Derek reviews the diff, then `pnpm --filter @efta/scripts seed:publication` to push it live.**
 - [ ] Review 61 T6 entities — many are financial/peripheral from Leon Black case; consider bulk cleanup vs selective publishing
 
 ### Platform

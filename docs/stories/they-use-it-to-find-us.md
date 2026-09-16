@@ -6,7 +6,7 @@ And then:
 
 "They use it to find us!"[CITE:1]
 
-The scrapbook — EFTA02731465, marked "CONFIDENTIAL FOR ATTORNEY'S EYES ONLY" — is one of two journals that name more than thirty men the victim was directed by {{entity:jeffrey-epstein}} and {{entity:ghislaine-maxwell}} to have sexual encounters with. Among those names are four of AOL's top five corporate executives.[CITE:2]
+The scrapbook — EFTA02731465, marked "CONFIDENTIAL FOR ATTORNEY'S EYES ONLY" — is one of two journals that name more than thirty men the victim was directed by {{entity:jeffrey-epstein}} and {{entity:ghislaine-maxwell}} to have sexual encounters with. Among those names are three of AOL's top corporate executives.[CITE:2]
 
 The victim did not paste random clippings. She pasted AOL clippings. And she accused the company — by name, in a document produced for litigation — of being a tool used to find and target girls like her.
 
@@ -23,11 +23,11 @@ AOL's chat rooms were organized by topic and age group, but enforcement was mini
 This is the context for the victim's accusation. When she wrote "they use it to find us," she was writing from inside a system where AOL was not a neutral platform. It was the dominant tool through which adults accessed minors online, and its top executives were simultaneously named in her journal as men she was provided to.
 
 > [!finding]
-> The victim's accusation that AOL was used to "find" victims is not a metaphor. In the early 2000s, AOL chat rooms were the primary online space where adults encountered minors. The platform's failure to implement meaningful child safety protections created an environment that traffickers could exploit — and four of the company's senior executives are named in the same victim's journals documenting sexual exploitation.
+> The victim's accusation that AOL was used to "find" victims is not a metaphor. In the early 2000s, AOL chat rooms were the primary online space where adults encountered minors. The platform's failure to implement meaningful child safety protections created an environment that traffickers could exploit — and three of the company's senior executives are named in the same victim's journals documenting sexual exploitation.
 
 ---
 
-## The Four Executives
+## The Three Executives
 
 The concentration of AOL leadership in the victim journals is unlike anything else in the Epstein corpus.[CITE:2]
 
@@ -37,10 +37,10 @@ The concentration of AOL leadership in the victim journals is unlike anything el
 
 {{entity:ted-leonsis}} — AOL's vice chairman. Named in the most specific allegation in either journal: "Why would they all allow Mr. Leonsis wait this long? Why would he bring a friend and make a video?"[CITE:9] This is an accusation of filmed sexual abuse with a third-party participant. Also named in the "flights of horror" passage.[CITE:4]
 
-George Vradenburg III — AOL's Senior Vice President for Global and Strategic Policy. Named on EFTA02731465 p.5 among those who "dont care if this happens."[CITE:10] Vradenburg's specific role at AOL — overseeing the company's government relations and safety policy — gives his inclusion particular weight. He was the executive most directly responsible for AOL's position on child protection, and he appears in a victim's journal accusing AOL of failing to protect children.
+"Mr. vradenberg" — an unidentified name on EFTA02731465 p.5, listed among those who "dont care if this happens."[CITE:10] An earlier version of this story identified this name as George Vradenburg III, AOL's Senior Vice President for Global and Strategic Policy. That identification has been withdrawn. It rested on a surname resemblance and the surrounding AOL context; the journal supplies no first name, title, or employer, and the corpus contains no document connecting the name to the AOL executive. The name is retained here only as it appears in the source.
 
-> [!data:4]
-> AOL executives named in the same victim's journals — founding CEO, CEO, vice chairman, and SVP for policy. No other company has this level of C-suite representation in the Epstein document corpus.
+> [!data:3]
+> AOL executives named in the same victim's journals — founding CEO, CEO, and vice chairman. No other company has this level of C-suite representation in the Epstein document corpus.
 
 ---
 
@@ -69,7 +69,7 @@ The victim's accusation — "they use it to find us" — sits at the intersectio
 
 First: AOL's chat rooms were, in the early 2000s, the most common online environment where adults encountered minors. Child safety advocates, law enforcement, and parents all recognized the risk. The platform's leadership made policy choices about how aggressively to monitor, moderate, and restrict access. Those policy choices had consequences.
 
-Second: four of the five executives who made or oversaw those policy choices are named in a victim's journal as men she was sexually exploited by, alongside the most prolific sex trafficker in American history.
+Second: three of the executives who made or oversaw those policy choices are named in a victim's journal as men she was sexually exploited by, alongside the most prolific sex trafficker in American history.
 
 The victim did not accuse a random company. She accused the company whose executives she was being provided to — and she accused it of the specific failure that made her exploitation possible. She physically cut AOL clippings from a newspaper or magazine and glued them into her journal as evidence of what she was alleging.
 
@@ -78,4 +78,4 @@ The scrapbook page containing this accusation (EFTA02731465 p.6) also contains h
 ---
 
 > [!finding]
-> A teenage victim, writing in real time during her exploitation, physically pasted AOL clippings into her journal and accused the company of being used as a tool to target victims. Four of AOL's top five executives appear in the same journals as men she was directed to have sexual encounters with. The company's SVP for policy — the executive most directly responsible for child safety — is named among those who "dont care if this happens." This is the only accusation in the entire EFTA corpus that implicates a technology platform as an instrument of the trafficking operation itself.
+> A teenage victim, writing in real time during her exploitation, physically pasted AOL clippings into her journal and accused the company of being used as a tool to target victims. Three of AOL's top executives appear in the same journals as men she was directed to have sexual encounters with. This is the only accusation in the entire EFTA corpus that implicates a technology platform as an instrument of the trafficking operation itself.

@@ -16,12 +16,12 @@ The connection between these four men begins with one company: America Online.
 
 Jim Kimsey co-founded AOL in 1985 and served as its first CEO. Steve Case succeeded him and led the company through the AOL-Time Warner merger in 2000 — at the time, the largest corporate merger in American history. Ted Leonsis joined AOL as an executive and eventually became vice chairman, overseeing its media and internet properties. Three of the four D.C. journal names were AOL men.[CITE:2]
 
-But the AOL concentration goes further than three. A fourth AOL executive — George Vradenburg III, the company's Senior Vice President for Global and Strategic Policy — appears on a different journal page, listed among those who "dont care if this happens."[CITE:3] Four of AOL's top five executives appear in a single victim's handwritten journals. No other company in the entire Epstein corpus has this level of C-suite representation.
+A different journal page lists a "Mr. vradenberg" among those who "dont care if this happens."[CITE:3] An earlier version of this story identified that name as George Vradenburg III, AOL's Senior Vice President for Global and Strategic Policy. That identification does not hold up: it rested on a surname resemblance and the AOL context alone. The journal gives no first name, title, or company, and the only other appearances of the surname in the entire corpus are three copies of an unrelated 2014 newspaper clipping. Nothing in the documents connects the two. We have withdrawn the identification, and "Mr. vradenberg" remains an unidentified name. Three of AOL's top executives appear in a single victim's handwritten journals — still a concentration no other company in the Epstein corpus matches.
 
 The fifth member of the cluster, Dan Snyder, moved in the same D.C. power circles. He owned the Washington NFL franchise (later the Commanders), which he purchased in 1999 for $800 million. In a city where business, politics, and sports intersect at every charity gala, every skybox, every fundraiser — Snyder, Kimsey, Case, and Leonsis occupied the same rooms.
 
 > [!finding]
-> Four of AOL's top five executives named in the same victim's journals is without parallel in the Epstein corpus. This is not a case of one executive making an introduction. This is a company's leadership, accessed as a group.
+> Three of AOL's top executives named in the same victim's journals is without parallel in the Epstein corpus. This is not a case of one executive making an introduction. This is a company's leadership, accessed as a group.
 
 ---
 
@@ -77,7 +77,7 @@ What makes the D.C. cluster significant beyond the journals is the corroborating
 
 Epstein did not collect contacts randomly. His network was built through what intelligence analysts call "cluster recruitment" — entering a social circle through one contact and expanding outward through shared relationships.
 
-The D.C. cluster demonstrates the pattern precisely. Kimsey and Case knew each other intimately — they co-founded a company together. Leonsis worked for that company. Vradenburg shaped its government policy. Snyder occupied the same social stratum in the same city. Once Epstein had access to one member of this group, the social physics of D.C. power did the rest.
+The D.C. cluster demonstrates the pattern precisely. Kimsey and Case knew each other intimately — they co-founded a company together. Leonsis worked for that company. Snyder occupied the same social stratum in the same city. Once Epstein had access to one member of this group, the social physics of D.C. power did the rest.
 
 This pattern repeats throughout the EFTA documents. In New York, Epstein's circle included finance figures who served on each other's boards and attended each other's dinners. In academia, he cultivated relationships at Harvard and MIT — where {{entity:larry-summers}} was president and {{entity:marvin-minsky}} was a senior faculty member — using donations to build institutional access.[CITE:15] In international circles, his modeling agency connections through Jean-Luc Brunel gave him access to young women across multiple countries.[CITE:16]
 
