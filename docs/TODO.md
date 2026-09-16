@@ -662,6 +662,7 @@
 ### Unpublished Entity Pipeline (86 entities)
 - [ ] Review 21 unpublished T3 entities for publishing readiness (15 confirmed remaining as of 2026-09-15 — 6 already resolved/published since the "21" count was taken)
   - [x] **"Federal Worker" (`82abc412`) corpus-verified 2026-09-15** — see Session Note below. Bio/tier_justification/evidence_summary corrected, entity_documents fixed (6 false-positive links removed, 1 real link added). Identity still unresolved — NOT publish-ready, no `user_confirmed` change made.
+  - [x] **"Mr. Vradenberg" (`b6dd8bdd`, renamed from "George Vradenburg III") corpus-verified 2026-09-16 — URGENT, see Session Note below.** The real identification is NOT established; entity record corrected. **Two live published stories still assert the identification as fact — needs Derek's review.**
 - [ ] Review 61 T6 entities — many are financial/peripheral from Leon Black case; consider bulk cleanup vs selective publishing
 
 ### Platform
@@ -677,6 +678,29 @@
   - `db-migrator.md` — Safe migration specialist: `tools: Read, Write, Grep, Glob` only (no Bash). Writes SQL files for human review — never runs migrations. UUID/RLS/FTS conventions baked in.
 - [ ] **Congressional Monitor agent** — future: scheduled corpus + web search → `create_public_event` MCP. Needs cron scheduling.
 - [ ] **Connection Discoverer agent** — future: multi-entity co-occurrence + timeline overlap analysis → ranked connection suggestions.
+
+## Session Note — 2026-09-16 (background/unattended research session)
+
+**MCP corpus server started successfully** (`setsid nohup corepack pnpm dev < /dev/null > logfile 2>&1 & disown`, all queries run inside a *single* device_bash call/timeout window — background processes still do not survive between separate device_bash calls in this bridged environment, reconfirmed again this session; the remote-devices MCP bridge itself also dropped and reconnected once mid-session with no data loss).
+
+**Picked up the highest-leverage lead flagged 2026-09-15**: the same journal (EFTA02731420/EFTA02731465, duplicated in EFTA00155037) names 9 Unpublished Entity Pipeline entities in one passage. Focused on ONE — **"George Vradenburg III"** — because it was the only one of the nine with a real, identifiable, non-criminal public figure's full name attached (the other eight are all placeholder "Mr. X" entities), which makes it both the highest-value entity to verify and the highest-risk one to get wrong.
+
+**Finding: the George Vradenburg III identification is unestablished, and a 2026-07-31 audit that already reached this conclusion was never executed on the record.** The audit's reasoning sat in `metadata.audit_2026_07_31` (`publication_hold: true`, `corroboration_strength: "none"`, explicit note that the ID "rests on a surname resemblance... plus a thematic AOL inference. Not established.") but the record's own `name`, `bio`, and `tier_justification` fields still asserted "Identified as George Vradenburg III..." as fact as of this morning. Re-ran the underlying corpus search from scratch to check the audit's own work rather than trust it blind:
+- `corpus_search` for `"George Vradenburg"` / `Vradenburg`: exactly 3 hits, all Dataset 9, all the *same* duplicated 2014 Alzheimer's-advocacy op-ed clipping (EFTA01195741, EFTA01195689, EFTA01071546). No first name, initials, employer, or any other detail — just a surname in an unrelated news clipping.
+- `corpus_search` for `vradenberg` (the journal's actual spelling): 2 hits — EFTA02731465 p.5 and EFTA00155037 p.14, the same journal passage duplicated across Dataset 12 and Dataset 8: *"...Mr. Rails and Mr. Ein [blood on their hands] but so does Jeffrey and Mr. Jacobson. Mr. Conway Mr. vradenberg and Bill s. All of them who dont care if this happens!"*
+- Nothing connects the two. The audit's conclusion holds up: this is a surname-match-only identification of a real, named public figure (former AOL SVP; founder of USAgainstAlzheimer's) with zero independent corroboration.
+
+**Corrected the entity record** (`b6dd8bdd-3ead-42f4-a108-c8ba8651a3e4`): renamed `George Vradenburg III` → `Mr. Vradenberg` (matching the sibling placeholder entities from the same passage — Mr. Colgan, Mr. Caruthers, Mr. Islam, Mr. Rails, Mr. Jacobson, Mr. Conway, Bill S., all `unclassified_pending_review`), rewrote `bio` and `tier_justification` to state plainly that the AOL identification is not established, removed "George Vradenburg III"/"George Vradenburg" from `aliases` (this platform auto-links entity names by string match in story markdown — leaving the real name in `aliases` would have kept re-attaching it to future stories), added Dataset 8 to `datasets_appeared`/`source_docs` (the duplicate journal copy the 2026-07-31 audit didn't have), and corrected the `entity_connections` row to Jeffrey Epstein (`f251c68b`) the same way. Did not touch `profile_published`/`is_public`/`user_confirmed` (already false — no change needed there).
+
+**🚨 URGENT — this misidentification is already live in TWO published stories, not zero:**
+- `docs/stories/the-washington-list.md` (slug `the-washington-list`, section `the-network`, **published**, linked via `story_entities` to this exact entity row) — lines 19 and 80 name "George Vradenburg III" by full name and former title and state he "appears on a different journal page, listed among those who 'dont care if this happens'" with no hedge.
+- `docs/stories/they-use-it-to-find-us.md` (slug `they-use-it-to-find-us`, **published**, not linked via `story_entities` — likely plain-text mention rather than `{{entity:slug}}` markup) — line 40 makes the same claim at more length: "gives his inclusion particular weight... He was the executive most directly responsible for AOL's position on child protection."
+
+Both are live on theepsteincrimes.com right now, naming a real, identifiable, non-criminal individual in a trafficking-complicity accusation the investigation's own audit rejected six weeks ago. Editing or unpublishing live editorial content is outside what I judged in-scope for an unattended entity-enrichment session (it's an editorial call, and per `STORY_QUEUE.md`'s own quality bar, publication changes get a human read-through) — flagging both file paths and line numbers above rather than acting on them. **Derek: this needs a decision before anything else in the queue** — retract/caveat both story passages, or find real independent corroboration for the identification (a document giving a first name, title, or context that actually ties "Mr. vradenberg" to the real George Vradenburg III) before leaving it live.
+
+**Remaining backlog from the same journal, not yet worked**: Mr. Colgan, Mr. Caruthers, Mr. Islam, Mr. Rails, Mr. Ein, Mr. Jacobson, Mr. Conway, Bill S. — all confirmed still in the DB as T3/`unclassified_pending_review`/unpublished, none linked to any published story (checked `story_entities` for all eight this session — zero rows), so none carry Vradenburg's urgency. Good candidates for the next session's entity pass; corpus hits for these are likely all in the same EFTA02731420/EFTA02731465/EFTA00155037 passage and probably won't independently identify any of them (same "Mr. X" placeholder problem), but each deserves its own corpus-count sanity check before being ruled not-independently-corroborable.
+
+---
 
 ## Session Note — 2026-09-15 (background/unattended research session)
 
@@ -740,3 +764,9 @@
 **MCP corpus server could not be started.** `services/efta-mcp-server` runs via `tsx`/`esbuild`, but this session's sandboxed shell is `linux-arm64` while the repo's installed `node_modules` (esbuild's native binary) were built for `darwin-arm64` — classic cross-platform `node_modules` mismatch from a Mac-native install being accessed from a Linux execution context. `corepack pnpm dev` in `services/efta-mcp-server` fails immediately with esbuild's `TransformError`. **Did not attempt to fix by reinstalling** — reinstalling `node_modules` from this session's Linux shell would leave Linux-platform binaries in Derek's actual macOS project folder and likely break his normal local development. Left node_modules untouched. **Whoever picks this up locally on the Mac should just confirm `pnpm dev` still works there** (it should — the mismatch is an artifact of the sandboxed cross-platform bridge, not a real repo problem) — no action needed on Derek's own machine.
 
 Given no corpus/DB access, this session did external web-research verification instead (see `docs/investigation/threads/THREAD_17_FD302_Protect_Source_Trump_Hilton_Head.md` v2.1): resolved the two outstanding CRITICAL/HIGH open questions from the Trump/Hilton Head thread (Jim Atkins identity, mother's embezzlement conviction) using `WebSearch`/`WebFetch` against *Post and Courier* investigative reporting. No entities, connections, or documents were created/modified in the database — this is a documentation-only update. Everything actionable from this session is queued above under Trump Investigation Deep-Dive for whoever next has corpus access.
+
+---
+
+## Background Run Log
+
+- 2026-09-16 congressional-monitor — MCP: started | events created: 2 | duplicates skipped: 0 | leads not logged: 0 | flags for Derek: 0 | note: "Aug 31 Massie 14-names floor speech + Sept 15 Norman discharge-petition signature, both previously missed"
