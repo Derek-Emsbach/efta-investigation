@@ -770,3 +770,4 @@ Given no corpus/DB access, this session did external web-research verification i
 ## Background Run Log
 
 - 2026-09-16 congressional-monitor — MCP: started | events created: 2 | duplicates skipped: 0 | leads not logged: 0 | flags for Derek: 0 | note: "Aug 31 Massie 14-names floor speech + Sept 15 Norman discharge-petition signature, both previously missed"
+- 2026-09-17 congressional-monitor — MCP: started | events created: 1 | duplicates skipped: 0 | leads not logged: 0 | flags for Derek: 1 | note: logged Percival JPMorgan-fund fraud plea (2026-09-15); congressional discharge-petition thread already current as of 2026-09-16 run
