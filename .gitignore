@@ -64,3 +64,6 @@ docs/volumes/
 
 # git push credential file (kept outside repo; never commit)
 .efta-git-credentials
+
+# bridged-VM stale git locks moved aside by scripts/git-safe.sh (cannot be deleted on the VM)
+.git-lock-trash/
