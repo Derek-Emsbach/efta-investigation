@@ -9,6 +9,15 @@ reinstalled — from that VM. Two facts every run must respect:
    server, run every query, and stop it inside the *same* call.
 2. **There are no git credentials.** Commit locally with a `session-bg:` message;
    never `git push`. Derek pushes.
+3. **Git locks cannot be deleted on the VM — always commit through the wrapper.**
+   Run every git command as `bash scripts/git-safe.sh <args>` (e.g.
+   `bash scripts/git-safe.sh add -A`, `bash scripts/git-safe.sh commit -m "..."`),
+   NOT bare `git`. The VM creates `.git/index.lock`/`HEAD.lock` on nearly every
+   git call and cannot unlink them, so a bare `git` strands a lock that blocks the
+   next call — this silently ate a completed run's commit on 2026-09-17. The
+   wrapper moves stale locks aside (into gitignored `.git-lock-trash/`) before and
+   after each call. If you ever see "Unable to create '.git/index.lock': File
+   exists", you used bare git — re-run through the wrapper.
 
 ## Starting the MCP corpus server (Linux)
 
@@ -39,7 +48,7 @@ Every scheduled run — including no-op runs — appends one line to the
 - YYYY-MM-DD <task-name> — MCP: up|down|started | <task-specific counts> | note: <short phrase>
 ```
 
-and commits it. A run that leaves no trace is indistinguishable from a broken one.
+and commits it **via `bash scripts/git-safe.sh commit`** (see rule 3 above). A run that leaves no trace is indistinguishable from a broken one — and a bare-`git` commit that hits a stale lock leaves no trace even when the run did its work.
 
 ## Scheduled tasks (as of 2026-09-16, times MT)
 
