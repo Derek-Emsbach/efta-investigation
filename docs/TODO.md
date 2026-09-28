@@ -955,6 +955,8 @@ No new gap surfaced this session — the "blood on their hands"/direct-abuse jou
 ---
 
 ## Background Run Log
+
+- 2026-09-28 congressional-monitor — MCP: up | events created: 0 | duplicates skipped: 3 | leads not logged: 0 | flags for Derek: 1 new (2 carried forward) | note: "checked EFTA II discharge petition/106-sig thread (09-04/09-12), Indyke/Kahn estate-executor probe (09-23), and Comer Survivors Voice Protection Act (09-16) — all already logged; resolved bill number for Survivors Voice Protection Act as H.R.10389 (introduced 09-16), needs backfill into that event's notes; no new EFTA/DOJ/Congress developments found for 09-25 through 09-28"
 - 2026-09-28 daily-investigation — MCP: started | worked on: thread OQ-02/OQ-T05-04 ("Additional HT Subject" referral, EFTA02731736) | changed: resolved P1 open question — referral is DANY hand-off of existing Victim 3 account naming Brunel+Staley, not a new subject; updated OPEN_QUESTIONS.md, THREAD_05, THREAD_06, MASTER_INTELLIGENCE_BRIEF.md | flags for Derek: 0 new (2 carried forward: Vradenberg unpublished correction, Bill S./Conway publish decisions) | note: "no entity backlog item was queued from 09-24 session; fell back to priority-2 open-thread pick; pure documentation resolution, no DB writes"
 
 
