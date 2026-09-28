@@ -82,13 +82,19 @@ Despite this evidence — which SDNY prosecutors possessed from May 2021 onward 
 - Met Black at Epstein's townhouse while giving massages; Black called her afterward, gave her $5K in cash
 - Source: EFTA02731729
 
-**Victim 3**: Minor (16 years old at time of assault).
-- Trafficked from Virginia to Epstein's NYC townhouse by a female recruiter
+**Victim 3**: Minor (16-17 years old at time of assault, introduced to Maxwell "around 2001/2002").
+- Trafficked from Virginia to Epstein's NYC townhouse by a female recruiter/mentor figure who "turned her over to Gislaine"
 - DANY memo: "Black used adult sex toys in victim's rectum and vagina. Victim felt severe pinching in her vagina and began bleeding from her rectum; Black and others at Epstein's house would not take her to the doctor and instead flew her out of NY the next day"
 - Epstein and Black referred to victim as "being 10"
 - From 2001 to end of 2004, "trafficked by [recruiter], sex with at least 25 different men"
+- Epstein personally introduced her to Black "by name as 'Leon'" and told her she would give him a massage; Epstein "had introduced her to others for similar massages," including **Jean-Luc Brunel** ("deceased JE associate," named directly in the memo)
+- **DANY: "They believe she was also abused by Staley"** — no independent corroboration found (see OQ-T05-04 resolution, 2026-09-28)
+- After the Black assault, Black left cash on the table; Epstein took the money "because she didn't want anything to do with it"
+- Transport: a pilot named "Larry" flew her and the recruiter to St. Thomas; DANY could not obtain border or phone records
+- Case history: represented by Adam Horowitz beginning ~2022, referred to Jeanne Christensen/Wigdor LLP by May 2023; DANY ran CLEAR database checks on her aliases/associated names; she disclosed being a JE victim on a (now-deleted) Twitter account; adopted as an adult by her mother in 2017 after bouncing between foster care and biological family; DANY noted separate, unrelated allegations of abuse by a priest and a kidnapping in her history
 - Medical records from 2011-2023 document ongoing trauma; OB-GYN 2019 documented sexual assault injuries
-- Source: EFTA02731488, EFTA02731662
+- DANY explicitly declined to pursue further investigation of this account "because they didn't have jurisdiction" — consistent with the broader SDNY Civil Rights Unit decline of the Black matter generally (Jul 2023)
+- Source: EFTA02731488, EFTA02731662, EFTA02731636, EFTA02731737-743 (fuller duplicate of EFTA02731662)
 
 ### 2.2 Forensic Evidence
 

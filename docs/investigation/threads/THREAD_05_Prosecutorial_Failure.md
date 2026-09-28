@@ -406,9 +406,17 @@ The charging analysis for three redacted subjects spans 10 pages (pp. 75-84). Th
 
 EFTA02731771: the original AUSA states he never wrote a formal assessment. In federal prosecution, writing something up is the mechanism by which evidence becomes a charging recommendation. What institutional dynamic led to a case with bank statements, multiple victims, and corroborating accounts never being formally evaluated?
 
-### OQ-T05-04 [P1]: What is the "Additional HT Subject" referral?
+### OQ-T05-04 [P1, RESOLVED 2026-09-28]: What is the "Additional HT Subject" referral?
 
-EFTA02731736 references a referral for an additional human trafficking subject beyond Black. Who is this person? Was the referral accepted? This may indicate a third prosecutorial failure beyond the prosecution memo and Leon Black tracks.
+**Resolved.** Read the full "Leon Black/Additional HT Subject Referral -- Update" email chain end-to-end across every corpus copy (EFTA02731636, EFTA02731637, EFTA02731638, EFTA02731736 — all near-duplicate productions of the same June 12 / June 28, 2023 thread — plus the underlying "Memo to file re DANY call on Leon Black" that the thread attaches, EFTA02731662 and its duplicate EFTA02731737-743).
+
+The "Additional HT Subject" is not a new, unidentified individual — it is DANY's June 2023 referral to SDNY of a previously-uncataloged victim's account, the same person already documented in THREAD_06 §2.1 as **Victim 3** ("being 10," a minor trafficked from Virginia to Epstein's NYC townhouse, 2001-2004). Her June 28, 2023 DANY interview memo states directly: DANY "do not doubt her allegations against JE and LB" and "**believe she was also abused by Staley**" — and separately names "**John Luc Brunel [deceased JE associate]**" among the people Epstein introduced her to for "similar massages." Both Staley and Brunel are already tracked entities in this platform (THREAD_01, THREAD_08) — the referral's "additional subject(s) beyond Black" are them, not a mystery name.
+
+The email chain's own "**Potential targets:**" form field (immediately following "Victim's identifiers:") is **blank in every corpus copy** of the June 28, 2023 forwarded email (EFTA02731636, and its duplicate at EFTA02731736/EFTA02731638) — either redacted or never completed before the DOJ's processing pipeline stripped it. No name beyond Brunel/Staley surfaces anywhere in the chain to fill that field.
+
+**Was the referral accepted?** No evidence of acceptance or an independent SDNY investigation into Staley or Brunel arising from this specific referral appears anywhere in the corpus. The memo itself documents DANY's jurisdictional posture: "DANY didn't push on [a related lead] because they didn't have jurisdiction," and a parallel July 2023 email in the same thread states SDNY's "Civil Rights Unit is now handling all trafficking matters" — consistent with the broader CRU formal decline (Jul 22, 2023, EFTA02731660) and "Agree with DTC" (Aug 1-2, 2023, EFTA02731632) already logged in the timeline above for the Victim 3/Black track generally. **This is not a documented third, separate prosecutorial failure distinct from the Leon Black track** — it's additional detail folded into the same Victim 3 account and the same CRU decline, not a parallel case with its own outcome.
+
+New citation surfaced: EFTA02731737-743 is a fuller, less-redacted duplicate of the June 28, 2023 DANY memo (EFTA02731662) containing detail not previously cited in THREAD_06 — CLEAR database checks, a pilot named "Larry" who flew the victim to St. Thomas, her (now-deleted) Twitter disclosure, Adam Horowitz's representation timeline (retained May 2023, first contacted DANY/JC February 2022), her 2017 adult adoption, and DANY's note that she "may have [experienced other abuse] as [a] child" including from a priest and a separate kidnapping, unrelated to JE/GM. See THREAD_06 §2.1 for the folded-in detail.
 
 <!-- SENSITIVITY: SPECULATION_ABOUT_REDACTED_IDENTITIES -->
 

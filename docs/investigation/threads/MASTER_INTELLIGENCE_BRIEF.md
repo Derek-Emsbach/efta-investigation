@@ -268,7 +268,7 @@ Drawn from all five threads, prioritized by analytical impact:
 | 3 | T05 | P1 | Why did the AUSA not write a formal assessment of the Leon Black evidence? |
 | 4 | T02 | P1 | Why was Celina Dubin the primary beneficiary of the entire Epstein estate? |
 | 5 | T03 | P1 | Did prosecutors ever analyze the trust's witness control provisions as part of the conspiracy? |
-| 6 | T05 | P1 | What is the "Additional HT Subject" referral (EFTA02731736)? |
+| 6 | T05 | P1 (RESOLVED 2026-09-28 — see THREAD_05 OQ-T05-04) | What is the "Additional HT Subject" referral (EFTA02731736)? Answer: DANY's referral of Victim 3's account naming Brunel and Staley as additional alleged abusers; no new unidentified subject. |
 | 7 | T04 | P1 | Were Indyke's simultaneous roles (attorney, trustee, $8.25M+ beneficiary, obstruction actor) ever analyzed for conflicts? |
 | 8 | T01 | P2 | What did the JPMorgan-produced Staley-Epstein messages around the period of the assault say? |
 | 9 | T02 | P2 | What was in the missing trust Schedule A? |

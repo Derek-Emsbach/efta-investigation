@@ -687,6 +687,28 @@
 - [ ] **Congressional Monitor agent** — future: scheduled corpus + web search → `create_public_event` MCP. Needs cron scheduling.
 - [ ] **Connection Discoverer agent** — future: multi-entity co-occurrence + timeline overlap analysis → ranked connection suggestions.
 
+## Session Note — 2026-09-28 (background/unattended daily-investigation session)
+
+**MCP corpus server started successfully** (`bash services/efta-mcp-server/scripts/start-linux.sh`, all queries run inside a single `device_bash` call/timeout window per the runbook, stopped in the same call). No Linux/darwin `node_modules` issues this session — the `.linux/` mirror approach documented in `BACKGROUND_RUNS.md` worked cleanly.
+
+**No entity backlog item was queued** as of the 2026-09-24 session note (the "old president"/Clinton lead closed negatively with no new gap surfaced), so per the standing priority order this session picked **priority 2: an open thread/angle** — specifically **OQ-02 / OQ-T05-04 ("What is the 'Additional HT Subject' referral?")**, a P1 open question sitting unresolved since the original 2026-02/03 thread work, referencing `EFTA02731736`.
+
+**Finding: RESOLVED.** Read the full "Leon Black/Additional HT Subject Referral -- Update" email chain end-to-end across every corpus duplicate (`EFTA02731636`, `EFTA02731637`, `EFTA02731638`, `EFTA02731736`) plus the underlying DANY interview memo it attaches (`EFTA02731662`, and a fuller/less-redacted duplicate copy not previously cited anywhere in the project, `EFTA02731737`–`EFTA02731743`). The "Additional HT Subject" is **not** a new unidentified person — the referral covers DANY's June 2023 hand-off to SDNY of the existing **Victim 3** account (already documented in `THREAD_06_Leon_Black.md` §2.1, the "being 10" minor trafficked from Virginia 2001–2004). Her DANY interview memo states plainly: DANY "believe[s] she was also abused by **Staley**" and separately names "**John Luc Brunel** [deceased JE associate]" as someone Epstein introduced her to for "similar massages." Both are already-tracked entities (THREAD_01, THREAD_08) — the "additional subject(s) beyond Black" are them, not a mystery name. The referral email's own "**Potential targets:**" form field is **blank in every corpus copy** — redacted or never completed, and no other name fills it anywhere in the chain. No evidence anywhere in the corpus shows the referral was accepted or independently investigated as to Staley/Brunel specifically; DANY explicitly declined further pursuit "because they didn't have jurisdiction," consistent with the SDNY Civil Rights Unit's broader formal decline of the whole Black matter (Jul 22, 2023, already logged in THREAD_05's timeline).
+
+**Documents updated (thread/reference docs only — no database writes, no entity changes):**
+- `docs/investigation/OPEN_QUESTIONS.md` — OQ-02 row marked resolved with full citation and finding.
+- `docs/investigation/threads/THREAD_05_Prosecutorial_Failure.md` — OQ-T05-04 rewritten with the resolution, the redaction finding on "Potential targets," and the jurisdictional-decline conclusion (explicitly **not** a third separate prosecutorial-failure track — folds into the existing Victim 3/Black CRU decline).
+- `docs/investigation/threads/THREAD_06_Leon_Black.md` §2.1 — Victim 3 bullet list substantially enriched with detail only present in the fuller `EFTA02731737-743` duplicate: Brunel naming, Staley abuse belief, pilot "Larry," CLEAR database checks, Adam Horowitz representation timeline, Twitter disclosure, 2017 adult adoption, unrelated priest-abuse/kidnapping allegations DANY separately noted, and the explicit jurisdictional-decline sentence.
+- `docs/investigation/threads/MASTER_INTELLIGENCE_BRIEF.md` — Open Questions table row 6 marked resolved with a one-line answer.
+
+**Flag for Derek**: none urgent — this is a documentation-quality resolution of a standing P1 open question, no publish-safety or misidentification risk (Staley and Brunel are both already-published, already-tracked entities; no new person was named or created). Two items carried forward unchanged from prior sessions still need your attention (restated for visibility, not re-investigated this session):
+1. "Mr. Vradenberg" misidentification still live in two published stories — corrections drafted 2026-09-16, never re-seeded.
+2. "Bill S." (probable ID: William R. Scherer Jr.) and "Mr. Conway" (probable ID: John Horton Conway) both still need a publish decision on their probable-not-confirmed real-name identifications.
+
+**No story drafted this session** (priority-3 didn't apply — priority-2 thread work took the session; STORY_QUEUE.md unchanged). **No entity/DB work this session** (nothing to enrich/create — this was a pure documentation-and-citation research pass).
+
+---
+
 ## Session Note — 2026-09-24 (background/unattended daily-investigation session)
 
 **MCP corpus server started successfully** (`bash services/efta-mcp-server/scripts/start-linux.sh`, all queries run inside a single `device_bash` call/timeout window per the runbook, stopped in the same call).
@@ -933,6 +955,8 @@ No new gap surfaced this session — the "blood on their hands"/direct-abuse jou
 ---
 
 ## Background Run Log
+- 2026-09-28 daily-investigation — MCP: started | worked on: thread OQ-02/OQ-T05-04 ("Additional HT Subject" referral, EFTA02731736) | changed: resolved P1 open question — referral is DANY hand-off of existing Victim 3 account naming Brunel+Staley, not a new subject; updated OPEN_QUESTIONS.md, THREAD_05, THREAD_06, MASTER_INTELLIGENCE_BRIEF.md | flags for Derek: 0 new (2 carried forward: Vradenberg unpublished correction, Bill S./Conway publish decisions) | note: "no entity backlog item was queued from 09-24 session; fell back to priority-2 open-thread pick; pure documentation resolution, no DB writes"
+
 
 - 2026-09-20 congressional-monitor — MCP: started | events created: 0 | duplicates skipped: 2 | leads not logged: 0 | flags for Derek: 0 | note: "checked Sullivan contempt-warning/218-sig discharge-petition threads (both 09-17, already logged 09-18) plus Massie EFTA-II/Zorro Ranch coverage; no new EFTA/DOJ/Congress developments dated 09-19/09-20"
 
