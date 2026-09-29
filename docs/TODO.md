@@ -972,7 +972,63 @@ Scheduled runs: items listed here are closed. Stop restating them as "carried fo
 - **git push:** local commits accumulate. Only Derek can push.
 - **Congressional backlog (runs can do these):** backfill H.R.10389 into the Survivors Voice Protection Act event; reconcile the 216 vs 218 discharge-petition count; confirm or merge the borderline 2026-09-24 FBI-notes appeal event.
 
+## Connection proposals — pending review
+
+*(connection-discoverer agent output, read-only — nothing below was written to the database. Scope: entities touched in the last ~2 weeks per BACKGROUND_RUNS.md; the "Mr. X" journal placeholder backlog (Rails/Caruthers/Islam/Douschewitz/Conway/Bill S.) was reviewed and skipped as unsuitable for connection discovery — each is an isolated single-document placeholder with zero other corpus presence, already established by the daily-investigation sessions that worked them. Fell back to the two richest recently-touched published entities instead: Jean-Luc Brunel and Jes Staley (both touched via the 2026-09-28 OQ-02 resolution), which led to a broader co-occurrence sweep of Tier 1-3 entities.)*
+
+### Session Note — 2026-09-29 (connection-discovery sweep)
+
+**Method:** No `find_co_occurring_entities` RPC exists in the DB yet (the admin analysis dashboard's primary path 404s and silently falls back — worth flagging as its own small bug). Replicated the dashboard's documented fallback logic directly via Supabase REST: pulled 8,000 `entity_documents` rows for Tier 1-3 entities, grouped by `document_id`, counted co-occurring entity pairs with 3+ shared documents, then diffed against existing `entity_connections`. Found 134 candidate pairs, 84 with no existing connection record. Spot-verified the top 12 by pulling actual document text (not just relying on the count) — most have empty `excerpt` fields on their `entity_documents` rows, meaning they come from a bulk name-index pass rather than a curated read, so a high shared-doc count alone is not evidence of a real relationship (could be a mass flight-log or contact-list artifact).
+
+### 🚩 NEW LEAD — William Barr allegation, no entity record exists (flagging for Derek, not proposing any DB write)
+
+Document **EFTA01648955** (1-page FBI internal email, subject "JE tasks 7/24", Dataset 10, `processing_status: queued`, unclassified/no severity set) is an FBI NY task list instructing staff to build a "derog" (derogatory information) spreadsheet on named individuals. Full text pulled directly from the corpus server:
+
+> "Take these names and build out new spreadsheet w al t e derog on them. Trump / Weinstein / Prince Andrew / Glen Dubin / Jes Staley / Leon Black / Les Wexner / Alan Dershowitz / Bill Clinton - Tony Blair / Howard Lutnick - ponzi scheme and money laundering / Alexander Guest / Jean Luc Brunel / **William Barr, for being present when a girl was raped**"
+
+**William Barr has no entity record at all in the database.** Neither do **Tony Blair** or **Alexander Guest**, both also named in this same task list. This document and allegation appear to be entirely unworked — recommend this as a high-priority pick for the next daily-investigation session (read the source doc fully first, corroborate before any identification/publish, per the standing editorial rules — Barr is a real living former US Attorney General, so any real-name attribution here needs the same rigor as the Bill S./Conway quarantines).
+
+### Data-completeness gap on the same document
+
+EFTA01648955 names 13 people; only 8 have `entity_documents` links (Bill Clinton, Alan Dershowitz, Glenn Dubin, Jean-Luc Brunel, Jes Staley, Leon Black, Prince Andrew, Les Wexner). **Donald Trump and Harvey Weinstein both already have entity records in the database but are not linked to this document**, despite being named in it verbatim. Recommend re-running the entity-linker against this document once it's picked up for review.
+
+### Proposed connections — verified via EFTA01648955 (moderate confidence)
+
+The entities co-listed in this document plausibly warrant a connection record of type "co-listed in FBI derogatory-information compilation" (evidence: EFTA01648955), distinct from — and weaker than — an interpersonal relationship claim. This explains a large share of the raw co-occurrence counts below for this specific cluster, but each entity pair's *total* shared-document count (in parens) reflects many other documents that were NOT individually verified this session — those additional documents are most likely bulk auto-indexed "mentioned" hits (flight logs, contact lists, guest lists) and should not be treated as corroborated until read.
+
+- Bill Clinton ↔ Prince Andrew — 81 shared docs total | evidence: EFTA01648955 (verified) + 80 unverified
+- Bill Clinton ↔ Donald Trump — 57 total | EFTA01648955 (verified, once Trump is linked) + 56 unverified
+- Donald Trump ↔ Prince Andrew — 51 total | EFTA01648955 (verified, once Trump is linked) + 50 unverified
+- Donald Trump ↔ Alan Dershowitz — 42 total | EFTA01648955 (verified, once Trump is linked) + 41 unverified
+- Les Wexner ↔ Prince Andrew — 37 total | EFTA01648955 (verified) + 36 unverified
+- Les Wexner ↔ Alan Dershowitz — 27 total | EFTA01648955 (verified) + 26 unverified
+- Bill Clinton ↔ Les Wexner — 27 total | EFTA01648955 (verified) + 26 unverified
+- Les Wexner ↔ Donald Trump — 25 total | EFTA01648955 (verified, once Trump is linked) + 24 unverified
+- Harvey Weinstein ↔ Prince Andrew — 19 total | EFTA01648955 (verified, once Weinstein is linked) + 18 unverified
+- Jean-Luc Brunel ↔ Les Wexner — 17 total | EFTA01648955 (verified) + 16 unverified
+- Harvey Weinstein ↔ Les Wexner — 16 total | EFTA01648955 (verified, once Weinstein is linked) + 15 unverified
+- Bill Clinton ↔ Jean-Luc Brunel — 16 total | EFTA01648955 (verified) + 15 unverified
+- Harvey Weinstein ↔ Donald Trump — 13 total | EFTA01648955 (verified, once both linked) + 12 unverified
+- Jean-Luc Brunel ↔ Donald Trump — 13 total | EFTA01648955 (verified, once Trump is linked) + 12 unverified
+- Harvey Weinstein ↔ Bill Clinton — 12 total | EFTA01648955 (verified, once Weinstein is linked) + 11 unverified
+- Jean-Luc Brunel ↔ Glenn Dubin — 10 total | EFTA01648955 (verified) + 9 unverified
+- Glenn Dubin ↔ Prince Andrew — 10 total | EFTA01648955 (verified) + 9 unverified
+- Glenn Dubin ↔ Alan Dershowitz — 10 total | EFTA01648955 (verified) + 9 unverified
+- Jes Staley ↔ Les Wexner — 9 total | EFTA01648955 (verified) + 8 unverified
+
+### Low-confidence candidates — not proposed, listed for future systematic triage
+
+65 additional pairs (of the 84 total gap) were found with 3+ shared documents and no existing connection record, but were **not individually verified this session** (excerpts empty on the sampled rows — consistent with bulk auto-indexing rather than curated reads). Notable ones not explained by EFTA01648955: Ehud Barak ↔ Larry Summers (23 shared, `d37bb877` ↔ `3fdbbc66`), Donald Trump ↔ Bill Richardson (19), Leon Black ↔ Larry Summers (13), Leon Black ↔ Ehud Barak (12), Bill Richardson ↔ Prince Andrew (12), Larry Summers ↔ Alan Dershowitz (12), Jean-Luc Brunel ↔ Bill Richardson (11), George Mitchell ↔ Prince Andrew (10), plus ~55 lower-count pairs not listed here. Recommend the entity-pipeline-review agent (Thursdays) pick 2-3 of the highest-count ones per run and verify by reading actual shared-document text, same method used above, rather than trusting raw counts.
+
+### Also worth noting: `find_co_occurring_entities` RPC is missing
+
+`apps/web/src/app/api/admin/analysis/route.ts` calls `supabase.rpc('find_co_occurring_entities', ...)` as its primary path for the dashboard's "Missing Connections" widget. That function does not exist in this DB (confirmed via direct RPC call — `PGRST202`). The route silently falls back to an in-app JS computation, so the dashboard still works, but it's worth a migration to actually create that RPC (would be far more efficient than the ~8,000-row client-side fallback either the app or this session had to do).
+
+---
+
 ## Background Run Log
+
+- 2026-09-29 connection-sweep — MCP: up | entities scanned: ~10 (Brunel/Staley + Tier1-3 sample, 8000 entity_documents rows) | proposals: 19 verified (EFTA01648955 cluster) + 65 low-confidence unverified pairs | note: "found unworked lead — William Barr rape-presence allegation + no entity record, doc EFTA01648955 (FBI derog-list email); Trump/Weinstein entity-linker gap on same doc; find_co_occurring_entities RPC missing, admin dashboard silently falls back"
 
 - 2026-09-29 congressional-monitor — MCP: up | events created: 1 | duplicates skipped: 3 | leads not logged: 2 | flags for Derek: 0 | note: "logged DOJ compliance claim (09-25, MeidasTouch/Yahoo) re: Sept 24 in-camera FBI-notes deadline in Phang v. DOJ — claimed via email to reporter only, no public filing, so compliance unverified; this was the gap the 09-28 run's 09-25/09-28 sweep missed. Reconfirmed already-logged: 218-sig discharge petition (09-17), Sullivan contempt warning (09-17), notice-of-appeal/deadline event (09-24). Two MSN pieces (Blanche admits violating law / court backlash) not logged — robots.txt-blocked, could not confirm date or novelty."
 - 2026-09-28 congressional-monitor — MCP: up | events created: 0 | duplicates skipped: 3 | leads not logged: 0 | flags for Derek: 1 new (2 carried forward) | note: "checked EFTA II discharge petition/106-sig thread (09-04/09-12), Indyke/Kahn estate-executor probe (09-23), and Comer Survivors Voice Protection Act (09-16) — all already logged; resolved bill number for Survivors Voice Protection Act as H.R.10389 (introduced 09-16), needs backfill into that event's notes; no new EFTA/DOJ/Congress developments found for 09-25 through 09-28"
