@@ -983,6 +983,9 @@ Scheduled runs: items listed here are closed. Stop restating them as "carried fo
 
 ## Pending Derek (current)
 
+- **EFTA01648955 / William Barr: QUEUED as a tip-grade lead (Derek, 2026-09-29).** This is the next daily-investigation pick. Read the document in full and trace the provenance of the Barr line (tip line? NTOC complaint?). The document is an FBI *tasking list* for a "derog" spreadsheet: it is not a finding, and nothing indicates the FBI found the claim credible. Frame it that way everywhere. If an entity is created: T3 only, `publication_hold` active from creation, no real-name story use. Handle Tony Blair and Alexander Guest the same way.
+- **Connection proposals from the 2026-09-29 sweep:** the 19 "co-listed in FBI derog compilation" proposals are **REJECTED** (Derek). Co-listing on a research to-do list is not a relationship between two people; do not re-propose it. The 65 unverified pairs stay as leads only: read the shared documents before proposing anything. Separate fix: link Trump + Weinstein to EFTA01648955 (entity-linker gap).
+
 - **Clinton tier:** proposal drafted at `docs/investigation/audit/CLINTON_RETIER_PROPOSAL_2026-09-29.md` (T1 → T4 provisional). No DB change until Derek approves. Hold is active; do not touch tier.
 - **Story "The Man the FBI Could Never Find":** revised 2026-09-29 (see STORY_QUEUE.md note). Needs Derek's read-through. Do not seed.
 - **Mac:** `cd services/efta-mcp-server && rm -rf node_modules && npm ci`. better-sqlite3 there is still the Linux ELF build, as of 2026-09-29.
