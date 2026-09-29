@@ -954,6 +954,24 @@ No new gap surfaced this session — the "blood on their hands"/direct-abuse jou
 
 ---
 
+## Resolved Flags (do not carry forward)
+
+Scheduled runs: items listed here are closed. Stop restating them as "carried forward." See BACKGROUND_RUNS.md, Editorial identification rules.
+
+- **2026-09-29 — Vradenberg correction: LIVE, closed.** Checked theepsteincrimes.com/stories/the-washington-list and /they-use-it-to-find-us: both carry the withdrawal text. The "never re-seeded" flag was stale.
+- **2026-09-29 — Jacobson brief-publish: closed.** /entities/joseph-jacobson and /entities/mr-jacobson both return 404.
+- **2026-09-29 — Bill S. / Scherer: QUARANTINED (Derek's decision).** The 4 Scherer names were moved out of `aliases` into `metadata.candidate_identification_unconfirmed`, the originals are kept in `metadata.pre_quarantine_2026_09_29`, and `metadata.publication_hold` is active. Unpublished. Do not re-add the aliases.
+- **2026-09-29 — Mr. Conway / John Horton Conway: QUARANTINED + new rule (Derek's decision).** Candidate name moved to metadata, publication_hold active. Standing rule: no deceased person is named from the victim journals without direct documentary corroboration.
+- **2026-09-29 — Rails / Caruthers / Islam / Douschewitz:** stay open placeholders. No action needed.
+
+## Pending Derek (current)
+
+- **Clinton tier:** proposal drafted at `docs/investigation/audit/CLINTON_RETIER_PROPOSAL_2026-09-29.md` (T1 → T4 provisional). No DB change until Derek approves. Hold is active; do not touch tier.
+- **Story "The Man the FBI Could Never Find":** revised 2026-09-29 (see STORY_QUEUE.md note). Needs Derek's read-through. Do not seed.
+- **Mac:** `cd services/efta-mcp-server && rm -rf node_modules && npm ci`. better-sqlite3 there is still the Linux ELF build, as of 2026-09-29.
+- **git push:** local commits accumulate. Only Derek can push.
+- **Congressional backlog (runs can do these):** backfill H.R.10389 into the Survivors Voice Protection Act event; reconcile the 216 vs 218 discharge-petition count; confirm or merge the borderline 2026-09-24 FBI-notes appeal event.
+
 ## Background Run Log
 
 - 2026-09-28 congressional-monitor — MCP: up | events created: 0 | duplicates skipped: 3 | leads not logged: 0 | flags for Derek: 1 new (2 carried forward) | note: "checked EFTA II discharge petition/106-sig thread (09-04/09-12), Indyke/Kahn estate-executor probe (09-23), and Comer Survivors Voice Protection Act (09-16) — all already logged; resolved bill number for Survivors Voice Protection Act as H.R.10389 (introduced 09-16), needs backfill into that event's notes; no new EFTA/DOJ/Congress developments found for 09-25 through 09-28"

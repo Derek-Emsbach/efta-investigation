@@ -60,3 +60,14 @@ and commits it **via `bash scripts/git-safe.sh commit`** (see rule 3 above). A r
 | Connection Discovery Sweep | Wed 9:00 | TODO.md proposals only |
 | Entity Pipeline Review | Thu 9:00 | T4–T6 publishes, TODO.md |
 | Weekly Status Check-in | Fri 4:00pm | nothing (report only) |
+
+## Editorial identification rules (Derek, 2026-09-29)
+
+These apply to every run that touches entity names, aliases, bios or stories.
+
+1. **Read the entity's origin before enriching it.** Before any enrichment pass on an existing entity, read its full `metadata`, `bio` and `source_docs` to learn where the record came from (the 2026-09-18 Jacobson near-miss).
+2. **Journal names need three things before a real person is attached:** the page has been read, it says what we claim, and something *outside the journals* corroborates that specific person. A surname match or circumstantial proximity (guest lists, correspondence) is not corroboration.
+3. **Probable IDs never go in `aliases`.** The entity-linker matches on `aliases`. Put unconfirmed candidate names in `metadata.candidate_identification_unconfirmed` and set `metadata.publication_hold`.
+4. **Deceased persons:** no deceased person is named from the victim journals without direct documentary corroboration tying that specific person to the journal reference. They cannot respond.
+5. **Respect `metadata.publication_hold`.** Never publish, re-tier or change aliases on an entity that has an active hold. Flag it for Derek instead.
+6. **Stale flags:** once Derek resolves a "Flag for Derek" item, it is recorded under "Resolved Flags" in `docs/TODO.md`. Do not carry resolved items forward.

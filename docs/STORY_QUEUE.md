@@ -73,13 +73,22 @@
 
 ### "The Man the FBI Could Never Find" (2026-09-14)
 
+**Revised 2026-09-29 (Claude session, at Derek's direction). Still pending Derek's read-through.** Changes:
+- Opening: removed "spelled six different ways across three FBI interviews." Unsupported: EFTA02858481 records "JIM ATKINS (phonetic)," and line 32 of the story itself says the name appears the same way each time. Changed "They never found out who he was" to "Nothing in the released file shows the Bureau ever found out."
+- "For thirty-seven years" → "For seven years after those 2019 interviews." The record starts in 2019.
+- The 184 "Atkins" hits include the witness's own 302s. Qualified "every one is someone else" and "does not appear once" to "outside her own interview reports."
+- "3.5 million pages" → "roughly 2.8 million searchable pages." The FTS index covers 2.77M pages, not the full release.
+- Removed "closed the last open question definitively." The deck no longer says "identity is now confirmed": the ID rests on one newspaper (Post and Courier) plus an unverified aggregator.
+- **Do not conflate:** the journal alias "Mr. Atkins" (EFTA02731420 p.6, which the Doe v. Black diarist declared a FALSE name) is a different witness, a different era and a different source. No entity link or cross-reference between the two.
+- Open before publish: Island Packet 1986 primary check (THREAD_17 Q7); the "unidentified Ohio university" in the 302 vs. a for-profit college in the newspaper ID (the story should acknowledge that gap).
+
 Markdown: `docs/stories/the-man-the-fbi-could-never-find.md`. Section: `trump`. ~1800 words. NOT in seed script yet — human read-through required first (per session hard-stop: draft only, never seed). Copy the StoryDef below into the `STORIES` array in `scripts/src/seed-publication.ts` once approved, then run `pnpm --filter @efta/scripts seed:publication`.
 
 ```ts
 {
   slug: 'the-man-the-fbi-could-never-find',
   title: 'The Man the FBI Could Never Find',
-  deck: 'A federal witness told the FBI in 2019 about a co-abuser and blackmailer she knew only as "Atkins" — a name so uncertain agents flagged it as phonetic. A search of 3.5 million pages of DOJ disclosure turns up 184 hits for "Atkins" and not one match. A newspaper found him in months, using property records instead of a document corpus: Jimmy Lee Atkins, a deceased Ohio for-profit college president. His identity is now confirmed. The assault allegation against him is not.',
+  deck: 'A federal witness told the FBI in 2019 about a co-abuser and blackmailer she knew only as "Atkins" — a name so uncertain agents flagged it as phonetic. A full-text search of the roughly 2.8 million searchable pages of DOJ disclosure turns up 184 hits for "Atkins" and not one match. A newspaper found him in months, using property records instead of a document corpus: Jimmy Lee Atkins, a deceased Ohio for-profit college president. The identification is the newspaper's, not the corpus's. The assault allegation against him remains uncorroborated.',
   section: 'trump' as const,
   file: 'the-man-the-fbi-could-never-find.md',
   byline: 'EFTA Investigation Team',
