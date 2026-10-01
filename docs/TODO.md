@@ -1049,7 +1049,24 @@ The entities co-listed in this document plausibly warrant a connection record of
 
 ---
 
+### Session Note — 2026-10-01 (connection-discovery sweep)
+
+**Scope:** Per BACKGROUND_RUNS.md scoping rule, targeted entities touched in the last ~2 weeks rather than a full-corpus sweep. Nothing new landed between 2026-09-29 and 2026-10-01, so the most-recently-touched entity is still **William Barr** (`ca9a169d-268e-43c8-b8a7-235eb8d3b32c`, created 2026-09-29, zero existing `entity_connections` rows). Ran a full co-occurrence pass for Barr specifically (not a re-run of the broader Tier1-3 sweep already done 2026-09-29).
+
+**Method:** Pulled Barr's 6 linked documents directly via Supabase REST, then pulled every `entity_documents` row sharing those same 6 document IDs (54 rows, 12 distinct co-occurring entities), and checked each pair against existing `entity_connections` (none exist for Barr). Read the stored excerpts on every row rather than trusting the raw co-occurrence count.
+
+**Finding — all 6 of Barr's documents are the same FBI "PROMINENT NAMES" / NTOC-derog cluster already fully covered by the 2026-09-29 sweep** (EFTA01648955, EFTA01648946, EFTA01656152, EFTA01656173, EFTA01656198, EFTA01660622 — duplicate/near-duplicate copies of the same underlying tasking email and NTOC tip, confirmed by near-identical excerpt text including a shared OCR artifact, "Ban[sic, Barr]", across EFTA01656152/173/198/01660622). 11 of the 12 co-occurring entities (Clinton, Dershowitz, Dubin, Brunel, Staley, Prince Andrew, Wexner, Maxwell, Epstein, Groff, Lutnick) are therefore the **same "co-listed in FBI derogatory-information compilation" relationship Derek already REJECTED on 2026-09-29** — not re-proposing any of those pairs.
+
+### Proposed connection (new — not part of the rejected co-listing batch)
+
+- **William Barr → Leon Black**: suggested type "alleged joint presence during abuse" | strength: 3/5 (documented allegation, but likely one underlying NTOC source repeated across duplicate-copy documents, not independently corroborated) | evidence: EFTA01656152, EFTA01656173, EFTA01656198, EFTA01660622
+  - Why: this is NOT mere co-listing on the tasking-list document (EFTA01648955/EFTA01648946, where Black and Barr are just two of 13 names) — 4 separate document copies carry the specific excerpt "NTOC filed by [redacted], stated Barr and Black were present during abuses. [victim] stated was at Epstein's for a model event, ran into Barr who stated he wanted to see her next time he came." That's a joint-presence allegation naming the two of them together, distinct in kind from the rejected co-listing category. Caveat: all 4 copies read as duplicates of one NTOC tip (identical wording/typo), so this is one source multiply filed, not four independent accounts — flagging strength accordingly rather than treating repetition as corroboration. Both entities are already linked to all 4 documents individually; no `entity_connections` row exists between them.
+
+**Not re-flagging** the Trump/Weinstein entity-linker gap on EFTA01648955 — already tracked under "Pending Derek" above, unchanged since 2026-09-29.
+
 ## Background Run Log
+
+- 2026-10-01 connection-sweep — MCP: up | entities scanned: 1 (William Barr, scoped to most-recently-touched entity per 2-week rule) | proposals: 1 new (Barr <-> Leon Black, joint-presence allegation) | note: "11 of 12 Barr co-occurrences are the same FBI derog-compilation cluster Derek rejected 09-29, not re-proposed; one new non-co-listing finding (specific joint-abuse-presence excerpt, 4 duplicate document copies); Trump/Weinstein linker gap unchanged, already tracked"
 
 - 2026-09-29 connection-sweep (test-fire) — MCP: not started (verification only, no new sweep) | entities scanned: 0 | proposals: 0 new | note: "manual re-fire requested by Derek to check whether Wed/Thu runs leave a trace; verified via git log + TODO.md grep: today's earlier connection-sweep run (commit 8989170) IS present and intact, but this is the ONLY connection-sweep run-log entry that has EVER existed, and there is no entity-pipeline-review run-log entry anywhere in history either (only a mention inside this session's own proposal text, not an actual run) — consistent with those two scheduled tasks either never having fired before this week or losing their commits to the stale-lock failure mode noted 2026-09-17; recommend Derek check the scheduled-task dashboard for both triggers' last-fired status and enabled state"
 
