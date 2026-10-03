@@ -282,7 +282,7 @@ Drawn from all five threads, prioritized by analytical impact:
 
 | Priority | Document | EFTA | Reason |
 |----------|----------|------|--------|
-| 1 | FBI Co-Conspirator Chart | DS8 (Aug 15, 2019) | Identifies 5 redacted names — cross-reference with prosecution memo subjects |
+| 1 | FBI Co-Conspirator Chart | DS8 (Aug 15, 2019) | **Investigated 2026-10-03, inconclusive** — corpus full-text search could not locate the chart itself (image-only exhibit or not in EFTA corpus); per external reporting 4 (not 5) of 8 names remain redacted after DOJ's 2026-02-10 voluntary un-redaction of Wexner/Groff/Brunel. See OQ-01. |
 | 2 | USVI v. JPMorgan — Staley pages | EFTA00162121, pp. 86, 121 | Specific Jane Doe 1 and obstruction allegations |
 | 3 | PROMINENT NAMES variants | EFTA01656152/98, 01660622 | Compare redaction levels across FBI unit copies |
 | 4 | Epstein daily schedules | DS9/DS10 | Map Staley visit frequency against trust signing dates |
