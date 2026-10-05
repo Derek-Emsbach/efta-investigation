@@ -82,13 +82,22 @@
 - **Do not conflate:** the journal alias "Mr. Atkins" (EFTA02731420 p.6, which the Doe v. Black diarist declared a FALSE name) is a different witness, a different era and a different source. No entity link or cross-reference between the two.
 - Open before publish: Island Packet 1986 primary check (THREAD_17 Q7); the "unidentified Ohio university" in the 302 vs. a for-profit college in the newspaper ID (the story should acknowledge that gap).
 
+**Revised again 2026-10-05 (background/unattended daily-investigation session), per Derek's 2026-10-02 "SENT BACK, do not seed" fixes list. Still pending Derek's read-through — not seeded.** Changes:
+1. Deck qualified to match the body: "not one match" → "outside the witness's own interview reports, not one match."
+2. "now corroborated" (in the "What Still Isn't There" finding callout) reworded to "reported by a single newspaper... and, on one narrow point, corroborated a second time by an independent public record" — see #3.
+3. Island Packet 1986 primary check (THREAD_17 Q7) attempted: the underlying article is paywalled on newspapers.com and could not be read directly, but a full citation was recovered (Nancy Rutter, "Harbour Realty case continued again," *The Island Packet*, 2/5/1986, p.6) — upgraded from "claimed" to "located but unread." Separately, the Florida Betz College Inc./Betz Business School Inc. corporate-filing claim **was independently verified** this session via Florida's Division of Corporations records (through florida.intercreditreport.com, a different aggregator from the one that originally surfaced the lead): Jimmy L. Atkins, President/Director, personal address 2916 Dixie Highway, Fort Mitchell, KY — matching the Post and Courier's stated burial location and resolving THREAD_17's "Fort Mitchell Co." ambiguity (it's his home address, not a company name). Story and THREAD_17 both updated with this finding.
+4. Ohio "university" (FD-302) vs. for-profit "college" (newspaper ID) gap now acknowledged explicitly in the story's "What a Newspaper Found" section, flagged as unresolved rather than smoothed over.
+5. New corpus check added: "Harbour Realty," "Wexford Plantation," "Betz College," and "Ohio College of Business and Technology" all return **zero hits** anywhere in the EFTA corpus (confirmed via live MCP server query this session) — now stated explicitly in the story as a boundary-condition data point, not just asserted.
+
+This closes out all four 2026-10-02 fix items. The story still names a deceased private individual as an alleged child abuser on a newspaper identification the corpus cannot independently confirm — that naming decision remains Derek's per the standing deceased-person rule, not something a background run can clear on its own.
+
 Markdown: `docs/stories/the-man-the-fbi-could-never-find.md`. Section: `trump`. ~1800 words. NOT in seed script yet — human read-through required first (per session hard-stop: draft only, never seed). Copy the StoryDef below into the `STORIES` array in `scripts/src/seed-publication.ts` once approved, then run `pnpm --filter @efta/scripts seed:publication`.
 
 ```ts
 {
   slug: 'the-man-the-fbi-could-never-find',
   title: 'The Man the FBI Could Never Find',
-  deck: 'A federal witness told the FBI in 2019 about a co-abuser and blackmailer she knew only as "Atkins" — a name so uncertain agents flagged it as phonetic. A full-text search of the roughly 2.8 million searchable pages of DOJ disclosure turns up 184 hits for "Atkins" and not one match. A newspaper found him in months, using property records instead of a document corpus: Jimmy Lee Atkins, a deceased Ohio for-profit college president. The identification is the newspaper's, not the corpus's. The assault allegation against him remains uncorroborated.',
+  deck: 'A federal witness told the FBI in 2019 about a co-abuser and blackmailer she knew only as "Atkins" — a name so uncertain agents flagged it as phonetic. A full-text search of the roughly 2.8 million searchable pages of DOJ disclosure turns up 184 hits for "Atkins" — and, outside the witness's own interview reports, not one match. A newspaper found him in months, using property records instead of a document corpus: Jimmy Lee Atkins, a deceased Ohio for-profit college president. The identification is the newspaper's, not the corpus's. The assault allegation against him remains uncorroborated.',
   section: 'trump' as const,
   file: 'the-man-the-fbi-could-never-find.md',
   byline: 'EFTA Investigation Team',
