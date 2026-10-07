@@ -1,6 +1,6 @@
 # Proposal: Re-tier "Bill Clinton" (entity 46f154b9)
 
-**Status:** DRAFT. Needs Derek's approval. No database change has been made.
+**Status:** APPROVED by Derek on 2026-10-02 and APPLIED (tier 4, new tier_justification, hold kept). Citations still pending.
 **Date:** 2026-09-29
 **Current record:** T1, `unclassified_pending_review`, unpublished. The 2026-07-31 audit hold (`hold-unsubstantiated-attribution`) is still active.
 
@@ -34,5 +34,5 @@ The tier_justification lists: "26+ flights on Epstein aircraft," "unnamed offici
 
 ## Approval
 
-- [ ] Derek approves T4 provisional + text above
-- [ ] Citations attached for flights / Africa trip / contact book (next daily run can do this)
+- [x] Derek approves T4 provisional + text above (2026-10-02; applied without bracket placeholders, citations marked pending)
+- [x] Citations attached for flights / Africa trip / contact book (2026-10-07 daily-investigation run): flight count -> EFTA01297437 p.12 (press, secondary); 2002 Africa trip -> EFTA01649149 p.1 / dup EFTA01649143 (FBI CID doc, primary); contact-book entry -> EFTA01082182 p.22 / dups EFTA00599855, EFTA01122242 (press quoting court papers, secondary). `tier_justification` rewritten with all three cites; 3 `entity_documents` links added (role: mentioned). Tier (4), category, `is_public` (false), `profile_published` (false), and the publication hold were NOT touched.
