@@ -89,7 +89,20 @@
 4. Ohio "university" (FD-302) vs. for-profit "college" (newspaper ID) gap now acknowledged explicitly in the story's "What a Newspaper Found" section, flagged as unresolved rather than smoothed over.
 5. New corpus check added: "Harbour Realty," "Wexford Plantation," "Betz College," and "Ohio College of Business and Technology" all return **zero hits** anywhere in the EFTA corpus (confirmed via live MCP server query this session) — now stated explicitly in the story as a boundary-condition data point, not just asserted.
 
-This closes out all four 2026-10-02 fix items. The story still names a deceased private individual as an alleged child abuser on a newspaper identification the corpus cannot independently confirm — that naming decision remains Derek's per the standing deceased-person rule, not something a background run can clear on its own.
+This closes out all four 2026-10-02 fix items.
+
+**Revised 2026-10-07 (Derek review session with Claude).** Checked against the FD-302 text in the local corpus. Derek's naming decision: **name with attribution** — the identification is reported as The Post and Courier's, not ours. Changes:
+1. Mechanism corrected per EFTA02858481 pp.2-3: the embezzlement was real (to pay Epstein's blackmail over photographs of the victim), and Atkins, Epstein and possibly Cecil turned the mother in with the *accurate* records after a falling out. The old text said Atkins "reported the falsified books... himself." Finding callout no longer asserts a pre-planned two-stage scheme.
+2. The call to Atkins: the victim was 16-17 and living in SC (EFTA02858491 p.2), not "an adult living across the country."
+3. Interview #3 was 08/20/2019, two weeks after #2, not "a year later."
+4. "(phonetic)" appears once, in Interview #2. Atkins appears in 2 of 4 interviews, not "each time." CITE:3 (the manifest) no longer cited for the 184-hit count or the phonetic caveat.
+5. Alternate spellings: corpus has 45 Adkins / 108 Akins / 418 Atkinson documents, not zero. Co-occurrence check against Ohio, Hilton Head, dean, blackmail and real estate terms surfaced nothing pointing to him (spot-read, not a full read of all 571).
+6. Corpus size: 2,890,516 pages with text in `full_text_corpus.db` today → "roughly 2.9 million indexed pages."
+7. Mother's case: the $22K/Columbia account is from CITE:4 (3/29 article), not CITE:5. CITE:5 gives a conflicting record (OQ-14). The story now says that, and calls it a partial match.
+8. Attribution throughout: the newspaper "put a full name to him," not "found him." Removed "death certificate" (no source), "a decade of business activity" (no source), "thirty-seven years" (leftover from the 9/29 fix), and the died-vs-abuse years comparison.
+9. Deck updated to match.
+
+Still open before seeding: the Island Packet clipping (paywalled), OQ-14, and the `bates_number: null` seed check below. The story still names a deceased private individual as an alleged child abuser on a newspaper identification the corpus cannot independently confirm — that naming decision remains Derek's per the standing deceased-person rule, not something a background run can clear on its own.
 
 Markdown: `docs/stories/the-man-the-fbi-could-never-find.md`. Section: `trump`. ~1800 words. NOT in seed script yet — human read-through required first (per session hard-stop: draft only, never seed). Copy the StoryDef below into the `STORIES` array in `scripts/src/seed-publication.ts` once approved, then run `pnpm --filter @efta/scripts seed:publication`.
 
@@ -97,7 +110,7 @@ Markdown: `docs/stories/the-man-the-fbi-could-never-find.md`. Section: `trump`. 
 {
   slug: 'the-man-the-fbi-could-never-find',
   title: 'The Man the FBI Could Never Find',
-  deck: 'A federal witness told the FBI in 2019 about a co-abuser and blackmailer she knew only as "Atkins" — a name so uncertain agents flagged it as phonetic. A full-text search of the roughly 2.8 million searchable pages of DOJ disclosure turns up 184 hits for "Atkins" — and, outside the witness's own interview reports, not one match. A newspaper found him in months, using property records instead of a document corpus: Jimmy Lee Atkins, a deceased Ohio for-profit college president. The identification is the newspaper's, not the corpus's. The assault allegation against him remains uncorroborated.',
+  deck: 'A federal witness told the FBI in 2019 about a co-abuser and blackmailer she knew only as "Atkins" — a name so uncertain agents flagged it as phonetic. A full-text search of roughly 2.9 million indexed pages turns up 184 documents containing "Atkins" — and, outside the witness's own interview reports, not one match. In March 2026, The Post and Courier identified him from property records: Jimmy Lee Atkins, a deceased Ohio for-profit college president. The identification is the newspaper's, not the corpus's. The assault allegation against him remains uncorroborated.',
   section: 'trump' as const,
   file: 'the-man-the-fbi-could-never-find.md',
   byline: 'EFTA Investigation Team',
@@ -130,35 +143,35 @@ Markdown: `docs/stories/the-man-the-fbi-could-never-find.md`. Section: `trump`. 
       number: 1,
       bates_number: 'EFTA02858481',
       description:
-        'FD-302 Interview #2 (3501.045-003, 08/07/2019): Atkins introduced as Ohio university official/associate of Epstein; assaulted victim on multiple occasions; helped alter mother\'s real estate books then reported her to the Real Estate Commission himself.',
+        'FD-302 Interview #2 (3501.045-003, 08/07/2019): "JIM ATKINS (phonetic)," Ohio university associate of Epstein; assaulted victim more than once; Epstein blackmailed mother with explicit photographs of victim, mother embezzled to pay him; Atkins and accountant "Cecil" helped "fix" the books; after a falling out, Atkins, Epstein and possibly Cecil turned mother in to the Real Estate Commission with the accurate records.',
       page_reference: 'pp. 2-3',
     },
     {
       number: 2,
       bates_number: 'EFTA02858491',
       description:
-        'FD-302 Interview #3 (3501.045-005, 08/20/2019): Confirms mother\'s ~2-year imprisonment in Columbia, SC. Records Atkins\'s response when victim called seeking help: "I don\'t give a shit if you end up in the gutter. Don\'t ever contact me again. Your mother knows what will happen."',
-      page_reference: 'p. 1',
+        'FD-302 Interview #3 (3501.045-005, 08/20/2019): Mother\'s ~2-year federal imprisonment in Columbia, SC (victim then 17-18). Victim, then 16-17 and living in SC, called Atkins at his school for help. Records Atkins\'s response when victim called seeking help: "I don\'t give a shit if you end up in the gutter. Don\'t ever contact me again. Your mother knows what will happen."',
+      page_reference: 'pp. 1-2',
     },
     {
       number: 3,
       bates_number: 'EFTA00095751',
       description:
-        'Production manifest, 3501.045 series index — confirms the full sub-document series and the FBI\'s own repeated phonetic-spelling caveat on "Atkins."',
+        'Production manifest, 3501.045 series index — maps the 13 sub-documents of the witness\'s file.',
       page_reference: 'p. 7',
     },
     {
       number: 4,
       bates_number: null,
       description:
-        'Marilyn W. Thompson & Mitchell Black, "Three years on Hilton Head leave trail of mysteries in alleged Jeffrey Epstein affair," The Post and Courier, 3/29/2026 — https://www.postandcourier.com/news/hilton-head-sc-jeffrey-epstein-files-jimmy-atkins/article_817ad76a-a297-46ca-a41b-439aaa5438c5.html. Identifies Jim Atkins as Jimmy Lee Atkins; Ohio College of Business and Technology president; Wexford Plantation property purchase (1985); physical description match; death 2003; states no direct evidence supports the assault claims.',
+        'Marilyn W. Thompson & Mitchell Black, "Three years on Hilton Head leave trail of mysteries in alleged Jeffrey Epstein affair," The Post and Courier, 3/29/2026 — https://www.postandcourier.com/news/hilton-head-sc-jeffrey-epstein-files-jimmy-atkins/article_817ad76a-a297-46ca-a41b-439aaa5438c5.html. Identifies Jim Atkins as Jimmy Lee Atkins; Ohio College of Business and Technology president; Wexford Plantation property purchase (1985); physical description match; death 2003; reports Atkins turned the mother in to local law enforcement, $22,000 embezzlement charge, restitution, two years in prison in Columbia; states no direct evidence supports the assault claims.',
       page_reference: 'n/a (web)',
     },
     {
       number: 5,
       bates_number: null,
       description:
-        '"An Epstein victim\'s rocky path from Hilton Head to the West Coast," The Post and Courier — https://www.postandcourier.com/news/special_reports/south-carolina-epstein-hilton-head/article_ea4c66c4-6336-4f46-a4e2-9b0f6a704116.html. Independently confirms mother\'s embezzlement/restitution/Columbia SC imprisonment; describes it as a local/state charge rather than federal.',
+        '"An Epstein victim\'s rocky path from Hilton Head to the West Coast," The Post and Courier — https://www.postandcourier.com/news/special_reports/south-carolina-epstein-hilton-head/article_ea4c66c4-6336-4f46-a4e2-9b0f6a704116.html. Describes the mother\'s record differently from citation 4: a 1984 fraud arrest and later breach-of-trust and forgery charges; does not mention the $22,000 embezzlement or the Columbia sentence (OQ-14, unreconciled).',
       page_reference: 'n/a (web)',
     },
   ],
