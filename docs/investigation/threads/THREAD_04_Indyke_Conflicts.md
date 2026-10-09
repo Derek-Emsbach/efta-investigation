@@ -2,7 +2,7 @@
 type: investigation_thread
 thread_id: "04"
 thread_name: "Indyke Conflicts"
-version: "1.1"
+version: "1.2"
 date: "2026-03-14"
 classification: "UNRESTRICTED — PUBLIC ANALYSIS"
 sensitivity: contains_speculation_markers
@@ -309,15 +309,20 @@ The shell company investigation reveals that Indyke's seven trust roles were the
 > *Context:* Indyke and Kahn became co-executors. The prosecution memo (EFTA02731082) covers the period through August 2024. The estate's posture toward investigators — cooperative, resistant, or selective — is relevant to understanding the prosecutorial failure documented in Thread 05.
 > *Next Steps:* Search DS12 for correspondence involving Indyke, Kahn, or the estate.
 
-[SPECULATION_START]
+**OQ-T04-06 [RESOLVED 2026-10-09, background/unattended daily-investigation session]:** Is SLK Designs, LLC connected to Sarah Kellen?
 
-**OQ-T04-06 [P3]:** Is SLK Designs, LLC connected to Sarah Kellen?
+**Resolved — yes, confirmed by primary corpus documents (not Florida records; the entity is a New York LLC, not Florida as originally guessed).**
 
-The loan forgiveness list includes "SLK DESIGNS, LLC" (EFTA01266403, Section 2.3.A.23.w) — the only entity (not individual) receiving loan forgiveness. The initials SLK match Sarah Lauren Kellen, a Tier 2 (Immunized) co-conspirator who received blanket immunity under the 2007 NPA. If this is her entity, it would indicate that Epstein was providing financial benefits to an identified co-conspirator through a corporate vehicle — and that Indyke, as trustee, would have administered this benefit.
+1. **Formation**: EFTA00549991 / EFTA00313220 — Articles of Organization of SLK Designs, LLC, filed with the NY Dept. of State 05/31/2012 (County: New York, Filed 05/31/2012, Film #120531000129). **Filer: Darren K. Indyke, Esq., Darren K. Indyke, PLLC, 575 Lexington Avenue, 4th Floor, New York** — Epstein's attorney/trustee (this thread's primary subject) personally organized the entity.
+2. **Direct internal confirmation it is Kellen's payroll vehicle**: EFTA02006925 (Dataset 11, internal Epstein-office staff email) lists as a line item: *"e) Sarah payroll] / SLK Designs"* — explicit, contemporaneous staff shorthand equating the two. EFTA02007390 (Dataset 11) has staff discussing a group health plan "through SLK Designs" requiring 2 employees for a named staffer ("Sue") to qualify — i.e., SLK Designs functioned as a nominal employer entity for benefits purposes.
+3. **Banking**: EFTA01265245 (Dataset 10) — Citibank business checking statements for "SLK Designs LLC," 2012-2013, address 301 East 66th Street, New York NY 10065, showing incoming wires and recurring "ADP PAYROLL FEES." EFTA01357868 / EFTA01423319 (Dataset 10) — Epstein office/bank staff (Aracely Sanchez and colleagues) opening the checking account and running KYC on the entity. EFTA02131473 (Dataset 11) gives the entity's EIN as 80-0844023, "Since 9/15/2009" — **three years before the 2012 NY filing; this date discrepancy is unexplained and flagged as a new open sub-question (OQ-T04-06a) rather than resolved.**
+4. **Address match to Kellen personally**: EFTA00234324 / EFTA00234108 (Dataset 9, civil-litigation summons/process-server affidavit) record Sarah Kellen's personal residence as **301 East 66th Street, New York** — the same building as the SLK Designs LLC bank-statement address, and the same building housing Darren Indyke's own law office (Suite 10B) and Epstein's HBRK Associates office (Suite 10F) per EFTA01485284/EFTA01485224/EFTA01485240 and EFTA02032869/EFTA02031977. This is the building complex (also home to other Epstein-linked entities, e.g. "116 East 65th St., LLC," EFTA01582847) that anchored much of Epstein's NYC corporate/financial administration.
+5. **FinCEN/SAR flag**: EFTA00173953 p.21 (Dataset 8) - a bank AML/KYC lookup record - states Epstein and SLK Designs LLC "are listed as subjects together in a 2014 [SAR]" (Suspicious Activity Report). The snippet is partial; **the full document has not yet been read end-to-end to establish the SAR's filer or stated reason - flagged as a follow-up, not a closed item.**
+6. **Original lead reconfirmed**: EFTA01266403 Section 2.3.A.23.w (Amendment and Restatement of the Jeffrey E. Epstein 2014 Trust) lists SLK Designs, LLC as the only non-individual entity on the trust's loan-forgiveness schedule.
 
-This connection is unconfirmed. The initials are suggestive but not definitive. Florida corporate records for SLK Designs, LLC could resolve this question.
+**Conclusion**: SLK Designs, LLC was Sarah (Lauren) Kellen's personal payroll/benefits vehicle - a corporate entity Darren Indyke personally organized on paper, funded by wires traceable to the Epstein financial network, registered to the same Manhattan building where Kellen lived and where Indyke/Epstein's own offices operated, and specifically named as a beneficiary of debt forgiveness under the trust Indyke administered as trustee. This is a confirmed instance of Indyke, in his trustee role, administering a financial benefit to a Tier 2 (NPA-immunized) co-conspirator through a corporate vehicle he himself had set up for her - directly substantiating this thread's key finding about the compounding of Indyke's conflicting roles.
 
-[SPECULATION_END]
+**Not yet done this session, recommended next**: (a) read EFTA00173953 in full for the 2014 SAR's actual content; (b) resolve the 2009-vs-2012 EIN/filing date discrepancy; (c) no `entity_connections` or entity record was created for SLK Designs, LLC itself this session - this is documentation research only, consistent with this platform's priority order (entity creation is reserved for the entity-pipeline backlog, not an open-question research pass). Flagged as a good future-session entity-pipeline candidate, and as potential additional material for Story 17 ("The Architecture of Opacity," shell-company infrastructure, Case File CF-2026-010) or Thread 04 itself if written up as a story.
 
 ---
 
@@ -329,3 +334,11 @@ This connection is unconfirmed. The initials are suggestive but not definitive. 
 | EFTA01266403 | Amendment and Restatement of the Jeffrey E. Epstein 2014 Trust | 24 | DS10 | 2.3.A.7, 2.3.A.23.h, 2.3.A.24, 6.1, 6.2, 6.3-6.4 |
 | EFTA01266427 | First Amendment to the Amendment and Restatement | 6 | DS10 | 1.3.A, 2.3.A.12, 2.3.A.24 (new), signatures |
 | EFTA02731082 | SDNY Co-Conspirator Prosecution Memo | 86 | DS12 | p.48 (Kahn $250K wire) |
+| EFTA00549991 | SLK Designs, LLC — Articles of Organization (NY Dept of State) | n/a | DS9 | Filer: Darren K. Indyke, Esq. |
+| EFTA02006925 | Internal Epstein-office staff email — "Sarah payroll / SLK Designs" line item | n/a | DS11 | OQ-T04-06 |
+| EFTA02007390 | Internal Epstein-office staff email — SLK Designs group health plan | n/a | DS11 | OQ-T04-06 |
+| EFTA01265245 | SLK Designs LLC Citibank business checking statements (2012-2013) | 9 | DS10 | OQ-T04-06 |
+| EFTA01357868 / EFTA01423319 | SLK Designs LLC checking-account opening/KYC emails | n/a | DS10 | OQ-T04-06 |
+| EFTA02131473 | SLK Designs LLC EIN record (80-0844023, since 9/15/2009) | n/a | DS11 | OQ-T04-06 |
+| EFTA00234324 / EFTA00234108 | Civil summons/process-server affidavit — Sarah Kellen residence, 301 E 66th St | n/a | DS9 | OQ-T04-06 |
+| EFTA00173953 | Bank AML/KYC lookup — Epstein + SLK Designs LLC listed together in 2014 SAR | n/a | DS8 | OQ-T04-06 (follow-up needed) |

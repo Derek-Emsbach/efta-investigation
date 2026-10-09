@@ -31,7 +31,7 @@ Thread-specific open questions are documented in full in each thread report. Top
 | OQ-T03-01 | 03 | P1 | Did SDNY analyze trust provisions as witness control? | Trust DS10 vs. prosecution memo DS12 |
 | OQ-T03-03 | 03 | P2 | Who are the A.36 and A.37 golden handcuffs beneficiaries? | 2-year conditional bequests, names redacted |
 | OQ-T04-01 | 04 | P1 | Were Indyke's conflicts ever examined? | 7 simultaneous roles documented |
-| OQ-T04-05 | 04 | P2 | What is SLK Designs, LLC? | Loan forgiveness, initials match Sarah Kellen |
+| OQ-T04-05 (thread file uses OQ-T04-06; a numbering mismatch between the two docs, not corrected this session) | 04 | **RESOLVED 2026-10-09** | What is SLK Designs, LLC? | Confirmed: Sarah Kellen's payroll/benefits LLC, organized 2012 by Darren Indyke (filed the NY Articles of Organization himself), registered to Kellen's own residence (301 E 66th St), explicitly called "Sarah payroll" in internal staff email, named as the only non-individual entity on the trust's loan-forgiveness schedule, and flagged with Epstein in a 2014 bank SAR. Full write-up in THREAD_04_Indyke_Conflicts.md, OQ-T04-06. Open follow-up: read EFTA00173953 (the SAR record) in full; resolve the EIN's 2009 origin date vs. the 2012 NY filing date. |
 | OQ-T05-01 | 05 | P1 | Why was Staley not in the charging analysis? | Same question as OQ-T01-02 |
 | OQ-T05-02 | 05 | P1 | What do redacted pages 74-85 say? | Charging analysis for 3 subjects + Groff |
 | OQ-T05-03 | 05 | P1 | Why did AUSA not write up the Black case? | EFTA02731771 admission |
