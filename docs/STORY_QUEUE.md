@@ -62,6 +62,7 @@
 
 | Topic | Gap | Next Step |
 |-------|-----|-----------|
+| Leon Botstein / Bard College (NEW 2026-10-11) | Entity created (T3, hold active) with strong corroboration of a live congressional allegation (Rep. Raskin letter) -- see THREAD_20_Botstein_Bard_College.md. Not story-ready: needs Derek's entity tier/publish review first (same gate as Barr/Guest/Blair), plus a dedicated pass on the unworked "Mariana Idzkowska" lead. | Derek reviews entity + thread; if approved, likely a new case-file thread on institutional/academic enablement (no existing case file covers universities) rather than slotting into an existing one. |
 | ~~Deutsche Bank compliance~~ | ~~Need full deep read of EFTA01681865 (52 pages)~~ | **PUBLISHED** (Story 14, 2026-03-14) |
 | ~~NPA co-conspirators (Kellen, Ross)~~ | ~~Only Groff deeply analyzed~~ | **PUBLISHED** (Story 15, 2026-03-14) |
 | ~~Financial shell companies~~ | ~~Jeepers Inc, other entities not fully mapped~~ | **PUBLISHED** (Story 17, 2026-03-14) |
