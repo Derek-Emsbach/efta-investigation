@@ -67,3 +67,9 @@ docs/volumes/
 
 # bridged-VM stale git locks moved aside by scripts/git-safe.sh (cannot be deleted on the VM)
 .git-lock-trash/
+
+# scratch / local-only paths accidentally swept in by a broad `git add -A` on 2026-10-12
+.scratch/
+_to_delete/
+.claude/settings.local.json
+scripts/_bg_*.mjs
