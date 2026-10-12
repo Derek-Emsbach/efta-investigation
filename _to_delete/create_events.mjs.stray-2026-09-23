@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+const events = JSON.parse(fs.readFileSync('/tmp/events.json', 'utf8'));
+const TOKEN = fs.readFileSync('services/efta-mcp-server/.env', 'utf8')
+  .split('\n').find(l => l.startsWith('MCP_AUTH_TOKEN=')).split('=').slice(1).join('=');
+
+async function call(name, args) {
+  const res = await fetch('http://localhost:3001/mcp', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json, text/event-stream',
+      'Authorization': `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),
+  });
+  const text = await res.text();
+  const line = text.split('\n').find(l => l.startsWith('data: '));
+  const parsed = JSON.parse(line.slice(6));
+  return JSON.parse(parsed.result.content[0].text);
+}
+
+for (const ev of events) {
+  const result = await call('create_public_event', ev);
+  console.log(JSON.stringify({ title: ev.title, result }));
+}
