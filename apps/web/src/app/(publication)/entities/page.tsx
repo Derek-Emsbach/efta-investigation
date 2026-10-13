@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import type { Tier } from '@efta/shared'
 import { TIER_CONFIG } from '@efta/shared'
 
@@ -18,10 +18,7 @@ export const metadata: Metadata = {
   },
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 const TIER_COLORS: Record<Tier, string> = {
   1: 'var(--color-tier-1)',

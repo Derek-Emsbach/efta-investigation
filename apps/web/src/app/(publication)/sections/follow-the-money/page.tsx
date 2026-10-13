@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import { SectionHero } from '@/components/publication/sections/section-hero'
 import { SectionStories } from '@/components/publication/sections/section-stories'
 import { EntitySpotlight } from '@/components/publication/sections/entity-spotlight'
@@ -18,10 +18,7 @@ export const metadata: Metadata = {
   },
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 export default async function FollowTheMoneyPage() {
   const [storiesResult, entitiesResult, connectionsResult] = await Promise.all([

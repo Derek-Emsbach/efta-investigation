@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 
 export const metadata: Metadata = {
   title: 'Stories — The Epstein Crimes',
@@ -17,10 +17,7 @@ export const metadata: Metadata = {
   },
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 const SECTION_COLORS: Record<string, string> = {
   'the-network': 'var(--color-section-network)',

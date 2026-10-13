@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 
 export const metadata: Metadata = {
   title: 'Case Files — The Epstein Crimes',
@@ -16,10 +16,7 @@ export const metadata: Metadata = {
   },
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 const STATUS_STYLES: Record<string, string> = {
   active: 'bg-accent-red/10 text-accent-red border-accent-red/30',

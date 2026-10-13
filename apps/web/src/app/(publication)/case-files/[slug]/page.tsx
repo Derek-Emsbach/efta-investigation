@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import type {
   CaseFile,
   CaseFileEntity,
@@ -17,10 +17,7 @@ import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
 import { SourceAttributionBar } from '@/components/publication/promo/source-attribution-bar'
 import { CommentSection } from '@/components/publication/comments/comment-section'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 export async function generateMetadata({
   params,

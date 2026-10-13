@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import { NewsWire } from '@/components/publication/home/news-wire'
 import { NewsletterSignup } from '@/components/publication/newsletter-signup'
 import type { NewsItem } from '@/lib/news/sources'
@@ -20,10 +20,7 @@ export const metadata: Metadata = {
 
 export const revalidate = 600
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 export default async function NewsPage() {
   const { data } = await supabase

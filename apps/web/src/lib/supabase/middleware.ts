@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { hasSupabaseAuthCookie } from './auth-cookie'
 
 const ADMIN_PATHS = [
   '/dashboard/upload',
@@ -43,6 +44,11 @@ const PROTECTED_API_PREFIXES = [
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
+  // Fast path: no Supabase session cookie → anonymous. Skip the Supabase Auth
+  // round-trip (it was running on EVERY public page view and API hit).
+  // Protected-route checks below still run with user = null.
+  const anonymous = !hasSupabaseAuthCookie(request.cookies.getAll())
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!.trim(),
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!.trim(),
@@ -64,9 +70,7 @@ export async function updateSession(request: NextRequest) {
     },
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = anonymous ? null : (await supabase.auth.getUser()).data.user
 
   const pathname = request.nextUrl.pathname
 

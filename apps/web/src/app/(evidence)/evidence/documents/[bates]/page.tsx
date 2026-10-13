@@ -1,16 +1,13 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import { REDACTION_CATEGORIES } from '@efta/shared'
 import type { Metadata } from 'next'
 import DocumentImagesStrip from '@/components/images/document-images-strip'
 import TextExcerpt from './text-excerpt'
 import ViewDocumentButton from './view-document-button'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 // --- Helpers ---
 

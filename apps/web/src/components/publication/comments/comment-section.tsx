@@ -1,3 +1,5 @@
+import { cookies } from 'next/headers'
+import { hasSupabaseAuthCookie } from '@/lib/supabase/auth-cookie'
 import { createClient as createServerSupabase } from '@/lib/supabase/server'
 import { createClient } from '@supabase/supabase-js'
 import type {
@@ -27,7 +29,9 @@ const adminSupabase = createClient(
 export async function CommentSection({ contentType, contentId, currentPath }: CommentSectionProps) {
   // Check auth state
   const userSupabase = await createServerSupabase()
-  const { data: { user } } = await userSupabase.auth.getUser()
+  // Skip the auth round-trip for anonymous readers (no session cookie).
+  const signedIn = hasSupabaseAuthCookie((await cookies()).getAll())
+  const { data: { user } } = signedIn ? await userSupabase.auth.getUser() : { data: { user: null } }
 
   let userInfo: { id: string; tier: SubscriptionTier | null } | null = null
   if (user) {

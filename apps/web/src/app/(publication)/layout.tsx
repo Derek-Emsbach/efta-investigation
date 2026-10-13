@@ -3,7 +3,9 @@ import { PublicFooter } from '@/components/publication/public-footer'
 import { DonateBar } from '@/components/publication/donate-bar'
 import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
 import { ModeSwitch } from '@/components/ui/mode-switch'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
+import { hasSupabaseAuthCookie } from '@/lib/supabase/auth-cookie'
 import type { SubscriptionTier } from '@efta/shared'
 
 export default async function PublicationLayout({
@@ -12,10 +14,11 @@ export default async function PublicationLayout({
   children: React.ReactNode
 }>) {
   // Fetch auth state server-side so the header renders correctly on first paint
+  // Anonymous visitors: no auth round-trip, no profile queries.
+  const cookieStore = await cookies()
+  const signedIn = hasSupabaseAuthCookie(cookieStore.getAll())
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = signedIn ? (await supabase.auth.getUser()).data.user : null
 
   let authState: { displayName: string | null; subscriptionTier: SubscriptionTier | null; rank: string | null; role: string | null } | null = null
 

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import Image from 'next/image'
 import type {
   Story,
@@ -23,10 +23,7 @@ import { RelatedStories } from '@/components/publication/story/related-stories'
 import { ShareButtons } from '@/components/publication/story/share-buttons'
 import { CommentSection } from '@/components/publication/comments/comment-section'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 export async function generateMetadata({
   params,

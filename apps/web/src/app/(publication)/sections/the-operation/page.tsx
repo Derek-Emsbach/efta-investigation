@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import type { Metadata } from 'next'
 import { SectionHero } from '@/components/publication/sections/section-hero'
 import { SectionStories } from '@/components/publication/sections/section-stories'
@@ -11,10 +11,7 @@ export const metadata: Metadata = {
     'The operational machinery behind the Epstein network. Properties, logistics, recruitment, and the global infrastructure of abuse.',
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 const SECTION_COLOR = '#8B5E3C'
 

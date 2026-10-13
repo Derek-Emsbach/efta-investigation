@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
+import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import { Masthead } from '@/components/publication/home/masthead'
 import { HeroSection } from '@/components/publication/home/hero-section'
 import { SectionStoryGrid } from '@/components/publication/home/section-story-grid'
@@ -17,7 +18,8 @@ import { SourceAttributionBar } from '@/components/publication/promo/source-attr
 import { NewsWire } from '@/components/publication/home/news-wire'
 import { NewsletterSignup } from '@/components/publication/newsletter-signup'
 import { MonthlySupportBand } from '@/components/publication/support/monthly-support-band'
-import { createClient as createSessionClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
+import { hasSupabaseAuthCookie } from '@/lib/supabase/auth-cookie'
 import type { NewsItem } from '@/lib/news/sources'
 
 export const metadata: Metadata = {
@@ -40,17 +42,15 @@ export const metadata: Metadata = {
   },
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
+const supabase = createCachedReadClient()
 
 // Sections handled by dedicated components (excluded from generic grid)
 const DEDICATED_SECTIONS = ['follow-the-money', 'the-cover-up']
 
 export default async function HomePage() {
-  const sessionClient = await createSessionClient()
-  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCountResult, openQuestionCountResult, storyCountResult, newsResult, userResult] =
+  // Only used to label the support button; a cookie check is enough (no auth round-trip).
+  const isAuthenticated = hasSupabaseAuthCookie((await cookies()).getAll())
+  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCountResult, openQuestionCountResult, storyCountResult, newsResult] =
     await Promise.all([
       supabase
         .from('stories')
@@ -114,8 +114,6 @@ export default async function HomePage() {
         .order('is_pinned', { ascending: false })
         .order('created_at', { ascending: false })
         .limit(6),
-
-      sessionClient.auth.getUser(),
     ])
 
   const stories = storiesResult.data ?? []
@@ -125,7 +123,6 @@ export default async function HomePage() {
   const openQuestions = questionsResult.data ?? []
   // news_items may not exist until migration 028 runs — error → empty, homepage still renders.
   const newsItems = (newsResult.data ?? []) as (NewsItem & { created_at: string })[]
-  const isAuthenticated = !!userResult.data.user
 
   const stats = {
     documents: (docCountResult.data as number) ?? 1_370_000,
