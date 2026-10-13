@@ -30,11 +30,11 @@ const MAX_ITEMS_PER_RUN = 6
 
 const SYSTEM_PROMPT = `You are the wire editor for "The Epstein Crimes", an independent, document-driven investigation site about the Jeffrey Epstein case and the Epstein Files Transparency Act (EFTA) releases.
 
-Your job: find genuinely NEW, significant news from the last 48 hours about the Epstein case and write short, strictly neutral wire items that link out to the original reporting.
+Your job: find genuinely NEW, significant news from the lookback window given in the user message about the Epstein case and write short, strictly neutral wire items that link out to the original reporting.
 
 IN SCOPE: DOJ/EFTA document releases and redaction disputes; court rulings, filings, unsealings, and docket activity (e.g. SDNY 19-cr-490, Giuffre v. Maxwell 15-cv-7433, estate/bank litigation); Congressional oversight actions (subpoenas, hearings, letters, votes); Ghislaine Maxwell legal/custody developments; official investigations, resignations, or institutional actions explicitly tied to Epstein; significant investigative reporting from major outlets.
 
-OUT OF SCOPE — skip entirely: opinion/editorial/analysis-only columns, celebrity gossip, social-media rumor, conspiracy content, re-hashes of old news with no new development, anything older than ~72 hours.
+OUT OF SCOPE — skip entirely: opinion/editorial/analysis-only columns, celebrity gossip, social-media rumor, conspiracy content, re-hashes of old news with no new development, anything older than the lookback window.
 
 WRITING RULES (non-negotiable — this content publishes automatically with no human review):
 1. Attribute everything. The summary must name the outlet ("Reuters reports...", "According to court filings reported by AP..."). Never state a contested fact in your own voice.
@@ -91,7 +91,7 @@ function parseCandidates(text: string): unknown[] {
   }
 }
 
-function validate(raw: unknown, seenInSearch: Set<string>): { ok: Candidate } | { reject: string } {
+function validate(raw: unknown, seenInSearch: Set<string>, maxAgeDays: number): { ok: Candidate } | { reject: string } {
   if (!isRecord(raw)) return { reject: 'not an object' }
   const { headline, summary, source_name, source_url, published_at, category } = raw
   if (typeof headline !== 'string' || headline.length < 10 || headline.length > 220) return { reject: 'bad headline' }
@@ -107,8 +107,8 @@ function validate(raw: unknown, seenInSearch: Set<string>): { ok: Candidate } | 
   if (typeof published_at === 'string' && /^\d{4}-\d{2}-\d{2}/.test(published_at)) {
     const d = new Date(published_at)
     if (!Number.isNaN(d.getTime())) {
-      // Reject anything older than 5 days — the wire is for new developments only.
-      if (Date.now() - d.getTime() > 5 * 24 * 3600 * 1000) return { reject: 'stale' }
+      // Reject anything older than the window (+1 day slack for timezones).
+      if (Date.now() - d.getTime() > (maxAgeDays + 1) * 24 * 3600 * 1000) return { reject: `stale: ${source_url}` }
       pub = d.toISOString()
     }
   }
@@ -133,7 +133,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'ANTHROPIC_API_KEY not set' }, { status: 500 })
   }
 
-  const dryRun = new URL(request.url).searchParams.get('dry') === '1'
+  const params = new URL(request.url).searchParams
+  const dryRun = params.get('dry') === '1'
+  // Lookback window. Daily cron uses the default; ?days=7 is for seeding / catching up.
+  const days = Math.min(Math.max(Number(params.get('days')) || 3, 1), 14)
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!.trim(),
@@ -156,7 +159,7 @@ export async function GET(request: Request) {
   const messages: Anthropic.MessageParam[] = [
     {
       role: 'user',
-      content: `Today is ${today}. Search for Epstein case news from the last 48 hours (try several queries: "Epstein files", "Epstein DOJ release", "Maxwell court", "Epstein subpoena Congress", "Epstein estate lawsuit").
+      content: `Today is ${today}. Search for Epstein case news from the last ${days} days (try several queries: "Epstein files", "Epstein DOJ release", "Maxwell court", "Epstein subpoena Congress", "Epstein estate lawsuit").
 
 Already on the wire — do NOT repeat these developments even from a different outlet:
 ${recentHeadlines}
@@ -209,7 +212,7 @@ Return the JSON array only.`,
   const accepted: Candidate[] = []
   const rejected: string[] = []
   for (const raw of parseCandidates(finalText)) {
-    const v = validate(raw, seenInSearch)
+    const v = validate(raw, seenInSearch, days)
     if ('reject' in v) {
       rejected.push(v.reject)
       continue
@@ -223,7 +226,18 @@ Return the JSON array only.`,
   }
 
   if (dryRun) {
-    return NextResponse.json({ dryRun: true, accepted, rejected, searchedUrls: seenInSearch.size })
+    const searchedDomains = [...new Set([...seenInSearch].map((u) => {
+      try { return new URL(u).hostname.replace(/^www\./, '') } catch { return u }
+    }))]
+    return NextResponse.json({
+      dryRun: true,
+      days,
+      accepted,
+      rejected,
+      searchedUrls: seenInSearch.size,
+      searchedDomains,
+      modelOutput: finalText.slice(0, 2000),
+    })
   }
 
   let inserted = 0
