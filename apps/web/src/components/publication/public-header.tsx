@@ -14,6 +14,7 @@ interface AuthState {
 
 const SECTION_NAV = [
   { label: 'Home', href: '/' },
+  { label: 'News', href: '/news' },
   { label: 'The Network', href: '/network' },
   { label: 'Follow the Money', href: '/sections/follow-the-money' },
   { label: 'The Cover-Up', href: '/sections/the-cover-up' },

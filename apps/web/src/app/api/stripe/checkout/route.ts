@@ -8,7 +8,8 @@ import { checkRateLimit } from '@/lib/rate-limit'
  * POST /api/stripe/checkout
  *
  * Creates a Stripe Checkout session for either a one-time donation (supporter)
- * or monthly subscription (investigator). Requires authentication.
+ * or monthly subscription. Authentication is optional: guests can donate;
+ * signed-in users additionally get their profile tier upgraded by the webhook.
  *
  * Body: { type: 'supporter' | 'supporter_monthly' | 'investigator' }
  */
@@ -34,9 +35,8 @@ export async function POST(request: Request) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
-  }
+  // Guests may donate without an account (biggest conversion win).
+  // Logged-in users get their Supporter tier applied by the webhook via user_id.
 
   const body = await request.json()
   const donationType = body.type as 'supporter' | 'supporter_monthly' | 'investigator'
@@ -70,9 +70,10 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
-      customer_email: user.email,
+      ...(user?.email ? { customer_email: user.email } : {}),
+      ...(isSubscription ? {} : { customer_creation: 'always' as const }),
       metadata: {
-        user_id: user.id,
+        user_id: user?.id ?? '',
         donation_type: donationType === 'supporter' ? 'one_time' : donationType === 'supporter_monthly' ? 'supporter_monthly' : 'subscription',
       },
       success_url: `${origin}/support/thank-you?session_id={CHECKOUT_SESSION_ID}`,

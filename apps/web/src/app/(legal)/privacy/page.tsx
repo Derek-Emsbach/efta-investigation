@@ -42,6 +42,24 @@ export default function PrivacyPage() {
           </p>
 
           <h3 className="mb-1 mt-3 text-sm font-medium text-text-primary">
+            Newsletter
+          </h3>
+          <p>
+            If you sign up for the weekly briefing, we store your email address
+            and the page you signed up from. We use it only to send the briefing.
+            We do not sell or share it. Every email includes an unsubscribe link.
+          </p>
+
+          <h3 className="mb-1 mt-3 text-sm font-medium text-text-primary">
+            Donations
+          </h3>
+          <p>
+            Card donations are processed by Stripe, and Ko-fi donations by Ko-fi.
+            We never see or store your card details. We keep a record of the
+            donation amount, date, and the email address the processor gives us.
+          </p>
+
+          <h3 className="mb-1 mt-3 text-sm font-medium text-text-primary">
             Usage Data
           </h3>
           <p>

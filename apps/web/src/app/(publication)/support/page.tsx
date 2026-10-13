@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { StripeButton } from '@/components/publication/support/stripe-buttons'
+import { NewsletterSignup } from '@/components/publication/newsletter-signup'
 
 const KOFI_USERNAME = 'theepsteincrimes'
 const KOFI_URL = `https://ko-fi.com/${KOFI_USERNAME}`
@@ -121,8 +122,8 @@ export default async function SupportPage() {
             Prefer Ko-fi?
           </p>
           <p className="font-body text-sm text-text-secondary leading-relaxed max-w-md mx-auto mb-4">
-            You can also donate via Ko-fi (0% platform fees). Ko-fi donations are
-            appreciated but don&apos;t automatically upgrade your account tier.
+            Donate once or join as a monthly member on Ko-fi (0% platform fees on
+            donations). Ko-fi support doesn&apos;t automatically upgrade a site account.
           </p>
           <a
             href={KOFI_URL}
@@ -135,6 +136,16 @@ export default async function SupportPage() {
             </svg>
             Support on Ko-fi
           </a>
+          <div className="mt-3">
+            <a
+              href={`${KOFI_URL}/tiers`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-xs font-semibold uppercase tracking-[0.08em] text-accent-gold hover:underline"
+            >
+              Or become a monthly Ko-fi member &rarr;
+            </a>
+          </div>
         </div>
       </section>
 
@@ -222,6 +233,11 @@ export default async function SupportPage() {
             <path d="M4 10l6-6M4.5 4H10v5.5" />
           </svg>
         </a>
+      </section>
+      <section className="mt-14 border border-border-default p-6">
+        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-text-muted mb-2">Can&apos;t give right now?</p>
+        <p className="font-body text-sm text-text-secondary mb-4">Get the free weekly briefing and share the work. That helps too.</p>
+        <NewsletterSignup source="support" variant="inline" />
       </section>
     </div>
   )

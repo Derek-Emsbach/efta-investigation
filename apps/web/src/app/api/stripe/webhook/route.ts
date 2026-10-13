@@ -69,14 +69,10 @@ export async function POST(request: Request) {
 async function handleCheckoutCompleted(event: Stripe.Event) {
   const session = event.data.object as Stripe.Checkout.Session
 
-  const userId = session.metadata?.user_id
+  // Empty string = guest checkout (no account). Still recorded, no tier change.
+  const userId = session.metadata?.user_id || null
   const stripeCustomerId = session.customer as string
   const donationType = session.metadata?.donation_type as 'one_time' | 'supporter_monthly' | 'subscription' | undefined
-
-  if (!userId) {
-    console.error('Checkout session missing user_id in metadata:', session.id)
-    return
-  }
 
   const isRecurring = donationType === 'subscription' || donationType === 'supporter_monthly'
   const eventType = isRecurring ? 'subscription_created' : 'one_time_payment'
@@ -93,8 +89,8 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
     p_metadata: { session_id: session.id },
   })
 
-  // If this event was already processed, skip the tier update
-  if (!isNew) return
+  // If this event was already processed, or it was a guest donation, skip the tier update
+  if (!isNew || !userId) return
 
   // Determine new tier and update profile
   // supporter_monthly stays at supporter tier — it's just recurring financial support
@@ -129,7 +125,14 @@ async function handleSubscriptionDeleted(event: Stripe.Event) {
     .single()
 
   if (!profile) {
-    console.error('No profile found for Stripe customer:', stripeCustomerId)
+    // Guest subscriber (no account) cancelled — nothing to downgrade.
+    await supabase.rpc('record_donation', {
+      p_stripe_event_id: event.id,
+      p_user_id: null,
+      p_stripe_customer_id: stripeCustomerId,
+      p_event_type: 'subscription_cancelled',
+      p_amount_cents: 0,
+    })
     return
   }
 

@@ -20,11 +20,6 @@ export function StripeButton({ type, isAuthenticated }: StripeButtonProps) {
   const [error, setError] = useState<string | null>(null)
 
   async function handleClick() {
-    if (!isAuthenticated) {
-      window.location.href = `/login?from=/support`
-      return
-    }
-
     setLoading(true)
     setError(null)
 
@@ -66,7 +61,7 @@ export function StripeButton({ type, isAuthenticated }: StripeButtonProps) {
       )}
       {!isAuthenticated && (
         <p className="mt-2 text-[11px] text-text-muted">
-          You&apos;ll need to sign in first
+          No account needed. Sign in first if you want the Supporter badge.
         </p>
       )}
     </div>

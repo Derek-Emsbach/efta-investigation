@@ -46,6 +46,7 @@ export function PublicFooter() {
           <div>
             <h3 className="font-display text-sm font-semibold mb-3">Sections</h3>
             <ul className="space-y-1.5 text-xs text-text-muted">
+              <li><Link href="/news" className="hover:text-surface transition-colors">News Wire</Link></li>
               <li><Link href="/stories" className="hover:text-surface transition-colors">Stories</Link></li>
               <li><Link href="/entities" className="hover:text-surface transition-colors">Entities</Link></li>
               <li><Link href="/case-files" className="hover:text-surface transition-colors">Case Files</Link></li>

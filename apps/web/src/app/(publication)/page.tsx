@@ -14,6 +14,11 @@ import { EvidenceRoomPromo } from '@/components/publication/home/evidence-room-p
 import { CyclopsPromo } from '@/components/publication/promo/cyclops-promo'
 import { SourceAdSlot } from '@/components/publication/promo/source-ad-slot'
 import { SourceAttributionBar } from '@/components/publication/promo/source-attribution-bar'
+import { NewsWire } from '@/components/publication/home/news-wire'
+import { NewsletterSignup } from '@/components/publication/newsletter-signup'
+import { MonthlySupportBand } from '@/components/publication/support/monthly-support-band'
+import { createClient as createSessionClient } from '@/lib/supabase/server'
+import type { NewsItem } from '@/lib/news/sources'
 
 export const metadata: Metadata = {
   title: 'The Epstein Crimes — Independent Investigation',
@@ -44,7 +49,8 @@ const supabase = createClient(
 const DEDICATED_SECTIONS = ['follow-the-money', 'the-cover-up']
 
 export default async function HomePage() {
-  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCountResult, openQuestionCountResult, storyCountResult] =
+  const sessionClient = await createSessionClient()
+  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCountResult, openQuestionCountResult, storyCountResult, newsResult, userResult] =
     await Promise.all([
       supabase
         .from('stories')
@@ -100,6 +106,16 @@ export default async function HomePage() {
         .from('stories')
         .select('id', { count: 'exact', head: true })
         .eq('is_published', true),
+
+      supabase
+        .from('news_items')
+        .select('id, headline, summary, source_name, source_url, published_at, category, is_pinned, related_story_slug, created_at')
+        .eq('is_published', true)
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(6),
+
+      sessionClient.auth.getUser(),
     ])
 
   const stories = storiesResult.data ?? []
@@ -107,6 +123,9 @@ export default async function HomePage() {
   const entities = entitiesResult.data ?? []
   const events = eventsResult.data ?? []
   const openQuestions = questionsResult.data ?? []
+  // news_items may not exist until migration 028 runs — error → empty, homepage still renders.
+  const newsItems = (newsResult.data ?? []) as (NewsItem & { created_at: string })[]
+  const isAuthenticated = !!userResult.data.user
 
   const stats = {
     documents: (docCountResult.data as number) ?? 1_370_000,
@@ -142,6 +161,11 @@ export default async function HomePage() {
         />
       </div>
 
+      {/* News Wire — daily outside-reporting roundup (auto-updated by /api/cron/news-wire) */}
+      <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6">
+        <NewsWire items={newsItems} />
+      </div>
+
       {/* Stats bar (full-width dark) */}
       <InvestigationStats stats={stats} />
 
@@ -173,6 +197,9 @@ export default async function HomePage() {
           </section>
         )}
       </div>
+
+      {/* Newsletter capture — turns drive-by traffic into returning readers */}
+      <NewsletterSignup source="home" />
 
       {/* Featured Investigation (full-width dark section) */}
       <FeaturedInvestigation />
@@ -209,6 +236,9 @@ export default async function HomePage() {
         {/* Divider */}
         <div className="border-b border-border-default" />
       </div>
+
+      {/* Monthly support ask — recurring revenue pays the bills */}
+      <MonthlySupportBand isAuthenticated={isAuthenticated} />
 
       {/* Cyclops Digital promo (full-width) */}
       <CyclopsPromo variant="inline" />
