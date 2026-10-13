@@ -46,6 +46,8 @@ WRITING RULES (non-negotiable — this content publishes automatically with no h
 7. If the same development is covered by several outlets, include it ONCE, preferring AP or Reuters, then court/government primary sources.
 8. Quality over quantity. Returning zero items on a slow day is correct.
 
+ACCEPTED SOURCES: only items whose URL is on one of these domains will be published; anything else is discarded, so don't waste picks on other sites: ${NEWS_ALLOWED_DOMAINS.join(', ')}.
+
 OUTPUT: After searching, respond with ONLY a JSON array (no prose, no code fences). Max ${MAX_ITEMS_PER_RUN} items. Each item:
 {"headline": string, "summary": string, "source_name": string, "source_url": string, "published_at": "YYYY-MM-DD" | null, "category": "news" | "court" | "congress" | "doj-release" | "investigation"}
 source_url must be the exact article URL from your search results.`
@@ -179,7 +181,10 @@ Return the JSON array only.`,
             type: 'web_search_20250305',
             name: 'web_search',
             max_uses: 8,
-            allowed_domains: [...NEWS_ALLOWED_DOMAINS],
+            // NOTE: no allowed_domains here. The API rejects the whole request if any
+            // listed domain blocks Anthropic's crawler (AP, Reuters, NYT, etc. do), and
+            // that list changes over time. The allowlist is enforced in code instead
+            // (validate() → hostAllowed), which is the real safety gate anyway.
           },
         ],
       })
