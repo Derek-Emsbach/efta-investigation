@@ -40,4 +40,4 @@ All dated events identified during DS12 review. Use this to seed the events tabl
 | 2019-06-24 | SDNY prosecution memo | 7-page prosecution recommendation for Epstein sex trafficking case | legal | EFTA02730265 |
 | 2019-08-15 | FBI evidence catalog (510 pages) | Comprehensive FBI evidence inventory from July 2019 raids | evidence | EFTA02730297 |
 | 2013-10-25 | FOIA battle begins | FOIA request for Epstein records — DOJ fights release for years | institutional | EFTA02731039 |
-| 2021-11-30 | Corporate prosecution analysis | DOJ assessing corporate entity prosecution options — conclusion redacted | institutional | EFTA02731069 |
+| 2019-12-05 | Corporate prosecution analysis | DOJ assessing corporate entity prosecution options (charging Nine East 71st St. Corp.) — conclusion redacted; internal SDNY email (EFTA00030339) later confirms memo "never discussed" | institutional | EFTA02731069 |

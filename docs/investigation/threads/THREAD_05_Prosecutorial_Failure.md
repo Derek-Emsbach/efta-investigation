@@ -2,7 +2,7 @@
 type: investigation_thread
 thread_id: "05"
 thread_name: "Prosecutorial Failure"
-version: "1.1"
+version: "1.2"
 date: "2026-03-14"
 classification: "UNRESTRICTED — PUBLIC ANALYSIS"
 sensitivity: contains_speculation_markers
@@ -33,6 +33,10 @@ source_documents:
     title: "AUSA 'I did not write anything up on Leon Black'"
   - efta: "EFTA02731724"
     title: "Victim testimony before Judge Rakoff + forensic authentication"
+  - efta: "EFTA02731069"
+    title: "SDNY Corporate Prosecution Memo (Nine East 71st Street Corp.) — Sections III-IV redacted"
+  - efta: "EFTA00030339"
+    title: "Internal SDNY email confirming corporate prosecution memo never discussed"
 related_threads: ["THREAD_01", "THREAD_02", "THREAD_03", "THREAD_04"]
 key_finding: "The SDNY prosecution memo documented 38 victims, physical evidence, financial records, obstruction, and corroborated rape allegations against named individuals — then charged only Ghislaine Maxwell. The Leon Black investigation accumulated three years of evidence including forensically authenticated victim journals, multiple victims, and bank statements — and the case handler never wrote a formal assessment."
 ---
@@ -239,6 +243,22 @@ The NPA's blanket immunity clause — "any potential co-conspirators" — was ne
 
 ---
 
+### Failure 8: The Corporate Prosecution Memo That Was Never Discussed (New Finding — 2026-10-14, resolves OQ-06)
+
+A second, entirely separate December 2019 memo exists alongside the co-conspirator prosecution memo (EFTA02731082) analyzed in Failure 1 above: **EFTA02731069**, a 13-page, December 5, 2019 memorandum to U.S. Attorney Geoffrey Berman titled "Analysis of Possible Corporate Prosecution." Its subject is whether SDNY could criminally charge the Epstein-controlled shell corporation that formally owned the New York mansion — Nine East 71st Street Corporation — as a corporate defendant in its own right, on the theory that Epstein, as the corporation's sole officer, committed sex-trafficking offenses "at least in part to benefit the corporation."
+
+**What survives unredacted:** the background (Section I) — Epstein bought the mansion from Les Wexner in 1998 via a change of control of the pre-existing Nine East 71st Street Corporation — and the generic legal framework (Section II) for corporate criminal liability (respondeat superior: an agent acting within the scope of employment, at least in part for the corporation's benefit). One visible passage observes the Corporation "appears to have existed only as an on-paper holding company," had no business purpose, and Epstein "was not an 'employee' and had no defined corporate responsibilities" — a passage that reads as undermining the case for corporate prosecution (if there was no real corporate function, the "within the scope of employment" prong is hard to satisfy) rather than supporting it.
+
+**What is completely redacted:** Section III, "Prudential Considerations" (pp. 7-11, the Filip Factors-style policy analysis DOJ guidance requires before actually charging a corporation — collateral consequences, cooperation, remedial measures, etc.) and Section IV, "Assessment" (p. 12, the conclusion) are blank except for section headers, page numbers, and the Bates stamp. This is the same "conclusion suppression" pattern as the co-conspirator memo's pages 74-85 (Failure 1 above): the facts and legal framework are visible, the application of that framework to this specific decision is not.
+
+**Independent corroboration that it was shelved, not just redacted:** a May 6, 2020 internal SDNY email (EFTA00030339, sender/recipient redacted, signed only "Assistant U.S. Attorney, Southern District of New York") lists a backlog of pending memos for a supervisor's attention, including: *"corporate prosecution memo, December (13 pages) — never discussed"* and, separately, *"prosecution memo, April (26 pages) — hasn't been discussed in the three weeks since we sent it."* The page count (13) and month (December) match EFTA02731069 exactly. This is not merely a redacted conclusion — it is contemporaneous documentary proof that the recommendation, whatever it was, was never even taken up by leadership five months after it was written. No corporate charges against any Epstein-controlled entity were ever filed.
+
+**Why it matters:** this sits squarely inside the pattern Failures 1-7 already document — a prosecutorial apparatus that received completed, actionable analysis and did not act on it — but it is the only instance so far where an internal document explicitly states a specific prosecution memo was "never discussed," rather than requiring inference from a redacted page count or a later decline email. It also identifies a second, independent charging theory (corporate liability) that received the same institutional silence as the individual charging theories against Staley, Black, and Dubin.
+
+**Evidence tier:** ◆ Tier 1 — Direct evidence from the memo itself (EFTA02731069) and independent internal corroboration that it was never discussed (EFTA00030339)
+
+---
+
 ## 3. Timeline: The Institutional Pattern
 
 The two failures share a chronological relationship:
@@ -246,6 +266,8 @@ The two failures share a chronological relationship:
 | Date | Prosecution Memo Track | Leon Black Track |
 |------|----------------------|-----------------|
 | Dec 19, 2019 | **Memo delivered to USAO Berman** | — |
+| Dec 5, 2019 | **Corporate prosecution memo (EFTA02731069) delivered** | — |
+| May 6, 2020 | **Internal SDNY email confirms corporate prosecution memo "never discussed"** | — |
 | Jul 2, 2020 | Maxwell arrested | — |
 | Apr 22, 2021 | — | **First contact (Christensen → AUSA)** |
 | May 28, 2021 | — | **"Not inclined to open"** |
@@ -362,6 +384,10 @@ The redaction is justified under deliberative process privilege and grand jury s
 
 The redaction pattern across pages 68-85 is the clearest example of Category C redaction in the EFTA corpus: information hidden not to protect victims or legal proceedings, but to protect institutional decision-making from public scrutiny. The factual sections demonstrate the evidence existed. The redacted sections hide what the government concluded about that evidence.
 
+### A Second Conclusion-Suppression Instance — The Corporate Prosecution Memo
+
+EFTA02731069 (Failure 8 above) shows the identical Category C pattern on a smaller scale: Sections I-II (background, generic legal framework) are legible; Section III ("Prudential Considerations") and Section IV ("Assessment," the actual conclusion) are entirely redacted, down to removing even transition words — only headers, page numbers, and stray OCR marks from redaction boxes survive. Unlike pages 68-85 of the co-conspirator memo, this is a short, free-standing 13-page document, which makes the asymmetry easier to see directly: roughly half the memo (pp. 7-12, a contiguous block) is the part where SDNY actually weighs and decides whether to prosecute the holding corporation, and that half is the part withheld in full.
+
 ### The Leon Black Track — Minimal Redaction
 
 Notably, the Dataset 12 communications documenting the Leon Black investigation are largely unredacted. The institutional decision language ("not inclined to open," "Agree with DTC," "doesn't intend to open") appears in plain text. The victim's name is redacted (appropriate Category A), but the prosecutorial reasoning is visible — and damning precisely because it is visible. The DS12 communications show what the prosecution memo's redacted pages hide: the gap between evidence and action.
@@ -420,6 +446,10 @@ New citation surfaced: EFTA02731737-743 is a fuller, less-redacted duplicate of 
 
 <!-- SENSITIVITY: SPECULATION_ABOUT_REDACTED_IDENTITIES -->
 
+### OQ-T05-10 [P2, RESOLVED 2026-10-14]: What did the separate corporate-prosecution analysis conclude, and was it acted on? (closes project-level OQ-06)
+
+Resolved by Failure 8 above. The redacted conclusion itself (Sections III-IV of EFTA02731069) cannot be recovered from this corpus — no less-redacted duplicate or FOIA copy was found. But an independent document (EFTA00030339, May 6, 2020 internal SDNY email) establishes the practical answer to "was it acted on": no. The memo sat for five months and was still listed as "never discussed" alongside an April prosecution memo that "hasn't been discussed in the three weeks since we sent it" — language suggesting a pattern of completed analysis stalling before reaching a decision-maker, not a reasoned decline captured in a document we simply can't read. No corporate entity controlled by Epstein was ever criminally charged. Closing as resolved at the "institutional inaction is documented" level; the specific legal reasoning in Sections III-IV remains unrecoverable from this corpus.
+
 ### Speculative Questions (Inferences Beyond the Evidence)
 
 [SPECULATION_START]
@@ -462,6 +492,8 @@ The last documented communication in the Leon Black track is August 1, 2024 (JPM
 | EFTA02731662 | DANY/SDNY Master Email Chain | ~2023 | "DANY believes victim also abused by Staley" |
 | EFTA02731737 | DANY/SDNY Variant | ~2023 | Same chain, variant |
 | EFTA00156644 | DANY/FBI Briefing | Jun 2023 | "do not doubt her allegations"; "believe she was also abused by Staley" |
+| EFTA02731069 | SDNY Corporate Prosecution Memo (Nine East 71st St. Corp.) | Dec 5, 2019 | Sections III-IV (prudential considerations + assessment/conclusion) fully redacted |
+| EFTA00030339 | Internal SDNY memo-backlog email | May 6, 2020 | Confirms corporate prosecution memo "never discussed" |
 
 ### Leon Black Track
 
