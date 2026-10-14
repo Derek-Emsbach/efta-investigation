@@ -154,12 +154,13 @@ export async function GET(request: Request) {
   const recentHeadlines = (recent ?? []).map((r) => `- ${r.headline}`).join('\n') || '(none yet)'
 
   const today = new Date().toISOString().slice(0, 10)
+  const monthYear = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
   const anthropic = new Anthropic()
 
   const messages: Anthropic.MessageParam[] = [
     {
       role: 'user',
-      content: `Today is ${today}. Search for Epstein case news from the last ${days} days (try several queries: "Epstein files", "Epstein DOJ release", "Maxwell court", "Epstein subpoena Congress", "Epstein estate lawsuit").
+      content: `Today is ${today}. Search for Epstein case news from the last ${days} days Generic queries return old explainer pages, so search like a news desk: include the current month and year (e.g. "Epstein ${monthYear}") and event words. Run at least 6 varied queries, e.g. "Epstein resigns ${monthYear}", "Epstein ruling judge ${monthYear}", "Epstein files Congress subpoena ${monthYear}", "Maxwell ${monthYear}", "Epstein lawsuit bank estate ${monthYear}", "Epstein DOJ release ${monthYear}". Check each result's date; ignore anything outside the window.
 
 Already on the wire — do NOT repeat these developments even from a different outlet:
 ${recentHeadlines}
@@ -183,7 +184,7 @@ Return the JSON array only.`,
           {
             type: 'web_search_20250305',
             name: 'web_search',
-            max_uses: 8,
+            max_uses: 12,
             // NOTE: no allowed_domains here. The API rejects the whole request if any
             // listed domain blocks Anthropic's crawler (AP, Reuters, NYT, etc. do), and
             // that list changes over time. The allowlist is enforced in code instead
