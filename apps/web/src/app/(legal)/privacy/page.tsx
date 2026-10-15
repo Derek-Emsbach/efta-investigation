@@ -46,8 +46,9 @@ export default function PrivacyPage() {
           </h3>
           <p>
             If you sign up for the weekly briefing, we store your email address
-            and the page you signed up from. We use it only to send the briefing.
-            We do not sell or share it. Every email includes an unsubscribe link.
+            and the page you signed up from. We use it only to send the briefing,
+            which is delivered through our email provider, Buttondown. We do not
+            sell or share it. Every email includes an unsubscribe link.
           </p>
 
           <h3 className="mb-1 mt-3 text-sm font-medium text-text-primary">
