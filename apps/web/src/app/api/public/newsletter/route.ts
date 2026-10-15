@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { addButtondownSubscriber } from '@/lib/newsletter/buttondown'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!.trim(),
@@ -48,5 +49,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Could not subscribe right now. Try again later.' }, { status: 500 })
   }
 
-  return NextResponse.json({ ok: true })
+  // Mirror to Buttondown (sends their double-opt-in confirmation email).
+  // Best effort: Supabase remains the system of record if Buttondown is down.
+  const confirmSent = await addButtondownSubscriber(email.trim().toLowerCase(), src)
+
+  return NextResponse.json({ ok: true, confirm: confirmSent })
 }

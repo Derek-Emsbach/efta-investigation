@@ -22,14 +22,16 @@ export function NewsletterSignup({ source, variant = 'band' }: NewsletterSignupP
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, source, company }),
       })
-      const data: { ok?: boolean; error?: string } = await res.json()
+      const data: { ok?: boolean; confirm?: boolean; error?: string } = await res.json()
       if (!res.ok || !data.ok) {
         setState('error')
         setMessage(data.error ?? 'Something went wrong. Try again.')
         return
       }
       setState('done')
-      setMessage("You're in. Watch for the weekly briefing.")
+      setMessage(data.confirm
+        ? 'Almost done: check your inbox and click the confirmation link.'
+        : "You're in. Watch for the weekly briefing.")
     } catch {
       setState('error')
       setMessage('Connection failed. Try again.')
