@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
-import { NEWS_ALLOWED_DOMAINS, NEWS_CATEGORIES, hostAllowed, type NewsCategory } from '@/lib/news/sources'
+import { NEWS_ALLOWED_DOMAINS, NEWS_CATEGORIES, hostAllowed, sourceNameFor, type NewsCategory } from '@/lib/news/sources'
 
 /**
  * GET /api/cron/news-wire
@@ -41,10 +41,11 @@ WRITING RULES (non-negotiable — this content publishes automatically with no h
 2. Restate ONLY what the linked article says. Add no context, inference, or characterization of your own.
 3. Use the outlet's legal precision: "alleged", "accused", "charged", "named in documents", "denies". Never imply guilt beyond what the source states. If a person named has denied wrongdoing and the article says so, include the denial.
 4. Never name or identify a victim/survivor unless they are publicly self-identified AND named in the article.
-5. Headline: factual, max ~110 characters, no clickbait, no ALL CAPS, no exclamation points.
-6. Summary: 1–2 sentences, 40–320 characters.
-7. If the same development is covered by several outlets, include it ONCE, preferring AP or Reuters, then court/government primary sources.
-8. Quality over quantity. Returning zero items on a slow day is correct.
+5. The headline and summary may contain ONLY facts stated in the specific article at source_url. Do not merge in facts from other articles (e.g. a later resignation) — if you want to report that, pick the article that reports it.
+6. Headline: factual, max ~110 characters, no clickbait, no ALL CAPS, no exclamation points.
+7. Summary: 1–2 sentences, 40–320 characters.
+8. If the same development is covered by several outlets, include it ONCE, preferring AP or Reuters, then court/government primary sources.
+9. Quality over quantity. Returning zero items on a slow day is correct.
 
 ACCEPTED SOURCES: only items whose URL is on one of these domains will be published; anything else is discarded, so don't waste picks on other sites: ${NEWS_ALLOWED_DOMAINS.join(', ')}.
 
@@ -148,7 +149,8 @@ function validate(raw: unknown, seenInSearch: Set<string>, maxAgeDays: number): 
     ok: {
       headline: headline.trim(),
       summary: summary.trim(),
-      source_name: source_name.trim(),
+      // Attribution comes from the URL, not the model (see sourceNameFor).
+      source_name: sourceNameFor(norm),
       source_url: norm,
       published_at: pub,
       category: cat,
