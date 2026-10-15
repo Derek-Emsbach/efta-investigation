@@ -79,6 +79,20 @@ function normalizeUrl(url: string): string {
   }
 }
 
+/**
+ * Host-insensitive match key: models often rewrite edition.cnn.com → www.cnn.com
+ * or drop "amp."/"m." prefixes. Same site + same path = same article.
+ */
+function matchKey(url: string): string {
+  try {
+    const u = new URL(url)
+    const host = u.hostname.toLowerCase().replace(/^(www|edition|amp|m|mobile|news)\./, '')
+    return `${host}${u.pathname.replace(/\/$/, '')}`
+  } catch {
+    return url
+  }
+}
+
 function parseCandidates(text: string): unknown[] {
   const start = text.indexOf('[')
   const end = text.lastIndexOf(']')
@@ -100,7 +114,7 @@ function validate(raw: unknown, seenInSearch: Set<string>, maxAgeDays: number): 
   if (typeof source_url !== 'string' || !/^https:\/\//.test(source_url)) return { reject: 'bad url' }
   if (!hostAllowed(source_url)) return { reject: `domain not allowlisted: ${source_url}` }
   const norm = normalizeUrl(source_url)
-  if (!seenInSearch.has(norm)) return { reject: `url not in search results (possible fabrication): ${source_url}` }
+  if (!seenInSearch.has(matchKey(norm))) return { reject: `url not in search results (possible fabrication): ${source_url}` }
   if (/!/.test(headline) || headline === headline.toUpperCase()) return { reject: 'sensational headline' }
   const cat: NewsCategory = NEWS_CATEGORIES.includes(category as NewsCategory) ? (category as NewsCategory) : 'news'
   let pub: string | null = null
@@ -195,7 +209,7 @@ Return the JSON array only.`,
 
       for (const block of res.content) {
         if (block.type === 'web_search_tool_result' && Array.isArray(block.content)) {
-          for (const r of block.content) seenInSearch.add(normalizeUrl(r.url))
+          for (const r of block.content) seenInSearch.add(matchKey(normalizeUrl(r.url)))
         }
         if (block.type === 'text') finalText += block.text
       }
@@ -227,9 +241,7 @@ Return the JSON array only.`,
   }
 
   if (dryRun) {
-    const searchedDomains = [...new Set([...seenInSearch].map((u) => {
-      try { return new URL(u).hostname.replace(/^www\./, '') } catch { return u }
-    }))]
+    const searchedDomains = [...new Set([...seenInSearch].map((k) => k.split('/')[0]))]
     return NextResponse.json({
       dryRun: true,
       days,
