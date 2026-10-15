@@ -48,7 +48,7 @@ WRITING RULES (non-negotiable — this content publishes automatically with no h
 
 ACCEPTED SOURCES: only items whose URL is on one of these domains will be published; anything else is discarded, so don't waste picks on other sites: ${NEWS_ALLOWED_DOMAINS.join(', ')}.
 
-OUTPUT: After searching, respond with ONLY a JSON array (no prose, no code fences). Max ${MAX_ITEMS_PER_RUN} items. Each item:
+OUTPUT: Keep any reasoning brief. End your reply with the final JSON array wrapped in <items></items> tags, e.g. <items>[...]</items>, or <items>[]</items> if nothing qualifies. Only the LAST <items> block is read. Max ${MAX_ITEMS_PER_RUN} items. Each item:
 {"headline": string, "summary": string, "source_name": string, "source_url": string, "published_at": "YYYY-MM-DD" | null, "category": "news" | "court" | "congress" | "doj-release" | "investigation"}
 source_url must be the exact article URL from your search results.`
 
@@ -94,15 +94,33 @@ function matchKey(url: string): string {
 }
 
 function parseCandidates(text: string): unknown[] {
-  const start = text.indexOf('[')
-  const end = text.lastIndexOf(']')
-  if (start === -1 || end <= start) return []
-  try {
-    const parsed: unknown = JSON.parse(text.slice(start, end + 1))
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
+  const tryParse = (chunk: string): unknown[] | null => {
+    try {
+      const v: unknown = JSON.parse(chunk.trim())
+      return Array.isArray(v) ? v : null
+    } catch {
+      return null
+    }
   }
+  // 1. Preferred: the LAST <items>…</items> block (the model reasons in prose first).
+  const tagged = [...text.matchAll(/<items>([\s\S]*?)<\/items>/g)]
+  if (tagged.length > 0) {
+    const parsed = tryParse(tagged[tagged.length - 1][1])
+    if (parsed) return parsed
+  }
+  // 2. Last fenced ```json block.
+  const fenced = [...text.matchAll(/```(?:json)?\s*([\s\S]*?)```/g)]
+  for (let i = fenced.length - 1; i >= 0; i--) {
+    const parsed = tryParse(fenced[i][1])
+    if (parsed && parsed.length > 0) return parsed
+  }
+  // 3. Fallback: walk "[" positions from the end, closing at the last "]".
+  const close = text.lastIndexOf(']')
+  for (let i = text.lastIndexOf('[', close); i >= 0; i = text.lastIndexOf('[', i - 1)) {
+    const parsed = tryParse(text.slice(i, close + 1))
+    if (parsed && parsed.length > 0) return parsed
+  }
+  return []
 }
 
 function validate(raw: unknown, seenInSearch: Set<string>, maxAgeDays: number): { ok: Candidate } | { reject: string } {
@@ -179,19 +197,20 @@ export async function GET(request: Request) {
 Already on the wire — do NOT repeat these developments even from a different outlet:
 ${recentHeadlines}
 
-Return the JSON array only.`,
+Finish with the <items>[...]</items> block.`,
     },
   ]
 
   const seenInSearch = new Set<string>()
   let finalText = ''
+  let stopReason: string | null = null
 
   try {
     // Server tools can return stop_reason "pause_turn"; continue up to 3 times.
     for (let turn = 0; turn < 4; turn++) {
       const res = await anthropic.messages.create({
         model: MODEL,
-        max_tokens: 4096,
+        max_tokens: 8000,
         system: SYSTEM_PROMPT,
         messages,
         tools: [
@@ -214,6 +233,7 @@ Return the JSON array only.`,
         if (block.type === 'text') finalText += block.text
       }
 
+      stopReason = res.stop_reason
       if (res.stop_reason !== 'pause_turn') break
       messages.push({ role: 'assistant', content: res.content })
       finalText = ''
@@ -249,7 +269,8 @@ Return the JSON array only.`,
       rejected,
       searchedUrls: seenInSearch.size,
       searchedDomains,
-      modelOutput: finalText.slice(0, 2000),
+      stopReason,
+      modelOutput: finalText.slice(-2500),
     })
   }
 
