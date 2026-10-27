@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'fs';
 
 const env = Object.fromEntries(
-  readFileSync('/mnt/user-data/uploads/efta-investigation/.env.local', 'utf8')
+  readFileSync('.env.local', 'utf8')
     .split('\n').filter(l => l && !l.startsWith('#'))
     .map(l => { const i = l.indexOf('='); return i > 0 ? [l.slice(0, i).trim(), l.slice(i + 1).trim()] : null; })
     .filter(Boolean)

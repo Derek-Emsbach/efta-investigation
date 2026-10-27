@@ -10,9 +10,12 @@ Every entity (person, organization, property) is assigned one of six evidence ti
 
 ### TIER 1: Direct Evidence
 **Color:** Deep Red (#DC2626)
-**Criteria:** Forensically authenticated direct evidence of involvement: convicted in court, formally charged, or named as abuser in forensically authenticated victim journals. The label reflects evidence strength, not prosecution status — an entity may be Tier 1 without ever being charged if direct evidence (e.g., authenticated journal entries) exists.
-**Examples:** Jeffrey Epstein (convicted, deceased), Ghislaine Maxwell (convicted), Leon Black (named in authenticated journals, uncharged)
-**Evidence standard:** Court records, formal charges, forensically verified victim testimony
+**Criteria:** Convicted in court, formally charged, or named as an alleged abuser by sworn victim testimony/witness statements with independent corroboration (bank records, FBI investigative files, contemporaneous communications). The label reflects evidence strength, not prosecution status.
+
+**Correction (2026-10-27, see `docs/investigation/audit/FORENSIC_AUTHENTICATION_CLAIM_AUDIT_2026-10-27.md`):** this section previously read "forensically authenticated victim journals" as a Tier 1 criterion. **No forensic authentication of the DS12 victim journals (EFTA02731420, EFTA02731465) has ever occurred.** The examination Judge Rakoff ordered (15 Mar 2024, *Doe 1 v. JPMorgan Chase*, 1:22-cv-10019) found examiner Gerald LaPorte could **not date the entries at all** — he found only an absence of evidence of recent fabrication of the physical notebooks, not authentication of authorship, content, or date. Rakoff **denied** the authentication claim 31 Jul 2024. Judge Clarke's 23 Apr 2026 opinion (*Jane Doe v. Leon Black*, 1:23-cv-06418, ECF 388) found three sonograph photographs altered but made **no finding on any handwritten entry**, and did not find the journals wholesale fabrications either. The journals also belong to the *Doe v. Black* plaintiff, **not Virginia Giuffre** — do not attribute them to her. "Forensically authenticated" must not be used anywhere in this platform to describe these journals; a name from these journals requires an independent, non-journal corroborating source to carry any evidentiary weight, per the standard already applied in `docs/reference/BACKGROUND_RUNS.md`'s editorial identification rules.
+
+**Examples:** Jeffrey Epstein (convicted, deceased), Ghislaine Maxwell (convicted), Leon Black (named by 3+ independent victims with sworn testimony, bank records, text messages, and medical records — not primarily the journals; see correction above and `docs/investigation/threads/THREAD_06_Leon_Black.md`, flagged for the same correction)
+**Evidence standard:** Court records, formal charges, sworn victim testimony independently corroborated by records (financial, communications, medical, FBI investigative files) — not journal entries alone
 
 ### TIER 2: Immunized
 **Color:** Amber (#F59E0B)
