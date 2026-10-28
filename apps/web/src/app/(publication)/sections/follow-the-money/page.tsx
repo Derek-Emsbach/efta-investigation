@@ -4,6 +4,7 @@ import { SectionHero } from '@/components/publication/sections/section-hero'
 import { SectionStories } from '@/components/publication/sections/section-stories'
 import { EntitySpotlight } from '@/components/publication/sections/entity-spotlight'
 import ConnectionTypeChart from '@/components/publication/visualizations/connection-type-chart'
+import { applyPublicEntityFilter, getPublicEntityIds } from '@/lib/supabase/public-visibility'
 
 export const metadata: Metadata = {
   title: 'Follow the Money — The Epstein Crimes',
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 const supabase = createCachedReadClient()
 
 export default async function FollowTheMoneyPage() {
-  const [storiesResult, entitiesResult, connectionsResult] = await Promise.all([
+  const [storiesResult, entitiesResult, connectionsResult, publicIds] = await Promise.all([
     supabase
       .from('stories')
       .select('id, slug, title, deck, section, byline, reading_time_minutes, published_at, hero_image_url')
@@ -29,10 +30,9 @@ export default async function FollowTheMoneyPage() {
       .eq('section', 'follow-the-money')
       .order('published_at', { ascending: false }),
 
-    supabase
-      .from('entities')
-      .select('id, name, slug, entity_type, tier, category, bio, profile_image_url')
-      .eq('profile_published', true)
+    applyPublicEntityFilter(
+      supabase.from('entities').select('id, name, slug, entity_type, tier, category, bio, profile_image_url'),
+    )
       .or('category.eq.financial,entity_type.in.(organization,trust)')
       .order('tier', { ascending: true })
       .order('name')
@@ -40,12 +40,17 @@ export default async function FollowTheMoneyPage() {
 
     supabase
       .from('entity_connections')
-      .select('relationship_type'),
+      .select('relationship_type, entity_a, entity_b'),
+
+    getPublicEntityIds(),
   ])
 
   const stories = storiesResult.data ?? []
   const entities = entitiesResult.data ?? []
-  const connections = connectionsResult.data ?? []
+  // Only connections whose endpoints are both publicly visible count.
+  const connections = (connectionsResult.data ?? []).filter(
+    (c) => publicIds?.has(c.entity_a) && publicIds.has(c.entity_b),
+  )
 
   // Aggregate connection counts by relationship type
   const connectionCounts: Record<string, number> = {}

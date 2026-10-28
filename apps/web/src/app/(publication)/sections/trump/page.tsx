@@ -5,6 +5,7 @@ import { SectionStories } from '@/components/publication/sections/section-storie
 import { EntitySpotlight } from '@/components/publication/sections/entity-spotlight'
 import { CaseProgressGrid } from '@/components/publication/visualizations/case-progress-grid'
 import EventTimelineChart from '@/components/publication/visualizations/event-timeline-chart'
+import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
 
 export const metadata: Metadata = {
   title: 'Trump — The Epstein Crimes',
@@ -47,10 +48,9 @@ export default async function TrumpSectionPage() {
       .select('id, case_file_id, status')
       .eq('status', 'open'),
 
-    supabase
-      .from('entities')
-      .select('id, name, slug, entity_type, tier, category, bio, profile_image_url')
-      .eq('profile_published', true)
+    applyPublicEntityFilter(
+      supabase.from('entities').select('id, name, slug, entity_type, tier, category, bio, profile_image_url'),
+    )
       .in('slug', ['donald-trump', 'jeffrey-epstein', 'ghislaine-maxwell', 'alexander-acosta', 'virginia-giuffre', 'bradley-edwards'])
       .order('tier', { ascending: true })
       .order('name'),

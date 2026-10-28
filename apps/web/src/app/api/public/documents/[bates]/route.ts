@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import {
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+  type VisibilityFields,
+} from '@/lib/supabase/public-visibility'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 // Use service role to bypass RLS (public endpoint, reads only)
@@ -40,7 +45,7 @@ export async function GET(
       // Entities linked to this document
       supabase
         .from('entity_documents')
-        .select('role_in_document, excerpt, page_number, entity:entities(id, name, slug, tier, category, profile_published)')
+        .select(`role_in_document, excerpt, page_number, entity:entities(id, name, slug, tier, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
         .eq('document_id', doc.id),
 
       // Events referencing this document
@@ -69,11 +74,10 @@ export async function GET(
         .eq('document_id', doc.id),
     ])
 
-    // Filter entities to published only
+    // Filter entities to publicly visible only (published, not on hold)
     const entities = (entitiesResult.data ?? [])
       .filter((ed: Record<string, unknown>) => {
-        const entity = ed.entity as Record<string, unknown> | null
-        return entity?.profile_published === true
+        return isPubliclyVisibleEntity(ed.entity as VisibilityFields | null)
       })
       .map((ed: Record<string, unknown>) => {
         const entity = ed.entity as Record<string, unknown>

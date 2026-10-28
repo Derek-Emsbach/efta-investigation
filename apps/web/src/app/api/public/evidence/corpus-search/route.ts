@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rate-limit'
+import {
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+  type VisibilityFields,
+} from '@/lib/supabase/public-visibility'
 import { getCorpusDb, datasetFromEftaNumber, numericEfta } from '@/lib/corpus-db'
 import type { CorpusSearchHit, CorpusEnrichment, CorpusSearchResponse } from '@efta/shared'
 
@@ -245,14 +250,15 @@ async function enrichResults(
       const batch = docIds.slice(i, i + batchSize)
       const { data: links } = await supabase
         .from('entity_documents')
-        .select('document_id, entity_id, entities(name)')
+        .select(`document_id, entity_id, entities(name, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
         .in('document_id', batch)
 
       if (links) {
         for (const link of links) {
           const bates = docIdToBates.get(link.document_id)
-          const entityData = link.entities as unknown as { name: string } | null
-          if (bates && enrichment[bates] && entityData?.name) {
+          const entityData = link.entities as unknown as ({ name: string } & VisibilityFields) | null
+          // Only publicly visible entities are named; unpublished/held stay hidden.
+          if (bates && enrichment[bates] && entityData?.name && isPubliclyVisibleEntity(entityData)) {
             enrichment[bates].entities.push(entityData.name)
           }
         }

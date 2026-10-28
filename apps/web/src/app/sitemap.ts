@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
+import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://theepsteincrimes.com'
 
@@ -11,10 +12,9 @@ const supabase = createClient(
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch all published content slugs in parallel
   const [entitiesResult, storiesResult, caseFilesResult] = await Promise.all([
-    supabase
-      .from('entities')
-      .select('slug, updated_at')
-      .eq('profile_published', true)
+    applyPublicEntityFilter(
+      supabase.from('entities').select('slug, updated_at'),
+    )
       .not('slug', 'is', null)
       .order('name'),
 

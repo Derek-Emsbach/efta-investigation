@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,10 +13,9 @@ export async function GET(request: NextRequest) {
   if (rateLimited) return rateLimited
 
   try {
-    const { data: entities, error } = await supabase
-      .from('entities')
-      .select('id, name, slug, entity_type, tier, category, bio, status, aliases, datasets_appeared, profile_published, profile_image_url')
-      .eq('profile_published', true)
+    const { data: entities, error } = await applyPublicEntityFilter(
+      supabase.from('entities').select('id, name, slug, entity_type, tier, category, bio, status, aliases, datasets_appeared, profile_published, profile_image_url'),
+    )
       .order('tier', { ascending: true })
       .order('name')
 

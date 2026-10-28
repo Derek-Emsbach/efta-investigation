@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createCachedReadClient } from '@/lib/supabase/cached-read'
 import type { Tier } from '@efta/shared'
 import { TIER_CONFIG } from '@efta/shared'
+import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
 
 export const metadata: Metadata = {
   title: 'Entities — The Epstein Crimes',
@@ -30,10 +31,9 @@ const TIER_COLORS: Record<Tier, string> = {
 }
 
 export default async function EntitiesPage() {
-  const { data: entities } = await supabase
-    .from('entities')
-    .select('id, name, slug, tier, category, bio, profile_published')
-    .eq('profile_published', true)
+  const { data: entities } = await applyPublicEntityFilter(
+    supabase.from('entities').select('id, name, slug, tier, category, bio, profile_published'),
+  )
     .order('tier', { ascending: true })
     .order('name')
 

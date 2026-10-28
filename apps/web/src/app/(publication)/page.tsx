@@ -21,6 +21,7 @@ import { MonthlySupportBand } from '@/components/publication/support/monthly-sup
 import { cookies } from 'next/headers'
 import { hasSupabaseAuthCookie } from '@/lib/supabase/auth-cookie'
 import type { NewsItem } from '@/lib/news/sources'
+import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
 
 export const metadata: Metadata = {
   title: 'The Epstein Crimes — Independent Investigation',
@@ -66,10 +67,9 @@ export default async function HomePage() {
         .order('published_at', { ascending: false })
         .limit(6),
 
-      supabase
-        .from('entities')
-        .select('id, name, slug, tier, category, bio, profile_published, profile_image_url')
-        .eq('profile_published', true)
+      applyPublicEntityFilter(
+        supabase.from('entities').select('id, name, slug, tier, category, bio, profile_published, profile_image_url'),
+      )
         .in('tier', [1, 2, 3, 4])
         .order('tier', { ascending: true })
         .order('name')
@@ -92,10 +92,9 @@ export default async function HomePage() {
         .order('priority')
         .limit(3),
 
-      supabase
-        .from('entities')
-        .select('id', { count: 'exact', head: true })
-        .eq('profile_published', true),
+      applyPublicEntityFilter(
+        supabase.from('entities').select('id', { count: 'exact', head: true }),
+      ),
 
       supabase
         .from('open_questions')

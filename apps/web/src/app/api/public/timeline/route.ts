@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rate-limit'
+import {
+  applyPublicEntityFilter,
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+} from '@/lib/supabase/public-visibility'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -84,12 +89,9 @@ export async function GET(request: NextRequest) {
       let constrainedEventIds: string[] | null = null
 
       if (entitySlug) {
-        const { data: entity } = await supabase
-          .from('entities')
-          .select('id')
-          .eq('slug', entitySlug)
-          .eq('profile_published', true)
-          .single()
+        const { data: entity } = await applyPublicEntityFilter(
+          supabase.from('entities').select('id').eq('slug', entitySlug),
+        ).single()
 
         if (entity) {
           const { data: entityEvents } = await supabase
@@ -141,16 +143,16 @@ export async function GET(request: NextRequest) {
         if (eventIds.length > 0) {
           const { data: entityEvents } = await supabase
             .from('entity_events')
-            .select('event_id, role, entity:entities(name, slug, tier, profile_published)')
+            .select(`event_id, role, entity:entities(name, slug, tier, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
             .in('event_id', eventIds)
 
           if (entityEvents) {
             for (const ee of entityEvents as unknown as Array<{
               event_id: string
               role: string | null
-              entity: { name: string; slug: string | null; tier: number | null; profile_published: boolean } | null
+              entity: { name: string; slug: string | null; tier: number | null; profile_published: boolean; publication_hold?: unknown } | null
             }>) {
-              if (!ee.entity?.profile_published) continue
+              if (!ee.entity || !isPubliclyVisibleEntity(ee.entity)) continue
               if (!entitiesByEvent[ee.event_id]) entitiesByEvent[ee.event_id] = []
               entitiesByEvent[ee.event_id].push({
                 name: ee.entity.name,
@@ -209,12 +211,9 @@ export async function GET(request: NextRequest) {
 
       // If entity_slug filter, match by entity name from published entities
       if (entitySlug) {
-        const { data: entity } = await supabase
-          .from('entities')
-          .select('name')
-          .eq('slug', entitySlug)
-          .eq('profile_published', true)
-          .single()
+        const { data: entity } = await applyPublicEntityFilter(
+          supabase.from('entities').select('name').eq('slug', entitySlug),
+        ).single()
 
         if (entity) {
           pubQuery = pubQuery.contains('entity_names', [entity.name])
@@ -242,10 +241,9 @@ export async function GET(request: NextRequest) {
 
         const entityLookup: Record<string, { slug: string | null; tier: number | null }> = {}
         if (allEntityNames.size > 0) {
-          const { data: publishedEntities } = await supabase
-            .from('entities')
-            .select('name, slug, tier')
-            .eq('profile_published', true)
+          const { data: publishedEntities } = await applyPublicEntityFilter(
+            supabase.from('entities').select('name, slug, tier'),
+          )
             .in('name', Array.from(allEntityNames))
 
           for (const ent of publishedEntities ?? []) {

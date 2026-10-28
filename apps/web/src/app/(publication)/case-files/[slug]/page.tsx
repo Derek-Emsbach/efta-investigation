@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createCachedReadClient } from '@/lib/supabase/cached-read'
+import {
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+} from '@/lib/supabase/public-visibility'
 import type {
   CaseFile,
   CaseFileEntity,
@@ -80,7 +84,7 @@ export default async function CaseFilePage({
   const [entitiesResult, questionsResult] = await Promise.all([
     supabase
       .from('case_file_entities')
-      .select('*, entity:entities(id, name, slug, tier, entity_type, category, profile_published)')
+      .select(`*, entity:entities(id, name, slug, tier, entity_type, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
       .eq('case_file_id', typedCaseFile.id),
 
     supabase
@@ -90,7 +94,10 @@ export default async function CaseFilePage({
       .order('priority', { ascending: true }),
   ])
 
-  const entities = (entitiesResult.data ?? []) as (CaseFileEntity & { entity: Entity })[]
+  // Only publicly visible entities reach the roster and findings auto-linking.
+  const entities = ((entitiesResult.data ?? []) as (CaseFileEntity & { entity: Entity | null })[]).filter(
+    (e) => isPubliclyVisibleEntity(e.entity),
+  ) as (CaseFileEntity & { entity: Entity })[]
   const questions = (questionsResult.data ?? []) as OpenQuestion[]
 
   return (
@@ -123,7 +130,7 @@ export default async function CaseFilePage({
             <FindingsMarkdown
               markdown={typedCaseFile.findings_markdown}
               entities={entities
-                .filter((e) => e.entity?.slug && e.entity?.profile_published)
+                .filter((e) => e.entity?.slug)
                 .map((e) => ({
                   slug: e.entity.slug!,
                   name: e.entity.name,

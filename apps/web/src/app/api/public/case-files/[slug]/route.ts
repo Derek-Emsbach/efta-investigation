@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import {
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+  type VisibilityFields,
+} from '@/lib/supabase/public-visibility'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 const supabase = createClient(
@@ -34,7 +39,7 @@ export async function GET(
     const [entitiesResult, questionsResult] = await Promise.all([
       supabase
         .from('case_file_entities')
-        .select('*, entity:entities(id, name, slug, tier, entity_type, category, profile_published)')
+        .select(`*, entity:entities(id, name, slug, tier, entity_type, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
         .eq('case_file_id', caseFileId),
 
       supabase
@@ -46,7 +51,9 @@ export async function GET(
 
     return NextResponse.json({
       caseFile,
-      entities: entitiesResult.data ?? [],
+      entities: (entitiesResult.data ?? []).filter((row: { entity: VisibilityFields | null }) =>
+        isPubliclyVisibleEntity(row.entity),
+      ),
       questions: questionsResult.data ?? [],
     }, {
       headers: { 'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=1200' },

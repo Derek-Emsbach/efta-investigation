@@ -1,6 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createCachedReadClient } from '@/lib/supabase/cached-read'
+import {
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+  type VisibilityFields,
+} from '@/lib/supabase/public-visibility'
 import { REDACTION_CATEGORIES } from '@efta/shared'
 import type { Metadata } from 'next'
 import DocumentImagesStrip from '@/components/images/document-images-strip'
@@ -65,7 +70,7 @@ async function fetchDocument(bates: string) {
     await Promise.all([
       supabase
         .from('entity_documents')
-        .select('role_in_document, excerpt, page_number, entity:entities(id, name, slug, tier, category, profile_published)')
+        .select(`role_in_document, excerpt, page_number, entity:entities(id, name, slug, tier, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
         .eq('document_id', doc.id),
       supabase
         .from('event_documents')
@@ -86,11 +91,10 @@ async function fetchDocument(bates: string) {
         .eq('document_id', doc.id),
     ])
 
-  // Filter entities to published only
+  // Filter entities to publicly visible only (published, not on hold)
   const entities = (entitiesResult.data ?? [])
     .filter((ed: Record<string, unknown>) => {
-      const entity = ed.entity as Record<string, unknown> | null
-      return entity?.profile_published === true
+      return isPubliclyVisibleEntity(ed.entity as VisibilityFields | null)
     })
     .map((ed: Record<string, unknown>) => {
       const entity = ed.entity as Record<string, unknown>

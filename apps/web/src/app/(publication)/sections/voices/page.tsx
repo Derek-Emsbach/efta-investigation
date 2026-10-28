@@ -4,6 +4,7 @@ import { SectionHero } from '@/components/publication/sections/section-hero'
 import { SectionStories } from '@/components/publication/sections/section-stories'
 import { EntitySpotlight } from '@/components/publication/sections/entity-spotlight'
 import { CaseProgressGrid } from '@/components/publication/visualizations/case-progress-grid'
+import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
 
 export const metadata: Metadata = {
   title: 'Voices — The Epstein Crimes',
@@ -35,10 +36,9 @@ export default async function VoicesPage() {
         .from('open_questions')
         .select('id, case_file_id, status'),
 
-      supabase
-        .from('entities')
-        .select('id, name, slug, entity_type, tier, category, bio, profile_image_url')
-        .eq('profile_published', true)
+      applyPublicEntityFilter(
+        supabase.from('entities').select('id, name, slug, entity_type, tier, category, bio, profile_image_url'),
+      )
         .eq('category', 'witness')
         .order('tier', { ascending: true })
         .order('name', { ascending: true }),
@@ -47,10 +47,9 @@ export default async function VoicesPage() {
         .from('events')
         .select('id', { count: 'exact', head: true }),
 
-      supabase
-        .from('entities')
-        .select('id', { count: 'exact', head: true })
-        .eq('profile_published', true),
+      applyPublicEntityFilter(
+        supabase.from('entities').select('id', { count: 'exact', head: true }),
+      ),
     ])
 
   const stories = storiesRes.data ?? []

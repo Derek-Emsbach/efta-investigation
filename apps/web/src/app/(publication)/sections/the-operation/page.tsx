@@ -4,6 +4,7 @@ import { SectionHero } from '@/components/publication/sections/section-hero'
 import { SectionStories } from '@/components/publication/sections/section-stories'
 import { EntitySpotlight } from '@/components/publication/sections/entity-spotlight'
 import LocationMap from '@/components/publication/visualizations/location-map'
+import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
 
 export const metadata: Metadata = {
   title: 'The Operation — The Epstein Crimes',
@@ -30,10 +31,9 @@ export default async function TheOperationPage() {
       .not('latitude', 'is', null)
       .not('name', 'ilike', '%test%'),
 
-    supabase
-      .from('entities')
-      .select('id, name, slug, entity_type, tier, category, bio, profile_image_url')
-      .eq('profile_published', true)
+    applyPublicEntityFilter(
+      supabase.from('entities').select('id, name, slug, entity_type, tier, category, bio, profile_image_url'),
+    )
       .in('category', ['staff', 'operational', 'inner_circle', 'abuser'])
       .order('tier', { ascending: true })
       .order('name', { ascending: true }),

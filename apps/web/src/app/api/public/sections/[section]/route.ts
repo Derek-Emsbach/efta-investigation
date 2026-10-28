@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { applyPublicEntityFilter, getPublicEntityIds } from '@/lib/supabase/public-visibility'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -64,10 +65,9 @@ export async function GET(
       .order('published_at', { ascending: false })
 
     // Fetch entities matching section categories/types
-    let entitiesQuery = supabase
-      .from('entities')
-      .select('id, name, slug, entity_type, tier, category, status, bio, profile_image_url')
-      .eq('profile_published', true)
+    let entitiesQuery = applyPublicEntityFilter(
+      supabase.from('entities').select('id, name, slug, entity_type, tier, category, status, bio, profile_image_url'),
+    )
 
     // Build OR filter for categories and entity types
     const orFilters: string[] = []
@@ -81,7 +81,7 @@ export async function GET(
     // Fetch connections by type (for follow-the-money)
     const connectionsQuery = supabase
       .from('entity_connections')
-      .select('relationship_type')
+      .select('relationship_type, entity_a, entity_b')
 
     // Fetch case files (for cover-up + voices)
     const caseFilesQuery = supabase
@@ -124,6 +124,7 @@ export async function GET(
       locationsResult,
       eventsResult,
       openQuestionsResult,
+      publicIds,
     ] = await Promise.all([
       storiesQuery,
       entitiesQuery,
@@ -133,11 +134,17 @@ export async function GET(
       locationsQuery,
       eventsQuery,
       openQuestionsQuery,
+      getPublicEntityIds(),
     ])
+
+    // Only connections whose endpoints are both publicly visible count.
+    const visibleConnections = (connectionsResult.data ?? []).filter(
+      (c) => publicIds?.has(c.entity_a) && publicIds.has(c.entity_b),
+    )
 
     // Build connection type counts
     const connectionsByType: Record<string, number> = {}
-    for (const c of connectionsResult.data ?? []) {
+    for (const c of visibleConnections) {
       connectionsByType[c.relationship_type] = (connectionsByType[c.relationship_type] ?? 0) + 1
     }
 
@@ -167,7 +174,7 @@ export async function GET(
       stats: {
         storyCount: storiesResult.data?.length ?? 0,
         entityCount: entitiesResult.data?.length ?? 0,
-        totalConnections: connectionsResult.data?.length ?? 0,
+        totalConnections: visibleConnections.length,
         totalEvents: eventsResult.data?.length ?? 0,
       },
       connectionsByType,

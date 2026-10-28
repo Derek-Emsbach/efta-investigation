@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rate-limit'
+import {
+  applyPublicEntityFilter,
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+  type VisibilityFields,
+} from '@/lib/supabase/public-visibility'
 import type {
   Entity,
   EntityDocument,
@@ -31,13 +37,10 @@ export async function GET(
   try {
     const { slug } = await params
 
-    // 1. Fetch entity by slug — must be profile_published
-    const { data: entity, error: entityError } = await supabase
-      .from('entities')
-      .select('*')
-      .eq('slug', slug)
-      .eq('profile_published', true)
-      .single()
+    // 1. Fetch entity by slug — must be published and not on publication_hold
+    const { data: entity, error: entityError } = await applyPublicEntityFilter(
+      supabase.from('entities').select('*').eq('slug', slug),
+    ).single()
 
     if (entityError || !entity) {
       return NextResponse.json({ error: 'Entity not found' }, { status: 404 })
@@ -71,13 +74,13 @@ export async function GET(
       // Connections where this entity is entity_a
       supabase
         .from('entity_connections')
-        .select('*, connected_entity:entities!entity_b(id, name, slug, tier, entity_type, category, profile_published)')
+        .select(`*, connected_entity:entities!entity_b(id, name, slug, tier, entity_type, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
         .eq('entity_a', entityId),
 
       // Connections where this entity is entity_b
       supabase
         .from('entity_connections')
-        .select('*, connected_entity:entities!entity_a(id, name, slug, tier, entity_type, category, profile_published)')
+        .select(`*, connected_entity:entities!entity_a(id, name, slug, tier, entity_type, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
         .eq('entity_b', entityId),
 
       // Evidence items
@@ -106,11 +109,14 @@ export async function GET(
         .eq('entity_id', entityId),
     ])
 
-    // Merge connections from both directions
+    // Merge connections from both directions. Drop any whose far end is not
+    // publicly visible, or the unpublished/held entity leaks by name.
     const connections = [
       ...(connectionsAsAResult.data ?? []),
       ...(connectionsAsBResult.data ?? []),
-    ]
+    ].filter((c: Record<string, unknown>) =>
+      isPubliclyVisibleEntity(c.connected_entity as VisibilityFields | null),
+    )
 
     // Sort events by date
     const events = (eventsResult.data ?? []).sort((a: Record<string, unknown>, b: Record<string, unknown>) => {

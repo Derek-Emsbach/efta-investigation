@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createCachedReadClient } from '@/lib/supabase/cached-read'
+import {
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+} from '@/lib/supabase/public-visibility'
 import Image from 'next/image'
 import type {
   Story,
@@ -86,7 +90,7 @@ export default async function StoryPage({
   const [entitiesResult, citationsResult, caseFileResult] = await Promise.all([
     supabase
       .from('story_entities')
-      .select('*, entity:entities(id, name, slug, tier, category, profile_published)')
+      .select(`*, entity:entities(id, name, slug, tier, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
       .eq('story_id', typedStory.id),
 
     supabase
@@ -104,7 +108,11 @@ export default async function StoryPage({
       : Promise.resolve({ data: null }),
   ])
 
-  const entities = (entitiesResult.data ?? []) as (StoryEntity & { entity: Entity })[]
+  // Only publicly visible entities reach the sidebar, related-story ranking and
+  // markdown auto-linking; unpublished or held entities must not be exposed.
+  const entities = ((entitiesResult.data ?? []) as (StoryEntity & { entity: Entity | null })[]).filter(
+    (se) => isPubliclyVisibleEntity(se.entity),
+  ) as (StoryEntity & { entity: Entity })[]
   const citations = (citationsResult.data ?? []) as (StoryCitation & { document: Document | null })[]
 
   // Find related stories: prioritize shared entities, fall back to same section

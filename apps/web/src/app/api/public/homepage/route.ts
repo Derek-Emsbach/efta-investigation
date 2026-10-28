@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -42,10 +43,9 @@ export async function GET(request: NextRequest) {
           .limit(6),
 
         // Top entities by tier (for spotlight)
-        supabase
-          .from('entities')
-          .select('id, name, slug, tier, category, bio, profile_published, profile_image_url')
-          .eq('profile_published', true)
+        applyPublicEntityFilter(
+          supabase.from('entities').select('id, name, slug, tier, category, bio, profile_published, profile_image_url'),
+        )
           .in('tier', [1, 2])
           .order('tier', { ascending: true })
           .order('name')

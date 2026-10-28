@@ -1,6 +1,11 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createCachedReadClient } from '@/lib/supabase/cached-read'
+import {
+  applyPublicEntityFilter,
+  isPubliclyVisibleEntity,
+  PUBLIC_ENTITY_VISIBILITY_COLUMNS,
+} from '@/lib/supabase/public-visibility'
 import type {
   Entity,
   EntityDocument,
@@ -42,12 +47,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const { data: entity } = await supabase
-    .from('entities')
-    .select('name, tier, bio')
-    .eq('slug', slug)
-    .eq('profile_published', true)
-    .single()
+  const { data: entity } = await applyPublicEntityFilter(
+    supabase.from('entities').select('name, tier, bio').eq('slug', slug),
+  ).single()
 
   if (!entity) {
     return { title: 'Entity Not Found — The Epstein Crimes' }
@@ -86,13 +88,10 @@ export default async function EntityProfilePage({
 }) {
   const { slug } = await params
 
-  // Fetch entity by slug — must be published
-  const { data: entity, error: entityError } = await supabase
-    .from('entities')
-    .select('*')
-    .eq('slug', slug)
-    .eq('profile_published', true)
-    .single()
+  // Fetch entity by slug — must be published and not on publication_hold
+  const { data: entity, error: entityError } = await applyPublicEntityFilter(
+    supabase.from('entities').select('*').eq('slug', slug),
+  ).single()
 
   if (entityError || !entity) {
     notFound()
@@ -123,12 +122,12 @@ export default async function EntityProfilePage({
 
     supabase
       .from('entity_connections')
-      .select('*, connected_entity:entities!entity_b(id, name, slug, tier, entity_type, category, profile_published)')
+      .select(`*, connected_entity:entities!entity_b(id, name, slug, tier, entity_type, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
       .eq('entity_a', entityId),
 
     supabase
       .from('entity_connections')
-      .select('*, connected_entity:entities!entity_a(id, name, slug, tier, entity_type, category, profile_published)')
+      .select(`*, connected_entity:entities!entity_a(id, name, slug, tier, entity_type, category, ${PUBLIC_ENTITY_VISIBILITY_COLUMNS})`)
       .eq('entity_b', entityId),
 
     supabase
@@ -156,15 +155,15 @@ export default async function EntityProfilePage({
 
   // Merge connections
   // Publication guard: entity_connections is not filtered by the queries above,
-  // so an unpublished entity would otherwise surface by name on a published
-  // page. Drop any connection whose far end is missing or unpublished.
+  // so an unpublished or held entity would otherwise surface by name on a
+  // published page. Drop any connection whose far end is not publicly visible.
   // Added 2026-07-31 — records deliberately withheld (private individuals,
   // unresolved-identity records) were reachable this way.
   const connections = ([
     ...(connectionsAsAResult.data ?? []),
     ...(connectionsAsBResult.data ?? []),
   ] as (EntityConnection & { connected_entity: Entity | null })[]).filter(
-    (c) => c.connected_entity?.profile_published === true,
+    (c) => isPubliclyVisibleEntity(c.connected_entity),
   ) as (EntityConnection & { connected_entity: Entity })[]
 
   // Sort events by date
