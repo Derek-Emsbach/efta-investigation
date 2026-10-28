@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 interface Stats {
   documents: number
   pages: number
-  entities: number
+  entities: number | null
   datasets: number
   connections: number
 }
@@ -22,7 +22,7 @@ export function StatsBar() {
         setStats({
           documents: 1_370_000,
           pages: 2_770_000,
-          entities: 99,
+          entities: null,
           datasets: 12,
           connections: 0,
         })
@@ -44,7 +44,7 @@ export function StatsBar() {
         color="#34d399"
       />
       <StatCell
-        value={String(stats.entities)}
+        value={stats.entities === null ? '—' : String(stats.entities)}
         label="Entities"
         color="#f59e0b"
       />

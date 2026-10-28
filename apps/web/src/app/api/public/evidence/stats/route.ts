@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { checkRateLimit } from '@/lib/rate-limit'
-import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
+import { getPublishedEntityCount } from '@/lib/supabase/public-counts'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,10 +27,8 @@ export async function GET(request: NextRequest) {
     // Use estimated count for performance on 1.37M row table
     const { data: countData } = await supabase.rpc('estimated_document_count')
 
-    // Get entity count (publicly visible only)
-    const { count: entityCount } = await applyPublicEntityFilter(
-      supabase.from('entities').select('*', { count: 'exact', head: true }),
-    )
+    // Get entity count (publicly visible only — same figure as the homepage)
+    const entityCount = await getPublishedEntityCount()
 
     // Get dataset count
     const { count: datasetCount } = await supabase
@@ -43,7 +41,7 @@ export async function GET(request: NextRequest) {
     const stats = {
       documents: countData ?? 1_370_000,
       pages: 2_770_000, // Known from import stats
-      entities: entityCount ?? 99,
+      entities: entityCount,
       datasets: datasetCount ?? 12,
       connections: 0, // Will populate later
     }

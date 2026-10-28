@@ -5,6 +5,7 @@ import { SectionStories } from '@/components/publication/sections/section-storie
 import { EntitySpotlight } from '@/components/publication/sections/entity-spotlight'
 import { CaseProgressGrid } from '@/components/publication/visualizations/case-progress-grid'
 import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
+import { formatCount, getOpenQuestionCount, getPublishedEntityCount } from '@/lib/supabase/public-counts'
 
 export const metadata: Metadata = {
   title: 'Voices — The Epstein Crimes',
@@ -17,7 +18,7 @@ const supabase = createCachedReadClient()
 const SECTION_COLOR = '#4a2d6e'
 
 export default async function VoicesPage() {
-  const [storiesRes, caseFilesRes, openQuestionsRes, entitiesRes, eventsRes, publishedEntitiesRes] =
+  const [storiesRes, caseFilesRes, openQuestionsRes, entitiesRes, eventsRes, publishedEntityCount, openQuestionCount] =
     await Promise.all([
       supabase
         .from('stories')
@@ -47,9 +48,9 @@ export default async function VoicesPage() {
         .from('events')
         .select('id', { count: 'exact', head: true }),
 
-      applyPublicEntityFilter(
-        supabase.from('entities').select('id', { count: 'exact', head: true }),
-      ),
+      getPublishedEntityCount(),
+
+      getOpenQuestionCount(),
     ])
 
   const stories = storiesRes.data ?? []
@@ -57,10 +58,10 @@ export default async function VoicesPage() {
   const openQuestions = openQuestionsRes.data ?? []
   const entities = entitiesRes.data ?? []
   const totalEvents = eventsRes.count ?? 0
-  const totalEntities = publishedEntitiesRes.count ?? 0
+  const totalEntities = formatCount(publishedEntityCount)
 
   // Count open questions and group by case file
-  const totalOpenQuestions = openQuestions.filter(q => q.status === 'open').length
+  const totalOpenQuestions = formatCount(openQuestionCount)
   const questionCountByCase = new Map<string, number>()
   for (const q of openQuestions) {
     if (q.case_file_id && q.status === 'open') {
@@ -87,7 +88,7 @@ export default async function VoicesPage() {
         title="Voices"
         description="Witness testimony, survivor accounts, and the questions that remain unanswered. Every investigation leaves gaps — and in this one, the gaps tell a story of their own. The unanswered questions below represent documented failures of the system to pursue leads, take statements, or follow the evidence."
         color={SECTION_COLOR}
-        stat={{ value: String(totalOpenQuestions), label: 'Unanswered Questions' }}
+        stat={{ value: totalOpenQuestions, label: 'Unanswered Questions' }}
       />
 
       <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12 space-y-16">

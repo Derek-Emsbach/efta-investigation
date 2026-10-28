@@ -1,6 +1,21 @@
 import Link from 'next/link'
+import { formatCount } from '@/lib/supabase/public-counts'
 
-export function FeaturedInvestigation() {
+interface FeaturedInvestigationProps {
+  entityCount: number | null
+  connectionCount: number | null
+}
+
+export function FeaturedInvestigation({ entityCount, connectionCount }: FeaturedInvestigationProps) {
+  // Same counts as the homepage stat bar; a figure that failed to load is left out.
+  const footer = [
+    'Interactive',
+    entityCount === null ? null : `${formatCount(entityCount)} entities`,
+    connectionCount === null ? null : `${formatCount(connectionCount)} connections`,
+  ]
+    .filter(Boolean)
+    .join(' • ')
+
   return (
     <section className="relative overflow-hidden bg-ink text-background py-12 mt-10">
       {/* Grid pattern overlay */}
@@ -29,7 +44,7 @@ export function FeaturedInvestigation() {
             </div>
 
             <h2 className="font-display text-[clamp(28px,4vw,38px)] font-bold leading-[1.15] tracking-[-0.01em] mb-4">
-              The Network Map: 97 People. Decades of Connections. One Operation.
+              The Network Map:{entityCount === null ? '' : ` ${formatCount(entityCount)} Entities.`} Decades of Connections. One Operation.
             </h2>
 
             <p className="text-[17px] leading-[1.7] opacity-75 mb-6">
@@ -85,7 +100,7 @@ export function FeaturedInvestigation() {
               {/* Label */}
               <div className="absolute bottom-3 left-3 right-3 text-center">
                 <span className="font-mono text-[10px] uppercase tracking-wider text-white/30">
-                  Interactive • 120+ entities • 110+ connections
+                  {footer}
                 </span>
               </div>
             </div>

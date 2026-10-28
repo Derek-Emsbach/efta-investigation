@@ -22,25 +22,35 @@ import { cookies } from 'next/headers'
 import { hasSupabaseAuthCookie } from '@/lib/supabase/auth-cookie'
 import type { NewsItem } from '@/lib/news/sources'
 import { applyPublicEntityFilter } from '@/lib/supabase/public-visibility'
+import {
+  formatCount,
+  getOpenQuestionCount,
+  getPublicConnectionCount,
+  getPublishedEntityCount,
+} from '@/lib/supabase/public-counts'
 
-export const metadata: Metadata = {
-  title: 'The Epstein Crimes — Independent Investigation',
-  description:
-    'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act. 12 DOJ dataset releases. 120+ entities identified. The evidence speaks.',
-  openGraph: {
+export async function generateMetadata(): Promise<Metadata> {
+  const entityCount = await getPublishedEntityCount()
+  const entitiesClause = entityCount === null ? '' : ` ${entityCount} entities profiled.`
+  return {
     title: 'The Epstein Crimes — Independent Investigation',
     description:
-      'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act.',
-    type: 'website',
-    siteName: 'The Epstein Crimes',
-    images: ['/api/og?title=Independent%20Investigation&type=home'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'The Epstein Crimes — Independent Investigation',
-    description:
-      'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act.',
-  },
+      `Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act. 12 DOJ dataset releases.${entitiesClause} The evidence speaks.`,
+    openGraph: {
+      title: 'The Epstein Crimes — Independent Investigation',
+      description:
+        'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act.',
+      type: 'website',
+      siteName: 'The Epstein Crimes',
+      images: ['/api/og?title=Independent%20Investigation&type=home'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'The Epstein Crimes — Independent Investigation',
+      description:
+        'Systematic investigation of 1.38 million documents released under the Epstein Files Transparency Act.',
+    },
+  }
 }
 
 const supabase = createCachedReadClient()
@@ -51,7 +61,7 @@ const DEDICATED_SECTIONS = ['follow-the-money', 'the-cover-up']
 export default async function HomePage() {
   // Only used to label the support button; a cookie check is enough (no auth round-trip).
   const isAuthenticated = hasSupabaseAuthCookie((await cookies()).getAll())
-  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCountResult, openQuestionCountResult, storyCountResult, newsResult] =
+  const [storiesResult, caseFilesResult, entitiesResult, eventsResult, docCountResult, questionsResult, entityCount, connectionCount, openQuestionCount, storyCountResult, newsResult] =
     await Promise.all([
       supabase
         .from('stories')
@@ -92,14 +102,11 @@ export default async function HomePage() {
         .order('priority')
         .limit(3),
 
-      applyPublicEntityFilter(
-        supabase.from('entities').select('id', { count: 'exact', head: true }),
-      ),
+      getPublishedEntityCount(),
 
-      supabase
-        .from('open_questions')
-        .select('id', { count: 'exact', head: true })
-        .eq('status', 'open'),
+      getPublicConnectionCount(),
+
+      getOpenQuestionCount(),
 
       supabase
         .from('stories')
@@ -125,8 +132,8 @@ export default async function HomePage() {
 
   const stats = {
     documents: (docCountResult.data as number) ?? 1_370_000,
-    entities: entityCountResult.count ?? 42,
-    openQuestions: openQuestionCountResult.count ?? 82,
+    entities: entityCount,
+    openQuestions: openQuestionCount,
     stories: storyCountResult.count ?? 21,
   }
 
@@ -173,7 +180,7 @@ export default async function HomePage() {
           <section className="py-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { section: 'The Network', desc: 'Mapping the connections between 97+ identified individuals across six evidence tiers.' },
+                { section: 'The Network', desc: `Mapping the connections between ${entityCount === null ? 'profiled' : formatCount(entityCount)} entities across six evidence tiers.` },
                 { section: 'The Operation', desc: 'How recruitment, logistics, and financial systems operated across multiple jurisdictions.' },
                 { section: 'Voices', desc: 'Survivor testimony, whistleblower accounts, and institutional responses to the investigation.' },
               ].map((item) => (
@@ -198,7 +205,7 @@ export default async function HomePage() {
       <NewsletterSignup source="home" />
 
       {/* Featured Investigation (full-width dark section) */}
-      <FeaturedInvestigation />
+      <FeaturedInvestigation entityCount={entityCount} connectionCount={connectionCount} />
 
       {/* Source attribution promo (full-width) */}
       <SourceAdSlot variant="inline-banner" seed="homepage-featured" />

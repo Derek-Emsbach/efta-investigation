@@ -3,6 +3,11 @@ import Link from "next/link"
 import { TIER_CONFIG, REDACTION_CATEGORIES, type Tier } from "@efta/shared"
 import { TierBadge } from "@/components/ui/tier-badge"
 import { ExpandableSection } from "@/components/ui/expandable-section"
+import {
+  formatCount,
+  getOpenQuestionCount,
+  getPublishedEntityCount,
+} from "@/lib/supabase/public-counts"
 
 export const metadata: Metadata = {
   title: "About This Investigation — The Epstein Crimes",
@@ -17,16 +22,19 @@ const REDACTION_DESCRIPTIONS: Record<string, string> = {
   D: "Conceals perpetrator identity or criminal conduct. No EFTA exemption permits this. Highest scrutiny required.",
 }
 
-const STATS = [
+function buildStats(entityCount: number | null, openQuestionCount: number | null) {
+  return [
   { value: "~3.5M", label: "Pages Released", accent: true },
   { value: "1.37M+", label: "Documents Indexed", accent: false },
-  { value: "120+", label: "Entities Tracked", accent: false },
+  { value: formatCount(entityCount), label: "Entities Profiled", accent: false },
   { value: "19", label: "Stories Published", accent: false },
   { value: "262", label: "Source Citations", accent: false },
-  { value: "82", label: "Open Questions", accent: false },
-]
+  { value: formatCount(openQuestionCount), label: "Open Questions", accent: false },
+  ]
+}
 
-const PUBLICATIONS = [
+function buildPublications(entityCount: number | null, openQuestionCount: number | null) {
+  return [
   {
     title: "Investigative Stories",
     description:
@@ -38,14 +46,14 @@ const PUBLICATIONS = [
     title: "Case Files",
     description:
       "Structured investigation dossiers that track specific threads — from the 2007 non-prosecution agreement to financial networks. Each case file catalogs evidence, entities involved, and open questions still under investigation.",
-    stat: "11 active, 82 open questions",
+    stat: `11 active, ${formatCount(openQuestionCount)} open questions`,
     href: "/case-files",
   },
   {
     title: "Entity Profiles",
     description:
       "Detailed dossiers on individuals and organizations connected to the Epstein network, classified by evidence strength — not guilt. Each profile links to source documents, known connections, and timeline events.",
-    stat: "32 published, 120+ tracked",
+    stat: `${formatCount(entityCount)} published`,
     href: "/entities",
   },
   {
@@ -55,9 +63,17 @@ const PUBLICATIONS = [
     stat: "1.37M+ searchable documents",
     href: "/evidence",
   },
-]
+  ]
+}
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [entityCount, openQuestionCount] = await Promise.all([
+    getPublishedEntityCount(),
+    getOpenQuestionCount(),
+  ])
+  const STATS = buildStats(entityCount, openQuestionCount)
+  const PUBLICATIONS = buildPublications(entityCount, openQuestionCount)
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-12 md:py-16">
       {/* 1. Hero / Mission Statement */}

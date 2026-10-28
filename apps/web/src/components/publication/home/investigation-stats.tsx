@@ -1,8 +1,10 @@
+import { formatCount } from '@/lib/supabase/public-counts'
+
 interface InvestigationStatsProps {
   stats: {
     documents: number
-    entities: number
-    openQuestions: number
+    entities: number | null
+    openQuestions: number | null
     stories: number
   }
 }
@@ -23,9 +25,9 @@ function buildStats(stats: InvestigationStatsProps['stats']): StatDisplay[] {
 
   return [
     { highlight: docDisplay, suffix: '+', label: 'Documents Released' },
-    { highlight: String(stats.entities), label: 'Entities Profiled' },
+    { highlight: formatCount(stats.entities), label: 'Entities Profiled' },
     { highlight: '0', label: 'Officials Held Accountable' },
-    { highlight: String(stats.openQuestions), label: 'Open Questions' },
+    { highlight: formatCount(stats.openQuestions), label: 'Open Questions' },
     { highlight: String(stats.stories), label: 'Stories Published' },
   ]
 }

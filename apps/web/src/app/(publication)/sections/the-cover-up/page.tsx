@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { createCachedReadClient } from '@/lib/supabase/cached-read'
+import { formatCount, getOpenQuestionCount } from '@/lib/supabase/public-counts'
 import { SectionHero } from '@/components/publication/sections/section-hero'
 import { SectionStories } from '@/components/publication/sections/section-stories'
 import { EntitySpotlight } from '@/components/publication/sections/entity-spotlight'
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 const supabase = createCachedReadClient()
 
 export default async function TheCoverUpPage() {
-  const [storiesResult, eventsResult, caseFilesResult, questionsResult, entitiesResult] = await Promise.all([
+  const [storiesResult, eventsResult, caseFilesResult, questionsResult, entitiesResult, openQuestionCount] = await Promise.all([
     supabase
       .from('stories')
       .select('id, slug, title, deck, section, byline, reading_time_minutes, published_at, hero_image_url')
@@ -55,6 +56,8 @@ export default async function TheCoverUpPage() {
       .order('tier', { ascending: true })
       .order('name')
       .limit(12),
+
+    getOpenQuestionCount(),
   ])
 
   const stories = storiesResult.data ?? []
@@ -93,7 +96,7 @@ export default async function TheCoverUpPage() {
         title="The Cover-Up"
         description="Documenting two decades of prosecutorial failure, institutional protection, and the ongoing fight for accountability. From the 2007 non-prosecution agreement through DOJ obstruction of the EFTA releases."
         color="#8b1a2b"
-        stat={{ value: '82', label: 'Open Questions' }}
+        stat={{ value: formatCount(openQuestionCount), label: 'Open Questions' }}
       />
 
       <div className="mx-auto max-w-7xl xl:max-w-newspaper px-6 py-12 space-y-16">

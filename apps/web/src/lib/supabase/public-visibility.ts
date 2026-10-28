@@ -57,7 +57,7 @@ export async function getPublicEntityIds(): Promise<Set<string> | null> {
   for (let from = 0; ; from += pageSize) {
     const { data, error } = await applyPublicEntityFilter(
       supabase.from('entities').select('id'),
-    ).range(from, from + pageSize - 1)
+    ).order('id').range(from, from + pageSize - 1)
     if (error) return null
     for (const row of data ?? []) ids.add(row.id as string)
     if (!data || data.length < pageSize) break

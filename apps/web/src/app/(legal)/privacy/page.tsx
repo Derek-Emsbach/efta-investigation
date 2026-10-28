@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — EFTA Investigation Platform",
@@ -36,9 +37,18 @@ export default function PrivacyPage() {
             Account Information
           </h3>
           <p>
-            When your account is created, we collect your email address and
-            authentication credentials. Accounts are created by administrators
-            — there is no self-registration.
+            You can create an account at{" "}
+            <Link href="/signup" className="underline hover:text-text-primary">
+              /signup
+            </Link>
+            . When you do, we collect your email address, a password, and a
+            display name. Passwords are handled and stored by our
+            authentication provider, Supabase, in hashed form. We don&apos;t
+            store them. We store your email address, display name, account role
+            and subscription tier, and the date your account was created. If
+            you add a profile photo or short bio, or start a paid subscription,
+            we also store those details and the Stripe customer reference. We
+            send a confirmation email to verify your address.
           </p>
 
           <h3 className="mb-1 mt-3 text-sm font-medium text-text-primary">
